@@ -135,7 +135,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-DJANGO_BOOTSTRAP_UI_THEME = 'bootswatch-paper'
+DJANGO_BOOTSTRAP_UI_THEME = 'bootswatch-journal'
 
 
 # Static files (CSS, JavaScript, Images)

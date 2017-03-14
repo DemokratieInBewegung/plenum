@@ -1,0 +1,85 @@
+{% extends "_base.html" %}
+{% load bootstrap_ui_tags %}
+
+{% block content %}
+{{ block.super }}
+
+{% row %}
+  {% column %}
+    <h1>{{initiative.title}}</h1>
+    {% ifequal initiative.state 'n' %}
+      <span class="label label-primary">Sucht Unterstützung</span>
+    {% endifequal %}
+
+    {% ifequal initiative.state '' %}
+      <span class="label label-info">In Diskussion</span>
+    {% endifequal %}
+
+    {% ifequal initiative.state 'v' %}
+      <span class="label label-danger">Abstimmung</span>
+    {% endifequal %}
+
+    {% ifequal initiative.state 'a' %}
+      <span class="label label-success">Angenommen</span>
+    {% endifequal %}
+
+    {% ifequal initiative.state 'r' %}
+      <span class="label label-default">Rejected</span>
+    {% endifequal %}
+    
+  {% endcolumn %}
+{% endrow %}
+
+{% row %}
+  {% column xs='12' sm='12' md='8' lg='8' %}
+    <p>{{initiative.summary}}</p>
+
+    <h2>Forderung</h2>
+    <p>{{initiative.forderung}}</p>
+    
+    <h2>Kosten</h2>
+    <p>{{initiative.kosten}}</p>
+    
+    <h2>Finanzierungsvorschlag</h2>
+    <p>{{initiative.fin_vorschlag}}</p>
+
+    <h2>Arbeitsweise</h2>
+    <p>{{initiative.arbeitsweise}}</p>
+  {% endcolumn %}
+
+  {% column xs='12' sm='12' md='4' lg='4' %}
+
+    {% panel %}
+      {% panelbody %}
+        <h3>Einordnung</h3>
+          <span>{{initiative.einordnung}}</span>
+
+        <h3>Bereich</h3>
+          <span>{{initiative.bereich}}</span>
+
+        <h3>Ebene</h3>
+          <span>{{initiative.ebene}}</span>
+
+        <h3>Eingereicht</h3>
+          <span>{{initiative.added_at}}</span>
+
+        <hr>
+        {% ifequal initiative.state 'n' %}
+          <p>Sucht Unterstützung</p>
+
+          <div class="progress">
+            <div class="progress-bar progress-bar-success  progress-bar-striped active" role="progressbar" aria-valuenow="{{initiative.supporter.count}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}" style="height: 2em; min-width: 2em; width: 60%;">
+              {{initiative.supporter.count|default:0}} Unterstützer
+            </div>
+          </div>
+          <button class="btn btn-success">Jetzt Unterstützen</button>
+        {% endifequal %}
+
+
+      {% endpanelbody %}
+    {% endpanel %}
+  {% endcolumn %}
+{% endrow %}
+    
+
+{% endblock %}S

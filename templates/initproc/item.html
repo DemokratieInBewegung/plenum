@@ -11,7 +11,7 @@
       <span class="label label-primary">Sucht Unterstützung</span>
     {% endifequal %}
 
-    {% ifequal initiative.state '' %}
+    {% ifequal initiative.state 'd' %}
       <span class="label label-info">In Diskussion</span>
     {% endifequal %}
 
@@ -24,7 +24,7 @@
     {% endifequal %}
 
     {% ifequal initiative.state 'r' %}
-      <span class="label label-default">Rejected</span>
+      <span class="label label-default">Abgelehnt</span>
     {% endifequal %}
     
   {% endcolumn %}

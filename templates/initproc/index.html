@@ -1,6 +1,50 @@
 {% extends "_base.html" %}
+{% load bootstrap_ui_tags %}
 
 {% block content %}
-{{ block.super }}
-    <h1>Hello, I'm using django-bootstrap-ui!</h1>
-{% endblock %}S
+
+	{% row %}
+		{% column %}
+
+		      <span class="label label-primary">Sucht Unterstützung</span>
+		      <span class="label label-info">In Diskussion</span>
+		      <span class="label label-danger">Abstimmung</span>
+		      <span class="label label-success">Angenommen</span>
+		      <span class="label label-default">Abgelehnt</span>
+
+		{% endcolumn %}
+
+    {% endrow %}
+
+   {% for init in initiatives %}
+
+	{% row %}
+		{% column %}
+			<h2><a href="/initiative/{{init.id}}">{{init.title}}</a></h2>
+			<p>
+    {% ifequal init.state 'n' %}
+      <span class="label label-primary">Sucht Unterstützung</span>
+    {% endifequal %}
+
+    {% ifequal init.state 'd' %}
+      <span class="label label-info">In Diskussion</span>
+    {% endifequal %}
+
+    {% ifequal init.state 'v' %}
+      <span class="label label-danger">Abstimmung</span>
+    {% endifequal %}
+
+    {% ifequal init.state 'a' %}
+      <span class="label label-success">Angenommen</span>
+    {% endifequal %}
+
+    {% ifequal init.state 'r' %}
+      <span class="label label-default">Abgelehnt</span>
+    {% endifequal %} {{init.summary}}</p>
+		{% endcolumn %}
+
+	{% endrow %}
+
+   {% endfor %}
+
+{% endblock %}

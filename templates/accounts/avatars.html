@@ -1,0 +1,7 @@
+<ul class="profiles">
+{% for profile in people %}
+	<li>
+		<img src="https://www.gravatar.com/avatar/{{profile.email|default:'1234rtygfdsq'}}?d=identicon" title="{{profile.firstname}} {{profile.lastname}}" />
+	</li>
+{% endfor %}
+</ul>

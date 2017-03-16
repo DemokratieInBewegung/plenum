@@ -45,6 +45,13 @@
 
     <h2>Arbeitsweise</h2>
     <p>{{initiative.arbeitsweise}}</p>
+
+    <h2>Argument der Initiatoren</h2>
+    <blockquote class="argument">
+      {{initiative.init_argument}}
+      <br/>
+      {% include 'accounts/avatars.html' with people=initiative.initiators.all %}
+    </blockquote>
   {% endcolumn %}
 
   {% column xs='12' sm='12' md='4' lg='4' %}
@@ -63,6 +70,11 @@
         <h3>Eingereicht</h3>
           <span>{{initiative.added_at}}</span>
 
+        <h3>Initiatore</h3>
+        <div>
+          {% include 'accounts/avatars.html' with people=initiative.initiators.all %}
+        </div>
+
         <hr>
         {% ifequal initiative.state 'n' %}
           <p>Sucht Unterstützung</p>
@@ -80,6 +92,53 @@
     {% endpanel %}
   {% endcolumn %}
 {% endrow %}
-    
+
+{% if initiative.was_closed_at %}
+  <h3 class="history-title">
+    <span class="date">{{initiative.was_closed_at}}</span>
+    {% if initiative.went_to_voting_at %}
+     Nach Abstimmung mit {{ initiative.yays|default:0 }} Für- und {{ initiative.nays|default:0 }} Gegenstimmen
+    {% else %}
+
+      {% ifequal initiative.went_to_discussion_at None %}
+       Mit {{initiative.supporters.count|default:0}} Unterstützern wurde das Qurom von {{initiative.quorum}} nicht erreicht:
+      {% else %}
+        Ohne Abstimmung ({{ initiative.demands.count|default:0 }} von {{initiative.quorum}})
+      {% endifequal %}
+    {% endif %}
+      {% ifequal initiative.state 'a' %}
+        angenommen.
+      {% else %}
+        abgelehnt.
+      {% endifequal %}
+  </h3>
+  {% row %}
+    {% column %}
+    {% endcolumn %}
+  {% endrow %}
+{% endif %}
+
+
+{% if initiative.went_to_voting_at %}
+  <h3 class="history-title">
+    <span class="date">{{initiative.went_to_voting_at}}</span>
+    {{ initiative.demands.count|default:0 }} Fordern Abstimmung (Quorum: {{initiative.quorum}}): Abstimmung eröffnet.
+  </h3>
+  {% row %}
+    {% column %}
+    {% endcolumn %}
+  {% endrow %}
+{% endif %}
+
+{% if initiative.went_to_discussion_at %}
+  <h3 class="history-title">
+    <span class="date">{{initiative.went_to_discussion_at}}</span>
+    Unterstützerquorum ({{initiative.quorum}}) erreicht - Diskussionsphase eröffnet.
+  </h3>
+  {% row %}
+    {% column %}
+    {% endcolumn %}
+  {% endrow %}
+{% endif %}
 
 {% endblock %}S

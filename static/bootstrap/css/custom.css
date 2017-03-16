@@ -1,0 +1,40 @@
+.profiles {
+  list-style: none;
+  display: flex;
+  padding: 0;
+}
+
+.profiles img {
+  border-radius: 100%;
+  border: 2px solid #eee;
+  margin: 0.5em;
+}
+
+/* argument specific avatars */
+
+.argument .profiles {
+  flex-flow: row-reverse;
+}
+
+.argument .profiles img {
+  height: 2em;
+  margin: 0.2em;
+}
+
+.argument .profiles li:last-of-type::before {
+  content: "-";
+  font-size: 1em;  
+}
+
+.history-title {
+  font-size: 1em;
+  color: #999;
+}
+
+/* .history-title::after, */
+.history-title::before {
+  content: "_";
+  color: pink;
+  display: inline-block;
+  width: 10px;
+}

@@ -33,11 +33,19 @@ class Initiative(models.Model):
     went_to_voting_at = models.DateTimeField(blank=True, null=True)
     was_closed_at = models.DateTimeField(blank=True, null=True)
 
+    @property
+    def yays(self):
+        print(self.votes)
+        return self.votes.filter(Vote.in_favor==True).count()
+
+    @property
+    def nays(self):
+        return self.votes.filter(Vote.in_favor==False).count()
 
 class Supporter(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
-    initiative = models.ForeignKey(Initiative)
+    initiative = models.ForeignKey(Initiative, related_name="supporters")
     public = models.BooleanField(default=True)
 
     class Meta:
@@ -47,7 +55,7 @@ class Supporter(models.Model):
 class DemandingVote(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
-    initiative = models.ForeignKey(Initiative)
+    initiative = models.ForeignKey(Initiative, related_name="demands")
     public = models.BooleanField(default=True)
 
     class Meta:
@@ -74,7 +82,7 @@ class Vote(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
-    initiative = models.ForeignKey(Initiative)
+    initiative = models.ForeignKey(Initiative, related_name="votes")
     in_favor = models.BooleanField(default=True)
 
     class Meta:

@@ -45,13 +45,6 @@
 
     <h2>Arbeitsweise</h2>
     <p>{{initiative.arbeitsweise}}</p>
-
-    <h2>Argument der Initiatoren</h2>
-    <blockquote class="argument">
-      {{initiative.init_argument}}
-      <br/>
-      {% include 'accounts/avatars.html' with people=initiative.initiators.all %}
-    </blockquote>
   {% endcolumn %}
 
   {% column xs='12' sm='12' md='4' lg='4' %}
@@ -90,6 +83,17 @@
 
       {% endpanelbody %}
     {% endpanel %}
+  {% endcolumn %}
+{% endrow %}
+
+{% row %}
+  {% column %}
+    <h2>Argument der Initiatoren</h2>
+    <blockquote class="argument">
+      {{initiative.init_argument}}
+      <br/>
+      {% include 'accounts/avatars.html' with people=initiative.initiators.all %}
+    </blockquote>
   {% endcolumn %}
 {% endrow %}
 

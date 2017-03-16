@@ -7,40 +7,51 @@
     <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="/static/bootstrap/css/custom.css" rel="stylesheet" type="text/css">
     <!-- Font Awesome icon font -->
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
 {% endblock %}
 
 
 {% block body-content %}
 
-<header class="bs-docs-nav navbar navbar-static-top" id="top">
 <div class="container">
-<div class="navbar-header">
-<button aria-controls="bs-navbar" aria-expanded="false" class="collapsed navbar-toggle" data-target="#bs-navbar" data-toggle="collapse" type="button">
-<span class="sr-only">Navigation ein/ausblenden</span>
-<span class="icon-bar"></span>
-<span class="icon-bar"></span>
-<span class="icon-bar"></span>
-</button>
-<a href="../" class="navbar-brand">Demokratie in Bewegung</a>
+  <div class="alert alert-warning" role="alert">
+    <b><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Beta Test</b>
+    <p>Dies ist eine Test Umgebung mit Test-Daten um das neue <a href="https://www.youtube.com/watch?v=FUKNVUkNpR8" target="_blank">Initiativ-Verfahren</a> der <a target="_blank" href="http://bewegung.jetzt/">Demokratie in Bewegung</a> <i>technisch und prozedual</i> erkunden. Bei den hier angezeigten Informationen handelt es sich weder um tatsächliche Initiativen noch um durchsetzbare Abstimmungen oder Forderungen. Dafür bitte steht bis auf weiteres der <a href="https://marktplatz.demokratie-in-bewegung.org/">Marktplatz der Ideen</a> zur Verfügung.</p>
+  </div>
 </div>
-<nav class="collapse navbar-collapse" id="bs-navbar">
 
-<ul class="nav navbar-nav navbar-right">
-  <li><a href="/#hilfe">Hilfe</a></li>
-  <li><a href="/account/login">Login</a></li>
-</ul>
-</nav>
-</div>
+<header class="bs-docs-nav navbar navbar-static-top" id="top">
+  <div class="container">
+    <div class="navbar-header">
+      <button aria-controls="bs-navbar" aria-expanded="false" class="collapsed navbar-toggle" data-target="#bs-navbar" data-toggle="collapse" type="button">
+        <span class="sr-only">Navigation ein/ausblenden</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="/" class="navbar-brand">Demokratie in Bewegung</a>
+    </div>
+    <nav class="collapse navbar-collapse" id="bs-navbar">
+    	<ul class="nav navbar-nav navbar-right">
+    	  <li><a href="/#hilfe">Hilfe</a></li>
+    	  <li><a href="/account/login">Login</a></li>
+    	</ul>
+    </nav>
+  </div>
 </header>
 
-{% container%}
+<div class="main container">
 
-{% block content %}
+	{% block content %}
 
-{% endblock %}
+	{% endblock %}
 
-{% endcontainer %}
+</div>
 
+<footer>
+  <div class="container">
+	 <a href='/about/'>Über</a>
+  </div>
+</footer>
 
 {% endblock %}

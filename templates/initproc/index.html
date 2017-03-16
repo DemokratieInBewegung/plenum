@@ -6,11 +6,29 @@
 	{% row %}
 		{% column %}
 
-		      <span class="label label-primary">Sucht Unterstützung</span>
-		      <span class="label label-info">In Diskussion</span>
-		      <span class="label label-danger">Abstimmung</span>
-		      <span class="label label-success">Angenommen</span>
-		      <span class="label label-default">Abgelehnt</span>
+			<div class="typefilter">
+				zeige nur: 
+		      <label>
+		      	<input type="checkbox" checked>
+		      		<span class="label label-primary">Sucht Unterstützung</span>
+		      </label>
+		      <label>
+		      	<input type="checkbox" checked>
+		      		<span class="label label-info">In Diskussion</span>
+		      </label>
+		      <label>
+		      	<input type="checkbox" checked>
+		      		<span class="label label-danger">Abstimmung</span>
+		      </label>
+		      <label>
+		      	<input type="checkbox">
+		      		<span class="label label-success">Angenommen</span>
+		      </label>
+		      <label>
+		      	<input type="checkbox">
+		      		<span class="label label-default">Abgelehnt</span>
+		      </label>
+		    </div>
 
 		{% endcolumn %}
 
@@ -20,7 +38,7 @@
 
 	{% row %}
 		{% column %}
-			<h2><a href="/initiative/{{init.id}}">{{init.title}}</a></h2>
+			<h2 class="init-title"><a href="/initiative/{{init.id}}">{{init.title}}</a></h2>
 			<p>
 			    {% ifequal init.state 'n' %}
 			      <span class="label label-primary">Sucht Unterstützung</span>

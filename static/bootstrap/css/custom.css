@@ -1,3 +1,96 @@
+/* prettier labels */
+.label {
+  background-color: white;
+  border: 1px solid #333;
+  color: #333;
+}
+
+label.deactivated {
+  opacity: 0.5;
+}
+
+.label-default {
+  border-color: #999;
+  color: #999;
+}
+
+.label-primary {
+  border-color: #eb6864;
+  color: #eb6864;
+}
+
+.label-info {
+  border-color: #336699;
+  color: #336699;
+}
+
+.label-danger {
+  border-color: #f57a00;
+  color: #f57a00;
+}
+
+.label-success {
+  border-color: #22b24c;
+  color: #22b24c;
+}
+
+/* custom elements */
+
+body {
+  background-image: linear-gradient(90deg, #62388E, #eb5c4a);
+}
+
+footer {
+  margin: 0.5em 0;
+  text-align: right;
+}
+
+.main {
+  background: white;
+  padding: 1em;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+footer a,
+.navbar a {
+  color: white;
+}
+
+footer a:hover,
+.navbar .nav a:hover {
+  color: #336699;
+}
+
+h2.init-title a {
+  color: #336699;
+}
+
+
+.typefilter {
+  display: flex;
+}
+
+
+.typefilter label {
+  margin: 0 3px;
+  cursor: pointer;
+}
+
+.typefilter input {
+  display: none;
+}
+
+.typefilter input:not(:checked) + .label {
+  opacity: 0.25
+}
+
+.typefilter input:checked + .label {
+  opacity: 1;
+}
+
+
+
 .profiles {
   list-style: none;
   display: flex;
@@ -29,12 +122,28 @@
 .history-title {
   font-size: 1em;
   color: #999;
+  position: relative;
+  background: white;
+  display: inline-block;
 }
 
-/* .history-title::after, */
-.history-title::before {
-  content: "_";
-  color: pink;
+.history-title:before,
+.history-title:after {
+  content: " ";
+  border-top: 1px solid #999;
   display: inline-block;
-  width: 10px;
+  position: absolute;
+  top: 50%;
+}
+
+.history-title:before {
+  width: 95px;
+  left: -100px;
+}
+
+.history-title:after {
+  top: 50%;
+  right: -1000px;
+  width: 990px;
+  z-index: 0;
 }

@@ -24,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '&v--b40hjwtfre(o^(4=-s!g7!x&za1u_=v#140ex+_%iek(c#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = not os.environ.get('DOKKU_APP_TYPE', False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('DOMAINS', '').split(',')
 
 
 # Application definition

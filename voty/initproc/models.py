@@ -42,6 +42,15 @@ class Initiative(models.Model):
     def nays(self):
         return self.votes.filter(Vote.in_favor==False).count()
 
+    @property
+    def relative_support(self):
+        return self.supporters.count() / self.quorum * 100
+
+    @property
+    def public_supporters(self):
+        return self.supporters.filter(public=True)
+
+
 class Supporter(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
@@ -68,6 +77,7 @@ class Argument(models.Model):
     user = models.ForeignKey(User)
     initiative = models.ForeignKey(Initiative)
     text = models.TextField()
+    in_favor = models.BooleanField(default=True)
 
 
 class Comment(models.Model):

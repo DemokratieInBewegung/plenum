@@ -69,15 +69,25 @@
         </div>
 
         <hr>
+
         {% ifequal initiative.state 'n' %}
           <p>Sucht Unterstützung</p>
 
           <div class="progress">
-            <div class="progress-bar progress-bar-success  progress-bar-striped active" role="progressbar" aria-valuenow="{{initiative.supporter.count}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}" style="height: 2em; min-width: 2em; width: 60%;">
-              {{initiative.supporter.count|default:0}} Unterstützer
+            <div class="progress-bar progress-bar-success  progress-bar-striped active" role="progressbar" aria-valuenow="{{initiative.supporters.count}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}" style="height: 2em; min-width: 2em; width: {{initiative.relative_support}}%;">
+              {{initiative.supporters.count|default:0}} Unterstützer
             </div>
           </div>
-          <button class="btn btn-success">Jetzt Unterstützen</button>
+          {% if has_supported %}
+            <span class="label label-success">Du unterstützt diese Initiative!</span>
+          {% else %}
+            <form action="/initiative/{{initiative.id}}/support" method="POST">
+              {% csrf_token %}
+              <button class="btn btn-success" type="submit">Jetzt Unterstützen</button>
+
+              <label><checkbox name="public" checked>Öffentlich anzeigen</checkbox></label>
+            </form>
+          {% endif %}
         {% endifequal %}
 
 
@@ -116,11 +126,70 @@
         abgelehnt.
       {% endifequal %}
   </h3>
-  {% row %}
-    {% column %}
-    {% endcolumn %}
-  {% endrow %}
 {% endif %}
+
+
+{% row %}
+  {% column %}
+    
+    {% ifequal initiative.state 'n' %}
+
+    <div class="alert alert-warning">
+      <h4>Sucht Unterstützer</h4>
+        <div class="actionbar">
+          <div class="progress">
+            <div class="progress-bar progress-bar-success  progress-bar-striped active" role="progressbar" aria-valuenow="{{initiative.supporters.count}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}" style="height: 2em; min-width: 2em; width: {{initiative.relative_support}}%;">
+              {{initiative.supporters.count|default:0}} Unterstützer
+            </div>
+          </div>
+          {% if has_supported %}
+            <span class="label label-success">Du unterstützt diese Initiative!</span>
+          {% else %}
+            <form action="/initiative/{{initiative.id}}/support" method="POST">
+              {% csrf_token %}
+              <button class="btn btn-success" type="submit">Jetzt Unterstützen</button>
+
+              <label><checkbox name="public" checked>Öffentlich anzeigen</checkbox></label>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+
+    {% if initiative.public_supporters.count %}
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <h4>Unterstützer</h4>
+          {% include 'accounts/avatars.html' with people=initiative.public_supporters %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% endifequal %}
+
+
+    {% ifequal initative.state "a" %}
+
+
+    {% endifequal %}
+
+
+    {% ifequal initative.state "r" %}
+    
+    {% endifequal %}
+
+
+    {% ifequal initative.state "d" %}
+    
+    {% endifequal %}
+
+
+    {% ifequal initative.state "v" %}
+    
+    {% endifequal %}
+  {% endcolumn %}
+{% endrow %}
+
+
 
 
 {% if initiative.went_to_voting_at %}

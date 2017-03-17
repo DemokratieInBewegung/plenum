@@ -5,4 +5,5 @@ from . import views
 urlpatterns = [
     url('^$', views.index),
     url('^initiative/(?P<init_id>\d+)$', views.item),
+    url('^initiative/(?P<init_id>\d+)/support$', views.support)
 ]

@@ -34,7 +34,11 @@
     <nav class="collapse navbar-collapse" id="bs-navbar">
     	<ul class="nav navbar-nav navbar-right">
     	  <li><a href="/#hilfe">Hilfe</a></li>
-    	  <li><a href="/account/login">Login</a></li>
+        {% if user.is_authenticated %}
+    	     <li><a href="/accounts/logout">Logout</a></li>
+        {% else %}
+          <li><a href="/accounts/login">Login</a></li>
+        {% endif %}
     	</ul>
     </nav>
   </div>

@@ -182,18 +182,22 @@
     {% column %}
       <h3>Diskussion</h3>
 
-      <div class="diskussion">
+      <div class="discourse">
         <div class="pro">
           <h4>Dafür</h4>
-            {% for arg in pro %}
-              {% include "initproc/_argument.html" with argument=arg %}
-            {% endfor %}
+          <ul>
+          {% for arg in pro %}
+            {% include "initproc/_argument.html" with argument=arg %}
+          {% endfor %}
+          </ul>
         </div>
         <div class="contra">
           <h4>Dagegen</h4>
-            {% for arg in contra %}
-              {% include "initproc/_argument.html" with argument=arg %}
-            {% endfor %}
+          <ul>
+          {% for arg in contra %}
+            {% include "initproc/_argument.html" with argument=arg %}
+          {% endfor %}
+          </ul>
         </div>
       </div>
       {% if initiative.state == "d" %}
@@ -208,7 +212,6 @@
       {% endif %} 
     {% endcolumn %}
   {% endrow %}
-
 {% endif %}
 
 
@@ -234,4 +237,30 @@
   {% endrow %}
 {% endif %}
 
-{% endblock %}S
+
+{% endblock %}
+
+{% block body-javascript %}
+    {{ block.super }}
+
+  <script type="text/javascript">
+    $('.argument .short').click(function(item) {
+      var $this = $(this);
+      $this.parent().find('.long').show();
+      $this.hide();
+    });
+    $('.argument .long .content').click(function(item) {
+      var $this = $(this);
+      $this.parent().parent().find('.short').show();
+      $this.parent().hide();
+    });
+
+    $(function() {
+      if (document.location.hash) {
+        let id = document.location.hash.slice(1);
+        $('#' + id + ' .short').click(); 
+      }
+    });
+</script>
+
+{% endblock %}

@@ -92,7 +92,7 @@ def post_comment(request, init, arg_id):
     Comment(argument=argument, user_id=request.user.id,
              text=request.POST.get('text', '')).save()
 
-    return redirect('/initiative/{}#{}'.format(init.id, argument.id))
+    return redirect('/initiative/{}#argument-{}'.format(init.id, argument.id))
 
 
 

@@ -161,3 +161,44 @@ h2.init-title a {
   margin-right: 1em;
   margin-bottom: 0;
 }
+
+
+
+.discourse {
+  display: flex;
+  width: 85%;
+  margin: 0 auto;
+}
+
+.discourse > div {
+  width: 49%;
+}
+
+.discourse .pro {
+  padding-right: 10px;
+  border-right: 1px solid #999;
+}
+
+.discourse .contra {
+  padding-left: 10px; 
+}
+
+.discourse ul {
+  list-style: none;
+}
+
+.argument .short {
+  display: flex;
+  border-bottom: 1px solid #999;
+  padding: 3px 0;
+  cursor: pointer;
+}
+.argument img {
+  border-radius: 100%;
+  border: 1px solid #999;
+  cursor: pointer;
+}
+
+.argument .long {
+  display: none;
+}

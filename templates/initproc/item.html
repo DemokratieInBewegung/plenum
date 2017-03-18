@@ -132,64 +132,84 @@
 {% row %}
   {% column %}
     
-    {% ifequal initiative.state 'n' %}
+    {% if initiative.state == 'n' %}
 
-    <div class="alert alert-warning">
-      <h4>Sucht Unterstützer</h4>
-        <div class="actionbar">
-          <div class="progress">
-            <div class="progress-bar progress-bar-success  progress-bar-striped active" role="progressbar" aria-valuenow="{{initiative.supporters.count}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}" style="height: 2em; min-width: 2em; width: {{initiative.relative_support}}%;">
-              {{initiative.supporters.count|default:0}} Unterstützer
+      <div class="alert alert-warning">
+        <h4>Sucht Unterstützer</h4>
+          <div class="actionbar">
+            <div class="progress">
+              <div class="progress-bar progress-bar-success  progress-bar-striped active" role="progressbar" aria-valuenow="{{initiative.supporters.count}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}" style="height: 2em; min-width: 2em; width: {{initiative.relative_support}}%;">
+                {{initiative.supporters.count|default:0}} Unterstützer
+              </div>
             </div>
+            {% if has_supported %}
+              <span class="label label-success">Du unterstützt diese Initiative!</span>
+            {% else %}
+              <form action="/initiative/{{initiative.id}}/support" method="POST">
+                {% csrf_token %}
+                <button class="btn btn-success" type="submit">Jetzt Unterstützen</button>
+
+                <label><checkbox name="public" checked>Öffentlich anzeigen</checkbox></label>
+              </form>
+            {% endif %}
           </div>
-          {% if has_supported %}
-            <span class="label label-success">Du unterstützt diese Initiative!</span>
-          {% else %}
-            <form action="/initiative/{{initiative.id}}/support" method="POST">
-              {% csrf_token %}
-              <button class="btn btn-success" type="submit">Jetzt Unterstützen</button>
-
-              <label><checkbox name="public" checked>Öffentlich anzeigen</checkbox></label>
-            </form>
-          {% endif %}
         </div>
-      </div>
 
-    {% if initiative.public_supporters.count %}
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <h4>Unterstützer</h4>
-          {% include 'accounts/avatars.html' with people=initiative.public_supporters %}
+      {% if initiative.public_supporters.count %}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h4>Unterstützer</h4>
+            {% include 'accounts/avatars.html' with people=initiative.public_supporters %}
+          </div>
         </div>
-      </div>
+      {% endif %}
+
+    {% elif initative.state == "a" %}
+
+    {% elif initative.state == "r" %}
+    
+    {% elif initative.state == "d" %}
+    
+    {% elif initative.state == "v" %}
+    
     {% endif %}
-
-    {% endifequal %}
-
-
-    {% ifequal initative.state "a" %}
-
-
-    {% endifequal %}
-
-
-    {% ifequal initative.state "r" %}
-    
-    {% endifequal %}
-
-
-    {% ifequal initative.state "d" %}
-    
-    {% endifequal %}
-
-
-    {% ifequal initative.state "v" %}
-    
-    {% endifequal %}
   {% endcolumn %}
 {% endrow %}
 
+{% if initiative.went_to_discussion_at %}
+<!-- Diskussion element -->    
+  {% row %}
+    {% column %}
+      <h3>Diskussion</h3>
 
+      <div class="diskussion">
+        <div class="pro">
+          <h4>Dafür</h4>
+            {% for arg in pro %}
+              {% include "initproc/_argument.html" with argument=arg %}
+            {% endfor %}
+        </div>
+        <div class="contra">
+          <h4>Dagegen</h4>
+            {% for arg in contra %}
+              {% include "initproc/_argument.html" with argument=arg %}
+            {% endfor %}
+        </div>
+      </div>
+      {% if initiative.state == "d" %}
+        <div>
+          <form action="/initiative/{{initiative.id}}/post_argument" method="POST">
+            {% csrf_token %}
+            <span>Ich bin </span> <input type="radio" name="vote" value="yay">dafür</input> <input type="radio" name="vote" value="nay">dagegen</input>, weil... <br />
+            <textarea name="text"></textarea>
+            <button type="submit">Einstellen</button>
+          </form>
+        </div>
+      {% endif %} 
+    {% endcolumn %}
+  {% endrow %}
+
+{% endif %}
 
 
 {% if initiative.went_to_voting_at %}

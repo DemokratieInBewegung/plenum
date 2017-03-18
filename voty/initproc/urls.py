@@ -5,5 +5,7 @@ from . import views
 urlpatterns = [
     url('^$', views.index),
     url('^initiative/(?P<init_id>\d+)$', views.item),
-    url('^initiative/(?P<init_id>\d+)/support$', views.support)
+    url('^initiative/(?P<init_id>\d+)/support$', views.support),
+    url('^initiative/(?P<init_id>\d+)/post_argument$', views.post_argument),
+    url('^initiative/(?P<init_id>\d+)/(?P<arg_id>\d+)/post_comment$', views.post_comment)
 ]

@@ -51,6 +51,7 @@ class Initiative(models.Model):
         return self.supporters.filter(public=True)
 
 
+
 class Supporter(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
@@ -75,7 +76,7 @@ class Argument(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
-    initiative = models.ForeignKey(Initiative)
+    initiative = models.ForeignKey(Initiative, related_name="arguments")
     text = models.TextField()
     in_favor = models.BooleanField(default=True)
 
@@ -84,7 +85,7 @@ class Comment(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
-    argument = models.ForeignKey(Argument)
+    argument = models.ForeignKey(Argument, related_name="comments")
     text = models.TextField()
 
 

@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 
-from .models import Initiative, Vote, Supporter, DemandingVote
+from .models import Initiative, Argument, Comment, Vote, Supporter, DemandingVote
 # Create your views here.
 
 def ensure_state(state):
@@ -15,15 +15,18 @@ def ensure_state(state):
     return wrap
 
 
-
-
 def index(request):
     inits = Initiative.objects.all()
     return render(request, 'initproc/index.html', context=dict(initiatives=inits))
 
+
 def item(request, init_id):
     init = get_object_or_404(Initiative, pk=init_id)
-    ctx = dict(initiative=init)
+    ctx = dict(initiative=init, pro=[], contra=[],
+               arguments=init.arguments.prefetch_related("comments").all())
+
+    for arg in ctx['arguments']:
+        ctx["pro" if arg.in_favor else "contra"].append(arg)
 
     if request.user.is_authenticated:
         user_id = request.user.id
@@ -33,7 +36,15 @@ def item(request, init_id):
         if ctx['has_voted']:
             ctx['vote'] = init.votes.filter(user=user_id).first().vote
 
-    print(ctx);
+        if ctx['arguments']:
+            for arg in ctx['arguments']:
+                if arg.user.id == user_id:
+                    arg.has_commented = True
+                else:
+                    for cmt in arg.comments:
+                        if arg.user.id == user_id:
+                            arg.has_commented = True
+                            break
 
     return render(request, 'initproc/item.html', context=ctx)
 
@@ -64,10 +75,10 @@ def demand_vote(request, initiative):
 @require_POST
 @login_required
 @ensure_state('d') # must be i discussion
-def post_argument(request, init, vote):
+def post_argument(request, initiative):
     Argument(initiative=initiative, user_id=request.user.id,
              text=request.POST.get('text', ''),
-             in_favor=vote != 'nay').save()
+             in_favor=request.POST.get('vote', 'yay') != 'nay').save()
 
     return redirect('/initiative/{}'.format(initiative.id))
 

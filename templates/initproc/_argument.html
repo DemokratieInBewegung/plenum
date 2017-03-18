@@ -1,0 +1,29 @@
+<li class="argument">
+  <div class="short">
+	 <img src="https://www.gravatar.com/avatar/{{argument.user.email|default:'1234rtygfdsq'}}?d=identicon" title="{{argument.user.firstname}} {{argument.user.lastname}}" />
+    <p>{{argument.text|truncatechars:80}}</p>
+    <p class="meta">
+      <span class=" glyphicon glyphicon-heart {% if argument.has_liked %} has_liked{% endif %}"></span> <span>{{argument.likes}}</span>
+      <span class=" glyphicon glyphicon-heart {% if argument.has_commented %} has_commented{% endif %}"></span> <span>{{argument.comments.length}}</span>
+    </p>
+  </div>
+  <div class="long">
+   <img src="https://www.gravatar.com/avatar/{{argument.user.email|default:'1234rtygfdsq'}}?d=identicon" title="{{argument.user.firstname}} {{argument.user.lastname}}" />
+    <p class="meta">
+      <span class=" glyphicon glyphicon-heart {% if argument.has_liked %} has_liked{% endif %}"></span> <span>{{argument.likes}}</span>
+      <span class=" glyphicon glyphicon-heart {% if argument.has_commented %} has_commented{% endif %}"></span> <span>{{argument.comments.length}}</span>
+    </p>
+    <p>{{argument.text}}</p>
+
+    <b>Comments</b>
+      {% for cmt in argument.comments.all %}
+      <li>{{cmt.text}}</li>
+      {% endfor %}
+
+      <form method="POST" action="/initiative/{{initiative.id}}/{{argument.id}}/post_comment">
+        {% csrf_token %}
+        <textarea name="text"></textarea>
+        <button type="submit">kommentieren</button>
+      </form>
+  </div>
+</li>

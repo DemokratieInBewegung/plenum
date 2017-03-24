@@ -2,7 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 
-from .models import Initiative, Argument, Comment, Vote, Supporter, DemandingVote
+from .models import (Initiative, Argument, Comment, Vote, Supporter,
+                     DemandingVote, Like)
 # Create your views here.
 
 DEFAULT_FILTERS = ['n', 'd', 'v']
@@ -26,10 +27,13 @@ def index(request):
 def item(request, init_id):
     init = get_object_or_404(Initiative, pk=init_id)
     ctx = dict(initiative=init, pro=[], contra=[],
-               arguments=init.arguments.prefetch_related("comments").all())
+               arguments=init.arguments.prefetch_related("comments").prefetch_related("likes").all())
 
     for arg in ctx['arguments']:
         ctx["pro" if arg.in_favor else "contra"].append(arg)
+
+    ctx['pro'].sort(key=lambda x: x.likes.count(), reverse=True)
+    ctx['contra'].sort(key=lambda x: x.likes.count(), reverse=True)
 
     if request.user.is_authenticated:
         user_id = request.user.id
@@ -41,11 +45,12 @@ def item(request, init_id):
 
         if ctx['arguments']:
             for arg in ctx['arguments']:
+                arg.has_liked = arg.likes.filter(user=user_id).count() > 0
                 if arg.user.id == user_id:
                     arg.has_commented = True
                 else:
                     for cmt in arg.comments:
-                        if arg.user.id == user_id:
+                        if cmt.user.id == user_id:
                             arg.has_commented = True
                             break
 
@@ -93,6 +98,30 @@ def post_comment(request, init, arg_id):
 
     Comment(argument=argument, user_id=request.user.id,
              text=request.POST.get('text', '')).save()
+
+    return redirect('/initiative/{}#argument-{}'.format(init.id, argument.id))
+
+@require_POST
+@login_required
+@ensure_state('d') # must be in discussion
+def like_argument(request, init, arg_id):
+    argument = get_object_or_404(Argument, pk=arg_id)
+    assert init.id == argument.initiative.id, "Argument doesn't belong to Initiative"
+
+    Like(argument=argument, user_id=request.user.id).save()
+
+    return redirect('/initiative/{}#argument-{}'.format(init.id, argument.id))
+
+@require_POST
+@login_required
+@ensure_state('d') # must be in discussion
+def unlike_argument(request, init, arg_id):
+    argument = get_object_or_404(Argument, pk=arg_id)
+    assert init.id == argument.initiative.id, "Argument doesn't belong to Initiative"
+
+    like = Like.objects.get(argument=arg_id, user_id=request.user.id)
+    if like:
+        like.delete()
 
     return redirect('/initiative/{}#argument-{}'.format(init.id, argument.id))
 

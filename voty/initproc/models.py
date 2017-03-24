@@ -13,7 +13,7 @@ class Initiative(models.Model):
     state = models.CharField(max_length=1, choices=STATES)
     quorum = models.IntegerField(default=30)
 
-    added_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
 
     summary = models.TextField()
@@ -53,7 +53,7 @@ class Initiative(models.Model):
 
 
 class Supporter(models.Model):
-    added_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
     initiative = models.ForeignKey(Initiative, related_name="supporters")
     public = models.BooleanField(default=True)
@@ -63,7 +63,7 @@ class Supporter(models.Model):
 
 
 class DemandingVote(models.Model):
-    added_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
     initiative = models.ForeignKey(Initiative, related_name="demands")
     public = models.BooleanField(default=True)
@@ -73,7 +73,7 @@ class DemandingVote(models.Model):
 
 
 class Argument(models.Model):
-    added_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
     initiative = models.ForeignKey(Initiative, related_name="arguments")
@@ -82,15 +82,23 @@ class Argument(models.Model):
 
 
 class Comment(models.Model):
-    added_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
     argument = models.ForeignKey(Argument, related_name="comments")
     text = models.TextField()
 
 
+class Like(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User)
+    argument = models.ForeignKey(Argument, related_name="likes")
+
+    class Meta:
+        unique_together = (("user", "argument"),)
+
 class Vote(models.Model):
-    added_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
     initiative = models.ForeignKey(Initiative, related_name="votes")

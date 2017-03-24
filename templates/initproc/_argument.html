@@ -1,34 +1,43 @@
 <li class="argument list-group-item" id="argument-{{argument.id}}">
   <div class="short">
-	 <img src="https://www.gravatar.com/avatar/{{argument.user.email|default:'1234rtygfdsq'}}?d=identicon" title="{{argument.user.firstname}} {{argument.user.lastname}}" />
+	 <img class="author avatar"  src="https://www.gravatar.com/avatar/{{argument.user.email|default:'1234rtygfdsq'}}?d=identicon" title="{{argument.user.firstname}} {{argument.user.lastname}}" />
     <div>
       <div>{{argument.text|truncatechars:80}}</div>
       <p class="meta">
-        <span class=" glyphicon glyphicon-heart {% if argument.has_liked %} has_liked{% endif %}"></span> <span>{{argument.likes|default:0}}</span>
+        <span class=" glyphicon glyphicon-heart {% if argument.has_liked %} has_liked{% endif %}"></span> <span>{{argument.likes.count|default:0}}</span>
         <span class=" glyphicon glyphicon-comment {% if argument.has_commented %} has_commented{% endif %}"></span> <span>{{argument.comments.length|default:0}}</span>
       </p>
     </div>
   </div>
   <div class="long">
     <div class="content">
-      <img src="https://www.gravatar.com/avatar/{{argument.user.email|default:'1234rtygfdsq'}}?d=identicon" title="{{argument.user.firstname}} {{argument.user.lastname}}" />
-      <p class="meta">
-        <span class=" glyphicon glyphicon-heart {% if argument.has_liked %} has_liked{% endif %}"></span> <span>{{argument.likes|default:0}}</span>
-        <span class=" glyphicon glyphicon-comment {% if argument.has_commented %} has_commented{% endif %}"></span> <span>{{argument.comments.length|default:0}}</span>
-      </p>
-      <p>{{argument.text}}</p>
+      <div>
+        <img class="author avatar" src="https://www.gravatar.com/avatar/{{argument.user.email|default:'1234rtygfdsq'}}?d=identicon" title="{{argument.user.firstname}} {{argument.user.lastname}}" />
+        <form method="POST" action="/initiative/{{initiative.id}}/{{argument.id}}/{% if argument.has_liked %}unlike{% else %}like{% endif %}">
+          {% csrf_token %}
+          <button class="like btn btn-default"><span class=" glyphicon glyphicon-heart {% if argument.has_liked %} has_liked{% endif %}"></span></button>
+        </form>
+      </div>
+      <div>
+        <p class="meta">
+          <span>{{argument.created_at}}</span>
+        </p>
+        <p>{{argument.text}}</p>
+      </div>
     </div>
-
-    <b>Comments</b>
-    <ul>
+    <ul class="comments">
       {% for cmt in argument.comments.all %}
-      <li>{{cmt.text}}</li>
+      <li class="comment"><p>{{cmt.text}} – <img class="avatar" src="https://www.gravatar.com/avatar/{{argument.user.email|default:'1234rtygfdsq'}}?d=identicon" title="{{argument.user.firstname}} {{argument.user.lastname}}" />
+          <span class="when">{{argument.created_at}}</span></li>
       {% endfor %}
+      <li>
+        <form method="POST" action="/initiative/{{initiative.id}}/{{argument.id}}/post_comment">
+          {% csrf_token %}
+          <textarea name="text"></textarea>
+          <button type="submit">kommentieren</button>
+        </form>
+      </li>
     </ul>
-    <form method="POST" action="/initiative/{{initiative.id}}/{{argument.id}}/post_comment">
-      {% csrf_token %}
-      <textarea name="text"></textarea>
-      <button type="submit">kommentieren</button>
-    </form>
+    
   </div>
 </li>

@@ -176,7 +176,7 @@ h2.init-title a {
 
 .discourse .pro {
   padding-right: 10px;
-  border-right: 1px solid #aaa;
+  border-right: 1px solid #eee;
 }
 
 .discourse .contra {
@@ -187,16 +187,36 @@ h2.init-title a {
   list-style: none;
 }
 
+.pro .argument:after,
+.contra .argument:before {
+  top: 50%;
+  z-index: 0;
+  content: " ";
+  border-top: 2px solid #eee;
+  display: inline-block;
+  position: absolute;
+}
+
+.pro .argument:after {
+  right: -10px;
+  width: 10px;
+}
+
+.contra .argument:before {
+  left: -10px;
+  width: 10px;
+}
+
 .argument .short {
   display: flex;
   padding: 3px 0;
   cursor: pointer;
 }
-.argument img {
+.argument img.avatar {
   border-radius: 100%;
   height: 2em;
   margin-right: 0.5em;
-  border: 1px solid #333;
+  border: 1px solid #aaa;
   cursor: pointer;
 }
 
@@ -217,6 +237,19 @@ h2.init-title a {
   color: #336699;
 }
 
+.argument .long .content {
+  display: flex;
+}
+
+.argument .long .comments {
+  margin-left: 3em;
+  font-size: 0.85em;
+}
+
+.argument .long .comments .avatar {
+  height: 1.5em;
+}
+
 .post-argument {
   width: 50%;
   min-width: 320px;
@@ -231,4 +264,36 @@ h2.init-title a {
 .post-argument textarea {
   width: 100%;
   min-height: 5em;
+}
+
+
+.argument .long .content > div:first-child {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.argument .long .content .avatar {
+  margin: 0;
+  width: 2em;
+}
+.argument .long .content .like {
+  font-size: 1em;
+  padding: 0;
+  background: transparent;
+  border: transparent;
+  color: #aaa;
+}
+
+.argument .long .content .like:hover {
+  cursor: pointer;
+  color: #eb6864;
+}
+
+.argument .long .content .like .has_liked {
+  color: #eb6864;
+}
+
+.argument .comments {
+  opacity: 0.65;
+  margin-top: 2em;
 }

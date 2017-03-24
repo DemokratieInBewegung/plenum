@@ -5,6 +5,8 @@ from django.views.decorators.http import require_POST
 from .models import Initiative, Argument, Comment, Vote, Supporter, DemandingVote
 # Create your views here.
 
+DEFAULT_FILTERS = ['n', 'd', 'v']
+
 def ensure_state(state):
     def wrap(fn):
         def view(request, init_id, *args, **kwargs):
@@ -16,8 +18,9 @@ def ensure_state(state):
 
 
 def index(request):
-    inits = Initiative.objects.all()
-    return render(request, 'initproc/index.html', context=dict(initiatives=inits))
+    filters = request.GET.getlist("f") or DEFAULT_FILTERS
+    inits = Initiative.objects.filter(state__in=filters)
+    return render(request, 'initproc/index.html', context=dict(initiatives=inits, filters=filters))
 
 
 def item(request, init_id):
@@ -55,7 +58,6 @@ def item(request, init_id):
 @login_required
 @ensure_state('n') # must be new
 def support(request, initiative):
-    print(request.user.id)
     Supporter(initiative=initiative, user_id=request.user.id,
               public=not not request.POST.get("public", False)).save()
 

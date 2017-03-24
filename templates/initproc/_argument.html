@@ -1,11 +1,11 @@
-<li class="argument" id="argument-{{argument.id}}">
+<li class="argument list-group-item" id="argument-{{argument.id}}">
   <div class="short">
 	 <img src="https://www.gravatar.com/avatar/{{argument.user.email|default:'1234rtygfdsq'}}?d=identicon" title="{{argument.user.firstname}} {{argument.user.lastname}}" />
     <div>
       <div>{{argument.text|truncatechars:80}}</div>
       <p class="meta">
-        <span class=" glyphicon glyphicon-heart {% if argument.has_liked %} has_liked{% endif %}"></span> <span>{{argument.likes}}</span>
-        <span class=" glyphicon glyphicon-heart {% if argument.has_commented %} has_commented{% endif %}"></span> <span>{{argument.comments.length}}</span>
+        <span class=" glyphicon glyphicon-heart {% if argument.has_liked %} has_liked{% endif %}"></span> <span>{{argument.likes|default:0}}</span>
+        <span class=" glyphicon glyphicon-comment {% if argument.has_commented %} has_commented{% endif %}"></span> <span>{{argument.comments.length|default:0}}</span>
       </p>
     </div>
   </div>
@@ -13,8 +13,8 @@
     <div class="content">
       <img src="https://www.gravatar.com/avatar/{{argument.user.email|default:'1234rtygfdsq'}}?d=identicon" title="{{argument.user.firstname}} {{argument.user.lastname}}" />
       <p class="meta">
-        <span class=" glyphicon glyphicon-heart {% if argument.has_liked %} has_liked{% endif %}"></span> <span>{{argument.likes}}</span>
-        <span class=" glyphicon glyphicon-heart {% if argument.has_commented %} has_commented{% endif %}"></span> <span>{{argument.comments.length}}</span>
+        <span class=" glyphicon glyphicon-heart {% if argument.has_liked %} has_liked{% endif %}"></span> <span>{{argument.likes|default:0}}</span>
+        <span class=" glyphicon glyphicon-comment {% if argument.has_commented %} has_commented{% endif %}"></span> <span>{{argument.comments.length|default:0}}</span>
       </p>
       <p>{{argument.text}}</p>
     </div>

@@ -185,7 +185,7 @@
       <div class="discourse">
         <div class="pro">
           <h4>Dafür</h4>
-          <ul>
+          <ul class="list-group">
           {% for arg in pro %}
             {% include "initproc/_argument.html" with argument=arg %}
           {% endfor %}
@@ -193,7 +193,7 @@
         </div>
         <div class="contra">
           <h4>Dagegen</h4>
-          <ul>
+          <ul class="list-group">
           {% for arg in contra %}
             {% include "initproc/_argument.html" with argument=arg %}
           {% endfor %}
@@ -201,13 +201,17 @@
         </div>
       </div>
       {% if initiative.state == "d" %}
-        <div>
-          <form action="/initiative/{{initiative.id}}/post_argument" method="POST">
-            {% csrf_token %}
-            <span>Ich bin </span> <input type="radio" name="vote" value="yay">dafür</input> <input type="radio" name="vote" value="nay">dagegen</input>, weil... <br />
-            <textarea name="text"></textarea>
-            <button type="submit">Einstellen</button>
-          </form>
+        <form action="/initiative/{{initiative.id}}/post_argument" method="POST">
+          <div class="post-argument panel panel-default">
+            <div class="panel-heading">
+              <span>Ich bin </span> <label><input type="radio" name="vote" value="yay" />dafür</label> <label><input type="radio" name="vote" value="nay"/> dagegen</label>, weil... 
+            </div>
+            <div class="panel-body">
+              {% csrf_token %}
+              <textarea name="text"></textarea>
+              <button type="submit" class="btn btn-success pull-right">Einstellen</button>
+            </form>
+          </div>
         </div>
       {% endif %} 
     {% endcolumn %}

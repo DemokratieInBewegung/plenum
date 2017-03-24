@@ -110,7 +110,7 @@ h2.init-title a {
 }
 
 .argument .profiles img {
-  height: 2em;
+  height: 1.25em;
   margin: 0.2em;
 }
 
@@ -176,7 +176,7 @@ h2.init-title a {
 
 .discourse .pro {
   padding-right: 10px;
-  border-right: 1px solid #999;
+  border-right: 1px solid #aaa;
 }
 
 .discourse .contra {
@@ -189,16 +189,46 @@ h2.init-title a {
 
 .argument .short {
   display: flex;
-  border-bottom: 1px solid #999;
   padding: 3px 0;
   cursor: pointer;
 }
 .argument img {
   border-radius: 100%;
-  border: 1px solid #999;
+  height: 2em;
+  margin-right: 0.5em;
+  border: 1px solid #333;
   cursor: pointer;
 }
 
 .argument .long {
   display: none;
+}
+
+.argument .meta {
+  color: #aaa;
+  font-size: 0.75em;
+}
+
+.argument .meta .has_liked {
+  color: #eb6864;
+}
+
+.argument .meta .has_commented {
+  color: #336699;
+}
+
+.post-argument {
+  width: 50%;
+  min-width: 320px;
+  margin: 0 auto;
+}
+
+.post-argument input[type=radio] {
+  vertical-align: top;
+  margin: 2px;
+}
+
+.post-argument textarea {
+  width: 100%;
+  min-height: 5em;
 }

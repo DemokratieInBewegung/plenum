@@ -2,9 +2,12 @@ appdirs==1.4.3
 defusedxml==0.5.0
 dj-database-url==0.4.2
 Django==1.10.6
-django-allauth==0.31.0
+django-appconf==1.0.2
+django-bootstrap-form==3.2.1
 django-bootstrap-ui==0.4.0
+django-braces==1.11.0
 django-tag-parser==2.1
+django-user-accounts==2.0.1
 dominate==2.1.17
 easy-thumbnails==2.3
 html2text==2014.12.29
@@ -15,6 +18,7 @@ Pillow==4.0.0
 psycopg2==2.7.1
 pyparsing==2.2.0
 python3-openid==3.1.0
+pytz==2017.2
 requests==2.13.0
 requests-oauthlib==0.8.0
 six==1.10.0

@@ -3,7 +3,7 @@ from django.views import generic
 from . import views
 
 urlpatterns = [
-    url('^$', views.index),
+    url('^$', views.index, name='home'),
     url('^initiative/(?P<init_id>\d+)$', views.item),
     url('^initiative/(?P<init_id>\d+)/support$', views.support),
     url('^initiative/(?P<init_id>\d+)/post_argument$', views.post_argument),

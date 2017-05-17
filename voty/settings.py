@@ -42,9 +42,8 @@ INSTALLED_APPS = [
 
     # 3rd party
     'bootstrap_ui',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
+    'bootstrapform',
+    'account',
 
     # locally
     'voty.initproc'
@@ -58,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "account.middleware.LocaleMiddleware",
+    "account.middleware.TimezoneMiddleware",
 ]
 
 
@@ -65,8 +66,6 @@ AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
 
-    # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 ROOT_URLCONF = 'voty.urls'
@@ -84,6 +83,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'account.context_processors.account',
             ],
         },
     },
@@ -123,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'de-De'
+LANGUAGE_CODE = 'de-de'
 
 TIME_ZONE = 'UTC'
 
@@ -134,6 +134,21 @@ USE_L10N = True
 USE_TZ = True
 
 DJANGO_BOOTSTRAP_UI_THEME = 'bootswatch-journal'
+
+ACCOUNT_OPEN_SIGNUP = False
+
+
+if not DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_USE_TLS = True
+    # EMAIL_USE_SSL = True
+    DEFAULT_FROM_EMAIL = 'robot@bewegung.jetzt'
+    EMAIL_HOST = os.environ.get("SMTP_SERVER", "smtp.mailgun.org")
+    EMAIL_HOST_USER = os.environ.get("SMTP_USERNAME", 'mymail@gmail.com')
+    EMAIL_HOST_PASSWORD = os.environ.get("SMTP_PASSWORD", 'password')
+    EMAIL_PORT = int(os.environ.get("SMTP_PORT", 587))
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 # Static files (CSS, JavaScript, Images)

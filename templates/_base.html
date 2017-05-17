@@ -35,9 +35,9 @@
     	<ul class="nav navbar-nav navbar-right">
     	  <li><a href="/#hilfe">Hilfe</a></li>
         {% if user.is_authenticated %}
-    	     <li><a href="/accounts/logout">Logout</a></li>
+    	     <li><a href="/account/logout/">Logout</a></li>
         {% else %}
-          <li><a href="/accounts/login">Login</a></li>
+          <li><a href="/account/login/">Login</a></li>
         {% endif %}
     	</ul>
     </nav>
@@ -47,6 +47,7 @@
 <div class="main container">
 
 	{% block content %}
+  test
 
 	{% endblock %}
 

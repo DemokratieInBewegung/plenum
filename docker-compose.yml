@@ -11,8 +11,11 @@
    web:
      build: .
      environment:
-      - VIRTUAL_HOST=abstimmen.bewegung.jetzt
       - DATABASE_URL=postgres://voty:204rkmafd90-ad@db/voty
+      - VIRTUAL_HOST=abstimmen.bewegung.jetzt
+      - LETSENCRYPT_DOMAIN=abstimmen.bewegung.jetzt
+      - LETSENCRYPT_EMAIL=benjamin.kampmann@bewegung.jetzt
+     env_file: secrects.env
      command: gunicorn -w 3 -b 0.0.0.0 voty.wsgi
      volumes:
        - ./data/public:/code/public

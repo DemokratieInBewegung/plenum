@@ -1,11 +1,13 @@
 #!/bin/bash
-
+set -e
 cd /code
+
+# Build static files
+echo "Collecting statics" 
+SECRET_KEY=temp_value python manage.py collectstatic -v 0 --clear --noinput
 
 # Apply database migrations
 echo "Apply database migrations"
 python manage.py migrate
 
-# Start server
-echo "Starting server"
-gunicorn -w 3 -b 0.0.0.0 voty.wsgi
+echo "------ Upgrade done -----"

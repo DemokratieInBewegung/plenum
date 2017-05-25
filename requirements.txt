@@ -10,6 +10,7 @@ django-tag-parser==2.1
 django-user-accounts==2.0.1
 dominate==2.1.17
 easy-thumbnails==2.3
+gunicorn==19.7.1
 html2text==2014.12.29
 oauthlib==2.0.1
 olefile==0.44

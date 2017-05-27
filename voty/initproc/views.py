@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+from django.core.exceptions import PermissionDenied
 
 from .models import (Initiative, Argument, Comment, Vote, Supporter, Like)
 # Create your views here.
 
 DEFAULT_FILTERS = ['s', 'd', 'v']
+STAFF_ONLY = ['i', 'm', 'h']
 
 def ensure_state(state):
     def wrap(fn):
@@ -19,12 +21,20 @@ def ensure_state(state):
 
 def index(request):
     filters = request.GET.getlist("f") or DEFAULT_FILTERS
+    if not request.user or not request.user.is_staff:
+        # state i is only available to staff
+        for x in STAFF_ONLY:
+            filters.remove('x')
     inits = Initiative.objects.filter(state__in=filters)
     return render(request, 'initproc/index.html', context=dict(initiatives=inits, filters=filters))
 
 
 def item(request, init_id):
     init = get_object_or_404(Initiative, pk=init_id)
+    if init.state in STAFF_ONLY:
+        if not request.user or not request.user.is_staff:
+            raise PermissionDenied()
+
     ctx = dict(initiative=init, pro=[], contra=[],
                arguments=init.arguments.prefetch_related("comments").prefetch_related("likes").all())
 
@@ -60,7 +70,7 @@ def item(request, init_id):
 
 @require_POST
 @login_required
-@ensure_state('n') # must be new
+@ensure_state('s') # must be seeking for supporters
 def support(request, initiative):
     Supporter(initiative=initiative, user_id=request.user.id,
               public=not not request.POST.get("public", False)).save()
@@ -71,7 +81,7 @@ def support(request, initiative):
 
 @require_POST
 @login_required
-@ensure_state('d') # must be i discussion
+@ensure_state('d') # must be in discussion
 def post_argument(request, initiative):
     Argument(initiative=initiative, user_id=request.user.id,
              text=request.POST.get('text', ''),

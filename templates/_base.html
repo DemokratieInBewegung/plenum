@@ -34,7 +34,7 @@
     </div>
     <nav class="collapse navbar-collapse" id="bs-navbar">
     	<ul class="nav navbar-nav navbar-right">
-    	  <li><a href="/#hilfe">Hilfe</a></li>
+    	  <li><a href="/hilfe">Hilfe</a></li>
         {% if user.is_authenticated %}
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% avatar user 20 %} <span class="caret"></span></a>
@@ -43,11 +43,12 @@
               <li><a href="{% url 'account_password' %}">Passwort ändern</a></li>
               <li><a href="{% url 'avatar_change' %}">Avatar ändern</a></li>
               <li role="separator" class="divider"></li>
-              <li><a href="/account/logout/">Logout</a></li>
+              <li><a href="/account/logout/">Abmelden</a></li>
             </ul>
           </li>
         {% else %}
-          <li><a href="/account/login/">Login</a></li>
+          <li><a href="/registrieren/">Registrieren</a></li>
+          <li><a href="/account/login/">Anmelden</a></li>
         {% endif %}
     	</ul>
     </nav>
@@ -63,7 +64,7 @@
 
 <footer>
   <div class="container">
-	 <a href='/about/'>Über</a>
+	 <a href='/ueber/'>Über</a>
   </div>
 </footer>
 

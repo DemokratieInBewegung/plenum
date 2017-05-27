@@ -23,8 +23,8 @@ def index(request):
     filters = request.GET.getlist("f") or DEFAULT_FILTERS
     if not request.user or not request.user.is_staff:
         # state i is only available to staff
-        for x in STAFF_ONLY:
-            filters.remove('x')
+        filters = [f for f in filters if f not in STAFF_ONLY]
+
     inits = Initiative.objects.filter(state__in=filters)
     return render(request, 'initproc/index.html', context=dict(initiatives=inits, filters=filters))
 

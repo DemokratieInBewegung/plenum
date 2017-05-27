@@ -18,11 +18,15 @@ from django.contrib import admin
 from . import admin as local_admin
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic.base import TemplateView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r"^account/", include("account.urls")),
     url(r'^avatar/', include('avatar.urls')),
+    url(r'^ueber', TemplateView.as_view(template_name='static/ueber.html')),
+    url(r'^hilfe', TemplateView.as_view(template_name='static/hilfe.html')),
+    url(r'^registrieren', TemplateView.as_view(template_name='static/registrieren.html')),
     url(r'', include('voty.initproc.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

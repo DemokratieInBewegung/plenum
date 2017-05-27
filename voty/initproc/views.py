@@ -75,6 +75,7 @@ def support(request, initiative):
 def post_argument(request, initiative):
     Argument(initiative=initiative, user_id=request.user.id,
              text=request.POST.get('text', ''),
+             title=request.POST.get('title', ''),
              in_favor=request.POST.get('vote', 'yay') != 'nay').save()
 
     return redirect('/initiative/{}'.format(initiative.id))

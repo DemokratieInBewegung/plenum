@@ -118,12 +118,12 @@
 
         <hr>
 
-        {% ifequal initiative.state 'n' %}
+        {% ifequal initiative.state 's' %}
           <p>Sucht Unterstützung</p>
 
           <div class="progress">
-            <div class="progress-bar progress-bar-success  progress-bar-striped active" role="progressbar" aria-valuenow="{{initiative.supporters.count}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}" style="height: 2em; min-width: 2em; width: {{initiative.relative_support}}%;">
-              {{initiative.supporters.count|default:0}} Unterstützer
+            <div class="progress-bar progress-bar-success  progress-bar-striped active" role="progressbar" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}" style="height: 2em; min-width: 2em; width: {{initiative.relative_support}}%;">
+              {{initiative.absolute_supporters|default:0}} Unterstützer
             </div>
           </div>
           {% if has_supported %}
@@ -158,21 +158,17 @@
 {% if initiative.was_closed_at %}
   <h3 class="history-title">
     <span class="date">{{initiative.was_closed_at}}</span>
-    {% if initiative.went_to_voting_at %}
-     Nach Abstimmung mit {{ initiative.yays|default:0 }} Für- und {{ initiative.nays|default:0 }} Gegenstimmen
-    {% else %}
-
-      {% ifequal initiative.went_to_discussion_at None %}
-       Mit {{initiative.supporters.count|default:0}} Unterstützern wurde das Qurom von {{initiative.quorum}} nicht erreicht:
-      {% else %}
-        Ohne Abstimmung ({{ initiative.demands.count|default:0 }} von {{initiative.quorum}})
-      {% endifequal %}
-    {% endif %}
+    {% if initiative.went_to_discussion_at %}
+      Nach Abstimmung mit {{ initiative.yays|default:0 }} Für- und {{ initiative.nays|default:0 }} Gegenstimmen
       {% ifequal initiative.state 'a' %}
         angenommen.
       {% else %}
         abgelehnt.
       {% endifequal %}
+    {% else %}
+     Mit {{initiative.absolute_supporters|default:0}} Unterstützern wurde das Qurom von {{initiative.quorum}} nicht erreicht. Die Initiative wurde damit abgelehnt.
+    {% endif }
+  {% endif %}
   </h3>
 {% endif %}
 
@@ -180,14 +176,14 @@
 {% row %}
   {% column %}
     
-    {% if initiative.state == 'n' %}
+    {% if initiative.state == 's' %}
 
       <div class="alert alert-warning">
         <h4>Sucht Unterstützer</h4>
           <div class="actionbar">
             <div class="progress">
-              <div class="progress-bar progress-bar-success  progress-bar-striped active" role="progressbar" aria-valuenow="{{initiative.supporters.count}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}" style="height: 2em; min-width: 2em; width: {{initiative.relative_support}}%;">
-                {{initiative.supporters.count|default:0}} Unterstützer
+              <div class="progress-bar progress-bar-success  progress-bar-striped active" role="progressbar" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}" style="height: 2em; min-width: 2em; width: {{initiative.relative_support}}%;">
+                {{initiative.absolute_supporters|default:0}} Unterstützer
               </div>
             </div>
             {% if has_supported %}
@@ -197,13 +193,13 @@
                 {% csrf_token %}
                 <button class="btn btn-success" type="submit">Jetzt Unterstützen</button>
 
-                <label><checkbox name="public" checked>Öffentlich anzeigen</checkbox></label>
+                <!-- <label><checkbox name="public" checked>Öffentlich anzeigen</checkbox></label> -->
               </form>
             {% endif %}
           </div>
         </div>
 
-      {% if initiative.public_supporters.count %}
+      {% if initiative.public_absolute_supporters %}
         <div class="panel panel-default">
           <div class="panel-body">
             <h4>Unterstützer</h4>
@@ -228,7 +224,7 @@
 <!-- Diskussion element -->    
   {% row %}
     {% column %}
-      <h3>Diskussion</h3>
+      <h3>Argumente</h3>
 
       <div class="discourse">
         <div class="pro">
@@ -252,11 +248,12 @@
         <form action="/initiative/{{initiative.id}}/post_argument" method="POST">
           <div class="post-argument panel panel-default">
             <div class="panel-heading">
-              <span>Ich bin </span> <label><input type="radio" name="vote" value="yay" />dafür</label> <label><input type="radio" name="vote" value="nay"/> dagegen</label>, weil... 
+              Neues Argument <label><input type="radio" name="vote" value="yay" />dafür</label> <label><input type="radio" name="vote" value="nay"/> dagegen</label> erstellen.
+              <input placeholder="Überschrift" type="text" maxlength="80" name="title">
             </div>
             <div class="panel-body">
               {% csrf_token %}
-              <textarea name="text"></textarea>
+              <textarea name="text" placeholder="Argumentausführung"></textarea>
               <button type="submit" class="btn btn-success pull-right">Einstellen</button>
             </form>
           </div>
@@ -267,6 +264,7 @@
 {% endif %}
 
 
+{% comment %}
 {% if initiative.went_to_voting_at %}
   <h3 class="history-title">
     <span class="date">{{initiative.went_to_voting_at}}</span>
@@ -288,6 +286,8 @@
     {% endcolumn %}
   {% endrow %}
 {% endif %}
+
+{% endcomment %}
 
 
 {% endblock %}

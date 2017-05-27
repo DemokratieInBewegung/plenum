@@ -57,9 +57,14 @@ class Initiative(models.Model):
     def nays(self):
         return self.votes.filter(Vote.in_favor==False).count()
 
+    # FIXME: cache this
+    @property
+    def absolute_supporters(self):
+        return self.supporters.count() + self.initiators.count()
+
     @property
     def relative_support(self):
-        return self.supporters.count() / self.quorum * 100
+        return self.absolute_supporters / self.quorum * 100
 
     @property
     def public_supporters(self):

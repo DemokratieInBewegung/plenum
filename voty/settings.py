@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'bootstrap_ui',
     'bootstrapform',
     'account',
+    'avatar',
 
     # locally
     'voty.initproc'
@@ -136,6 +137,7 @@ USE_TZ = True
 DJANGO_BOOTSTRAP_UI_THEME = 'bootswatch-journal'
 
 ACCOUNT_OPEN_SIGNUP = False
+AVATAR_GRAVATAR_DEFAULT = 'retro'
 
 
 if not DEBUG:

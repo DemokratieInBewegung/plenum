@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 {% load bootstrap_ui_tags %}
+{% load avatar_tags %}
 
 {% block content %}
 {{ block.super }}
@@ -113,7 +114,9 @@
 
         <h3>Initiatore</h3>
         <div>
-          {% include 'accounts/avatars.html' with people=initiative.initiators.all %}
+          {% for user in initiative.initiators.all %}
+            {% avatar user %}
+          {% endfor %}
         </div>
 
         <hr>
@@ -149,8 +152,11 @@
     <h2>Argument der Initiatoren</h2>
     <blockquote class="argument">
       {{initiative.init_argument}}
-      <br/>
-      {% include 'accounts/avatars.html' with people=initiative.initiators.all %}
+      <div>
+        {% for user in initiative.initiators.all %}
+          {% avatar user 35 %}
+        {% endfor %}
+      </div>
     </blockquote>
   {% endcolumn %}
 {% endrow %}
@@ -203,7 +209,9 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <h4>Unterstützer</h4>
-            {% include 'accounts/avatars.html' with people=initiative.public_supporters %}
+          {% for user in initiative.public_supporters %}
+            {% avatar user %}
+          {% endfor %}
           </div>
         </div>
       {% endif %}

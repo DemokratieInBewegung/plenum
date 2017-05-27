@@ -1,5 +1,6 @@
 {% extends "bootstrap_ui/bootstrap-skeleton.html" %}
 {% load bootstrap_ui_tags %}
+{% load avatar_tags %}
 
 
 {% block head-css %}
@@ -16,7 +17,7 @@
 <div class="container">
   <div class="alert alert-warning" role="alert">
     <b><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Beta Test</b>
-    <p>Dies ist eine Test Umgebung mit Test-Daten um das neue <a href="https://www.youtube.com/watch?v=FUKNVUkNpR8" target="_blank">Initiativ-Verfahren</a> der <a target="_blank" href="http://bewegung.jetzt/">Demokratie in Bewegung</a> <i>technisch und prozedual</i> erkunden. Bei den hier angezeigten Informationen handelt es sich weder um tatsächliche Initiativen noch um durchsetzbare Abstimmungen oder Forderungen. Dafür bitte steht bis auf weiteres der <a href="https://marktplatz.demokratie-in-bewegung.org/">Marktplatz der Ideen</a> zur Verfügung.</p>
+    <p>Dies ist eine Test Umgebung mit Test-Daten um das neue <a href="https://www.youtube.com/watch?v=FUKNVUkNpR8" target="_blank">Initiativ-Verfahren</a> der <a target="_blank" href="http://bewegung.jetzt/">Demokratie in Bewegung</a> <i>technisch und prozedual</i> erkunden. Bei den hier angezeigten Informationen handelt es sich weder um tatsächliche Initiativen noch um durchsetzbare Abstimmungen oder Forderungen. Dafür bitte steht bis auf weiteres der <a href="https://marktplatz.bewegung.jetzt/">Marktplatz der Ideen</a> zur Verfügung.</p>
   </div>
 </div>
 
@@ -35,7 +36,16 @@
     	<ul class="nav navbar-nav navbar-right">
     	  <li><a href="/#hilfe">Hilfe</a></li>
         {% if user.is_authenticated %}
-    	     <li><a href="/account/logout/">Logout</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% avatar user 20 %} <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="{% url 'account_settings' %}">Profil anpassen</a></li>
+              <li><a href="{% url 'account_password' %}">Passwort ändern</a></li>
+              <li><a href="{% url 'avatar_change' %}">Avatar ändern</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="/account/logout/">Logout</a></li>
+            </ul>
+          </li>
         {% else %}
           <li><a href="/account/login/">Login</a></li>
         {% endif %}

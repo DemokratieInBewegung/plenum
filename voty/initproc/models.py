@@ -117,12 +117,3 @@ class Vote(models.Model):
 
     class Meta:
         unique_together = (("user", "initiative"),)
-
-
-
-from django.contrib import admin
-admin.site.register(Initiative)
-admin.site.register(Supporter)
-admin.site.register(Argument)
-admin.site.register(Comment)
-admin.site.register(Vote)

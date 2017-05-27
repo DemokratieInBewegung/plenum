@@ -9,13 +9,25 @@
 		<form id="filters" method="GET">
 			<div class="typefilter">
 				zeige nur: 
+
+			  {% if current_user.is_admin %}
+			      <label>
+			      	<input name="f" value="i" type="checkbox" {% if 'i' in filters %} checked{% endif %}>
+			      		<span class="label label-info">Neu eingegangen</span>
+			      </label>
+		      {% endif %}
+
 		      <label>
-		      	<input name="f" value="n" type="checkbox" {% if 'n' in filters %} checked{% endif %}>
+		      	<input name="f" value="s" type="checkbox" {% if 's' in filters %} checked{% endif %}>
 		      		<span class="label label-primary">Sucht Unterstützung</span>
 		      </label>
 		      <label>
 		      	<input name="f" value="d" type="checkbox" {% if 'd' in filters %} checked{% endif %}>
 		      		<span class="label label-info">In Diskussion</span>
+		      </label>
+		      <label>
+		      	<input name="f" value="e" type="checkbox" {% if 'e' in filters %} checked{% endif %}>
+		      		<span class="label label-info">Wird überarbeitet</span>
 		      </label>
 		      <label>
 		      	<input name="f" value="v" type="checkbox" {% if 'v' in filters %} checked{% endif %}>
@@ -42,12 +54,20 @@
 		{% column %}
 			<h2 class="init-title"><a href="/initiative/{{init.id}}">{{init.title}}</a></h2>
 			<p>
-			    {% ifequal init.state 'n' %}
+			    {% ifequal init.state 'i' %}
+			      <span class="label label-primary">Neu eingegangen</span>
+			    {% endifequal %}
+
+			    {% ifequal init.state 's' %}
 			      <span class="label label-primary">Sucht Unterstützung</span>
 			    {% endifequal %}
 
 			    {% ifequal init.state 'd' %}
 			      <span class="label label-info">In Diskussion</span>
+			    {% endifequal %}
+
+			    {% ifequal init.state 'e' %}
+			      <span class="label label-info">Wird überarbeitet</span>
 			    {% endifequal %}
 
 			    {% ifequal init.state 'v' %}

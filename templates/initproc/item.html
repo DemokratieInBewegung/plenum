@@ -6,26 +6,74 @@
 
 {% row %}
   {% column %}
-    <h1>{{initiative.title}}</h1>
-    {% ifequal initiative.state 'n' %}
-      <span class="label label-primary">Sucht Unterstützung</span>
+
+    <ol class="breadcrumb">
+
+    {% ifequal initiative.state 'i' %}
+      <span class="label label-danger">Noch nicht veröffentlicht</span>
+    {% endifequal %}
+
+    {% ifequal initiative.state 'm' %}
+      <span class="label label-danger">Wird gerade moderiert</span>
+    {% endifequal %}
+
+    {% ifequal initiative.state 'h' %}
+      <span class="label label-danger">Versteckt</span>
+    {% endifequal %}
+
+
+    {% ifequal initiative.state 's' %}
+      <li class="active"><span class="label">Sucht Unterstützung</span></li>
+      <li>Diskussion</li>
+      <li>Finale Überarbeitung</li>
+      <li>Abstimmung</li>
     {% endifequal %}
 
     {% ifequal initiative.state 'd' %}
-      <span class="label label-info">In Diskussion</span>
+      <li>Sucht Unterstützung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
+      <li class="active"><span class="label">Diskussion</span></li>
+      <li>Finale Überarbeitung</li>
+      <li>Abstimmung</li>
+    {% endifequal %}
+
+    {% ifequal initiative.state 'e' %}
+      <li>Sucht Unterstützung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
+      <li>Diskussion <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
+      <li class="active"><span class="label">Finale Überarbeitung</span></li>
+      <li>Abstimmung</li>
     {% endifequal %}
 
     {% ifequal initiative.state 'v' %}
-      <span class="label label-danger">Abstimmung</span>
+      <li>Sucht Unterstützung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
+      <li>Diskussion <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
+      <li>Finale Überarbeitung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
+      <li class="active"><span class="label">Abstimmung</span></li>
     {% endifequal %}
 
     {% ifequal initiative.state 'a' %}
-      <span class="label label-success">Angenommen</span>
+      <li>Sucht Unterstützung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
+      <li>Diskussion <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
+      <li>Finale Überarbeitung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
+      <li>Abstimmung: <span class="label label-success">Angenommen</span></li>
     {% endifequal %}
 
     {% ifequal initiative.state 'r' %}
-      <span class="label label-default">Abgelehnt</span>
+      {% if initiative.went_to_discussion_at %}
+        <li>Sucht Unterstützung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
+        <li>Diskussion <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
+        <li>Finale Überarbeitung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
+        <li>Abstimmung: <span class="label label-success">Abgelehnt</span></li>
+      {% else %}
+        <li>Sucht Unterstützung: <span class="label label-success">gescheitert <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span></li>
+        <li>Diskussion</li>
+        <li>Finale Überarbeitung</li>
+        <li>Abstimmung</li>
+      {% endif %}
     {% endifequal %}
+
+    </ol>
+
+    <h1>{{initiative.title}}</h1>
     
   {% endcolumn %}
 {% endrow %}

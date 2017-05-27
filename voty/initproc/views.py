@@ -5,7 +5,7 @@ from django.views.decorators.http import require_POST
 from .models import (Initiative, Argument, Comment, Vote, Supporter, Like)
 # Create your views here.
 
-DEFAULT_FILTERS = ['i', 'd', 'v']
+DEFAULT_FILTERS = ['s', 'd', 'v']
 
 def ensure_state(state):
     def wrap(fn):

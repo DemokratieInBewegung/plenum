@@ -2,11 +2,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 
-from .models import (Initiative, Argument, Comment, Vote, Supporter,
-                     DemandingVote, Like)
+from .models import (Initiative, Argument, Comment, Vote, Supporter, Like)
 # Create your views here.
 
-DEFAULT_FILTERS = ['n', 'd', 'v']
+DEFAULT_FILTERS = ['i', 'd', 'v']
 
 def ensure_state(state):
     def wrap(fn):
@@ -38,7 +37,7 @@ def item(request, init_id):
     if request.user.is_authenticated:
         user_id = request.user.id
         ctx.update({'has_supported': init.supporters.filter(user=user_id).count(),
-                    'has_demanded_vote': init.demands.filter(user=user_id).count(),
+                    'has_demanded_vote': 0,
                     'has_voted': init.votes.filter(user=user_id).count()})
         if ctx['has_voted']:
             ctx['vote'] = init.votes.filter(user=user_id).first().vote
@@ -68,15 +67,6 @@ def support(request, initiative):
 
     return redirect('/initiative/{}'.format(initiative.id))
 
-
-@require_POST
-@login_required
-@ensure_state('d') # must be new
-def demand_vote(request, initiative):
-    DemandingVote(initiative=initiative, user_id=request.user.id,
-              public=not not request.POST.get("public", False)).save()
-
-    return redirect('/initiative/{}'.format(initiative.id))
 
 
 @require_POST

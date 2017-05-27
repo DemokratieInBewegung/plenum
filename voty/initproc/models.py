@@ -3,14 +3,29 @@ from django.db import models
 
 
 class Initiative(models.Model):
-    STATES = (('n', 'new'),
-    		  ('d', 'discussion'),
-    		  ('v', 'voting'),
-    		  ('a', 'accepted'),
-    		  ('r', 'rejected'))
+    class STATES:
+        INCOMING = 'i'
+        SEEKING_SUPPORT = 's'
+        DISCUSSION = 'd'
+        FINAL_EDIT = 'e'
+        MODERATION = 'm'
+        HIDDEN = 'h'
+        VOTING = 'v'
+        ACCEPTED = 'a'
+        REJECTED = 'r'
 
     title = models.CharField(max_length=80)
-    state = models.CharField(max_length=1, choices=STATES)
+    state = models.CharField(max_length=1, choices=[
+            (STATES.INCOMING, "new arrivals"),
+            (STATES.SEEKING_SUPPORT, "seeking support"),
+            (STATES.DISCUSSION, "in discussion"),
+            (STATES.FINAL_EDIT, "final edits"),
+            (STATES.MODERATION, "with moderation team"),
+            (STATES.HIDDEN, "hidden"),
+            (STATES.VOTING, "is being voted on"),
+            (STATES.ACCEPTED, "was accepted"),
+            (STATES.REJECTED, "was rejected")
+        ])
     quorum = models.IntegerField(default=30)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -62,21 +77,12 @@ class Supporter(models.Model):
         unique_together = (("user", "initiative"),)
 
 
-class DemandingVote(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User)
-    initiative = models.ForeignKey(Initiative, related_name="demands")
-    public = models.BooleanField(default=True)
-
-    class Meta:
-        unique_together = (("user", "initiative"),)
-
-
 class Argument(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
     initiative = models.ForeignKey(Initiative, related_name="arguments")
+    title = models.CharField(max_length=80)
     text = models.TextField()
     in_favor = models.BooleanField(default=True)
 
@@ -112,7 +118,6 @@ class Vote(models.Model):
 from django.contrib import admin
 admin.site.register(Initiative)
 admin.site.register(Supporter)
-admin.site.register(DemandingVote)
 admin.site.register(Argument)
 admin.site.register(Comment)
 admin.site.register(Vote)

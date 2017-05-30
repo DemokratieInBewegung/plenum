@@ -2,7 +2,6 @@
 
 {% load account_tags %}
 {% load i18n %}
-{% load bootstrap %}
 
 {% block head_title %}{% trans "Log in" %}{% endblock %}
 
@@ -12,7 +11,7 @@
             <form method="POST" action="{% url "account_login" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
                 <legend>{% trans "Log in to an existing account" %}</legend>
                 {% csrf_token %}
-                {{ form|bootstrap }}
+                {{ form }}
                 {% if redirect_field_value %}
                     <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                 {% endif %}

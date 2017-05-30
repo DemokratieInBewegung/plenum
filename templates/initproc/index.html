@@ -1,10 +1,5 @@
 {% extends "_base.html" %}
-{% load bootstrap_ui_tags %}
-
 {% block content %}
-
-	{% row %}
-		{% column %}
 
 		<form id="filters" method="GET">
 			<div class="typefilter">
@@ -44,14 +39,8 @@
 		    </div>
 		 </form>
 
-		{% endcolumn %}
-
-    {% endrow %}
-
    {% for init in initiatives %}
 
-	{% row %}
-		{% column %}
 			<h2 class="init-title"><a href="/initiative/{{init.id}}">{{init.title}}</a></h2>
 			<p>
 			    {% ifequal init.state 'i' %}
@@ -84,10 +73,6 @@
 
 				{{init.summary}}
 			</p>
-		{% endcolumn %}
-
-	{% endrow %}
-
    {% endfor %}
 
 {% endblock %}

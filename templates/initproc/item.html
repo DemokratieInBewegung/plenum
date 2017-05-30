@@ -1,13 +1,7 @@
 {% extends "_base.html" %}
-{% load bootstrap_ui_tags %}
 {% load avatar_tags %}
 
 {% block content %}
-{{ block.super }}
-
-{% row %}
-  {% column %}
-
     <ol class="breadcrumb">
 
     {% ifequal initiative.state 'i' %}
@@ -76,11 +70,10 @@
 
     <h1>{{initiative.title}}</h1>
     
-  {% endcolumn %}
-{% endrow %}
 
-{% row %}
-  {% column xs='12' sm='12' md='8' lg='8' %}
+
+
+
     <p>{{initiative.summary}}</p>
 
     <h2>Forderung</h2>
@@ -94,12 +87,7 @@
 
     <h2>Arbeitsweise</h2>
     <p>{{initiative.arbeitsweise}}</p>
-  {% endcolumn %}
 
-  {% column xs='12' sm='12' md='4' lg='4' %}
-
-    {% panel %}
-      {% panelbody %}
         <h3>Einordnung</h3>
           <span>{{initiative.einordnung}}</span>
 
@@ -142,13 +130,8 @@
         {% endifequal %}
 
 
-      {% endpanelbody %}
-    {% endpanel %}
-  {% endcolumn %}
-{% endrow %}
 
-{% row %}
-  {% column %}
+
     <h2>Argument der Initiatoren</h2>
     <blockquote class="argument">
       {{initiative.init_argument}}
@@ -158,8 +141,9 @@
         {% endfor %}
       </div>
     </blockquote>
-  {% endcolumn %}
-{% endrow %}
+
+
+
 
 {% if initiative.was_closed_at %}
   <h3 class="history-title">
@@ -179,8 +163,6 @@
 {% endif %}
 
 
-{% row %}
-  {% column %}
     
     {% if initiative.state == 's' %}
 
@@ -225,13 +207,10 @@
     {% elif initative.state == "v" %}
     
     {% endif %}
-  {% endcolumn %}
-{% endrow %}
 
 {% if initiative.went_to_discussion_at %}
 <!-- Diskussion element -->    
-  {% row %}
-    {% column %}
+
       <h3>Argumente</h3>
 
       <div class="discourse">
@@ -267,8 +246,7 @@
           </div>
         </div>
       {% endif %} 
-    {% endcolumn %}
-  {% endrow %}
+
 {% endif %}
 
 
@@ -278,10 +256,7 @@
     <span class="date">{{initiative.went_to_voting_at}}</span>
     {{ initiative.demands.count|default:0 }} Fordern Abstimmung (Quorum: {{initiative.quorum}}): Abstimmung eröffnet.
   </h3>
-  {% row %}
-    {% column %}
-    {% endcolumn %}
-  {% endrow %}
+
 {% endif %}
 
 {% if initiative.went_to_discussion_at %}
@@ -289,14 +264,9 @@
     <span class="date">{{initiative.went_to_discussion_at}}</span>
     Unterstützerquorum ({{initiative.quorum}}) erreicht - Diskussionsphase eröffnet.
   </h3>
-  {% row %}
-    {% column %}
-    {% endcolumn %}
-  {% endrow %}
 {% endif %}
 
 {% endcomment %}
-
 
 {% endblock %}
 

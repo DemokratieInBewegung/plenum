@@ -41,8 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # 3rd party
-    'bootstrap_ui',
-    'bootstrapform',
     'account',
     'avatar',
 

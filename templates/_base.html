@@ -1,91 +1,87 @@
-  
 {% load avatar_tags %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>{% block head_title%}{% endblock%}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{% block metadescription%}{% endblock %}">
-    <meta name="keywords" content="{% block metakeywords%}{% endblock %}">
-    <meta name="author" content="">
+	<head>
+		<meta charset="utf-8">
+		<title>{% block head_title%}{% endblock%}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="{% block metadescription%}{% endblock %}">
+		<meta name="keywords" content="{% block metakeywords%}{% endblock %}">
+		<meta name="author" content="">
 
 
 
-    <link href="https://fonts.googleapis.com/css?family=Merriweather:400,400i,700|Rubik:400,400i,500,500i,700" rel="stylesheet"> 
-    <link href="/static/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="/static/dib.css" rel="stylesheet" type="text/css">
-    <!-- Font Awesome icon font -->
-    <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+		<link href="https://fonts.googleapis.com/css?family=Merriweather:400,400i,700|Rubik:400,400i,500,500i,700" rel="stylesheet"> 
+		<link href="/static/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.css" rel="stylesheet" type="text/css">
+		<link href="/static/dib.css" rel="stylesheet" type="text/css">
+		<!-- Font Awesome icon font -->
+		<!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
 
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
+		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+		<!--[if lt IE 9]>
+			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+	</head>
+	<body class="{% block body_class%}{% endblock%}">
+		<nav class="navbar fixed-top navbar-toggleable-sm navbar-inverse bg-inverse">
+			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<a class="navbar-brand" href="#">Initiativplattform</a>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="/hilfe">Hilfe</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href='/ueber/'>Über</a>
+					</li>
+					{% if user.is_authenticated %}
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							{% avatar user 20 %}
+						</a>
+						<div class="dropdown-menu dropdown-menu-left bg-inverse" aria-labelledby="navbarDropdownMenuLink">
+							<a class="dropdown-item" href="{% url 'account_settings' %}">Profil anpassen</a>
+							<a class="dropdown-item" href="{% url 'account_password' %}">Passwort ändern</a>
+							<a class="dropdown-item" href="{% url 'avatar_change' %}">Profilbild ändern</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="/account/logout/">Abmelden</a>
+						</div>
+					</li>
+					{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="/registrieren/">Registrieren</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/account/login/">Anmelden</a>
+					</li>
+					{% endif %}
+				</ul>
+			</div>
+		</nav>
+		<header>
+			<div class="alert alert-info alert-dismissible fade show" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h6>
+					Beta Test
+				</h6>
+				<p>
+					Dies ist eine Test Umgebung mit Test-Daten um das neue <a href="https://www.youtube.com/watch?v=FUKNVUkNpR8" target="_blank">Initiativ-Verfahren</a> der <a target="_blank" href="http://bewegung.jetzt/">Demokratie in Bewegung</a> <i>technisch und prozedual</i> erkunden. Bei den hier angezeigten Informationen handelt es sich weder um tatsächliche Initiativen noch um durchsetzbare Abstimmungen oder Forderungen. Dafür bitte steht bis auf weiteres der <a href="https://marktplatz.bewegung.jetzt/">Marktplatz der Ideen</a> zur Verfügung.
+				</p>
+			</div>
+		</header>
+		<div class="main">
+			{% block content %}
+			{% endblock %}
+		</div>
+		<!-- Needed by Bootstrap 4.0 -->
+		<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 
-  <body class="{% block body_class%}{% endblock%}">
+		<script type="text/javascript" src="/static/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
 
-<div class="container">
-  <div class="alert alert-warning" role="alert">
-    <b><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Beta Test</b>
-    <p>Dies ist eine Test Umgebung mit Test-Daten um das neue <a href="https://www.youtube.com/watch?v=FUKNVUkNpR8" target="_blank">Initiativ-Verfahren</a> der <a target="_blank" href="http://bewegung.jetzt/">Demokratie in Bewegung</a> <i>technisch und prozedual</i> erkunden. Bei den hier angezeigten Informationen handelt es sich weder um tatsächliche Initiativen noch um durchsetzbare Abstimmungen oder Forderungen. Dafür bitte steht bis auf weiteres der <a href="https://marktplatz.bewegung.jetzt/">Marktplatz der Ideen</a> zur Verfügung.</p>
-  </div>
-</div>
-
-<header class="bs-docs-nav navbar navbar-static-top" id="top">
-  <div class="container">
-    <div class="navbar-header">
-      <button aria-controls="bs-navbar" aria-expanded="false" class="collapsed navbar-toggle" data-target="#bs-navbar" data-toggle="collapse" type="button">
-        <span class="sr-only">Navigation ein/ausblenden</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a href="/" class="navbar-brand">Demokratie in Bewegung</a>
-    </div>
-    <nav class="collapse navbar-collapse" id="bs-navbar">
-    	<ul class="nav navbar-nav navbar-right">
-    	  <li><a href="/hilfe">Hilfe</a></li>
-        {% if user.is_authenticated %}
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% avatar user 20 %} <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-              <li><a href="{% url 'account_settings' %}">Profil anpassen</a></li>
-              <li><a href="{% url 'account_password' %}">Passwort ändern</a></li>
-              <li><a href="{% url 'avatar_change' %}">Avatar ändern</a></li>
-              <li role="separator" class="divider"></li>
-              <li><a href="/account/logout/">Abmelden</a></li>
-            </ul>
-          </li>
-        {% else %}
-          <li><a href="/registrieren/">Registrieren</a></li>
-          <li><a href="/account/login/">Anmelden</a></li>
-        {% endif %}
-    	</ul>
-    </nav>
-  </div>
-</header>
-
-<div class="main container">
-
-	{% block content %}
-	{% endblock %}
-
-</div>
-
-<footer>
-  <div class="container">
-	 <a href='/ueber/'>Über</a>
-  </div>
-</footer>
-
-<!-- Needed by Bootstrap 4.0 -->
-<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-
-<script type="text/javascript" src="/static/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
-
-{% block body-javascript %}{% endblock %}
-
-</body>
+		{% block body-javascript %}{% endblock %}
+	</body>

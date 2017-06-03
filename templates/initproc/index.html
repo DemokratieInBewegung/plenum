@@ -1,87 +1,173 @@
 {% extends "_base.html" %}
+
 {% block content %}
+<form id="filters" method="GET">
+	<div class="typefilter">
+		<div class="container-fluid">
+			<div class="row no-gutters">
+				<div class="col-auto">
+			      <h6>
+			      	Zeige nur:
+			      </h6>
+	    		</div>
+	    		<div class="col-sm-10">
+				  	<div class="row no-gutters">
+					 	{% if user.is_staff %}
+					    <div class="col-auto">
+						    <label>
+						      	<input name="f" value="i" type="checkbox" {% if 'i' in filters %} checked{% endif %}>
+						      	<span class="badge badge-arrivals">
+						      		Neu eingegangen
+						      	</span>
+						    </label>
+						</div>
+				      	{% endif %}
+				      	<div class="col-auto">
+						    <label>
+						      	<input name="f" value="s" type="checkbox" {% if 's' in filters %} checked{% endif %}>
+						      	<span class="badge badge-support">
+						      		Sucht Unterstützung
+						      	</span>
+						    </label>
+						</div>
+						<div class="col-auto">
+						    <label>
+						      	<input name="f" value="d" type="checkbox" {% if 'd' in filters %} checked{% endif %}>
+						      	<span class="badge badge-discussion">
+						      		In Diskussion
+						      	</span>
+						    </label>
+						</div>
+						<div class="col-auto">
+						    <label>
+						      	<input name="f" value="e" type="checkbox" {% if 'e' in filters %} checked{% endif %}>
+						      	<span class="badge badge-edits">
+						      		Wird überarbeitet
+						      	</span>
+						    </label>
+						</div>
+						<div class="col-auto">
+						    <label>
+						      	<input name="f" value="v" type="checkbox" {% if 'v' in filters %} checked{% endif %}>
+						      	<span class="badge badge-vote">
+						      		Abstimmung
+						      	</span>
+						    </label>
+						</div>
+						<div class="col-auto">
+						    <label>
+						      	<input name="f" value="a" type="checkbox" {% if 'a' in filters %} checked{% endif %}>
+						      	<span class="badge badge-accepted">
+						      		Angenommen
+						      	</span>
+						    </label>
+						</div>
+						<div class="col-auto">
+						    <label>
+						      	<input name="f" value="r" type="checkbox" {% if 'r' in filters %} checked{% endif %}>
+						      	<span class="badge badge-rejected">
+						      		Abgelehnt
+						      	</span>
+						    </label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+ </form>
 
-		<form id="filters" method="GET">
-			<div class="typefilter">
-				zeige nur: 
+<div class="container init-index">
+	{% for init in initiatives %}
+	<div class="card">
+		<div class="card-header">
+			<div class="container-fluid">
+				 <div class="row no-gutters">
+				 	<div class="col">
+				  		{% ifequal init.state 'i' %}
+						<span class="badge badge-arrivals">
+							Neu eingegangen
+						</span>
+						{% endifequal %}
 
-			  {% if user.is_staff %}
-			      <label>
-			      	<input name="f" value="i" type="checkbox" {% if 'i' in filters %} checked{% endif %}>
-			      		<span class="label label-info">Neu eingegangen</span>
-			      </label>
-		      {% endif %}
+						{% ifequal init.state 's' %}
+						<span class="badge badge-support">
+							Sucht Unterstützung
+						</span>
+						{% endifequal %}
 
-		      <label>
-		      	<input name="f" value="s" type="checkbox" {% if 's' in filters %} checked{% endif %}>
-		      		<span class="label label-primary">Sucht Unterstützung</span>
-		      </label>
-		      <label>
-		      	<input name="f" value="d" type="checkbox" {% if 'd' in filters %} checked{% endif %}>
-		      		<span class="label label-info">In Diskussion</span>
-		      </label>
-		      <label>
-		      	<input name="f" value="e" type="checkbox" {% if 'e' in filters %} checked{% endif %}>
-		      		<span class="label label-info">Wird überarbeitet</span>
-		      </label>
-		      <label>
-		      	<input name="f" value="v" type="checkbox" {% if 'v' in filters %} checked{% endif %}>
-		      		<span class="label label-danger">Abstimmung</span>
-		      </label>
-		      <label>
-		      	<input name="f" value="a" type="checkbox" {% if 'a' in filters %} checked{% endif %}>
-		      		<span class="label label-success">Angenommen</span>
-		      </label>
-		      <label>
-		      	<input name="f" value="r" type="checkbox" {% if 'r' in filters %} checked{% endif %}>
-		      		<span class="label label-default">Abgelehnt</span>
-		      </label>
-		    </div>
-		 </form>
+						{% ifequal init.state 'd' %}
+						<span class="badge badge-discussion">
+							In Diskussion
+						</span>
+						{% endifequal %}
 
-   {% for init in initiatives %}
+						{% ifequal init.state 'e' %}
+						<span class="badge badge-edits">
+							Wird überarbeitet
+						</span>
+						{% endifequal %}
 
-			<h2 class="init-title"><a href="/initiative/{{init.id}}">{{init.title}}</a></h2>
-			<p>
-			    {% ifequal init.state 'i' %}
-			      <span class="label label-primary">Neu eingegangen</span>
-			    {% endifequal %}
+						{% ifequal init.state 'v' %}
+						<span class="badge badge-vote">
+							Abstimmung
+						</span>
+						{% endifequal %}
 
-			    {% ifequal init.state 's' %}
-			      <span class="label label-primary">Sucht Unterstützung</span>
-			    {% endifequal %}
+						{% ifequal init.state 'a' %}
+						<span class="badge badge-accepted">
+							Angenommen
+						</span>
+						{% endifequal %}
 
-			    {% ifequal init.state 'd' %}
-			      <span class="label label-info">In Diskussion</span>
-			    {% endifequal %}
-
-			    {% ifequal init.state 'e' %}
-			      <span class="label label-info">Wird überarbeitet</span>
-			    {% endifequal %}
-
-			    {% ifequal init.state 'v' %}
-			      <span class="label label-danger">Abstimmung</span>
-			    {% endifequal %}
-
-			    {% ifequal init.state 'a' %}
-			      <span class="label label-success">Angenommen</span>
-			    {% endifequal %}
-
-			    {% ifequal init.state 'r' %}
-			      <span class="label label-default">Abgelehnt</span>
-			    {% endifequal %}
-
-				{{init.summary}}
-			</p>
-   {% endfor %}
+						{% ifequal init.state 'r' %}
+						<span class="badge badge-rejected">
+							Abgelehnt
+						</span>
+						{% endifequal %}
+					</div>
+					<div class="col text-right">
+						<span class="text-muted">
+							Noch 1 Tag
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="card-block">
+	    	<h4 class="card-title init-title">
+	    		<a href="/initiative/{{init.id}}">
+					{{init.title}}
+				</a>
+			</h4>
+	    	<p class="card-text">
+	    		{{init.summary}}
+	    	</p>
+	  	</div>
+	  	<div class="card-footer">
+	  		<div class="container-fluid">
+				 <div class="row no-gutters">
+				 	<div class="col">
+				 		<a href="#">
+				 			Teilen
+				 		</a>
+				 	</div>
+				 	<div class="col">
+				 	</div>
+				</div>
+			</div>
+	  	</div>
+	</div>
+	{% endfor %}
+</div>
 
 {% endblock %}
 
-
 {% block body-javascript %}
-    {{ block.super }}
 
-  <script type="text/javascript">
+{{ block.super }}
+
+<script type="text/javascript">
   	$(function(){
   		var submitTimeout = null;
 	    $('.typefilter input').change(function(item) {

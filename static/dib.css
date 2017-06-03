@@ -1,4 +1,262 @@
+body {
+  background: #E5E5E5;
+  font-family: 'Rubik', sans-serif;
+  /*background-image: linear-gradient(90deg, #21466b, #62388E, #eb5c4a);*/
+}
+
+/* custom elements */
+
+nav .dropdown-menu-left {
+  left: -6.5rem;
+}
+
+nav .dropdown-menu {
+  margin-top: 0.46rem;
+  border-radius: 0;
+}
+
+nav.navbar-inverse.bg-inverse .navbar-nav .nav-link:focus, nav.navbar-inverse.bg-inverse .navbar-nav .nav-link:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+nav.navbar-inverse.bg-inverse .dropdown-menu .dropdown-item {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+nav.navbar-inverse.bg-inverse .dropdown-menu .dropdown-item:focus, nav.navbar-inverse.bg-inverse .dropdown-menu .dropdown-item:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.navbar-inverse.bg-inverse .dropdown-divider {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+header {
+  margin-top: 3.4rem;
+}
+
+.main {
+  /*background: white;
+  padding: 1em;
+  border-radius: 5px;*/
+  overflow: hidden;
+}
+
+.container-fluid {
+  padding: 0;
+  width: 100%;
+}
+
+.init-index .card {
+  margin: 1rem 0;
+}
+
+@media (max-width: 575px) {
+  .container.init-index {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+@media (min-width: 576px) {
+  .container.init-index {
+    width: auto;
+    max-width: 720px;
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+@media (min-width: 992px) {
+  .container.init-index {
+    width: 800px;
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container.init-index {
+    width: 800px;
+    max-width: 100%;
+  }
+}
+
+#filters {
+  background-color: rgba(255, 255, 255, 1);
+  padding: 0.5rem 1rem;
+}
+
+.card-header:first-child {
+    border-radius: 0;
+}
+
+.card-footer:last-child {
+    border-radius: 0;
+}
+
+.card-header, .card-footer {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+footer {
+  margin: 0.5em 0;
+  text-align: right;
+}
+
+footer a {
+  color: white;
+}
+
+footer a:hover {
+  color: #336699;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+h2.init-title a {
+  color: #336699;
+}
+
+#filters h6 {
+  font-weight: normal;
+  line-height: 150%;
+  margin: 0.25rem 0.5rem 0 0;
+}
+
+header .alert {
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+.typefilter {
+  display: flex;
+}
+
+.typefilter label {
+  margin: 0.25rem 0.5rem 0.25rem 0;
+  cursor: pointer;
+  float: left;
+}
+
+.typefilter input {
+  display: none;
+}
+
+.badge {
+  font-weight: normal;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.125rem;
+  border-width: 1px;
+  border-style: solid;
+  background: transparent;
+}
+
+.typefilter .badge {
+  background: inherit;
+}
+
+.typefilter input:not(:checked) + .badge {
+  background: transparent;
+}
+
+.typefilter input:checked + .badge {
+  color: rgba(255, 255, 255, 1);
+}
+
+/* Badge Color: New Arrivals */
+
+.badge-arrivals {
+  color: #636c72;
+  border-color: #636c72;
+}
+
+.typefilter input:checked + .badge-arrivals {
+  background-color: #636c72;
+}
+
+/* Badge Color: Seeking Support */
+
+.badge-support {
+  color: #EB9316;
+  border-color: #EB9316;
+}
+
+.typefilter input:checked + .badge-support {
+  background-color: #EC971F;
+}
+
+/* Badge Color: In Discussion */
+
+.badge-discussion {
+  color: #01549B;
+  border-color: #01549B;
+}
+
+.typefilter input:checked + .badge-discussion {
+  background-color: #025AA5;
+}
+
+/* Badge Color: Final Edits */
+
+.badge-edits {
+  color: #2AABD2;
+  border-color: #2AABD2;
+}
+
+.typefilter input:checked + .badge-edits {
+  background-color: #31B0D5;
+}
+
+/* Badge Color: Is Being Voted On */
+
+.badge-vote {
+  color: #C12E2A;
+  border-color: #C12E2A;
+}
+
+.typefilter input:checked + .badge-vote {
+  background-color: #C9302C;
+}
+
+/* Badge Color: Was Accepted */
+
+.badge-accepted {
+  color: #419641;
+  border-color: #419641;
+}
+
+.typefilter input:checked + .badge-accepted {
+  background-color: #449D44;
+}
+
+/* Badge Color: Was Rejected */
+
+.badge-rejected {
+  color: #ADADAD;
+  border-color: #ADADAD;
+}
+
+.typefilter input:checked + .badge-rejected {
+  background-color: #B1B1B1;
+}
+
+.profiles {
+  list-style: none;
+  display: flex;
+  padding: 0;
+}
+
+.profiles img {
+  border-radius: 100%;
+  border: 2px solid #eee;
+  margin: 0.5em;
+}
+
 /* prettier labels */
+
 .label {
   background-color: white;
   border: 1px solid #333;
@@ -32,75 +290,6 @@ label.deactivated {
 .label-success {
   border-color: #22b24c;
   color: #22b24c;
-}
-
-/* custom elements */
-
-body {
-  background-image: linear-gradient(90deg, #21466b, #62388E, #eb5c4a);
-}
-
-footer {
-  margin: 0.5em 0;
-  text-align: right;
-}
-
-.main {
-  background: white;
-  padding: 1em;
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-footer a,
-.navbar a {
-  color: white;
-}
-
-footer a:hover,
-.navbar .nav a:hover {
-  color: #336699;
-}
-
-h2.init-title a {
-  color: #336699;
-}
-
-
-.typefilter {
-  display: flex;
-}
-
-
-.typefilter label {
-  margin: 0 3px;
-  cursor: pointer;
-}
-
-.typefilter input {
-  display: none;
-}
-
-.typefilter input:not(:checked) + .label {
-  opacity: 0.25
-}
-
-.typefilter input:checked + .label {
-  opacity: 1;
-}
-
-
-
-.profiles {
-  list-style: none;
-  display: flex;
-  padding: 0;
-}
-
-.profiles img {
-  border-radius: 100%;
-  border: 2px solid #eee;
-  margin: 0.5em;
 }
 
 /* argument specific avatars */

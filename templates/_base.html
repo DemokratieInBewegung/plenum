@@ -27,7 +27,7 @@
 			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-			<a class="navbar-brand" href="#">Initiativplattform</a>
+			<a class="navbar-brand" href="/">Initiativplattform</a>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav ml-auto">
 					<li class="nav-item">
@@ -38,8 +38,8 @@
 					</li>
 					{% if user.is_authenticated %}
 					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							{% avatar user 20 %}
+						<a class="nav-link dropdown-toggle avatar" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							{% avatar user 40 %}
 						</a>
 						<div class="dropdown-menu dropdown-menu-left bg-inverse" aria-labelledby="navbarDropdownMenuLink">
 							<a class="dropdown-item" href="{% url 'account_settings' %}">Profil anpassen</a>

@@ -7,11 +7,11 @@ body {
 /* custom elements */
 
 nav .dropdown-menu-left {
-  left: -6.5rem;
+  left: -5.25rem;
 }
 
 nav .dropdown-menu {
-  margin-top: 0.46rem;
+  margin-top: 0.45rem;
   border-radius: 0;
 }
 
@@ -30,6 +30,11 @@ nav.navbar-inverse.bg-inverse .dropdown-menu .dropdown-item:focus, nav.navbar-in
 
 .navbar-inverse.bg-inverse .dropdown-divider {
   background-color: rgba(0, 0, 0, 0.15);
+}
+
+.nav-link.avatar {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 header {
@@ -97,6 +102,14 @@ header {
 
 .card-header, .card-footer {
   background-color: rgba(255, 255, 255, 1);
+}
+
+/*.card-header .text-right {
+  margin-top: 0.125rem;
+}*/
+
+.avatar img {
+  border-radius: 50%;
 }
 
 footer {

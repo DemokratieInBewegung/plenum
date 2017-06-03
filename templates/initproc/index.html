@@ -1,5 +1,7 @@
 {% extends "_base.html" %}
 
+{% load avatar_tags %}
+
 {% block content %}
 <form id="filters" method="GET">
 	<div class="typefilter">
@@ -83,7 +85,7 @@
 		<div class="card-header">
 			<div class="container-fluid">
 				 <div class="row no-gutters">
-				 	<div class="col">
+				 	<div class="col-auto align-self-center">
 				  		{% ifequal init.state 'i' %}
 						<span class="badge badge-arrivals">
 							Neu eingegangen
@@ -126,9 +128,14 @@
 						</span>
 						{% endifequal %}
 					</div>
-					<div class="col text-right">
-						<span class="text-muted">
-							Noch 1 Tag
+					<div class="col text-right align-self-center">
+						<span class="text-muted align-middle">
+							{% ifequal init.state 's' %}
+								noch {{init.went_to_discussion_at|timeuntil }}
+							{% endifequal %}
+							{% ifequal init.state 'd' %}
+								noch {{init.went_to_voting_at|timeuntil }}
+							{% endifequal %}
 						</span>
 					</div>
 				</div>
@@ -147,12 +154,15 @@
 	  	<div class="card-footer">
 	  		<div class="container-fluid">
 				 <div class="row no-gutters">
-				 	<div class="col">
+				 	<div class="col align-self-center">
 				 		<a href="#">
 				 			Teilen
 				 		</a>
 				 	</div>
-				 	<div class="col">
+				 	<div class="col text-right avatar">
+				 		{% for user in init.initiators.all %}
+				          {% avatar user 40 %}
+				        {% endfor %}
 				 	</div>
 				</div>
 			</div>

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # 3rd party
     'account',
     'avatar',
+    'mailer',
 
     # locally
     'voty.initproc'
@@ -138,17 +139,23 @@ ACCOUNT_OPEN_SIGNUP = False
 AVATAR_GRAVATAR_DEFAULT = 'retro'
 
 
-if not DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = 'keine-antwort@bewegung.jetzt'
+EMAIL_BACKEND = "mailer.backend.DbBackend"
+
+if DEBUG:
+    MAILER_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+elif os.environ.get('SPARKPOST_API_KEY', None):
+    SPARKPOST_API_KEY = os.environ.get('SPARKPOST_API_KEY')
+    MAILER_EMAIL_BACKEND = 'sparkpost.django.email_backend.SparkPostEmailBackend'
+
+else:
+    MAILER_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_USE_TLS = True
-    # EMAIL_USE_SSL = True
-    DEFAULT_FROM_EMAIL = 'robot@bewegung.jetzt'
     EMAIL_HOST = os.environ.get("SMTP_SERVER", "smtp.mailgun.org")
     EMAIL_HOST_USER = os.environ.get("SMTP_USERNAME", 'mymail@gmail.com')
     EMAIL_HOST_PASSWORD = os.environ.get("SMTP_PASSWORD", 'password')
     EMAIL_PORT = int(os.environ.get("SMTP_PORT", 587))
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 # Static files (CSS, JavaScript, Images)

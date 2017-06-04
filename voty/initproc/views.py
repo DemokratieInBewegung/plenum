@@ -1,7 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
+from django.contrib.auth import get_user_model
+from django.db.models import Q
+from dal import autocomplete
 from django import forms
 
 from .models import (Initiative, Argument, Comment, Vote, Supporter, Like)
@@ -29,10 +32,47 @@ def index(request):
     inits = Initiative.objects.filter(state__in=filters)
     return render(request, 'initproc/index.html', context=dict(initiatives=inits, filters=filters))
 
+
+
+class UserAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated():
+            return get_user_model().objects.none()
+
+        qs = get_user_model().objects.all()
+
+        if self.q:
+            qs = qs.filter(Q(first_name__startswith=self.q) | Q(last_name__startswith=self.q) | Q(username__startswith=self.q))
+
+        return qs
+
+def has_enough_initiators(value):
+    print(value)
+    if len(value) != 2:
+        raise ValidationError("Du brauchst genau zwei Mitinitiatoren!")
+
 class NewInitiative(forms.ModelForm):
+
+    supporters = forms.ModelMultipleChoiceField(
+        label="Erstunterstützer",
+        queryset=get_user_model().objects,
+        required=False,
+        widget=autocomplete.ModelSelect2Multiple(
+                    url='user_autocomplete',
+                    attrs={"data-placeholder": "Zum Suchen tippen"}))
+
+
+    initiators = forms.ModelMultipleChoiceField(
+        label="Mitinitiatoren",
+        queryset=get_user_model().objects,
+        validators=[has_enough_initiators],
+        widget=autocomplete.ModelSelect2Multiple(
+                    url='user_autocomplete',
+                    attrs={"data-placeholder": "Zum Suchen tippen"}))
     class Meta:
         model = Initiative
-        fields = ['title', 'summary', 'forderung', 'kosten', 'fin_vorschlag', 'arbeitsweise', 'init_argument',
+        fields = ['title', 'initiators', 'summary', 'forderung', 'kosten', 'fin_vorschlag', 'arbeitsweise', 'init_argument',
                   'einordnung', 'ebene', 'bereich']
 
         labels = {
@@ -42,7 +82,7 @@ class NewInitiative(forms.ModelForm):
             "kosten": "Kosten",
             "fin_vorschlag": "Finanzierungsvorschlag",
             "arbeitsweise": "Arbeitsweise",
-            "init_argument": "Argument der Initiatoren"
+            "init_argument": "Argument der Initiatoren",
         }
 
 @login_required
@@ -50,7 +90,7 @@ def new(request):
     form = NewInitiative()
     if request.method == 'POST':
         form = NewInitiative(request.POST)
-        if form.save():
+        if form.is_valid():
             return HttpResponse("ok")
     return render(request, 'initproc/new.html', context=dict(form=form))
 

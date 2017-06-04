@@ -32,7 +32,6 @@ ALLOWED_HOSTS = os.environ.get('VIRTUAL_HOST', 'localhost').split(',')
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
     'django.contrib.contenttypes',
@@ -47,6 +46,11 @@ INSTALLED_APPS = [
     'pinax.notifications',
     'notifications',
     'bootstrapform',
+
+    # must be before admin ...
+    'dal',
+    'dal_select2',
+    'django.contrib.admin',
 
     # locally
     'voty.initproc'

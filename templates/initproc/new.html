@@ -1,6 +1,7 @@
 {% extends "_base.html" %}
 
 {% load avatar_tags %}
+{% load static %}
 {% load bootstrap %}
 
 {% block content %}
@@ -9,7 +10,7 @@
 		<div class="card-header">
 		  <h1>Neue Initiative einreichen</h1>
 		</div>
-		<form>
+		<form method="POST">
 			 {% csrf_token %}
 			<div class="card-body">
 				{{form|bootstrap_horizontal}}
@@ -20,4 +21,11 @@
 		</form>
 	</div>
 </div>
+{% endblock %}
+
+
+{% block body-javascript %}
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+{{ form.media }}
 {% endblock %}

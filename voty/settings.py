@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'account',
     'avatar',
     'mailer',
+    'pinax.notifications',
+    'notifications',
 
     # locally
     'voty.initproc'
@@ -133,7 +135,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-DJANGO_BOOTSTRAP_UI_THEME = 'bootswatch-journal'
+NOTIFICATIONS_USE_JSONFIELD=True
 
 ACCOUNT_OPEN_SIGNUP = False
 AVATAR_GRAVATAR_DEFAULT = 'retro'

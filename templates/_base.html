@@ -1,4 +1,7 @@
 {% load avatar_tags %}
+{% load notifications_tags %}
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -41,6 +44,13 @@
 						<a class="nav-link" href='/ueber/'>Über</a>
 					</li>
 					{% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="material-icons">mail</i>
+              {% live_notify_badge classes="badge-pill" %}
+            </a>
+            {% live_notify_list classes="dropdown-menu" %}
+          </li>
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle avatar" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							{% avatar user 40 %}
@@ -48,7 +58,8 @@
 						<div class="dropdown-menu dropdown-menu-left bg-inverse" aria-labelledby="navbarDropdownMenuLink">
 							<a class="dropdown-item" href="{% url 'account_settings' %}">Profil anpassen</a>
 							<a class="dropdown-item" href="{% url 'account_password' %}">Passwort ändern</a>
-							<a class="dropdown-item" href="{% url 'avatar_change' %}">Profilbild ändern</a>
+							<a class="dropdown-item" href="{% url 'avatar_change' %}">Profilbild ändern</a>>
+              <a class="dropdown-item" href="{% url 'notification_notice_settings' %}">Email-Benachrichtigungen ändern</a>
 							<div class="dropdown-divider"></div>
 							<a class="dropdown-item" href="/account/logout/">Abmelden</a>
 						</div>
@@ -87,6 +98,9 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 
 		<script type="text/javascript" src="/static/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
+
+    <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
+    {% register_notify_callbacks callbacks='fill_notification_list,fill_notification_badge' %}
 
 		{% block body-javascript %}{% endblock %}
 	</body>

@@ -50,12 +50,12 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
 def has_enough_initiators(value):
     print(value)
     if len(value) != 2:
-        raise ValidationError("Du brauchst genau zwei Mitinitiatoren!")
+        raise ValidationError("Du brauchst genau zwei Mitinitiator/innen!")
 
 class NewInitiative(forms.ModelForm):
 
     supporters = forms.ModelMultipleChoiceField(
-        label="Erstunterstützer",
+        label="Erstunterstützer/innen",
         queryset=get_user_model().objects,
         required=False,
         widget=autocomplete.ModelSelect2Multiple(
@@ -64,7 +64,7 @@ class NewInitiative(forms.ModelForm):
 
 
     initiators = forms.ModelMultipleChoiceField(
-        label="Mitinitiatoren",
+        label="Mitinitiator/innen",
         queryset=get_user_model().objects,
         validators=[has_enough_initiators],
         widget=autocomplete.ModelSelect2Multiple(
@@ -82,7 +82,7 @@ class NewInitiative(forms.ModelForm):
             "kosten": "Kosten",
             "fin_vorschlag": "Finanzierungsvorschlag",
             "arbeitsweise": "Arbeitsweise",
-            "init_argument": "Argument der Initiatoren",
+            "init_argument": "Argument der Initiator/innen",
         }
 
 @login_required

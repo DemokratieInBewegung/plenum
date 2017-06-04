@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied
+from django import forms
 
 from .models import (Initiative, Argument, Comment, Vote, Supporter, Like)
 # Create your views here.
@@ -27,6 +28,31 @@ def index(request):
 
     inits = Initiative.objects.filter(state__in=filters)
     return render(request, 'initproc/index.html', context=dict(initiatives=inits, filters=filters))
+
+class NewInitiative(forms.ModelForm):
+    class Meta:
+        model = Initiative
+        fields = ['title', 'summary', 'forderung', 'kosten', 'fin_vorschlag', 'arbeitsweise', 'init_argument',
+                  'einordnung', 'ebene', 'bereich']
+
+        labels = {
+            "title" : "Überschrift",
+            "summary" : "Zusammenfassung",
+            "fordering" : "Forderung",
+            "kosten": "Kosten",
+            "fin_vorschlag": "Finanzierungsvorschlag",
+            "arbeitsweise": "Arbeitsweise",
+            "init_argument": "Argument der Initiatoren"
+        }
+
+@login_required
+def new(request):
+    form = NewInitiative()
+    if request.method == 'POST':
+        form = NewInitiative(request.POST)
+        if form.save():
+            return HttpResponse("ok")
+    return render(request, 'initproc/new.html', context=dict(form=form))
 
 
 def item(request, init_id):

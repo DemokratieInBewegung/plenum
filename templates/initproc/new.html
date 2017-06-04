@@ -1,0 +1,23 @@
+{% extends "_base.html" %}
+
+{% load avatar_tags %}
+{% load bootstrap %}
+
+{% block content %}
+<div class="container init-index">
+	<div class="card">
+		<div class="card-header">
+		  <h1>Neue Initiative einreichen</h1>
+		</div>
+		<form>
+			 {% csrf_token %}
+			<div class="card-body">
+				{{form|bootstrap_horizontal}}
+			</div>
+			<div class="card-footer">
+				<button type="submit" class="btn btn-primary">Einreichen</button>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}

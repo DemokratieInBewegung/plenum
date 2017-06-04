@@ -38,9 +38,17 @@ class Initiative(models.Model):
     arbeitsweise = models.TextField()
     init_argument = models.TextField()
 
-    einordnung = models.CharField(max_length=50)
-    ebene = models.CharField(max_length=50)
-    bereich = models.CharField(max_length=50)
+    einordnung = models.CharField(max_length=50, choices=[('Einzellinitiatve','Einzellinitiative')])
+    ebene = models.CharField(max_length=50, choices=[('Bund', 'Bund')])
+    bereich = models.CharField(max_length=50, choices=[
+                ('Mitbestimmung', 'Mitbestimmung'),
+                ('Transparenz und Lobbyismus', 'Transparenz und Lobbyismus'),
+                ('Demokratisches und solidarisches Europa', 'Demokratisches und solidarisches Europa'),
+                ('Gerechtigkeit und Verantwortung füreinander', 'Gerechtigkeit und Verantwortung füreinander'),
+                ('Vielfältige, weltoffene und inklusive Gesellschaft', 'Vielfältige, weltoffene und inklusive Gesellschaft'),
+                ('Nachhaltigkeit', 'Nachhaltigkeit'),
+                ('Zukunft aktiv gestalten', 'Zukunft aktiv gestalten'),
+                ('(andere)', '(andere)')])
 
     initiators = models.ManyToManyField(User)
 

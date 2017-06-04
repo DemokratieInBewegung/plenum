@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'mailer',
     'pinax.notifications',
     'notifications',
+    'bootstrapform',
 
     # locally
     'voty.initproc'

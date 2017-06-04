@@ -23,11 +23,15 @@
 		<![endif]-->
 	</head>
 	<body class="{% block body_class%}{% endblock%}">
-		<nav class="navbar fixed-top navbar-toggleable-sm navbar-inverse bg-inverse">
+		<div class="container-fluid fixed-top dib">
+		<nav class="navbar navbar-toggleable-sm navbar-inverse bg-inverse">
 			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-			<a class="navbar-brand" href="/">Initiativplattform</a>
+			<a class="navbar-brand" href="/">
+				<img src="/static/img/dib_logo.svg" height="40" class="d-inline-block align-middle" alt="Demokratie in Bewegung">
+    			<span class="align-middle">Initiativen</span>
+    		</a>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav ml-auto">
 					<li class="nav-item">
@@ -60,6 +64,7 @@
 				</ul>
 			</div>
 		</nav>
+		</div>
 		<header>
 			<div class="alert alert-info alert-dismissible fade show" role="alert">
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close">

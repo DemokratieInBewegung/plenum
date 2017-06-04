@@ -4,10 +4,81 @@ body {
   /*background-image: linear-gradient(90deg, #21466b, #62388E, #eb5c4a);*/
 }
 
+/* Material Icons */
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/static/fonts/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url(/static/fonts/MaterialIcons-Regular.woff2) format('woff2'),
+    url(/static/fonts/MaterialIcons-Regular.woff) format('woff'),
+    url(/static/fonts/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
 /* custom elements */
 
+.dib {
+  background: linear-gradient(to right, #21466b 0%,#263d82 30%,#263d82 30%,#eb5c4a 100%);
+}
+
+.navbar-inverse .navbar-toggler-icon {
+    background-image: url(/static/img/ic_menu_36px_light.svg);
+    width: 1.75em;
+}
+
+.navbar.navbar-inverse {
+  /*background-color: rgba(0, 0, 0, 0.7);*/
+  /*background: linear-gradient(to right, #21466b 0%,#263d82 30%,#263d82 30%,#eb5c4a 100%);*/
+  /*background: linear-gradient(90deg, #21466b, #62388E, #eb5c4a);*/
+}
+
+/*.navbar-brand {
+  background: linear-gradient(to right, #263d82 0%,#263d82 30%,#263d82 30%,#eb5c4a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  font-weight: bold;
+}*/
+
+.navbar.navbar-inverse {
+ margin-top: 0.375rem;
+}
+
+.navbar-brand {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 nav .dropdown-menu-left {
-  left: -5.25rem;
+  left: -5.125rem;
 }
 
 nav .dropdown-menu {
@@ -15,20 +86,29 @@ nav .dropdown-menu {
   border-radius: 0;
 }
 
-nav.navbar-inverse.bg-inverse .navbar-nav .nav-link:focus, nav.navbar-inverse.bg-inverse .navbar-nav .nav-link:hover {
+.navbar-inverse .navbar-toggler {
+  border: 0;
+  padding: 0.25rem 0rem 0.25rem 0.75rem;
+}
+
+nav.navbar-inverse .navbar-nav .nav-link:focus, nav.navbar-inverse .navbar-nav .nav-link:hover {
     color: rgba(255, 255, 255, 0.9);
 }
 
-nav.navbar-inverse.bg-inverse .dropdown-menu .dropdown-item {
+nav.navbar-inverse .dropdown-menu {
+  border: 0;
+}
+
+nav.navbar-inverse .dropdown-menu .dropdown-item {
   color: rgba(255, 255, 255, 0.75);
 }
 
-nav.navbar-inverse.bg-inverse .dropdown-menu .dropdown-item:focus, nav.navbar-inverse.bg-inverse .dropdown-menu .dropdown-item:hover {
+nav.navbar-inverse .dropdown-menu .dropdown-item:focus, nav.navbar-inverse .dropdown-menu .dropdown-item:hover {
   color: rgba(255, 255, 255, 0.9);
   background-color: rgba(0, 0, 0, 0.15);
 }
 
-.navbar-inverse.bg-inverse .dropdown-divider {
+.navbar-inverse .dropdown-divider {
   background-color: rgba(0, 0, 0, 0.15);
 }
 
@@ -38,7 +118,7 @@ nav.navbar-inverse.bg-inverse .dropdown-menu .dropdown-item:focus, nav.navbar-in
 }
 
 header {
-  margin-top: 3.4rem;
+  margin-top: 3.775rem;
 }
 
 .main {
@@ -104,12 +184,22 @@ header {
   background-color: rgba(255, 255, 255, 1);
 }
 
-/*.card-header .text-right {
-  margin-top: 0.125rem;
-}*/
+.card-header .badge {
+  margin-right: 1rem;
+}
+
+.card-header .col.text-right {
+  line-height: 125%;
+}
 
 .avatar img {
   border-radius: 50%;
+}
+
+/* Odd webkit button and Input on focus rendering */
+
+button:focus, input:focus {
+  outline: none;
 }
 
 footer {

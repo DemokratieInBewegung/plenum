@@ -44,7 +44,7 @@
 						    <label>
 						      	<input name="f" value="e" type="checkbox" {% if 'e' in filters %} checked{% endif %}>
 						      	<span class="badge badge-edits">
-						      		Wird überarbeitet
+						      		Finale Überarbeitung
 						      	</span>
 						    </label>
 						</div>
@@ -106,7 +106,7 @@
 
 						{% ifequal init.state 'e' %}
 						<span class="badge badge-edits">
-							Wird überarbeitet
+							Finale Überarbeitung
 						</span>
 						{% endifequal %}
 
@@ -131,10 +131,10 @@
 					<div class="col text-right align-self-center">
 						<span class="text-muted align-middle">
 							{% ifequal init.state 's' %}
-								noch {{init.went_to_discussion_at|timeuntil }}
+								Noch {{init.went_to_discussion_at|timeuntil }}
 							{% endifequal %}
 							{% ifequal init.state 'd' %}
-								noch {{init.went_to_voting_at|timeuntil }}
+								Noch {{init.went_to_voting_at|timeuntil }}
 							{% endifequal %}
 						</span>
 					</div>

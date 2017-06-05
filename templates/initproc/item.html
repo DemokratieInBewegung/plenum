@@ -1,296 +1,320 @@
-{% extends "_base.html" %}
-{% load avatar_tags %}
-
-{% block content %}
-    <ol class="breadcrumb">
-
-    {% ifequal initiative.state 'i' %}
-      <span class="label label-danger">Noch nicht veröffentlicht</span>
-    {% endifequal %}
-
-    {% ifequal initiative.state 'm' %}
-      <span class="label label-danger">Wird gerade moderiert</span>
-    {% endifequal %}
-
-    {% ifequal initiative.state 'h' %}
-      <span class="label label-danger">Versteckt</span>
-    {% endifequal %}
-
-
-    {% ifequal initiative.state 's' %}
-      <li class="active"><span class="label">Sucht Unterstützung</span></li>
-      <li>Diskussion</li>
-      <li>Finale Überarbeitung</li>
-      <li>Abstimmung</li>
-    {% endifequal %}
-
-    {% ifequal initiative.state 'd' %}
-      <li>Sucht Unterstützung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
-      <li class="active"><span class="label">Diskussion</span></li>
-      <li>Finale Überarbeitung</li>
-      <li>Abstimmung</li>
-    {% endifequal %}
-
-    {% ifequal initiative.state 'e' %}
-      <li>Sucht Unterstützung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
-      <li>Diskussion <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
-      <li class="active"><span class="label">Finale Überarbeitung</span></li>
-      <li>Abstimmung</li>
-    {% endifequal %}
-
-    {% ifequal initiative.state 'v' %}
-      <li>Sucht Unterstützung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
-      <li>Diskussion <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
-      <li>Finale Überarbeitung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
-      <li class="active"><span class="label">Abstimmung</span></li>
-    {% endifequal %}
-
-    {% ifequal initiative.state 'a' %}
-      <li>Sucht Unterstützung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
-      <li>Diskussion <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
-      <li>Finale Überarbeitung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
-      <li>Abstimmung: <span class="label label-success">Angenommen</span></li>
-    {% endifequal %}
-
-    {% ifequal initiative.state 'r' %}
-      {% if initiative.went_to_discussion_at %}
-        <li>Sucht Unterstützung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
-        <li>Diskussion <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
-        <li>Finale Überarbeitung <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></li>
-        <li>Abstimmung: <span class="label label-success">Abgelehnt</span></li>
-      {% else %}
-        <li>Sucht Unterstützung: <span class="label label-success">gescheitert <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span></li>
-        <li>Diskussion</li>
-        <li>Finale Überarbeitung</li>
-        <li>Abstimmung</li>
-      {% endif %}
-    {% endifequal %}
-
-    </ol>
-
-    <h1>{{initiative.title}}</h1>
-    
-
-
-
-
-    <p>{{initiative.summary}}</p>
-
-    <h2>Forderung</h2>
-    <p>{{initiative.forderung}}</p>
-    
-    <h2>Kosten</h2>
-    <p>{{initiative.kosten}}</p>
-    
-    <h2>Finanzierungsvorschlag</h2>
-    <p>{{initiative.fin_vorschlag}}</p>
-
-    <h2>Arbeitsweise</h2>
-    <p>{{initiative.arbeitsweise}}</p>
-
-        <h3>Einordnung</h3>
-          <span>{{initiative.einordnung}}</span>
-
-        <h3>Bereich</h3>
-          <span>{{initiative.bereich}}</span>
-
-        <h3>Ebene</h3>
-          <span>{{initiative.ebene}}</span>
-
-        <h3>Eingereicht</h3>
-          <span>{{initiative.added_at}}</span>
-
-        <h3>Initiatore</h3>
-        <div>
-          {% for user in initiative.initiators.all %}
-            {% avatar user %}
-          {% endfor %}
-        </div>
-
-        <hr>
-
-        {% ifequal initiative.state 's' %}
-          <p>Sucht Unterstützung</p>
-
-          <div class="progress">
-            <div class="progress-bar progress-bar-success  progress-bar-striped active" role="progressbar" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}" style="height: 2em; min-width: 2em; width: {{initiative.relative_support}}%;">
-              {{initiative.absolute_supporters|default:0}} Unterstützer
+{% extends "_base.html" %} {% load avatar_tags %} {% load mathfilters %} {% block content %}
+<div class="container-fluid initiative-single">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>{{initiative.title}}</h1>
             </div>
-          </div>
-          {% if has_supported %}
-            <span class="label label-success">Du unterstützt diese Initiative!</span>
-          {% else %}
-            <form action="/initiative/{{initiative.id}}/support" method="POST">
-              {% csrf_token %}
-              <button class="btn btn-success" type="submit">Jetzt Unterstützen</button>
-
-              <label><checkbox name="public" checked>Öffentlich anzeigen</checkbox></label>
-            </form>
-          {% endif %}
-        {% endifequal %}
-
-
-
-
-    <h2>Argument der Initiatoren</h2>
-    <blockquote class="argument">
-      {{initiative.init_argument}}
-      <div>
-        {% for user in initiative.initiators.all %}
-          {% avatar user 35 %}
-        {% endfor %}
-      </div>
-    </blockquote>
-
-
-
-
-{% if initiative.was_closed_at %}
-  <h3 class="history-title">
-    <span class="date">{{initiative.was_closed_at}}</span>
-    {% if initiative.went_to_discussion_at %}
-      Nach Abstimmung mit {{ initiative.yays|default:0 }} Für- und {{ initiative.nays|default:0 }} Gegenstimmen
-      {% ifequal initiative.state 'a' %}
-        angenommen.
-      {% else %}
-        abgelehnt.
-      {% endifequal %}
-    {% else %}
-     Mit {{initiative.absolute_supporters|default:0}} Unterstützern wurde das Qurom von {{initiative.quorum}} nicht erreicht. Die Initiative wurde damit abgelehnt.
-    {% endif }
-  {% endif %}
-  </h3>
-{% endif %}
-
-
-    
-    {% if initiative.state == 's' %}
-
-      <div class="alert alert-warning">
-        <h4>Sucht Unterstützer</h4>
-          <div class="actionbar">
-            <div class="progress">
-              <div class="progress-bar progress-bar-success  progress-bar-striped active" role="progressbar" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}" style="height: 2em; min-width: 2em; width: {{initiative.relative_support}}%;">
-                {{initiative.absolute_supporters|default:0}} Unterstützer
-              </div>
+        </div>
+        <div class="row initiative-state">
+            <div class="col-12">
+                <div class="d-flex flex-wrap">
+                    {% ifequal initiative.state 'i' %}
+                    <span class="badge badge-arrivals">
+				     	Noch nicht veröffentlicht
+				    </span> {% endifequal %} {% ifequal initiative.state 'm' %}
+                    <span class="badge badge-arrivals">
+				    	Wird gerade moderiert
+				    </span> {% endifequal %} {% ifequal initiative.state 'h' %}
+                    <span class="badge badge-arrivals">
+				    	Versteckt
+				    </span> {% endifequal %} {% ifequal initiative.state 's' %}
+                    <span class="badge badge-support">
+						Sucht Unterstützung
+					</span> {% endifequal %} {% ifequal initiative.state 'd' %}
+                    <span class="badge badge-discussion">
+						In Diskussion
+					</span> {% endifequal %} {% ifequal initiative.state 'e' %}
+                    <span class="badge badge-edits">
+						Finale Überarbeitung
+					</span> {% endifequal %} {% ifequal initiative.state 'v' %}
+                    <span class="badge badge-vote">
+						Abstimmung
+					</span> {% endifequal %} {% ifequal initiative.state 'a' %}
+                    <span class="badge badge-accepted">
+						Angenommen
+					</span> {% endifequal %} {% ifequal initiative.state 'r' %} {% if initiative.went_to_discussion_at %}
+                    <span class="badge badge-rejected">
+				      	Abstimmung: Abgelehnt
+				    </span> {% else %}
+                    <span class="badge badge-rejected">
+				      	Sucht Unterstützung: gescheitert
+				    </span> {% endif %} {% endifequal %}
+                    <span class="text-muted">
+						{% ifequal initiative.state 's' %}
+							Noch {{initiative.went_to_discussion_at|timeuntil }}
+						{% endifequal %}
+						{% ifequal initiative.state 'd' %}
+							Noch {{initiative.went_to_voting_at|timeuntil }}
+						{% endifequal %}
+					</span>
+                </div>
             </div>
-            {% if has_supported %}
-              <span class="label label-success">Du unterstützt diese Initiative!</span>
-            {% else %}
-              <form action="/initiative/{{initiative.id}}/support" method="POST">
-                {% csrf_token %}
-                <button class="btn btn-success" type="submit">Jetzt Unterstützen</button>
-
-                <!-- <label><checkbox name="public" checked>Öffentlich anzeigen</checkbox></label> -->
-              </form>
-            {% endif %}
-          </div>
         </div>
-
-      {% if initiative.public_absolute_supporters %}
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <h4>Unterstützer</h4>
-          {% for user in initiative.public_supporters %}
-            {% avatar user %}
-          {% endfor %}
-          </div>
-        </div>
-      {% endif %}
-
-    {% elif initative.state == "a" %}
-
-    {% elif initative.state == "r" %}
-    
-    {% elif initative.state == "d" %}
-    
-    {% elif initative.state == "v" %}
-    
-    {% endif %}
-
-{% if initiative.went_to_discussion_at %}
-<!-- Diskussion element -->    
-
-      <h3>Argumente</h3>
-
-      <div class="discourse">
-        <div class="pro">
-          <h4>Dafür</h4>
-          <ul class="list-group">
-          {% for arg in pro %}
-            {% include "initproc/_argument.html" with argument=arg %}
-          {% endfor %}
-          </ul>
-        </div>
-        <div class="contra">
-          <h4>Dagegen</h4>
-          <ul class="list-group">
-          {% for arg in contra %}
-            {% include "initproc/_argument.html" with argument=arg %}
-          {% endfor %}
-          </ul>
-        </div>
-      </div>
-      {% if initiative.state == "d" %}
-        <form action="/initiative/{{initiative.id}}/post_argument" method="POST">
-          <div class="post-argument panel panel-default">
-            <div class="panel-heading">
-              Neues Argument <label><input type="radio" name="vote" value="yay" />dafür</label> <label><input type="radio" name="vote" value="nay"/> dagegen</label> erstellen.
-              <input placeholder="Überschrift" type="text" maxlength="80" name="title">
+        <div class="row initiative-text">
+        	<div class="col-md-4 col-sm-12 offset-md-1 push-md-7">
+                <div class="card initiative-meta">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div>
+                                <h6 class="text-muted">Einordnung</h6>
+                                <span class="meta-content">{{initiative.einordnung}}</span>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                <h6 class="text-muted">Bereich</h6>
+                                <span class="meta-content">{{initiative.bereich}}</span>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                <h6 class="text-muted">Ebene</h6>
+                                <span class="meta-content">{{initiative.ebene}}</span>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                <h6 class="text-muted">Eingereicht</h6>
+                                <span class="meta-content">{{initiative.added_at}}</span>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                <h6 class="text-muted">Initiator/innen</h6>
+                            </div>
+                            <div class="container-fluid avatar">
+                                <div class="row">
+                                    {% for user in initiative.initiators.all %} {% if forloop.counter|divisibleby:3 %}
+                                    <div class="w-100">
+                                    </div>
+                                    {% endif %}
+                                    <div class="col-6 text-center initiator {% if forloop.counter|divisibleby:3 %}justify-content-start{% endif %}">
+                                        {% avatar user %}
+                                        <span>Initiator Name</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item cta">
+                            <div class="container-fluid">
+                                <h6 class="text-muted">
+                                	Aktion
+                                </h6>
+                                {% ifequal initiative.state 's' %}
+                                {% if initiative.absolute_supporters < initiative.quorum %}
+                                <span class="meta-content">
+                                	Diese Initiative braucht noch 
+                                	<strong>
+                                		{{initiative.quorum|sub:initiative.absolute_supporters}}
+                                	</strong> 
+                                	{% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}
+                                	Unterstützer/in{% else %}Unterstützer/innen{% endif %}.
+                                </span>
+                                {% elif initiative.absolute_supporters == initiative.quorum %}
+                                 <span class="meta-content">
+                                 	Diese Initiative hat das Quorum an Unterstützer/innen erreicht!
+                                </span>
+                                {% else %}
+                                <span class="meta-content">
+                                	Diese Initiative hat das Quorum erreicht und darüber hinaus 
+                                	<strong>
+                                		{{initiative.absolute_supporters|sub:initiative.quorum}}
+                                	</strong> 
+                                	{% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}
+                                	Unterstützer/in{% else %}Unterstützer/innen{% endif %}.
+                                </span>
+                                {% endif %}
+                                <div class="progress">
+                                    <div class="progress-bar bg-support" role="progressbar" style="width: {{initiative.relative_support|floatformat:" 0 "}}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
+                                    </div>
+                                </div>
+                                <span class="meta-content">
+                                	{{initiative.absolute_supporters|default:0}} 
+                                	{% if initiative.absolute_supporters == 1 %}
+                                	Unterstützer/in
+                                	{% else %}
+                                	Unterstützer/innen
+                                	{% endif %}
+                                </span>
+                                {% if has_supported %}
+                                <span class="meta-content support supported-by">
+                                	Du unterstützt diese Initiative!
+                                </span>
+                                {% else %}
+                                <form action="/initiative/{{initiative.id}}/support" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn bg-support btn-block btn-lg" type="submit">
+                                        Jetzt Unterstützen
+                                    </button>
+                                    <div class="form-check">
+                                        <label class="form-check-label text-muted">
+                                            <input type="checkbox" class="form-check-input" name="public">
+                                            Öffentlich anzeigen
+                                        </label>
+                                    </div>
+                                </form>
+                                {% endif %}
+                                {% endifequal %}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="panel-body">
-              {% csrf_token %}
-              <textarea name="text" placeholder="Argumentausführung"></textarea>
-              <button type="submit" class="btn btn-success pull-right">Einstellen</button>
-            </form>
-          </div>
+            <div class="col-md-7 col-sm-12 pull-md-5">
+                <p>{{initiative.summary}}</p>
+                <h2>Forderung</h2>
+                <p>{{initiative.forderung}}</p>
+                <h2>Kosten</h2>
+                <p>{{initiative.kosten}}</p>
+                <h2>Finanzierungsvorschlag</h2>
+                <p>{{initiative.fin_vorschlag}}</p>
+                <h2>Arbeitsweise</h2>
+                <p>{{initiative.arbeitsweise}}</p>
+                <h2>Argument der Initiatoren</h2>
+                <blockquote class="blockquote argument">
+                    {{initiative.init_argument}}
+                    <!--<div class="avatar">
+                        {% for user in initiative.initiators.all %} {% avatar user 35 %} {% endfor %}
+                    </div>-->
+                </blockquote>
+            </div>
         </div>
-      {% endif %} 
+        <div class="row">
+            <div class="col-12">
+                {% if initiative.was_closed_at %}
+                <h3 class="history-title">
+			    <span class="date">{{initiative.was_closed_at}}</span>
+			    {% if initiative.went_to_discussion_at %}
+			      Nach Abstimmung mit {{ initiative.yays|default:0 }} Für- und {{ initiative.nays|default:0 }} Gegenstimmen
+			      {% ifequal initiative.state 'a' %}
+			        angenommen.
+			      {% else %}
+			        abgelehnt.
+			      {% endifequal %}
+			    {% else %}
+			     Mit {{initiative.absolute_supporters|default:0}} Unterstützern wurde das Qurom von {{initiative.quorum}} nicht erreicht. Die Initiative wurde damit abgelehnt.
+			    {% endif }
+			    {% endif %}
+			    </h3> {% endif %} {% if initiative.state == 's' %}
+                <h2>Unterstützen</h2>
+                <span class="text-muted full">
+					{% ifequal initiative.state 's' %}
+						Noch {{initiative.went_to_discussion_at|timeuntil }}
+					{% endifequal %}
+					{% ifequal initiative.state 'd' %}
+						Noch {{initiative.went_to_voting_at|timeuntil }}
+					{% endifequal %}
+				</span>
+			</div>
+		</div>
+		<div class="row cta-full">
+			<div class="col">
+            	<div class="progress">
+                    <div class="progress-bar full bg-support" role="progressbar" style="width: {{initiative.relative_support|floatformat:" 0 "}}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
+                    </div>
+                </div>
+                <span class="supported-by" style="display: block">
+                	{{initiative.absolute_supporters|default:0}} 
+                	{% if initiative.absolute_supporters == 1 %}
+                	Unterstützer/in
+                	{% else %}
+                	Unterstützer/innen
+                	{% endif %}
+                </span>
+            </div>
+            <div class="col-auto cta-button">
+            	{% if has_supported %}
+                <span class="support">Du unterstützt diese Initiative!</span>
+                {% else %}
+            	<form action="/initiative/{{initiative.id}}/support" method="POST">
+	            	<button class="btn bg-support btn-block btn-lg" type="submit">
+	                    Jetzt Unterstützen
+	                </button>
+	                <div class="form-check">
+		                <label class="form-check-label text-muted">
+		                    <input type="checkbox" class="form-check-input" name="public">
+		                    Öffentlich anzeigen
+		                </label>
+		            </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+        	<div class="col-12">
+        		{% if initiative.public_absolute_supporters %}
+        		<h2>Unterstützer/innen</h2>
+                <div class="d-flex flex-wrap avatar">
+                        {% for user in initiative.public_supporters %} {% avatar user %} {% endfor %}
+                </div>
+                {% endif %} {% elif initative.state == "a" %} {% elif initative.state == "r" %} {% elif initative.state == "d" %} {% elif initative.state == "v" %} {% endif %} {% if initiative.went_to_discussion_at %}
+                <!-- Diskussion element -->
+                <h3>Argumente</h3>
+                <div class="discourse">
+                    <div class="pro">
+                        <h4>Dafür</h4>
+                        <ul class="list-group">
+                            {% for arg in pro %} {% include "initproc/_argument.html" with argument=arg %} {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="contra">
+                        <h4>Dagegen</h4>
+                        <ul class="list-group">
+                            {% for arg in contra %} {% include "initproc/_argument.html" with argument=arg %} {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% if initiative.state == "d" %}
+                <form action="/initiative/{{initiative.id}}/post_argument" method="POST">
+                    <div class="post-argument panel panel-default">
+                        <div class="panel-heading">
+                            Neues Argument
+                            <label>
+                                <input type="radio" name="vote" value="yay" />dafür</label>
+                            <label>
+                                <input type="radio" name="vote" value="nay" /> dagegen</label> erstellen.
+                            <input placeholder="Überschrift" type="text" maxlength="80" name="title">
+                        </div>
+                        <div class="panel-body">
+                            {% csrf_token %}
+                            <textarea name="text" placeholder="Argumentausführung"></textarea>
+                            <button type="submit" class="btn btn-success pull-right">Einstellen</button>
+                </form>
+                </div>
+                </div>
+                {% endif %} {% endif %} {% comment %} {% if initiative.went_to_voting_at %}
+                <h3 class="history-title">
+			    <span class="date">{{initiative.went_to_voting_at}}</span>
+			    {{ initiative.demands.count|default:0 }} Fordern Abstimmung (Quorum: {{initiative.quorum}}): Abstimmung eröffnet.
+			  </h3> {% endif %} {% if initiative.went_to_discussion_at %}
+                <h3 class="history-title">
+			    <span class="date">{{initiative.went_to_discussion_at}}</span>
+			    Unterstützerquorum ({{initiative.quorum}}) erreicht - Diskussionsphase eröffnet.
+			  </h3> {% endif %} {% endcomment %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block body-javascript %} {{ block.super }}
+<script type="text/javascript">
+$('.argument .short').click(function(item) {
+    var $this = $(this);
+    $this.parent().find('.long').show();
+    $this.hide();
+});
+$('.argument .long .content').click(function(item) {
+    var $this = $(this);
+    $this.parent().parent().find('.short').show();
+    $this.parent().hide();
+});
 
-{% endif %}
-
-
-{% comment %}
-{% if initiative.went_to_voting_at %}
-  <h3 class="history-title">
-    <span class="date">{{initiative.went_to_voting_at}}</span>
-    {{ initiative.demands.count|default:0 }} Fordern Abstimmung (Quorum: {{initiative.quorum}}): Abstimmung eröffnet.
-  </h3>
-
-{% endif %}
-
-{% if initiative.went_to_discussion_at %}
-  <h3 class="history-title">
-    <span class="date">{{initiative.went_to_discussion_at}}</span>
-    Unterstützerquorum ({{initiative.quorum}}) erreicht - Diskussionsphase eröffnet.
-  </h3>
-{% endif %}
-
-{% endcomment %}
-
-{% endblock %}
-
-{% block body-javascript %}
-    {{ block.super }}
-
-  <script type="text/javascript">
-    $('.argument .short').click(function(item) {
-      var $this = $(this);
-      $this.parent().find('.long').show();
-      $this.hide();
-    });
-    $('.argument .long .content').click(function(item) {
-      var $this = $(this);
-      $this.parent().parent().find('.short').show();
-      $this.parent().hide();
-    });
-
-    $(function() {
-      if (document.location.hash) {
+$(function() {
+    if (document.location.hash) {
         let id = document.location.hash.slice(1);
-        $('#' + id + ' .short').click(); 
-      }
-    });
+        $('#' + id + ' .short').click();
+    }
+});
 </script>
-
 {% endblock %}

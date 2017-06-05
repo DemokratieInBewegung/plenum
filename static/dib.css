@@ -121,6 +121,10 @@ header {
   margin-top: 3.775rem;
 }
 
+p.card-text, .initiative-text p {
+  line-height: 1.75rem;
+}
+
 .main {
   /*background: white;
   padding: 1em;
@@ -185,7 +189,7 @@ header {
 }
 
 .card-header .badge {
-  margin-right: 1rem;
+  margin-right: .5rem;
 }
 
 .card-header .col.text-right {
@@ -196,10 +200,132 @@ header {
   border-radius: 50%;
 }
 
+.initiative-single {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  background-color: rgba(248, 248, 248, 1);
+}
+
+.initiative-state {
+  padding-top: 0.75rem;
+  padding-bottom: 1.25rem;
+}
+
+.initiative-state .badge {
+  margin-right: .5rem;
+}
+
+.card.initiative-meta {
+  border-radius: 0;
+  margin-bottom: 1rem;
+}
+
+.initiative-meta h6.text-muted {
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.0625rem;
+  margin-bottom: 0.75rem;
+}
+
+.initiative-meta li {
+  padding: 1rem 1rem 0.75rem 1rem;
+}
+
+.initiative-meta .meta-content {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.initiative-meta .row {
+  margin: 0;
+}
+
+.initiative-meta .initiator {
+  padding-top: 0.75rem;
+  padding-bottom: 0.5rem;
+}
+
+.initiative-meta .initiator span {
+  padding-top: 0.75rem;
+  display: block;
+}
+
+.initiative-meta .cta .meta-content {
+  padding-bottom: 0.75rem;
+  display: block;
+}
+
+.initiative-meta .cta .progress {
+  margin-bottom: 0.25rem;
+}
+
+.initiative-meta .cta label.form-check-label {
+  margin-top: 0.5rem;
+}
+
+.initiative-meta .cta div.form-check {
+  margin-bottom: 0;
+}
+
+.initiative-meta .cta .meta-content.supported-by {
+  padding-bottom: 0;
+}
+
+.cta-full label.form-check-label {
+  margin-top: 0.5rem;
+}
+
+.cta-full .supported-by {
+  margin-top: 0.5rem;
+}
+
+.cta-full {
+  margin-bottom: 1rem;
+}
+
+.cta-full .cta-button span.support {
+  display: block;
+  padding-top: 0.75rem;
+  padding-right: 1rem;
+}
+
+.cta-full .cta-button {
+  padding-right: 1rem;
+}
+
+strong {
+  font-weight: 500;
+}
+
+.text-muted.full {
+  display: block;
+  padding-bottom: 0.75rem;
+}
+
+.progress-bar.full {
+  height: 3.125rem;
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .initiative-single > .container {
+    width: 100%;
+  }
+}
+
+@media (min-width: 576px) {
+  .initiative-single > .container {
+    width: 100%;
+  }
+}
 /* Odd webkit button and Input on focus rendering */
 
 button:focus, input:focus {
   outline: none;
+}
+
+.blockquote {
+  font-size: 1rem;
+  line-height: 1.75rem;
 }
 
 footer {
@@ -215,12 +341,20 @@ footer a:hover {
   color: #336699;
 }
 
+a {
+  color: #274F9E;
+}
+
 a:hover {
   text-decoration: none;
 }
 
-h2.init-title a {
-  color: #336699;
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 400;
+}
+
+h4.init-title a {
+ 
 }
 
 #filters h6 {
@@ -267,6 +401,16 @@ header .alert {
 
 .typefilter input:checked + .badge {
   color: rgba(255, 255, 255, 1);
+}
+
+.bg-support {
+  color: rgba(255, 255, 255, 1);
+  background-color: #F0AD4E;
+  border-color: #F0AD4E;
+}
+
+.support {
+  color: #EB9316;
 }
 
 /* Badge Color: New Arrivals */
@@ -588,4 +732,11 @@ label.deactivated {
 .argument .comments {
   opacity: 0.65;
   margin-top: 2em;
+}
+
+.hyphenate {
+  hyphens: auto; -webkit-hyphens: auto; -moz-hyphens: auto; -ms-hyphens: auto;
+}
+.donthyphenate {
+  hyphens: none; -webkit-hyphens: none; -moz-hyphens: none; -ms-hyphens: none;
 }

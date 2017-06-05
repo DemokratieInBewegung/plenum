@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # 3rd party
     'account',
     'avatar',
+    'mathfilters',
     'mailer',
     'pinax.notifications',
     'notifications',

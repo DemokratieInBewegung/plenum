@@ -3,7 +3,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 	<head>
 		<meta charset="utf-8">
 		<title>{% block head_title%}{% endblock%}</title>
@@ -25,7 +25,7 @@
 			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 	</head>
-	<body class="{% block body_class%}{% endblock%}">
+	<body class="{% block body_class%}{% endblock%} hyphenate">
 		<div class="container-fluid fixed-top dib">
 		<nav class="navbar navbar-toggleable-sm navbar-inverse bg-inverse">
 			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,7 @@
 						<div class="dropdown-menu dropdown-menu-left bg-inverse" aria-labelledby="navbarDropdownMenuLink">
 							<a class="dropdown-item" href="{% url 'account_settings' %}">Profil anpassen</a>
 							<a class="dropdown-item" href="{% url 'account_password' %}">Passwort ändern</a>
-							<a class="dropdown-item" href="{% url 'avatar_change' %}">Profilbild ändern</a>>
+							<a class="dropdown-item" href="{% url 'avatar_change' %}">Profilbild ändern</a>
               <a class="dropdown-item" href="{% url 'notification_notice_settings' %}">Email-Benachrichtigungen ändern</a>
 							<div class="dropdown-divider"></div>
               <span class="dropdown-item"><a href="{% url 'new_initiative' %}" class="btn btn-sm btn-outline-primary">+ Neue Initiative</a></span>
@@ -102,6 +102,7 @@
 
     <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
     {% register_notify_callbacks callbacks='fill_notification_list,fill_notification_badge' %}
+		<script src="/static/js/hyphenator-loader.js" type="text/javascript"></script>
 
 		{% block body-javascript %}{% endblock %}
 	</body>

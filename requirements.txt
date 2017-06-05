@@ -11,6 +11,7 @@ django-braces==1.11.0
 django-mailer==1.2.2
 django-model-utils==3.0.0
 django-notifications-hq==1.2
+django-mathfilters==0.4.0
 django-tag-parser==2.1
 django-user-accounts==2.0.1
 dominate==2.1.17

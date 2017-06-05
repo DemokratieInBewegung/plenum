@@ -22,14 +22,15 @@ body {
   font-family: 'Material Icons';
   font-weight: normal;
   font-style: normal;
-  font-size: 24px;  /* Preferred icon size */
+  font-size: 1.5rem;  /* Preferred icon size */
   display: inline-block;
-  line-height: 1;
+  line-height: 1.5rem;
   text-transform: none;
   letter-spacing: normal;
   word-wrap: normal;
   white-space: nowrap;
   direction: ltr;
+  vertical-align: top;
 
   /* Support for all WebKit browsers. */
   -webkit-font-smoothing: antialiased;
@@ -77,8 +78,17 @@ body {
   padding-bottom: 0;
 }
 
-nav .dropdown-menu-left {
-  left: -5.125rem;
+nav .profile.dropdown-menu {
+  right: -1rem;
+}
+
+nav .notifications.dropdown-menu {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+nav .notifications.dropdown-menu ul {
+  list-style: none;
+  padding-left: 1rem;
 }
 
 nav .dropdown-menu {

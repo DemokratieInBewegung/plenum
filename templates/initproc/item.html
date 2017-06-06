@@ -100,7 +100,7 @@
                         <li class="list-group-item cta">
                             <div class="container-fluid">
                                 <h6 class="text-muted">
-                                	Aktion
+                                	Aktion (noch bis {{initiative.end_of_this_phase | timeuntil}})
                                 </h6>
                                 {% ifequal initiative.state 's' %}
                                 {% if initiative.absolute_supporters < initiative.quorum %}

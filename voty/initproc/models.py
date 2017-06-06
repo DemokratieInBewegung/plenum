@@ -1,5 +1,9 @@
 from django.contrib.auth.models import User
+from datetime import datetime, timedelta, date
 from django.db import models
+import pytz
+
+SPEED_PHASE_END = date(2017, 8, 21) # Everything published before this has speed phase
 
 
 class Initiative(models.Model):
@@ -52,9 +56,63 @@ class Initiative(models.Model):
 
     initiators = models.ManyToManyField(User)
 
-    went_to_discussion_at = models.DateTimeField(blank=True, null=True)
-    went_to_voting_at = models.DateTimeField(blank=True, null=True)
-    was_closed_at = models.DateTimeField(blank=True, null=True)
+    went_public_at = models.DateField(blank=True, null=True)
+    went_to_discussion_at = models.DateField(blank=True, null=True)
+    went_to_voting_at = models.DateField(blank=True, null=True)
+    was_closed_at = models.DateField(blank=True, null=True)
+
+
+    @property
+    def time_ramaining_in_phase(self):
+        end_of_phase = self.end_of_this_phase
+
+        if end_of_phase:
+            return end_of_phase - datetime.today().date()
+
+        return None
+
+    @property
+    def end_of_this_phase(self):
+        today = datetime.today().date()
+        week = timedelta(days=7)
+        halfyear = timedelta(days=183)
+
+        if self.was_closed_at:
+            return self.was_closed_at + halfyear # Half year later.
+
+        if self.went_public_at:
+            if self.went_public_at < SPEED_PHASE_END:
+                if self.state == 's':
+                    if self.went_public_at + week < today:
+                        return self.went_public_at + halfyear
+                    return self.went_public_at + week
+
+                elif self.state == 'd':
+                    return self.went_to_discussion_at + (2 * week)
+
+                elif self.state == 'e':
+                    return self.went_to_discussion_at + (3 * week)
+
+                elif self.state == 'v':
+                    return self.went_to_voting_at + week
+
+            else:
+                if self.state == 's':
+                    if today - self.went_public_at > (2 * week):
+                        return self.went_public_at + halfyear
+                    return self.went_public_at + (2 * week)
+
+                elif self.state == 'd':
+                    return self.went_to_discussion_at + (3 * week)
+
+                elif self.state == 'e':
+                    return self.went_to_discussion_at + (5 * week)
+
+                elif self.state == 'v':
+                    return self.went_to_voting_at + (2 * week)
+
+        return None
+
 
     @property
     def yays(self):
@@ -75,6 +133,10 @@ class Initiative(models.Model):
         return self.absolute_supporters / self.quorum * 100
 
     @property
+    def first_supporters(self):
+        return self.supporters.filter(first=True)
+
+    @property
     def public_supporters(self):
         return self.supporters.filter(public=True)
 
@@ -85,6 +147,7 @@ class Supporter(models.Model):
     user = models.ForeignKey(User)
     initiative = models.ForeignKey(Initiative, related_name="supporters")
     public = models.BooleanField(default=True)
+    first = models.BooleanField(default=False)
 
     class Meta:
         unique_together = (("user", "initiative"),)

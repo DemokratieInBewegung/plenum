@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.contrib.auth import get_user_model
+from django.contrib import messages
 from django.db.models import Q
 from dal import autocomplete
 from django import forms
@@ -91,7 +92,22 @@ def new(request):
     if request.method == 'POST':
         form = NewInitiative(request.POST)
         if form.is_valid():
-            return HttpResponse("ok")
+            ini = form.save(commit=False)
+            ini.state = Initiative.STATES.INCOMING
+            ini.save()
+            form.save_m2m()
+            ini.initiators.add(request.user.id)
+
+            for uid in form.cleaned_data['supporters'].all():
+                if uid in ini.initiators.all(): continue # you can only be one
+                Supporter(initiative=ini, user=uid, first=True, public=True).save()
+
+
+            messages.success(request, "Deine Initiative wurde angenommen und wir geprüft.")
+            return redirect('/')
+        else:
+            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+            
     return render(request, 'initproc/new.html', context=dict(form=form))
 
 

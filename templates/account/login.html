@@ -1,4 +1,4 @@
-{% extends "site_base.html" %}
+{% extends "in_box.html" %}
 
 {% load account_tags %}
 {% load i18n %}
@@ -18,13 +18,11 @@
                 <button type="submit" class="btn btn-primary">{% trans "Log in" %}</button>
                 <a href="{% url "account_password_reset" %}" class="btn btn-link">{% trans "Forgot your password?" %}</a>
             </form>
-            {% if ACCOUNT_OPEN_SIGNUP %}
-                <p class="login-signup">
-                    <small>
-                        {% trans "Don't have an account?" %}  <strong><a href="{% urlnext 'account_signup' %}">{% trans "Sign up" %}</a></strong>
-                    </small>
-                </p>
-            {% endif %}
+            <p class="login-signup">
+                <small>
+                    Noch kein Konto?  <strong><a href="/registrieren/">Jetzt registrieren</a></strong>
+                </small>
+            </p>
         </div>
         <div class="col-md-4">
             {% include "account/_login_sidebar.html" %}

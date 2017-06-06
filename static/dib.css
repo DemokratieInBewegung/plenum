@@ -750,3 +750,8 @@ label.deactivated {
 .donthyphenate {
   hyphens: none; -webkit-hyphens: none; -moz-hyphens: none; -ms-hyphens: none;
 }
+
+.in-box {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}

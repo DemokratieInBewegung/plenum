@@ -30,7 +30,6 @@ class Initiative(models.Model):
             (STATES.ACCEPTED, "was accepted"),
             (STATES.REJECTED, "was rejected")
         ])
-    quorum = models.IntegerField(default=30)
 
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
@@ -113,6 +112,10 @@ class Initiative(models.Model):
 
         return None
 
+    @property
+    def quorum(self):
+        return Quorum.current_quorum()
+
 
     @property
     def yays(self):
@@ -140,6 +143,14 @@ class Initiative(models.Model):
     def public_supporters(self):
         return self.supporters.filter(public=True)
 
+
+class Quorum(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    quorum = models.IntegerField(null=0)
+
+    @classmethod
+    def current_quorum(cls):
+        return cls.objects.order_by("-created_at").values("quorum").first()["quorum"]
 
 
 class Supporter(models.Model):

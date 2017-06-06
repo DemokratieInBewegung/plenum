@@ -166,6 +166,13 @@ else:
     EMAIL_PORT = int(os.environ.get("SMTP_PORT", 587))
 
 
+from django.contrib import messages
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger'
+}
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 

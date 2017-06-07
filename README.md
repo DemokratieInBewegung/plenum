@@ -48,11 +48,6 @@ This server automatically refreshes when you change the python source code or th
 
 Happy Hacking!
 
-## Frontend Testing
-
-![BrowserStack](http://imgur.com/a/upHPK)
-
-We're using Browserstack to test and ensure a consistent rendering of Voty across all modern browsers and mobile devices.
 
 ## Deployment
 
@@ -62,6 +57,7 @@ Using docker-compose, right from within this repo, run:
 docker compose up
 ```
 
+
 ### Upgrade database
 
 Don't forget to update the database after/within each deploy:
@@ -69,6 +65,14 @@ Don't forget to update the database after/within each deploy:
 ```
 docker compose exec web bash /code/scripts/upgrade.sh
 ```
+
+
+## Frontend Testing
+
+![BrowserStack](http://i.imgur.com/Eqx1QcB.png)
+
+We're using Browserstack to test and ensure a consistent rendering of Voty across all modern browsers and mobile devices.
+
 
 ## License
 

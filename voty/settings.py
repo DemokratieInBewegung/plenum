@@ -173,6 +173,10 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
 
+## What we allow in the editor
+
+MARKDOWN_FILTER_WHITELIST_TAGS = ['a', 'p', 'b', 'em', 'i', 'code', 'pre', 'blockquote']
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/

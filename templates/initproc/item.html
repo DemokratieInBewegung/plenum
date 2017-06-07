@@ -1,4 +1,9 @@
-{% extends "_base.html" %} {% load avatar_tags %} {% load mathfilters %} {% block content %}
+{% extends "_base.html" %}
+{% load avatar_tags %} 
+{% load mathfilters %}
+{% load markdown %}
+
+{% block content %}
 <div class="container-fluid initiative-single">
     <div class="container">
         <div class="row">
@@ -158,18 +163,18 @@
                 </div>
             </div>
             <div class="col-md-7 col-sm-12 pull-md-5">
-                <p>{{initiative.summary}}</p>
+                <p>{{initiative.summary|markdown}}</p>
                 <h2>Forderung</h2>
-                <p>{{initiative.forderung}}</p>
+                <p>{{initiative.forderung|markdown}}</p>
                 <h2>Kosten</h2>
-                <p>{{initiative.kosten}}</p>
+                <p>{{initiative.kosten|markdown}}</p>
                 <h2>Finanzierungsvorschlag</h2>
-                <p>{{initiative.fin_vorschlag}}</p>
+                <p>{{initiative.fin_vorschlag|markdown}}</p>
                 <h2>Arbeitsweise</h2>
-                <p>{{initiative.arbeitsweise}}</p>
+                <p>{{initiative.arbeitsweise|markdown}}</p>
                 <h2>Argument der Initiatoren</h2>
                 <blockquote class="blockquote argument">
-                    {{initiative.init_argument}}
+                    {{initiative.init_argument|markdown}}
                     <!--<div class="avatar">
                         {% for user in initiative.initiators.all %} {% avatar user 35 %} {% endfor %}
                     </div>-->

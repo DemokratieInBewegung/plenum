@@ -71,7 +71,7 @@ docker compose exec web bash /code/scripts/upgrade.sh
 
 ![BrowserStack](http://i.imgur.com/Eqx1QcB.png)
 
-We're using BrowserStack to test and ensure a consistent rendering of Voty across all modern browsers and mobile devices.
+We're using [BrowserStack](https://www.browserstack.com/) to test and ensure a consistent rendering of Voty across all modern browsers and mobile devices.
 
 
 ## License

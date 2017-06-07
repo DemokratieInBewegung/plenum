@@ -76,4 +76,4 @@ We're using [BrowserStack](https://www.browserstack.com/) to test and ensure a c
 
 ## License
 
-This released under AGPL-3.0 . See the LICENSE-file for the full text.
+This is released under AGPL-3.0. See the LICENSE-file for the full text.

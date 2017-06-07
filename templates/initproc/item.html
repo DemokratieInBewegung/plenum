@@ -41,12 +41,7 @@
 				      	Sucht Unterstützung: gescheitert
 				    </span> {% endif %} {% endifequal %}
                     <span class="text-muted">
-						{% ifequal initiative.state 's' %}
-							Noch {{initiative.went_to_discussion_at|timeuntil }}
-						{% endifequal %}
-						{% ifequal initiative.state 'd' %}
-							Noch {{initiative.went_to_voting_at|timeuntil }}
-						{% endifequal %}
+						Noch {{initiative.end_of_this_phase | timeuntil}}
 					</span>
                 </div>
             </div>
@@ -100,7 +95,7 @@
                         <li class="list-group-item cta">
                             <div class="container-fluid">
                                 <h6 class="text-muted">
-                                	Aktion (noch bis {{initiative.end_of_this_phase | timeuntil}})
+                                	Aktion (Noch {{initiative.end_of_this_phase | timeuntil}})
                                 </h6>
                                 {% ifequal initiative.state 's' %}
                                 {% if initiative.absolute_supporters < initiative.quorum %}

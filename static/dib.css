@@ -316,13 +316,13 @@ strong {
   height: 3.125rem;
 }
 
-@media (min-width: 768px) and (max-width: 1199px) {
+/*@media (min-width: 768px) and (max-width: 1199px) {
   .initiative-single > .container {
     width: 100%;
   }
-}
+}*/
 
-@media (min-width: 576px) {
+@media (min-width: 576px) and (max-width: 1199px) {
   .initiative-single > .container {
     width: 100%;
   }

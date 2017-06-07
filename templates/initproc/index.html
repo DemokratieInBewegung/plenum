@@ -130,12 +130,7 @@
 					</div>
 					<div class="col text-right align-self-center">
 						<span class="text-muted align-middle">
-							{% ifequal init.state 's' %}
-								Noch {{init.went_to_discussion_at|timeuntil }}
-							{% endifequal %}
-							{% ifequal init.state 'd' %}
-								Noch {{init.went_to_voting_at|timeuntil }}
-							{% endifequal %}
+							Noch {{init.end_of_this_phase | timeuntil}}
 						</span>
 					</div>
 				</div>

@@ -9,6 +9,7 @@
         <div class="row">
             <div class="col-12">
                 <h1>{{initiative.title}}</h1>
+                <h2>{{initiative.subtitle}}</h2>
             </div>
         </div>
         <div class="row initiative-state">
@@ -164,6 +165,8 @@
             </div>
             <div class="col-md-7 col-sm-12 pull-md-5">
                 <p>{{initiative.summary|markdown}}</p>
+                <h2>Problembeschreibung</h2>
+                <p>{{initiative.problem|markdown}}</p>
                 <h2>Forderung</h2>
                 <p>{{initiative.forderung|markdown}}</p>
                 <h2>Kosten</h2>

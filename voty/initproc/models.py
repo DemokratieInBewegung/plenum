@@ -19,6 +19,7 @@ class Initiative(models.Model):
         REJECTED = 'r'
 
     title = models.CharField(max_length=80)
+    subtitle = models.CharField(max_length=1024)
     state = models.CharField(max_length=1, choices=[
             (STATES.INCOMING, "new arrivals"),
             (STATES.SEEKING_SUPPORT, "seeking support"),
@@ -34,7 +35,9 @@ class Initiative(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
 
+
     summary = models.TextField()
+    problem = models.TextField()
     forderung = models.TextField()
     kosten = models.TextField()
     fin_vorschlag = models.TextField()

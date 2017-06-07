@@ -73,12 +73,15 @@ class NewInitiative(forms.ModelForm):
                     attrs={"data-placeholder": "Zum Suchen tippen"}))
     class Meta:
         model = Initiative
-        fields = ['title', 'initiators', 'summary', 'forderung', 'kosten', 'fin_vorschlag', 'arbeitsweise', 'init_argument',
+        fields = ['title', 'subtitle', 'initiators', 'summary', 'problem', 'forderung',
+                  'kosten', 'fin_vorschlag', 'arbeitsweise', 'init_argument',
                   'einordnung', 'ebene', 'bereich']
 
         labels = {
             "title" : "Überschrift",
+            "subtitle": "Teaser",
             "summary" : "Zusammenfassung",
+            "problem": "Problembeschreibung",
             "fordering" : "Forderung",
             "kosten": "Kosten",
             "fin_vorschlag": "Finanzierungsvorschlag",

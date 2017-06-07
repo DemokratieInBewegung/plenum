@@ -13,7 +13,9 @@
 		<form method="POST">
 			 {% csrf_token %}
 			<div class="card-body">
-				{{form|bootstrap_horizontal}}
+				<div class="container">
+				{{form|bootstrap}}
+				</div>
 			</div>
 			<div class="card-footer">
 				<button type="submit" class="btn btn-primary">Einreichen</button>

@@ -1,0 +1,49 @@
+{% extends "_base.html" %}
+
+{% load avatar_tags %}
+{% load static %}
+{% load bootstrap %}
+
+{% block content %}
+<div class="container init-index">
+	<div class="card">
+		<div class="card-header">
+		  <h2>Neue Einladungen hochladen</h2>
+		</div>
+		<form method="POST" enctype="multipart/form-data">
+			 {% csrf_token %}
+			<div class="card-body">
+				{{form|bootstrap_horizontal}}
+			</div>
+			<div class="card-footer">
+				<button type="submit" class="btn btn-primary">einladen</button>
+			</div>
+		</form>
+	</div>
+
+
+	<div class="card">
+		<div class="card-header">
+		  <h3>Vorherige Einladungen</h3>
+		</div>
+		<form method="POST">
+			<div class="card-body">
+				<ul>
+					{% for batch in invitebatches %}
+						<li><a href="{% url 'download_mass_invites' id=batch.id %}">{{batch.created_at}}: {{batch.new_added}} / {{batch.total_found}}</a></li>
+					{% empty %}
+						<li><em>Bisher nöscht</em></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}
+
+
+{% block body-javascript %}
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+{{ form.media }}
+{% endblock %}

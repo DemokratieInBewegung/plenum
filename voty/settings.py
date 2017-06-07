@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
 
     # locally
+    'voty.initadmin',
     'voty.initproc'
 ]
 
@@ -151,7 +152,7 @@ DEFAULT_FROM_EMAIL = 'keine-antwort@bewegung.jetzt'
 EMAIL_BACKEND = "mailer.backend.DbBackend"
 
 if DEBUG:
-    MAILER_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 elif os.environ.get('SPARKPOST_API_KEY', None):
     SPARKPOST_API_KEY = os.environ.get('SPARKPOST_API_KEY')

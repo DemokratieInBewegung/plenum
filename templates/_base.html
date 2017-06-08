@@ -54,10 +54,7 @@
     							{% avatar user 40 %}
     						</a>
                             <div class="dropdown-menu dropdown-menu-right profile bg-inverse" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="dropdown-item" href="{% url 'account_settings' %}">Profil anpassen</a>
-                                <a class="dropdown-item" href="{% url 'account_password' %}">Passwort ändern</a>
-                                <a class="dropdown-item" href="{% url 'avatar_change' %}">Profilbild ändern</a>
-                                <a class="dropdown-item" href="{% url 'notification_notice_settings' %}">Email-Benachrichtigungen ändern</a>
+                                <a class="dropdown-item" href="{% url 'profile_edit' %}">Konfigurieren</a>
                                 <div class="dropdown-divider"></div>
                                 <span class="dropdown-item"><a href="{% url 'new_initiative' %}" class="btn btn-sm btn-outline-primary">+ Neue Initiative</a></span>
                                 <a class="dropdown-item" href="/account/logout/">Abmelden</a>

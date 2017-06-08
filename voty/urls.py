@@ -27,9 +27,9 @@ urlpatterns = [
     url(r'^ueber', TemplateView.as_view(template_name='static/ueber.html')),
     url(r'^hilfe', TemplateView.as_view(template_name='static/hilfe.html')),
     url(r'^registrieren', TemplateView.as_view(template_name='static/registrieren.html')),
-    url('^nachrichten/', include(notifications.urls, namespace='notifications')),
+    url(r'^nachrichten/', include(notifications.urls, namespace='notifications')),
     url(r"^nachrichten/", include("pinax.notifications.urls")),
-    url(r'^backoffice/', include('voty.initadmin.urls')),
+    url(r'', include('voty.initadmin.urls')),
     url(r'', include('voty.initproc.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

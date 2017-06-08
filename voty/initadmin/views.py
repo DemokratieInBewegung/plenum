@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_POST
 from account.models import SignupCodeResult, SignupCode
 from django.contrib.sites.models import Site
@@ -90,3 +91,22 @@ def mass_invite(request):
 
     return render(request, 'initadmin/mass_invite.html', context=dict(form=form,
         invitebatches=InviteBatch.objects.order_by("-created_at")))
+
+
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = ['first_name', 'last_name']
+
+
+@login_required
+def profile_edit(request):
+    user = get_object_or_404(get_user_model(), pk=request.user.id)
+    if request.method == 'POST':
+        form = UserEditForm(request.POST, instance=user)
+        if form.save():
+            messages.success(request, "Daten aktualisiert.")
+    else:
+        form = UserEditForm(instance=user)
+
+    return render(request, 'initadmin/profile_edit.html', context=dict(form=form))

@@ -1,0 +1,23 @@
+{% extends "in_box.html" %}
+{% load bootstrap %}
+
+{% block body %}
+
+    <h1>Profileinstellungen</h1>
+    <hr />
+
+    <form method="POST" action="{% url 'profile_edit' %}">
+        {% csrf_token %}
+        {{ form|bootstrap }}
+        <button class="btn btn-primary" type="submit">Speichern</button>
+    </form>
+
+    <hr />
+    <h4>Weitere Einstellungen</h4>
+    <ul>
+		<li><a href="{% url 'avatar_change' %}">Profilbild ändern</a></li>
+		<li><a href="{% url 'notification_notice_settings' %}">Email-Benachrichtigungen ändern</a></li>
+		<li><a href="{% url 'account_password' %}">Passwort ändern</a></li>
+    </ul>
+
+{% endblock %}

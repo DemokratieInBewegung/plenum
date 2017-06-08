@@ -3,8 +3,8 @@
 {% load mathfilters %}
 {% load markdown %}
 
-{% block content %}
-<div class="item-header {{init.custom_cls}}">
+{% block custom_header %}
+<div class="item-header {{initiative.custom_cls}}">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -14,7 +14,9 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
+{% block content %}
 <div class="container-fluid initiative-single">
     <div class="container">
         <div class="row initiative-state">

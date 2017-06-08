@@ -21,60 +21,63 @@
 </head>
 
 <body class="{% block body_class%}{% endblock%} hyphenate">
-    <div class="container-fluid fixed-top dib">
-        <nav class="navbar navbar-toggleable-sm navbar-inverse bg-inverse">
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <a class="navbar-brand" href="/">
-                <img src="/static/img/dib_logo.svg" height="40" class="d-inline-block align-middle" alt="Demokratie in Bewegung">
-                <span class="align-middle">Initiativen</span>
-            </a>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/hilfe">Hilfe</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href='/ueber/'>Über</a>
-                    </li>
-                    {% if user.is_authenticated %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="material-icons">notifications</i>
-                        	{% live_notify_badge %}
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right notifications bg-inverse" aria-labelledby="navbarDropdownMenuLink">
-                        {% live_notify_list %}
-                       	</div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle avatar" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							{% avatar user 40 %}
-						</a>
-                        <div class="dropdown-menu dropdown-menu-right profile bg-inverse" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="{% url 'account_settings' %}">Profil anpassen</a>
-                            <a class="dropdown-item" href="{% url 'account_password' %}">Passwort ändern</a>
-                            <a class="dropdown-item" href="{% url 'avatar_change' %}">Profilbild ändern</a>
-                            <a class="dropdown-item" href="{% url 'notification_notice_settings' %}">Email-Benachrichtigungen ändern</a>
-                            <div class="dropdown-divider"></div>
-                            <span class="dropdown-item"><a href="{% url 'new_initiative' %}" class="btn btn-sm btn-outline-primary">+ Neue Initiative</a></span>
-                            <a class="dropdown-item" href="/account/logout/">Abmelden</a>
-                        </div>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/registrieren/">Registrieren</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/account/login/">Anmelden</a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </nav>
-    </div>
     <header>
+        <div class="container-fluid fixed-top dib">
+            <nav class="navbar navbar-toggleable-sm navbar-inverse bg-inverse">
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="/">
+                    <img src="/static/img/dib_logo.svg" height="40" class="d-inline-block align-middle" alt="Demokratie in Bewegung">
+                    <span class="align-middle">Initiativen</span>
+                </a>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/hilfe">Hilfe</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href='/ueber/'>Über</a>
+                        </li>
+                        {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons">notifications</i>
+                            	{% live_notify_badge %}
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right notifications bg-inverse" aria-labelledby="navbarDropdownMenuLink">
+                            {% live_notify_list %}
+                           	</div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle avatar" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    							{% avatar user 40 %}
+    						</a>
+                            <div class="dropdown-menu dropdown-menu-right profile bg-inverse" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" href="{% url 'account_settings' %}">Profil anpassen</a>
+                                <a class="dropdown-item" href="{% url 'account_password' %}">Passwort ändern</a>
+                                <a class="dropdown-item" href="{% url 'avatar_change' %}">Profilbild ändern</a>
+                                <a class="dropdown-item" href="{% url 'notification_notice_settings' %}">Email-Benachrichtigungen ändern</a>
+                                <div class="dropdown-divider"></div>
+                                <span class="dropdown-item"><a href="{% url 'new_initiative' %}" class="btn btn-sm btn-outline-primary">+ Neue Initiative</a></span>
+                                <a class="dropdown-item" href="/account/logout/">Abmelden</a>
+                            </div>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/registrieren/">Registrieren</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/account/login/">Anmelden</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        {% block custom_header %} {% endblock %}
+
+        <!-- THIS WILL BE REMOVED SOON -->
         <div class="alert alert-info alert-dismissible fade show" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>

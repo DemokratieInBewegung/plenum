@@ -2,7 +2,7 @@
 
 {% load avatar_tags %}
 
-{% block content %}
+{% block custom_header %}
 <form id="filters" method="GET">
 	<div class="typefilter">
 		<div class="container-fluid">
@@ -78,7 +78,9 @@
 		</div>
     </div>
  </form>
+{% endblock %}
 
+{% block content %}
 <div class="container init-index">
 	{% for init in initiatives %}
 	<div class="card {{init.custom_cls}}">

@@ -239,6 +239,7 @@
                 <span class="support">Du unterstützt diese Initiative!</span>
                 {% else %}
             	<form action="/initiative/{{initiative.id}}/support" method="POST">
+                    {% csrf_token %}
 	            	<button class="btn bg-support btn-block btn-lg" type="submit">
 	                    Jetzt Unterstützen
 	                </button>

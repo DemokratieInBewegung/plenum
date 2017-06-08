@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&v--b40hjwtfre(o^(4=-s!g7!x&za1u_=v#140ex+_%iek(c#'
+SECRET_KEY = os.environ.get('SECRET', '&v--b40hjwtfre(o^(4=-s!g7!x&za1u_=v#140ex+_%iek(c#');
 
 
 DEBUG = not os.environ.get('VIRTUAL_HOST', False)
@@ -78,6 +78,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 ROOT_URLCONF = 'voty.urls'
+LOGIN_URL = "/account/login/"
 
 TEMPLATES = [
     {

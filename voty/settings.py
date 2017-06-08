@@ -79,6 +79,7 @@ AUTHENTICATION_BACKENDS = (
 
 ROOT_URLCONF = 'voty.urls'
 LOGIN_URL = "/account/login/"
+LOGIN_REDIRECT_URL = "/"
 
 TEMPLATES = [
     {

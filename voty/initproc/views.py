@@ -27,12 +27,31 @@ def ensure_state(state):
 
 def index(request):
     filters = request.GET.getlist("f") or DEFAULT_FILTERS
+    count_inbox = 0
     if not request.user or not request.user.is_staff:
         # state i is only available to staff
         filters = [f for f in filters if f not in STAFF_ONLY]
 
+
     inits = Initiative.objects.filter(state__in=filters)
-    return render(request, 'initproc/index.html', context=dict(initiatives=inits, filters=filters))
+
+    if request.user.is_authenticated:
+        if request.user.is_staff:
+            count_inbox = Initiative.objects.filter(state='i').count()
+        else:
+            count_inbox = Initiative.objects.filter(Q(state='i') and (
+                Q(initiators__id=request.user.id) |
+                Q(supporters__user_id=request.user.id, supporters__first=True))
+            ).count()
+            if 'i' in request.GET.getlist("f"):
+                inits = Initiative.objects.filter(Q(state__in=filters) | (Q(state='i') and (
+                    Q(initiators__id=request.user.id) |
+                    Q(supporters__user_id=request.user.id, supporters__first=True))))
+                filters.append('i')
+
+
+    return render(request, 'initproc/index.html',context=dict(initiatives=inits,
+                    inbox_count=count_inbox, filters=filters))
 
 
 
@@ -119,7 +138,11 @@ def new(request):
 def item(request, init_id):
     init = get_object_or_404(Initiative, pk=init_id)
     if init.state in STAFF_ONLY:
-        if not request.user or not request.user.is_staff:
+        if not request.user.is_authenticated:
+            raise PermissionDenied()
+        if not request.user.is_staff and \
+           not init.initiators.filter(id=request.user.id) and \
+           not init.supporters.filter(user_id=request.user.id, first=True):
             raise PermissionDenied()
 
     ctx = dict(initiative=init, pro=[], contra=[],

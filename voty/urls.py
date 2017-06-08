@@ -24,7 +24,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r"^account/", include("account.urls")),
     url(r'^avatar/', include('avatar.urls')),
-    url(r'^ueber', TemplateView.as_view(template_name='static/ueber.html')),
     url(r'^hilfe', TemplateView.as_view(template_name='static/hilfe.html')),
     url(r'^registrieren', TemplateView.as_view(template_name='static/registrieren.html')),
     url(r'^nachrichten/', include(notifications.urls, namespace='notifications')),

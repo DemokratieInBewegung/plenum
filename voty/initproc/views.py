@@ -9,7 +9,7 @@ from dal import autocomplete
 from django import forms
 
 from .helpers import notify_initiative_listeners
-from .models import (Initiative, Argument, Comment, Vote, Supporter, Like)
+from .models import (Initiative, Argument, Comment, Vote, Quorum, Supporter, Like)
 # Create your views here.
 
 DEFAULT_FILTERS = ['s', 'd', 'v']
@@ -23,6 +23,23 @@ def ensure_state(state):
             return fn(request, init, *args, **kwargs)
         return view
     return wrap
+
+
+
+#
+# ____    ____  __   ___________    __    ____   _______.
+# \   \  /   / |  | |   ____\   \  /  \  /   /  /       |
+#  \   \/   /  |  | |  |__   \   \/    \/   /  |   (----`
+#   \      /   |  | |   __|   \            /    \   \    
+#    \    /    |  | |  |____   \    /\    / .----)   |   
+#     \__/     |__| |_______|   \__/  \__/  |_______/    
+#
+#                                                       
+
+
+def ueber(request):
+    return render(request, 'static/ueber.html',context=dict(
+            quorums=Quorum.objects.order_by("-created_at")))
 
 
 def index(request):
@@ -179,7 +196,17 @@ def item(request, init_id):
     return render(request, 'initproc/item.html', context=ctx)
 
 
-# actions
+#
+#      ___       ______ .___________. __    ______   .__   __.      _______.
+#     /   \     /      ||           ||  |  /  __  \  |  \ |  |     /       |
+#    /  ^  \   |  ,----'`---|  |----`|  | |  |  |  | |   \|  |    |   (----`
+#   /  /_\  \  |  |         |  |     |  | |  |  |  | |  . `  |     \   \    
+#  /  _____  \ |  `----.    |  |     |  | |  `--'  | |  |\   | .----)   |   
+# /__/     \__\ \______|    |__|     |__|  \______/  |__| \__| |_______/    
+#
+#
+#                                                                        
+
 
 @require_POST
 @login_required

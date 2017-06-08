@@ -8,6 +8,7 @@ urlpatterns = [
     url('^user_autocomplete$', views.UserAutocomplete.as_view(), name='user_autocomplete'),
 
     # initiative specifics
+    url('^ueber/$', views.ueber, name="ueber"),
     url('^initiative/new$', views.new, name="new_initiative"),
     url('^initiative/(?P<init_id>\d+)$', views.item),
     url('^initiative/(?P<init_id>\d+)/support$', views.support),

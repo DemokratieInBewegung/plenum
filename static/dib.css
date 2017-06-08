@@ -755,3 +755,53 @@ label.deactivated {
     margin-top: 2em;
     margin-bottom: 2em;
 }
+
+
+
+
+
+
+/* 
+ *
+ *   ITEM COLORS
+ *
+ *
+ *
+ *
+*/
+
+.item-header {
+  min-height: 5em;
+  background: #999;
+  color: white;
+  padding-top: 5em;
+}
+
+.item-header.area-demokratisches-und-solidarisches-europa {
+  background: #4768AB;
+}
+
+#live_notify_list .area-demokratisches-und-solidarisches-europa,
+.card.area-demokratisches-und-solidarisches-europa {
+  border-left: 3px solid #4768AB;
+}
+
+
+.item-header.area-zukunft-aktiv-gestalten {
+  background: #D2892B;
+}
+
+#live_notify_list .area-zukunft-aktiv-gestalten,
+.card.area-zukunft-aktiv-gestalten {
+  border-left: 3px solid #D2892B;
+}
+
+/*
+green: #47AB64;
+lightgreen: #82AB47;
+violet: #9E47AB;
+redbrown: #AB4747;
+darkpink: #AB4778;
+turquois: #47AB9D;
+orange: #D2892B;
+*/

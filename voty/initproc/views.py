@@ -68,10 +68,12 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
 
         return qs
 
+
 def has_enough_initiators(value):
     print(value)
     if len(value) != 2:
         raise ValidationError("Du brauchst genau zwei Mitinitiator/innen!")
+
 
 class NewInitiative(forms.ModelForm):
 
@@ -108,6 +110,7 @@ class NewInitiative(forms.ModelForm):
             "arbeitsweise": "Arbeitsweise",
             "init_argument": "Argument der Initiator/innen",
         }
+
 
 @login_required
 def new(request):

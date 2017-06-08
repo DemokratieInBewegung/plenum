@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta, date
+from django.utils.text import slugify
 from django.db import models
 import pytz
 
@@ -146,12 +147,17 @@ class Initiative(models.Model):
     def public_supporters(self):
         return self.supporters.filter(public=True)
 
+    @property
+    def custom_cls(self):
+        return 'item-{} state-{} area-{}'.format(slugify(self.title),
+                    slugify(self.state), slugify(self.bereich))
+
 
     ## HACKY way to get the url into the live update menu
     ## for the notifications
     def __str__(self):
-        return """<a href="/initiative/{id}" title="{state}">{title}</a>""".format(
-                id=self.id, state=self.state, title=self.title)
+        return """<a class="{cls}" href="/initiative/{id}" title="{state}">{title}</a>""".format(
+                cls=self.custom_cls, id=self.id, state=self.state, title=self.title)
 
 
 class Quorum(models.Model):

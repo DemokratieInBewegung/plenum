@@ -4,7 +4,7 @@
 {% load markdown %}
 
 {% block content %}
-<div class="container-fluid initiative-single">
+<div class="item-header {{init.custom_cls}}">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -12,6 +12,11 @@
                 <h2>{{initiative.subtitle}}</h2>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="container-fluid initiative-single">
+    <div class="container">
         <div class="row initiative-state">
             <div class="col-12">
                 <div class="d-flex flex-wrap">

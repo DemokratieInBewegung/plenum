@@ -771,10 +771,10 @@ label.deactivated {
 */
 
 .item-header {
-  min-height: 5em;
   background: #999;
   color: white;
-  padding-top: 5em;
+  padding-top: 10em;
+  background: linear-gradient(to right, #21466b 0%,#263d82 30%,#263d82 30%,#eb5c4a 100%);
 }
 
 .item-header.area-demokratisches-und-solidarisches-europa {

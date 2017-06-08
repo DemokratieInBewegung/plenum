@@ -147,6 +147,13 @@ class Initiative(models.Model):
         return self.supporters.filter(public=True)
 
 
+    ## HACKY way to get the url into the live update menu
+    ## for the notifications
+    def __str__(self):
+        return """<a href="/initiative/{id}" title="{state}">{title}</a>""".format(
+                id=self.id, state=self.state, title=self.title)
+
+
 class Quorum(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     quorum = models.IntegerField(null=0)

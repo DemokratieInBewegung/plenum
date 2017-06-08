@@ -1,4 +1,6 @@
 from .models import Initiative
+from notifications.signals import notify
+
 
 def generate_initiative_from_random_wikipedia_article():
     import wikipedia
@@ -14,3 +16,11 @@ def generate_initiative_from_random_wikipedia_article():
                fin_vorschlag=content[chars*3:chars*4],
                arbeitsweise=content[chars*4:chars*5],
                init_argument=content[chars*5:chars*6]).save()
+
+
+def notify_initiative_listeners(ini, msg):
+    for user in ini.initiators.all():
+        notify.send(ini, verb=msg, recipient=user)
+
+    for user in ini.supporters.all():
+        notify.send(ini, verb=msg, recipient=user)

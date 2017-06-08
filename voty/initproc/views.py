@@ -8,6 +8,7 @@ from django.db.models import Q
 from dal import autocomplete
 from django import forms
 
+from .helpers import notify_initiative_listeners
 from .models import (Initiative, Argument, Comment, Vote, Supporter, Like)
 # Create your views here.
 
@@ -106,6 +107,7 @@ def new(request):
                 Supporter(initiative=ini, user=uid, first=True, public=True).save()
 
 
+            notify_initiative_listeners(ini, "wurde eingereicht.")
             messages.success(request, "Deine Initiative wurde angenommen und wir geprüft.")
             return redirect('/')
         else:

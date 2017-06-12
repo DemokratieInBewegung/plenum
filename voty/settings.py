@@ -175,6 +175,12 @@ if DEBUG:
 elif os.environ.get('SPARKPOST_API_KEY', None):
     SPARKPOST_API_KEY = os.environ.get('SPARKPOST_API_KEY')
     MAILER_EMAIL_BACKEND = 'sparkpost.django.email_backend.SparkPostEmailBackend'
+    SPARKPOST_OPTIONS = {
+        'track_opens': False,
+        'track_clicks': False,
+        'transactional': True,
+    }
+
 
 else:
     MAILER_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

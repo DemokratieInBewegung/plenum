@@ -9,7 +9,7 @@
     <meta name="description" content="{% block metadescription%}{% endblock %}">
     <meta name="keywords" content="{% block metakeywords%}{% endblock %}">
     <meta name="author" content="">
-    <link href="https://fonts.googleapis.com/css?family=Merriweather:400,400i,700|Rubik:400,400i,500,500i,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300,400,400i,700|Rubik:400,400i,500,500i,700" rel="stylesheet">
     <link href="/static/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="/static/dib.css" rel="stylesheet" type="text/css">
     <!-- Font Awesome icon font -->
@@ -21,71 +21,71 @@
 </head>
 
 <body class="{% block body_class%}{% endblock%} hyphenate">
+    <div class="container-fluid dib-nav">
+        <nav class="navbar navbar-toggleable-sm">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/">
+                <img src="/static/img/dib_logo.svg" height="40" class="d-inline-block align-middle" alt="Demokratie in Bewegung">
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/hilfe">Hilfe</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href='/ueber/'>Impressum</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                         <a class="nav-link" href="{% url 'new_initiative' %}"><i class="material-icons add-circle-outline">add_circle_outline</i>Neue Initiative</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="material-icons notifications">notifications</i>
+                        	{% live_notify_badge %}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right notifications" aria-labelledby="navbarDropdownMenuLink">
+                        {% live_notify_list %}
+                       	</div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle avatar" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							{% avatar user 40 %}
+						</a>
+                        <div class="dropdown-menu dropdown-menu-right profile" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="{% url 'profile_edit' %}">Profileinstellungen</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/account/logout/">Abmelden</a>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/registrieren/">Registrieren</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/account/login/">Anmelden</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </div>
     <header>
-        <div class="container-fluid fixed-top dib">
-            <nav class="navbar navbar-toggleable-sm navbar-inverse bg-inverse">
-                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <a class="navbar-brand" href="/">
-                    <img src="/static/img/dib_logo.svg" height="40" class="d-inline-block align-middle" alt="Demokratie in Bewegung">
-                    <span class="align-middle">Initiativen</span>
-                </a>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/hilfe">Hilfe</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href='/ueber/'>Über</a>
-                        </li>
-                        {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="material-icons">notifications</i>
-                            	{% live_notify_badge %}
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right notifications bg-inverse" aria-labelledby="navbarDropdownMenuLink">
-                            {% live_notify_list %}
-                           	</div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle avatar" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    							{% avatar user 40 %}
-    						</a>
-                            <div class="dropdown-menu dropdown-menu-right profile bg-inverse" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="dropdown-item" href="{% url 'profile_edit' %}">Konfigurieren</a>
-                                <div class="dropdown-divider"></div>
-                                <span class="dropdown-item"><a href="{% url 'new_initiative' %}" class="btn btn-sm btn-outline-primary">+ Neue Initiative</a></span>
-                                <a class="dropdown-item" href="/account/logout/">Abmelden</a>
-                            </div>
-                        </li>
-                        {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="/registrieren/">Registrieren</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/account/login/">Anmelden</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </nav>
-        </div>
-        {% block custom_header %} {% endblock %}
-
         <!-- THIS WILL BE REMOVED SOON -->
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <!--<div class="alert alert-info alert-dismissible fade show" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
             <h6>
-					Beta Test
-				</h6>
+                    Beta Test
+                </h6>
             <p>
                 Dies ist eine Test Umgebung mit Test-Daten um das neue <a href="https://www.youtube.com/watch?v=FUKNVUkNpR8" target="_blank">Initiativ-Verfahren</a> der <a target="_blank" href="http://bewegung.jetzt/">Demokratie in Bewegung</a> <i>technisch und prozedual</i> erkunden. Bei den hier angezeigten Informationen handelt es sich weder um tatsächliche Initiativen noch um durchsetzbare Abstimmungen oder Forderungen. Dafür bitte steht bis auf weiteres der <a href="https://marktplatz.bewegung.jetzt/">Marktplatz der Ideen</a> zur Verfügung.
             </p>
-        </div>
+        </div>-->
+        {% block custom_header %} {% endblock %}
     </header>
     {% if messages %}
         <div class="container">

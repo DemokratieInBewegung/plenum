@@ -3,13 +3,23 @@
 {% load avatar_tags %}
 
 {% block custom_header %}
+<div class="container-fluid init-index-header">
+    <div class="container">
+        <div class="row title">
+            <div class="col-12 text-center" style="padding-top: 3rem; padding-bottom: 3rem">
+                <h1 class="display-4">Initiativplattform</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
 <form id="filters" method="GET">
 	<div class="typefilter">
-		<div class="container-fluid">
+		<div class="container">
 			<div class="row no-gutters">
 				<div class="col-auto">
 			      <h6>
-			      	Zeige nur:
+			      	<i class="material-icons filter-list">filter_list</i> Zeige nur:
 			      </h6>
 	    		</div>
 	    		<div class="col-sm-10">
@@ -130,11 +140,13 @@
 						</span>
 						{% endifequal %}
 					</div>
+					{% if init.state != 'i' and init.state != 'a' and init.state != 'r' %}
 					<div class="col text-right align-self-center">
 						<span class="text-muted align-middle">
 							Noch {{init.end_of_this_phase | timeuntil}}
 						</span>
 					</div>
+					{% endif %}
 				</div>
 			</div>
 		</div>
@@ -147,16 +159,21 @@
 	    	<p class="card-text">
 	    		{{init.summary}}
 	    	</p>
+	    	<a href="/initiative/{{init.id}}" class="go-to-intiative"><i class="material-icons chevron-right">chevron_right</i>Zur Initiative</a>
 	  	</div>
 	  	<div class="card-footer">
 	  		<div class="container-fluid">
 				 <div class="row no-gutters">
-				 	<div class="col align-self-center">
-				 		<a href="#">
-				 			Teilen
-				 		</a>
+				 	{% if init.state != 'i' %}
+				 	<div class="col text-muted align-self-center">
+				 		Veröffentlicht am {{init.went_public_at}}
 				 	</div>
-				 	<div class="col text-right avatar">
+				 	{% else %}
+				 	<div class="col text-muted align-self-center">
+				 		Noch nicht veröffentlicht
+				 	</div>
+				 	{% endif %}
+				 	<div class="col text-right avatar align-self-center">
 				 		{% for user in init.initiators.all %}
 				          {% avatar user 40 %}
 				        {% endfor %}

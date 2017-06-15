@@ -184,6 +184,8 @@ p.card-text {
   line-height: 1.75rem;
 }
 
+
+.initiative-text li,
 .initiative-text p {
   font-family: 'Merriweather', serif;
   font-weight: 300;
@@ -958,11 +960,13 @@ orange: #D2892B;
   .initiators {
     margin-top: 1.5rem;
   }
-  .initiative-text p {
+  .initiative-text p,
+  .initiative-text li {
     font-size: 1rem;
     line-height: 1.75rem;
   }
-  .subtitle p, .initiative-state p, a.skip-meta {
+  .subtitle p, .initiative-state p, a.skip-meta,
+  .initiative-text li {
     font-size: 1.125rem;
     line-height: 1.875rem;
   }

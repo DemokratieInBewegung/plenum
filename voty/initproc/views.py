@@ -155,7 +155,7 @@ def new(request):
     return render(request, 'initproc/new.html', context=dict(form=form))
 
 
-def item(request, init_id):
+def item(request, init_id, slug=None):
     init = get_object_or_404(Initiative, pk=init_id)
     if init.state in STAFF_ONLY:
         if not request.user.is_authenticated:

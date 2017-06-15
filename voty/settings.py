@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'pinax.notifications',
     'notifications',
     'bootstrapform',
+    'fullurl',
 
     # must be before admin ...
     'dal',

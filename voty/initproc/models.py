@@ -64,6 +64,10 @@ class Initiative(models.Model):
     went_to_voting_at = models.DateField(blank=True, null=True)
     was_closed_at = models.DateField(blank=True, null=True)
 
+    @property
+    def slug(self):
+        return slugify(self.title)
+
 
     @property
     def time_ramaining_in_phase(self):

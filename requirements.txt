@@ -9,6 +9,7 @@ django-autocomplete-light==3.2.7
 django-avatar==4.0.0
 django-bootstrap-form==3.2.1
 django-braces==1.11.0
+django-fullurl==0.5
 django-mailer==1.2.2
 django-mathfilters==0.4.0
 django-model-utils==3.0.0

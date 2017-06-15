@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 
+{% load fullurl %}
 {% load avatar_tags %}
 
 {% block custom_header %}
@@ -152,14 +153,14 @@
 		</div>
 		<div class="card-block">
 	    	<h4 class="card-title init-title">
-	    		<a href="/initiative/{{init.id}}">
+	    		<a href="{% fullurl 'initiative_item' init_id=init.id slug=init.slug %}">
 					{{init.title}}
 				</a>
 			</h4>
 	    	<p class="card-text">
 	    		{{init.summary}}
 	    	</p>
-	    	<a href="/initiative/{{init.id}}" class="go-to-intiative"><i class="material-icons chevron-right">chevron_right</i>Zur Initiative</a>
+	    	<a href="{% fullurl 'initiative_item' init_id=init.id slug=init.slug %}" class="go-to-intiative"><i class="material-icons chevron-right">chevron_right</i>Zur Initiative</a>
 	  	</div>
 	  	<div class="card-footer">
 	  		<div class="container-fluid">

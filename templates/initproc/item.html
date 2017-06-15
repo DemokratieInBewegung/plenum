@@ -2,6 +2,17 @@
 {% load avatar_tags %} 
 {% load mathfilters %}
 {% load markdown %}
+{% load fullurl %}
+
+{% block head_title %}
+{{initiative.title}} -- auf der Abstimmungsplattform der Beweger/innen von DEMOKRATIE IN BEWEGUNG
+{% endblock %}
+
+{% block custom_sm_title %}
+    <meta property="og:title" content="{{initiative.title}}">
+    <meta property="og:description" content="{{initiative.subtitle}}">
+    <meta property="og:url" content="{% fullurl 'initiative_item' init_id=initiative.id slug=initiative.slug %}"">
+{% endblock %}
 
 {% block custom_header %}
 <div class="container-fluid">

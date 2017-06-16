@@ -153,6 +153,31 @@
                     {% avatar sup.user %}
                     <div class="name">
                         {{ sup.user.get_full_name|default:sup.user.username }}
+                        {% if initiative.state == 'i' %}
+                            <br />
+                            {% if sup.ack %}
+                                <span title="bestätigt" class=""><i class="material-icons">done</i></span>
+                            {% else %}
+                                {% if sup.user == user %}
+                                    <b>Jetzt bestätigen</b>
+
+                                    <form action="/initiative/{{initiative.id}}/ack_support" style="display:inline" method="POST">
+                                        {% csrf_token %}
+                                        <button title="Unterstützen" class="btn btn-success" type="submit">
+                                            <i class="material-icons">done</i>
+                                        </button>
+                                    </form>
+                                    <form action="/initiative/{{initiative.id}}/rm_support" style="display:inline"  method="POST">
+                                        {% csrf_token %}
+                                        <button title="Nicht unterstützen" class="btn btn-danger" type="submit">
+                                            <i class="material-icons">not_interested</i>
+                                        </button>
+                                    </form>
+                                {% else %}
+                                <span title="unbestätigt" class=""><i class="material-icons">warning</i><i></i></span>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
                     </div>
                 </div>
                 {% endfor %}
@@ -381,63 +406,51 @@
     </div>
 </div>
 {% endifequal %}
+
+{% if initiative.state == 'i' %}
 <div class="container-fluid">
     <div class="container">
         <div class="row">
-        	<div class="col-12">
-        		{% if initiative.public_absolute_supporters %}
-        		<h2>Unterstützer/innen</h2>
+            <div class="col-12">
+                <h2>Erstunterstützer/innen</h2>
                 <div class="d-flex flex-wrap avatar">
-                        {% for user in initiative.public_supporters %} {% avatar user %} {% endfor %}
-                </div>
-                {% endif %} {% elif initative.state == "a" %} {% elif initative.state == "r" %} {% elif initative.state == "d" %} {% elif initative.state == "v" %} {% endif %} {% if initiative.went_to_discussion_at %}
-                <!-- Diskussion element -->
-                <h3>Argumente</h3>
-                <div class="discourse">
-                    <div class="pro">
-                        <h4>Dafür</h4>
-                        <ul class="list-group">
-                            {% for arg in pro %} {% include "initproc/_argument.html" with argument=arg %} {% endfor %}
-                        </ul>
-                    </div>
-                    <div class="contra">
-                        <h4>Dagegen</h4>
-                        <ul class="list-group">
-                            {% for arg in contra %} {% include "initproc/_argument.html" with argument=arg %} {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                {% if initiative.state == "d" %}
-                <form action="/initiative/{{initiative.id}}/post_argument" method="POST">
-                    <div class="post-argument panel panel-default">
-                        <div class="panel-heading">
-                            Neues Argument
-                            <label>
-                                <input type="radio" name="vote" value="yay" />dafür</label>
-                            <label>
-                                <input type="radio" name="vote" value="nay" /> dagegen</label> erstellen.
-                            <input placeholder="Überschrift" type="text" maxlength="80" name="title">
+                    {% for sup in initiative.first_supporters.all %} 
+                        <div class="text-center initiator">
+                            {% avatar sup.user %}
+                            <div class="name">
+                                {{ sup.user.get_full_name|default:sup.user.username }}<br/>
+                                {% if sup.ack %}
+                                <span title="bestätigt" class=""><i class="material-icons">done</i></span>
+                                {% else %}
+                                    {% if sup.user == user %}
+                                        <b>Jetzt bestätigen</b>
+
+                                        <form action="/initiative/{{initiative.id}}/ack_support"  style="display:inline"  method="POST">
+                                            {% csrf_token %}
+                                            <button title="Unterstützen" class="btn btn-success" type="submit">
+                                                <i class="material-icons">done</i>
+                                            </button>
+                                        </form>
+                                        <form action="/initiative/{{initiative.id}}/rm_support"  style="display:inline"  method="POST">
+                                            {% csrf_token %}
+                                            <button title="Nicht unterstützen" class="btn btn-danger" type="submit">
+                                                <i class="material-icons">not_interested</i>
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <span title="unbestätigt" class=""><i class="material-icons">warning</i><i></i></span>
+                                    {% endif %}
+                            {% endif %}
+                            </div>
                         </div>
-                        <div class="panel-body">
-                            {% csrf_token %}
-                            <textarea name="text" placeholder="Argumentausführung"></textarea>
-                            <button type="submit" class="btn btn-success pull-right">Einstellen</button>
-                </form>
+                    {% endfor %}
                 </div>
-                </div>
-                {% endif %} {% endif %} {% comment %} {% if initiative.went_to_voting_at %}
-                <h3 class="history-title">
-			    <span class="date">{{initiative.went_to_voting_at}}</span>
-			    {{ initiative.demands.count|default:0 }} Fordern Abstimmung (Quorum: {{initiative.quorum}}): Abstimmung eröffnet.
-			  </h3> {% endif %} {% if initiative.went_to_discussion_at %}
-                <h3 class="history-title">
-			    <span class="date">{{initiative.went_to_discussion_at}}</span>
-			    Unterstützerquorum ({{initiative.quorum}}) erreicht - Diskussionsphase eröffnet.
-			  </h3> {% endif %} {% endcomment %}
             </div>
         </div>
     </div>
 </div>
+{% endif %}
+
 {% endblock %} {% block body-javascript %} {{ block.super }}
 <script type="text/javascript">
 $('.argument .short').click(function(item) {

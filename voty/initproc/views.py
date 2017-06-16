@@ -17,9 +17,9 @@ STAFF_ONLY = ['i', 'm', 'h']
 
 def ensure_state(state):
     def wrap(fn):
-        def view(request, init_id, *args, **kwargs):
+        def view(request, init_id, slug, *args, **kwargs):
             init = get_object_or_404(Initiative, pk=init_id)
-            assert init.state == state, "Not in expected state: {}".format(state)
+            assert init.state in state, "Not in expected state: {}".format(state)
             return fn(request, init, *args, **kwargs)
         return view
     return wrap
@@ -216,6 +216,32 @@ def support(request, initiative):
 
     return redirect('/initiative/{}'.format(initiative.id))
 
+
+@require_POST
+@login_required
+@ensure_state('i')
+def ack_support(request, initiative):
+    sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
+    sup.ack = True
+    sup.save()
+
+    messages.success(request, "Danke für die Bestätigung")
+
+    return redirect('/initiative/{}'.format(initiative.id))
+
+
+@require_POST
+@login_required
+@ensure_state(['s', 'i'])
+def rm_support(request, initiative):
+    sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
+    sup.delete()
+
+    messages.success(request, "Deine Unterstützung wurde zurück gezogen")
+
+    if initiative.state == 's':
+        return redirect('/initiative/{}'.format(initiative.id))
+    return redirect('/')
 
 
 @require_POST

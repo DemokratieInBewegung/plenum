@@ -12,6 +12,8 @@ urlpatterns = [
     url('^initiative/new$', views.new, name="new_initiative"),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?$', views.item, name="initiative_item"),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/support$', views.support),
+    url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/ack_support$', views.ack_support),
+    url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/rm_support$', views.rm_support),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/post_argument$', views.post_argument),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/(?P<arg_id>\d+)/like$', views.like_argument),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/(?P<arg_id>\d+)/unlike$', views.unlike_argument),

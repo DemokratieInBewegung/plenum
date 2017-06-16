@@ -154,7 +154,7 @@ class Initiative(models.Model):
     @property
     def initiators(self):
         return self.supporting.filter(initiator=True)
-        
+
     @property
     def custom_cls(self):
         return 'item-{} state-{} area-{}'.format(slugify(self.title),

@@ -141,6 +141,16 @@ nav .dropdown-menu .dropdown-item {
   padding-bottom: 0;
 }
 
+.nav-link .material-icons.chevron-right {
+  width: 1.5rem;
+  margin-top: -0.0625rem;
+}
+
+.nav-link .material-icons.person {
+  width: 1.75rem;
+  margin-top: -0.125rem;
+}
+
 .material-icons.add-circle-outline {
   padding-right: 0.25rem;
 }

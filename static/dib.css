@@ -151,11 +151,12 @@ nav .dropdown-menu .dropdown-item {
 
 .material-icons.expand-more {
     margin-right: 0.625rem;
+    margin-top: .1875rem;
     border: 1px solid;
-    font-size: 2rem;
+    font-size: 1.5rem;
     border-radius: 50%;
-    line-height: 2rem;
-    width: 2.125rem;
+    line-height: 1.5rem;
+    width: 1.625rem;
 }
 
 .material-icons.chevron-right, .material-icons.chevron-left, .material-icons.filter-list, .material-icons.notifications, .material-icons.add-circle-outline {
@@ -176,8 +177,8 @@ a.skip-meta {
   line-height: 2rem;
 }
 
-header {
-  
+blockquote p {
+  margin-bottom: 0;
 }
 
 p.card-text {
@@ -190,12 +191,12 @@ p.card-text {
   font-family: 'Merriweather', serif;
   font-weight: 300;
   font-size: 1.125rem;
-  line-height: 2rem;
+  line-height: 2.25rem;
 }
 
 .initiative-text .classification {
   margin-bottom: 0;
-  padding-bottom: .5rem;
+  padding-bottom: 1rem;
 }
 
 .main {
@@ -470,7 +471,7 @@ h2 {
   font-size: 2rem;
   line-height: 2.75rem;
   margin-bottom: 0;
-  padding-top: 1rem;
+  padding-top: 2rem;
   padding-bottom: 1rem;
 }
 
@@ -987,6 +988,9 @@ orange: #D2892B;
   .new-initiative .card, .new-initiative .card-header, .new-initiative .card-footer {
     padding-left: 0;
     padding-right: 0;
+  }
+  .material-icons.expand-more {
+    margin-top: .125rem;
   }
 }
 

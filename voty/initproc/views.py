@@ -57,11 +57,11 @@ def index(request):
             count_inbox = Initiative.objects.filter(state='i').count()
         else:
             count_inbox = Initiative.objects.filter(Q(state='i') and 
-                Q(supporting_user_id=request.user.id, supporting_first=True)
+                Q(supporting__user_id=request.user.id, supporting__first=True)
             ).count()
             if 'i' in request.GET.getlist("f"):
                 inits = Initiative.objects.filter(Q(state__in=filters) | (Q(state='i') and 
-                    Q(supporting_user_id=request.user.id, supporting_first=True)))
+                    Q(supporting__user_id=request.user.id, supporting__first=True)))
                 filters.append('i')
 
 

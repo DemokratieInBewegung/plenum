@@ -56,14 +56,12 @@ def index(request):
         if request.user.is_staff:
             count_inbox = Initiative.objects.filter(state='i').count()
         else:
-            count_inbox = Initiative.objects.filter(Q(state='i') and (
-                Q(initiators__id=request.user.id) |
-                Q(supporters__user_id=request.user.id, supporters__first=True))
+            count_inbox = Initiative.objects.filter(Q(state='i') and 
+                Q(supporting_user_id=request.user.id, supporting_first=True)
             ).count()
             if 'i' in request.GET.getlist("f"):
-                inits = Initiative.objects.filter(Q(state__in=filters) | (Q(state='i') and (
-                    Q(initiators__id=request.user.id) |
-                    Q(supporters__user_id=request.user.id, supporters__first=True))))
+                inits = Initiative.objects.filter(Q(state__in=filters) | (Q(state='i') and 
+                    Q(supporting_user_id=request.user.id, supporting_first=True)))
                 filters.append('i')
 
 
@@ -161,8 +159,7 @@ def item(request, init_id, slug=None):
         if not request.user.is_authenticated:
             raise PermissionDenied()
         if not request.user.is_staff and \
-           not init.initiators.filter(id=request.user.id) and \
-           not init.supporters.filter(user_id=request.user.id, first=True):
+           not init.supporting.filter(user_id=request.user.id, first=True):
             raise PermissionDenied()
 
     ctx = dict(initiative=init, pro=[], contra=[],
@@ -176,7 +173,7 @@ def item(request, init_id, slug=None):
 
     if request.user.is_authenticated:
         user_id = request.user.id
-        ctx.update({'has_supported': init.supporters.filter(user=user_id).count(),
+        ctx.update({'has_supported': init.supporting.filter(user=user_id).count(),
                     'has_demanded_vote': 0,
                     'has_voted': init.votes.filter(user=user_id).count()})
         if ctx['has_voted']:

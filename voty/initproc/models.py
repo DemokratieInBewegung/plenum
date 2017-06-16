@@ -57,12 +57,12 @@ class Initiative(models.Model):
                 ('Zukunft aktiv gestalten', 'Zukunft aktiv gestalten'),
                 ('(andere)', '(andere)')])
 
-    initiators = models.ManyToManyField(User)
-
     went_public_at = models.DateField(blank=True, null=True)
     went_to_discussion_at = models.DateField(blank=True, null=True)
     went_to_voting_at = models.DateField(blank=True, null=True)
     was_closed_at = models.DateField(blank=True, null=True)
+
+    supporters = models.ManyToManyField(User, through="Supporter")
 
     @property
     def slug(self):
@@ -137,7 +137,7 @@ class Initiative(models.Model):
     # FIXME: cache this
     @property
     def absolute_supporters(self):
-        return self.supporters.count() + self.initiators.count()
+        return self.supporting.count()
 
     @property
     def relative_support(self):
@@ -145,12 +145,16 @@ class Initiative(models.Model):
 
     @property
     def first_supporters(self):
-        return self.supporters.filter(first=True)
+        return self.supporting.filter(first=True)
 
     @property
     def public_supporters(self):
-        return self.supporters.filter(public=True)
+        return self.supporting.filter(public=True)
 
+    @property
+    def initiators(self):
+        return self.supporting.filter(initiator=True)
+        
     @property
     def custom_cls(self):
         return 'item-{} state-{} area-{}'.format(slugify(self.title),
@@ -176,7 +180,9 @@ class Quorum(models.Model):
 class Supporter(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
-    initiative = models.ForeignKey(Initiative, related_name="supporters")
+    initiative = models.ForeignKey(Initiative, related_name="supporting")
+    ack = models.BooleanField(default=False)
+    initiator = models.BooleanField(default=False)
     public = models.BooleanField(default=True)
     first = models.BooleanField(default=False)
 

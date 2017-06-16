@@ -175,8 +175,8 @@
 				 	</div>
 				 	{% endif %}
 				 	<div class="col text-right avatar align-self-center">
-				 		{% for user in init.initiators.all %}
-				          {% avatar user 40 %}
+				 		{% for ini in init.initiators %}
+				          {% avatar ini.user 40 %}
 				        {% endfor %}
 				 	</div>
 				</div>

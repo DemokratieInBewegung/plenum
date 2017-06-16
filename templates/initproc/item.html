@@ -148,11 +148,11 @@
         </div>
         <div class="row no-gutters avatar">
             <div class="d-flex flex-wrap">
-                {% for user in initiative.initiators.all %}
+                {% for sup in initiative.initiators %}
                 <div class="text-center initiator">
-                    {% avatar user %}
+                    {% avatar sup.user %}
                     <div class="name">
-                        {{ user.get_full_name|default:user.username }}
+                        {{ sup.user.get_full_name|default:sup.user.username }}
                     </div>
                 </div>
                 {% endfor %}

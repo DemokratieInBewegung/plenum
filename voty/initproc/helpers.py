@@ -19,8 +19,5 @@ def generate_initiative_from_random_wikipedia_article():
 
 
 def notify_initiative_listeners(ini, msg):
-    for user in ini.initiators.all():
-        notify.send(ini, verb=msg, recipient=user)
-
-    for user in ini.supporters.all():
-        notify.send(ini, verb=msg, recipient=user)
+    for sup in ini.supporting.all():
+        notify.send(ini, verb=msg, recipient=sup.user)

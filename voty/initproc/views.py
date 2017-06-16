@@ -135,12 +135,15 @@ def new(request):
             ini = form.save(commit=False)
             ini.state = Initiative.STATES.INCOMING
             ini.save()
-            form.save_m2m()
-            ini.initiators.add(request.user.id)
+
+            Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
+
+            for uid in form.cleaned_data['initiators'].all():
+                Supporter(initiative=ini, user=uid, initiator=True, ack=False, public=True).save()
 
             for uid in form.cleaned_data['supporters'].all():
-                if uid in ini.initiators.all(): continue # you can only be one
-                Supporter(initiative=ini, user=uid, first=True, public=True).save()
+                if uid in ini.supporters.all(): continue # you can only be one
+                Supporter(initiative=ini, user=uid, initiator=False, first=True, public=True).save()
 
 
             notify_initiative_listeners(ini, "wurde eingereicht.")

@@ -181,6 +181,7 @@ class Supporter(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
     initiative = models.ForeignKey(Initiative, related_name="supporting")
+    # whether this initiator has acknowledged they are
     ack = models.BooleanField(default=False)
     initiator = models.BooleanField(default=False)
     public = models.BooleanField(default=True)

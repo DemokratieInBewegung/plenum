@@ -85,7 +85,6 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
 
 
 def has_enough_initiators(value):
-    print(value)
     if len(value) != 2:
         raise ValidationError("Du brauchst genau zwei Mitinitiator/innen!")
 

@@ -287,7 +287,7 @@
                 <blockquote class="blockquote argument">
                     {{initiative.init_argument|markdown}}
                     <!--<div class="avatar">
-                        {% for user in initiative.initiators.all %} {% avatar user 35 %} {% endfor %}
+                        {% for sup in initiative.initiators.all %} {% avatar sup.user 35 %} {% endfor %}
                     </div>-->
                 </blockquote>
             </div>
@@ -308,7 +308,7 @@
 			     Mit {{initiative.absolute_supporters|default:0}} Unterstützern wurde das Qurom von {{initiative.quorum}} nicht erreicht. Die Initiative wurde damit abgelehnt.
 			    {% endif }
 			    {% endif %}
-			    </h3> {% endif %} {% if initiative.state == 's' %}
+			    </h3> {% endif %}
 			</div>
 		</div>
     </div>

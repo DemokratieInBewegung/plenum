@@ -56,12 +56,16 @@ def index(request):
         if request.user.is_staff:
             count_inbox = Initiative.objects.filter(state='i').count()
         else:
-            count_inbox = Initiative.objects.filter(Q(state='i') and 
-                Q(supporting__user_id=request.user.id, supporting__first=True)
+            count_inbox = Initiative.objects.filter(
+                    Q(supporting__first=True) | Q(supporting__initiator=True),
+                    state='i',
+                    supporting__user_id=request.user.id
             ).count()
             if 'i' in request.GET.getlist("f"):
-                inits = Initiative.objects.filter(Q(state__in=filters) | (Q(state='i') and 
-                    Q(supporting__user_id=request.user.id, supporting__first=True)))
+                inits = Initiative.objects.filter(Q(state__in=filters) | Q(
+                        Q(supporting__first=True) | Q(supporting__initiator=True),
+                        state='i',
+                        supporting__user_id=request.user.id))
                 filters.append('i')
 
 
@@ -161,7 +165,7 @@ def item(request, init_id, slug=None):
         if not request.user.is_authenticated:
             raise PermissionDenied()
         if not request.user.is_staff and \
-           not init.supporting.filter(user_id=request.user.id, first=True):
+           not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=request.user.id):
             raise PermissionDenied()
 
     ctx = dict(initiative=init, pro=[], contra=[],

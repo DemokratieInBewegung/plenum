@@ -81,7 +81,21 @@
             <div class="col-12">
                 {% ifequal initiative.state 'i' %}
                 <p>
-                    Diese Initiative <strong class="badge-arrivals">wurde noch nicht veröffentlicht</strong>.
+                    Diese Initiative <strong class="badge-arrivals">wurde noch nicht veröffentlicht</strong>
+                    {% if user.is_staff %}
+                        {% if initiative.ready_for_next_stage %}
+                            <form action="/initiative/{{initiative.id}}/publish" style="display:inline"  method="POST">
+                                {% csrf_token %}
+                                <button title="Veröffentlichen" class="btn btn-outline-success" type="submit">
+                                    <i class="material-icons">cloud_upload</i> jetzt veröffentlichen
+                                </button>
+                            </form>
+                        {% else %}
+                                <button title="kann noch nicht veröffentlich werden" class="btn btn-outline-success" disabled=True type="submit">
+                                    <i class="material-icons">cloud_upload</i> jetzt veröffentlichen
+                                </button>
+                        {% endif %}
+                    {% endif %}
                 </p>
                 {% endifequal %}
                 {% ifequal initiative.state 'm' %}
@@ -185,13 +199,14 @@
         </div>
     </div>
 </div>
+
 <div class="container-fluid meta">
     <div class="container">
         <div class="row">
             <div class="col-sm-12 col-md-4">
                 <h6 class="text-muted classification">Veröffentlicht am</h6>
                 <div>
-                {% if initiative.went_public_at is True %}
+                {% if initiative.went_public_at %}
                     {{initiative.went_public_at}}
                 {% else %}
                     Noch nicht veröffentlicht

@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.contrib.auth import get_user_model
@@ -7,9 +7,10 @@ from django.contrib import messages
 from django.db.models import Q
 from dal import autocomplete
 from django import forms
+from datetime import datetime
 
 from .helpers import notify_initiative_listeners
-from .models import (Initiative, Argument, Comment, Vote, Quorum, Supporter, Like)
+from .models import (Initiative, Argument, Comment, Vote, Quorum, Supporter, Like, INITIATORS_COUNT)
 # Create your views here.
 
 DEFAULT_FILTERS = ['s', 'd', 'v']
@@ -217,6 +218,28 @@ def item(request, init_id, slug=None):
 def support(request, initiative):
     Supporter(initiative=initiative, user_id=request.user.id,
               public=not not request.POST.get("public", False)).save()
+
+    return redirect('/initiative/{}'.format(initiative.id))
+
+@require_POST
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+@ensure_state(Initiative.STATES.INCOMING) # must be unpublished
+def publish(request, initiative):
+    if initiative.supporting.filter(ack=True, initiator=True).count() != INITIATORS_COUNT:
+        messages.error(request, "Nicht genügend initiatoren haben bestätigt")
+        return redirect('/initiative/{}'.format(initiative.id))
+
+
+    # clean out unknown 
+    initiative.supporting.filter(ack=False).delete()
+    initiative.went_public_at = datetime.now()
+    initiative.state = Initiative.STATES.SEEKING_SUPPORT
+    initiative.save()
+
+    messages.success(request, "Initiative veröffentlicht")
+
+    # FIXME: notifications would be cool.
 
     return redirect('/initiative/{}'.format(initiative.id))
 

@@ -5,6 +5,7 @@ from django.db import models
 import pytz
 
 SPEED_PHASE_END = date(2017, 8, 21) # Everything published before this has speed phase
+INITIATORS_COUNT = 3
 
 
 class Initiative(models.Model):
@@ -77,6 +78,14 @@ class Initiative(models.Model):
             return end_of_phase - datetime.today().date()
 
         return None
+
+    @property
+    def ready_for_next_stage(self):
+        if self.state == 'i':
+            if self.supporting.filter(initiator=True, ack=True).count() == INITIATORS_COUNT:
+                return True
+
+        return False
 
     @property
     def end_of_this_phase(self):

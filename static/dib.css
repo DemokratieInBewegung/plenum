@@ -221,6 +221,15 @@ p.card-text {
   width: 100%;
 }
 
+.container-fluid.push-alert {
+  padding: 0;
+}
+
+.container-fluid.push-alert .alert {
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
 .init-index .card {
   margin: 1rem 0 3rem 0;
 }
@@ -286,11 +295,25 @@ p.card-text {
 .initiative-state p {
   font-size: 1.25rem;
   line-height: 2rem;
-  margin-bottom: 0;
+  margin-bottom: .75rem;
 }
 
 .initiative-state .badge {
   margin-right: .5rem;
+}
+
+.initiative-state .publish {
+  display: block;
+}
+
+.initiative-state .publish span {
+  font-size: 1.125rem;
+  line-height: 1.875rem;
+}
+
+.material-icons.public {
+  padding-top: 0.125rem;
+  padding-right: 0.3785rem;
 }
 
 .card.initiative-meta {
@@ -352,6 +375,21 @@ p.card-text {
   width: 8rem;
   font-size: 0.875rem;
   display: block;
+}
+
+.initiator-approval {
+  padding-top: .75rem;
+}
+
+.initiator-approval strong {
+  font-size: 0.875rem;
+}
+
+.initiator-approval .material-icons.warning, .initiator-approval .material-icons.done {
+  padding: 0.5rem 1rem;
+  background: #ccc;
+  border-radius: 0.25rem;
+  border: 1px solid #ccc;
 }
 
 .cta {

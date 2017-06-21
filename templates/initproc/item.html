@@ -81,22 +81,22 @@
             <div class="col-12">
                 {% ifequal initiative.state 'i' %}
                 <p>
-                    Diese Initiative <strong class="badge-arrivals">wurde noch nicht veröffentlicht</strong>
-                    {% if user.is_staff %}
-                        {% if initiative.ready_for_next_stage %}
-                            <form action="/initiative/{{initiative.id}}/publish" style="display:inline"  method="POST">
-                                {% csrf_token %}
-                                <button title="Veröffentlichen" class="btn btn-outline-success" type="submit">
-                                    <i class="material-icons">cloud_upload</i> jetzt veröffentlichen
-                                </button>
-                            </form>
-                        {% else %}
-                                <button title="kann noch nicht veröffentlich werden" class="btn btn-outline-success" disabled=True type="submit">
-                                    <i class="material-icons">cloud_upload</i> jetzt veröffentlichen
-                                </button>
-                        {% endif %}
+                    Diese Initiative <strong class="badge-arrivals">wurde noch nicht veröffentlicht</strong>.
+                 </p>
+                {% if user.is_staff %}
+                    {% if initiative.ready_for_next_stage %}
+                        <form action="/initiative/{{initiative.id}}/publish" style="display:inline"  method="POST">
+                            {% csrf_token %}
+                            <button title="Veröffentlichen" class="btn btn-success publish" type="submit">
+                                <i class="material-icons public">public</i><span>Jetzt veröffentlichen</span>
+                            </button>
+                        </form>
+                    {% else %}
+                            <button title="Kann noch nicht veröffentlich werden" class="btn btn-success publish" disabled=True type="submit">
+                                <i class="material-icons public">public</i><span>Jetzt veröffentlichen</span>
+                            </button>
                     {% endif %}
-                </p>
+                {% endif %}
                 {% endifequal %}
                 {% ifequal initiative.state 'm' %}
                 <p>
@@ -167,32 +167,33 @@
                     {% avatar sup.user %}
                     <div class="name">
                         {{ sup.user.get_full_name|default:sup.user.username }}
-                        {% if initiative.state == 'i' %}
-                            <br />
-                            {% if sup.ack %}
-                                <span title="bestätigt" class=""><i class="material-icons">done</i></span>
-                            {% else %}
-                                {% if sup.user == user %}
-                                    <b>Jetzt bestätigen</b>
+                    </div>
+                    {% if initiative.state == 'i' %}
+                    <div class="initiator-approval">
+                        {% if sup.ack %}
+                            <span title="bestätigt" class=""><i class="material-icons done">done</i></span>
+                        {% else %}
+                            {% if sup.user == user %}
+                                <strong style="display:block">Jetzt bestätigen</strong>
 
-                                    <form action="/initiative/{{initiative.id}}/ack_support" style="display:inline" method="POST">
-                                        {% csrf_token %}
-                                        <button title="Unterstützen" class="btn btn-success" type="submit">
-                                            <i class="material-icons">done</i>
-                                        </button>
-                                    </form>
-                                    <form action="/initiative/{{initiative.id}}/rm_support" style="display:inline"  method="POST">
-                                        {% csrf_token %}
-                                        <button title="Nicht unterstützen" class="btn btn-danger" type="submit">
-                                            <i class="material-icons">not_interested</i>
-                                        </button>
-                                    </form>
-                                {% else %}
-                                <span title="unbestätigt" class=""><i class="material-icons">warning</i><i></i></span>
-                                {% endif %}
+                                <form action="/initiative/{{initiative.id}}/ack_support" style="display:inline" method="POST">
+                                    {% csrf_token %}
+                                    <button title="Unterstützen" class="btn btn-success" type="submit">
+                                        <i class="material-icons">done</i>
+                                    </button>
+                                </form>
+                                <form action="/initiative/{{initiative.id}}/rm_support" style="display:inline"  method="POST">
+                                    {% csrf_token %}
+                                    <button title="Nicht unterstützen" class="btn btn-danger" type="submit">
+                                        <i class="material-icons">not_interested</i>
+                                    </button>
+                                </form>
+                            {% else %}
+                            <span title="unbestätigt" class=""><i class="material-icons warning">warning</i><i></i></span>
                             {% endif %}
                         {% endif %}
                     </div>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>

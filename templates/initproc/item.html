@@ -267,11 +267,11 @@
                     Unterstützer/in{% else %}Unterstützer/innen{% endif %} zum Erreichen des Quorums.
                 </span>
                 {% elif initiative.absolute_supporters == initiative.quorum %}
-                 <span class="meta-content">
+                 <span class="meta-content support-needed">
                     Diese Initiative hat das Quorum an Unterstützer/innen erreicht!
                 </span>
                 {% else %}
-                <span class="meta-content">
+                <span class="meta-content support-needed">
                     Diese Initiative hat das Quorum erreicht und darüber hinaus 
                     <strong>
                         {{initiative.absolute_supporters|sub:initiative.quorum}}

@@ -117,14 +117,14 @@
                 {% elif initiative.absolute_supporters == initiative.quorum %}
                 <p>
                     Diese Initiative hat 
-                    <a href="#cta"><strong class="badge-support">das Quorum an Unterstützer/innen</strong></a>erreicht!
+                    <a href="#cta"><strong class="badge-support">das Quorum an Unterstützer/innen</strong></a> erreicht!
                     <br />
                     In <strong>{{initiative.end_of_this_phase | timeuntil}}</strong> geht diese Initiative in Diskussion.
                 </p>
                 {% else %}
                 <p>
                     Diese Initiative 
-                    <a href="#cta"><strong class="badge-support">hat das Quorum erreicht</strong></a>erreicht und darüber hinaus <strong>{{initiative.absolute_supporters|sub:initiative.quorum}}</strong> {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}Unterstützer/in{% else %}Unterstützer/innen{% endif %}.
+                    <a href="#cta"><strong class="badge-support">hat das Quorum erreicht</strong></a> und darüber hinaus <strong>{{initiative.absolute_supporters|sub:initiative.quorum}}</strong> {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}Unterstützer/in{% else %}Unterstützer/innen{% endif %}.
                     <br />
                     In <strong>{{initiative.end_of_this_phase | timeuntil}}</strong> geht diese Initiative in Diskussion.
                 </p>

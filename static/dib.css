@@ -976,8 +976,7 @@ orange: #D2892B;
     font-size: 1rem;
     line-height: 1.75rem;
   }
-  .subtitle p, .initiative-state p, a.skip-meta,
-  .initiative-text li {
+  .subtitle p, .initiative-state p, a.skip-meta {
     font-size: 1.125rem;
     line-height: 1.875rem;
   }

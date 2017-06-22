@@ -7,8 +7,6 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 def migrate_initiators(apps, schema_editor):
-    pass
-
     # Let's move the previous direct relationship
     # over to a certain type of supporter instead
     Initiative = apps.get_model('initproc', 'Initiative')

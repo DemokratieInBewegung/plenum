@@ -104,32 +104,29 @@
             </div>
         </nav>
     </div>
+    <div class="container-fluid notice text-center">
+        <h4>
+            Reiche Deine Initiative <em>bis zum 1. Juli 2017</em> ein!
+        </h4>
+        <p>
+            Damit sie es noch rechtzeitig zur Bundestagswahl ins Parteiprogramm schafft!
+        </p>
+        <a class="btn" href="https://bewegung.jetzt/2017/06/20/ein-neuer-anfang-jetzt-wird-diskutiert-und-abgestimmt/">Mehr Informationen</a>
+    </div>
     <header>
-        <!-- THIS WILL BE REMOVED SOON -->
-        <!--<div class="alert alert-info alert-dismissible fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <h6>
-                    Beta Test
-                </h6>
-            <p>
-                Dies ist eine Test Umgebung mit Test-Daten um das neue <a href="https://www.youtube.com/watch?v=FUKNVUkNpR8" target="_blank">Initiativ-Verfahren</a> der <a target="_blank" href="http://bewegung.jetzt/">Demokratie in Bewegung</a> <i>technisch und prozedual</i> erkunden. Bei den hier angezeigten Informationen handelt es sich weder um tatsächliche Initiativen noch um durchsetzbare Abstimmungen oder Forderungen. Dafür bitte steht bis auf weiteres der <a href="https://marktplatz.bewegung.jetzt/">Marktplatz der Ideen</a> zur Verfügung.
-            </p>
-        </div>-->
         {% block custom_header %} {% endblock %}
     </header>
     {% if messages %}
-        <div class="container-fluid push-alert fixed-top">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
+    <div class="container-fluid push-alert fixed-top">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
     {% endif %}
     <div class="main">
         {% block content %} {% endblock %}

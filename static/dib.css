@@ -216,6 +216,52 @@ p.card-text {
   overflow: hidden;
 }
 
+.container-fluid.notice {
+  padding-top: 1rem;
+  padding-bottom: 1rem; 
+background: rgba(227,82,66,1);
+background: -moz-radial-gradient(center, ellipse cover, rgba(227,82,66,1) 0%, rgba(201,40,28,1) 100%);
+background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgba(227,82,66,1)), color-stop(100%, rgba(201,40,28,1)));
+background: -webkit-radial-gradient(center, ellipse cover, rgba(227,82,66,1) 0%, rgba(201,40,28,1) 100%);
+background: -o-radial-gradient(center, ellipse cover, rgba(227,82,66,1) 0%, rgba(201,40,28,1) 100%);
+background: -ms-radial-gradient(center, ellipse cover, rgba(227,82,66,1) 0%, rgba(201,40,28,1) 100%);
+background: radial-gradient(ellipse at center, rgba(227,82,66,1) 0%, rgba(201,40,28,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e35242', endColorstr='#c9281c', GradientType=1 );
+}
+
+.notice p {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 1);
+}
+
+.notice h4 {
+  color: rgba(255, 255, 255, 1);
+  line-height: 2rem;
+}
+
+.notice a {
+  font-size: 1.125rem;
+}
+
+.notice a.btn {
+  background-color: transparent;
+  color: rgba(255, 255, 255, 1);
+  border: 1px solid rgba(255, 255, 255, 1);
+}
+
+.notice a.btn:focus {
+  box-shadow: none;
+}
+
+em {
+  color: rgba(201,40,28,1);
+  background-color: rgba(255, 255, 255, 1);
+  padding: 0 .3785rem;
+  border-radius: .25rem;
+  font-style: normal;
+  white-space:nowrap;
+}
+
 .container-fluid {
   padding: 0 1rem 0 1rem;
   width: 100%;

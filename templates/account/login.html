@@ -8,7 +8,7 @@
 
 {% block body %}
     <div class="row">
-        <div class="col-md-4">
+        <div class="col">
             <form method="POST" action="{% url "account_login" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
                 <legend>{% trans "Log in to an existing account" %}</legend>
                 {% csrf_token %}
@@ -24,9 +24,6 @@
                     Noch kein Konto?  <strong><a href="/registrieren/">Jetzt registrieren</a></strong>
                 </small>
             </p>
-        </div>
-        <div class="col-md-4">
-            {% include "account/_login_sidebar.html" %}
         </div>
     </div>
 {% endblock %}

@@ -1,0 +1,7 @@
+{% extends 'in_box.html' %}
+
+{% block body %}
+
+<div>Du hast keine Berechtigung, diese Seite zu sehen.{% if not user.is_authenticated %} Bitte melde Dich an.{% endif %}</div>
+
+{% endblock %}

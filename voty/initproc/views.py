@@ -152,7 +152,7 @@ def new(request):
 
 
             notify_initiative_listeners(ini, "wurde eingereicht.")
-            messages.success(request, "Deine Initiative wurde angenommen und wir geprüft.")
+            messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
             return redirect('/')
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
@@ -227,7 +227,7 @@ def support(request, initiative):
 @ensure_state(Initiative.STATES.INCOMING) # must be unpublished
 def publish(request, initiative):
     if initiative.supporting.filter(ack=True, initiator=True).count() != INITIATORS_COUNT:
-        messages.error(request, "Nicht genügend initiatoren haben bestätigt")
+        messages.error(request, "Nicht genügend Initiatoren haben bestätigt")
         return redirect('/initiative/{}'.format(initiative.id))
 
 
@@ -264,7 +264,7 @@ def rm_support(request, initiative):
     sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
     sup.delete()
 
-    messages.success(request, "Deine Unterstützung wurde zurück gezogen")
+    messages.success(request, "Deine Unterstützung wurde zurückgezogen")
 
     if initiative.state == 's':
         return redirect('/initiative/{}'.format(initiative.id))

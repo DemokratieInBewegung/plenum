@@ -4,10 +4,20 @@
 
 This runs on Python Django. For Development, you'll need Python 3.0 and a virtual environment.
 
+The following packages must be present for a successful install (Ubuntu syntax) :
+
+```
+sudo apt-get install python3-dev
+sudo apt-get install virtualenv
+sudo apt-get install postgresql postgresql-contrib
+sudo apt-get install libpq-dev
+sudo apt-get install libjpeg8-dev
+```
+
 1. Set up your local Virtual environment
 
 ```
-virtualenv -P python3 .   # setup a new virtual environment locally
+virtualenv -p python3 .   # setup a new virtual environment locally
 source bin/activate       # enter that environment: needs to happen for every shell session!
 ```
 

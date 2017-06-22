@@ -46,7 +46,7 @@ class Initiative(models.Model):
     arbeitsweise = models.TextField()
     init_argument = models.TextField()
 
-    einordnung = models.CharField(max_length=50, choices=[('Einzellinitiatve','Einzellinitiative')])
+    einordnung = models.CharField(max_length=50, choices=[('Einzellinitiatve','Einzelinitiative')])
     ebene = models.CharField(max_length=50, choices=[('Bund', 'Bund')])
     bereich = models.CharField(max_length=50, choices=[
                 ('Mitbestimmung', 'Mitbestimmung'),

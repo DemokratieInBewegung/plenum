@@ -255,7 +255,7 @@
                     {% endif %}
                 </span>
                 <div class="progress">
-                    <div class="progress-bar bg-support" role="progressbar" style="width: {{initiative.relative_support|floatformat:" 0 "}}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
+                    <div class="progress-bar bg-support" role="progressbar" style="width: {% if initiative.relative_support <= 100 %}{{initiative.relative_support|floatformat:" 0 "}}{% else %}100{% endif %}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
                     </div>
                 </div>
                 {% if initiative.absolute_supporters < initiative.quorum %}
@@ -372,7 +372,7 @@
                     {% endif %}
                 </span>
                 <div class="progress">
-                    <div class="progress-bar bg-support" role="progressbar" style="width: {{initiative.relative_support|floatformat:" 0 "}}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
+                    <div class="progress-bar bg-support" role="progressbar" style="width: {% if initiative.relative_support <= 100 %}{{initiative.relative_support|floatformat:" 0 "}}{% else %}100{% endif %}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
                     </div>
                 </div>
                 {% if initiative.absolute_supporters < initiative.quorum %}

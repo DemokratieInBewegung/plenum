@@ -59,6 +59,17 @@ This server automatically refreshes when you change the python source code or th
 Happy Hacking!
 
 
+## To update the local checkout do:
+
+```
+git pull
+source bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+```
+
+
+
 ## Deployment
 
 Using docker-compose, right from within this repo, run:

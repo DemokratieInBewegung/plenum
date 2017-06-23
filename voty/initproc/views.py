@@ -235,7 +235,7 @@ def item(request, init, slug=None):
             if arg.user.id == user_id:
                 arg.has_commented = True
             else:
-                for cmt in arg.comments:
+                for cmt in arg.comments.all():
                     if cmt.user.id == user_id:
                         arg.has_commented = True
                         break

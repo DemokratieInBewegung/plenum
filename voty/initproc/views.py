@@ -1,27 +1,65 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.contrib.auth import get_user_model
 from django.contrib import messages
+from django.apps import apps
 from django.db.models import Q
 from dal import autocomplete
 from django import forms
 from datetime import datetime
+from django_ajax.decorators import ajax
 
+from .apps import InitprocConfig
 from .helpers import notify_initiative_listeners
-from .models import (Initiative, Argument, Comment, Vote, Quorum, Supporter, Like, INITIATORS_COUNT)
+from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Quorum, Supporter, Like, INITIATORS_COUNT)
+from .forms import NewArgumentForm, NewCommentForm, NewProposalForm
 # Create your views here.
 
 DEFAULT_FILTERS = ['s', 'd', 'v']
 STAFF_ONLY = ['i', 'm', 'h']
 
-def ensure_state(state):
+
+def can_access_initiative(states=None):
     def wrap(fn):
         def view(request, init_id, slug, *args, **kwargs):
             init = get_object_or_404(Initiative, pk=init_id)
-            assert init.state in state, "Not in expected state: {}".format(state)
+            if states:
+                assert init.state in states, "Not in expected state: {}".format(state)
+            if init.state in STAFF_ONLY:
+                if not request.user.is_authenticated:
+                    raise PermissionDenied()
+                if not request.user.is_staff and \
+                   not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=request.user.id):
+                    raise PermissionDenied()
+
             return fn(request, init, *args, **kwargs)
+        return view
+    return wrap
+
+
+def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_ajax=True,
+                         submit_klasses="btn-outline-primary", submit_title="Abschicken"):
+    def wrap(fn):
+        def view(request, *args, **kwargs):
+            if request.method == "POST":
+                form = form_cls(request.POST)
+                if form.is_valid():
+                    return fn(request, form, *args, **kwargs)
+            else:
+                form = form_cls()
+
+            fragment = request.GET.get('fragment')
+            rendered = render_to_string(template,
+                        context=dict(fragment=fragment, form=form, ajax=via_ajax,
+                                     submit_klasses=submit_klasses,
+                                     submit_title=submit_title),
+                        request=request)
+            if fragment:
+                return {'inner-fragments': {fragment: rendered}}
+            return rendered
         return view
     return wrap
 
@@ -173,44 +211,64 @@ def new(request):
     return render(request, 'initproc/new.html', context=dict(form=form))
 
 
-def item(request, init_id, slug=None):
-    init = get_object_or_404(Initiative, pk=init_id)
-    if init.state in STAFF_ONLY:
-        if not request.user.is_authenticated:
-            raise PermissionDenied()
-        if not request.user.is_staff and \
-           not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=request.user.id):
-            raise PermissionDenied()
+@can_access_initiative()
+def item(request, init, slug=None):
 
-    ctx = dict(initiative=init, pro=[], contra=[],
-               arguments=init.arguments.prefetch_related("comments").prefetch_related("likes").all())
+    ctx = dict(initiative=init,
+               proposals=[x for x in init.proposals.prefetch_related('likes').all()],
+               arguments=[x for x in init.pros.prefetch_related('likes').all()] +\
+                         [x for x in init.contras.prefetch_related('likes').all()])
 
-    for arg in ctx['arguments']:
-        ctx["pro" if arg.in_favor else "contra"].append(arg)
+    ctx['arguments'].sort(key=lambda x: (x.likes.count(), x.created_at), reverse=True)
+    ctx['proposals'].sort(key=lambda x: (x.likes.count(), x.created_at), reverse=True)
 
-    ctx['pro'].sort(key=lambda x: x.likes.count(), reverse=True)
-    ctx['contra'].sort(key=lambda x: x.likes.count(), reverse=True)
 
     if request.user.is_authenticated:
         user_id = request.user.id
         ctx.update({'has_supported': init.supporting.filter(user=user_id).count(),
-                    'has_demanded_vote': 0,
                     'has_voted': init.votes.filter(user=user_id).count()})
         if ctx['has_voted']:
             ctx['vote'] = init.votes.filter(user=user_id).first().vote
 
-        if ctx['arguments']:
-            for arg in ctx['arguments']:
-                arg.has_liked = arg.likes.filter(user=user_id).count() > 0
-                if arg.user.id == user_id:
-                    arg.has_commented = True
-                else:
-                    for cmt in arg.comments:
-                        if cmt.user.id == user_id:
-                            arg.has_commented = True
-                            break
+        for arg in ctx['arguments'] + ctx['proposals']:
+            arg.has_liked = arg.likes.filter(user=user_id).count() > 0
+            if arg.user.id == user_id:
+                arg.has_commented = True
+            else:
+                for cmt in arg.comments:
+                    if cmt.user.id == user_id:
+                        arg.has_commented = True
+                        break
 
     return render(request, 'initproc/item.html', context=ctx)
+
+
+@ajax
+@can_access_initiative()
+def show_resp(request, initiative, target_type, target_id, slug=None):
+
+    model_cls = apps.get_model('initproc', target_type)
+    arg = get_object_or_404(model_cls, pk=target_id)
+
+    assert arg.initiative == initiative, "How can this be?"
+
+    ctx = dict(argument=arg,
+               has_commented=False,
+               can_like=False,
+               has_liked=False,
+               comments=arg.comments.order_by('-created_at').all())
+
+    if request.user:
+        ctx['has_liked'] = arg.likes.filter(user=request.user).count() > 0
+        if arg.user == request.user:
+            ctx['has_commented'] = True
+            # users can self-like at the moment...
+
+    return {'fragments': {
+        '#{arg.type}-{arg.id}'.format(arg=arg): render_to_string('fragments/argument/full.html',
+                                                                 context=ctx, request=request)
+        }}
+
 
 
 #
@@ -227,17 +285,18 @@ def item(request, init_id, slug=None):
 
 @require_POST
 @login_required
-@ensure_state('s') # must be seeking for supporters
+@can_access_initiative('s') # must be seeking for supporters
 def support(request, initiative):
     Supporter(initiative=initiative, user_id=request.user.id,
               public=not not request.POST.get("public", False)).save()
 
     return redirect('/initiative/{}'.format(initiative.id))
 
+
 @require_POST
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-@ensure_state(Initiative.STATES.INCOMING) # must be unpublished
+@can_access_initiative(Initiative.STATES.INCOMING) # must be unpublished
 def publish(request, initiative):
     if initiative.supporting.filter(ack=True, initiator=True).count() != INITIATORS_COUNT:
         messages.error(request, "Nicht genügend Initiatoren haben bestätigt")
@@ -259,7 +318,7 @@ def publish(request, initiative):
 
 @require_POST
 @login_required
-@ensure_state('i')
+@can_access_initiative('i')
 def ack_support(request, initiative):
     sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
     sup.ack = True
@@ -272,7 +331,7 @@ def ack_support(request, initiative):
 
 @require_POST
 @login_required
-@ensure_state(['s', 'i'])
+@can_access_initiative(['s', 'i'])
 def rm_support(request, initiative):
     sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
     sup.delete()
@@ -284,58 +343,105 @@ def rm_support(request, initiative):
     return redirect('/')
 
 
+
+@ajax
+@login_required
+@can_access_initiative('d') # must be in discussion
+@simple_form_verifier(NewArgumentForm)
+def new_argument(request, form, initiative):
+    data = form.cleaned_data
+    argCls = Pro if data['type'] == "👍" else Contra
+
+    arg = argCls(initiative=initiative,
+                 user_id=request.user.id,
+                 title=data['title'],
+                 text=data['text'])
+
+    arg.save()
+
+    return {
+        'inner-fragments': {'#new-argument': "<strong>Danke für dein Argument</strong>"},
+        'append-fragments': {'#argument-list': render_to_string("fragments/argument/small.html",
+                                                  context=dict(argument=arg),
+                                                  request=request)}
+    }
+
+
+
+@ajax
+@login_required
+@can_access_initiative('d') # must be in discussion
+@simple_form_verifier(NewProposalForm)
+def new_proposal(request, form, initiative):
+    data = form.cleaned_data
+    proposal = Proposal(initiative=initiative,
+                        user_id=request.user.id,
+                        text=data['text'])
+
+    proposal.save()
+
+    return {
+        'inner-fragments': {'#new-proposal': "<strong>Danke für deinen Vorschlag</strong>"},
+        'append-fragments': {'#proposal-list': render_to_string("fragments/argument/small.html",
+                                                  context=dict(argument=proposal),
+                                                  request=request)}
+    }
+
+
+@ajax
+@login_required
+@simple_form_verifier(NewCommentForm)
+def comment(request, form, target_type, target_id):
+    data = form.cleaned_data
+    model_cls = apps.get_model('initproc', target_type)
+    model = get_object_or_404(model_cls, pk=target_id)
+
+    cmt = Comment(target=model, user=request.user, **data)
+    cmt.save()
+
+    return {
+        'inner-fragments': {'#{}-new-comment'.format(model.unique_id):
+                "<strong>Danke für deine Kommentar</strong>"},
+        'append-fragments': {'#{}-comment-list'.format(model.unique_id):
+            render_to_string("fragments/comment/item.html",
+                             context=dict(comment=cmt),
+                             request=request)}
+    }
+
+
+@ajax
+@login_required
+def like(request, target_type, target_id):
+    model_cls = apps.get_model('initproc', target_type)
+    model = get_object_or_404(model_cls, pk=target_id)
+
+    Like(target=model, user=request.user).save()
+    return {'fragments': {
+        '#{}-like'.format(model.unique_id): render_to_string("fragments/like.html",
+                                                             context=dict(has_liked=True, target=model),
+                                                             request=request)
+    }}
+
+
+@ajax
+@login_required
+def unlike(request, target_type, target_id):
+    model_cls = apps.get_model('initproc', target_type)
+    model = get_object_or_404(model_cls, pk=target_id)
+
+    model.likes.filter(user_id=request.user.id).delete()
+
+    return {'fragments': {
+        '#{}-like'.format(model.unique_id): render_to_string("fragments/like.html",
+                                                             context=dict(has_liked=False, target=model),
+                                                             request=request)
+    }}
+
+
+
 @require_POST
 @login_required
-@ensure_state('d') # must be in discussion
-def post_argument(request, initiative):
-    Argument(initiative=initiative, user_id=request.user.id,
-             text=request.POST.get('text', ''),
-             title=request.POST.get('title', ''),
-             in_favor=request.POST.get('vote', 'yay') != 'nay').save()
-
-    return redirect('/initiative/{}'.format(initiative.id))
-
-@require_POST
-@login_required
-@ensure_state('d') # must be in discussion
-def post_comment(request, init, arg_id):
-    argument = get_object_or_404(Argument, pk=arg_id)
-    assert init.id == argument.initiative.id, "Argument doesn't belong to Initiative"
-
-    Comment(argument=argument, user_id=request.user.id,
-             text=request.POST.get('text', '')).save()
-
-    return redirect('/initiative/{}#argument-{}'.format(init.id, argument.id))
-
-@require_POST
-@login_required
-@ensure_state('d') # must be in discussion
-def like_argument(request, init, arg_id):
-    argument = get_object_or_404(Argument, pk=arg_id)
-    assert init.id == argument.initiative.id, "Argument doesn't belong to Initiative"
-
-    Like(argument=argument, user_id=request.user.id).save()
-
-    return redirect('/initiative/{}#argument-{}'.format(init.id, argument.id))
-
-@require_POST
-@login_required
-@ensure_state('d') # must be in discussion
-def unlike_argument(request, init, arg_id):
-    argument = get_object_or_404(Argument, pk=arg_id)
-    assert init.id == argument.initiative.id, "Argument doesn't belong to Initiative"
-
-    like = Like.objects.get(argument=arg_id, user_id=request.user.id)
-    if like:
-        like.delete()
-
-    return redirect('/initiative/{}#argument-{}'.format(init.id, argument.id))
-
-
-
-@require_POST
-@login_required
-@ensure_state('v') # must be in voting
+@can_access_initiative('v') # must be in voting
 def vote(request, init, vote):
     in_favor = vote != 'nay'
     my_vote = Vote.objects.get(initiative=init, user_id=request.user)

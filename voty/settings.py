@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'notifications',
     'bootstrapform',
     'fullurl',
+    'django_ajax',
 
     # must be before admin ...
     'dal',
@@ -68,7 +69,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "account.middleware.LocaleMiddleware",
-    "account.middleware.TimezoneMiddleware",
+    "account.middleware.TimezoneMiddleware"
 ]
 
 LOGGING = {
@@ -200,7 +201,7 @@ MESSAGE_TAGS = {
 
 ## What we allow in the editor
 
-MARKDOWN_FILTER_WHITELIST_TAGS = ['a', 'p', 'b', 'em', 'i', 'code', 'pre', 'blockquote', 'ul', 'ol', 'li']
+MARKDOWN_FILTER_WHITELIST_TAGS = ['a', 'p', 'b', 'em', 'strong', 'i', 'code', 'pre', 'blockquote', 'ul', 'ol', 'li']
 
 
 # Static files (CSS, JavaScript, Images)

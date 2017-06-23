@@ -1,0 +1,8 @@
+<span id="{{target.unique_id}}-like">
+{% if has_liked %}
+<a data-ajax="true" href="/unlike/{{target.type}}/{{target.id}}"><i class="material-icons">favorite</i></a>
+{% else %}
+<a data-ajax="true"
+   href="/like/{{target.type}}/{{target.id}}"><i class="material-icons">favorite_border</i></a>
+{% endif %}
+{{target.likes.count}}</span>

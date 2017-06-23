@@ -16,6 +16,7 @@ django-model-utils==3.0.0
 django-notifications-hq==1.2
 django-tag-parser==2.1
 django-user-accounts==2.0.1
+djangoajax==2.3.7
 dominate==2.1.17
 easy-thumbnails==2.3
 gunicorn==19.7.1

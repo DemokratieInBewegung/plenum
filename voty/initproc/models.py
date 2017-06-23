@@ -1,6 +1,9 @@
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta, date
 from django.utils.text import slugify
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
+
 from django.db import models
 import pytz
 
@@ -137,6 +140,9 @@ class Initiative(models.Model):
     def show_supporters(self):
         return self.state in [self.STATES.INCOMING, self.STATES.SEEKING_SUPPORT]
 
+    @property
+    def show_debate(self):
+        return self.state in [self.STATES.DISCUSSION, self.STATES.FINAL_EDIT]
 
     @property
     def yays(self):
@@ -181,6 +187,18 @@ class Initiative(models.Model):
                 cls=self.custom_cls, id=self.id, state=self.state, title=self.title)
 
 
+class Vote(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    changed_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User)
+    initiative = models.ForeignKey(Initiative, related_name="votes")
+    in_favor = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = (("user", "initiative"),)
+
+
+
 class Quorum(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     quorum = models.IntegerField(null=0)
@@ -204,40 +222,88 @@ class Supporter(models.Model):
         unique_together = (("user", "initiative"),)
 
 
-class Argument(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    changed_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User)
-    initiative = models.ForeignKey(Initiative, related_name="arguments")
-    title = models.CharField(max_length=80)
-    text = models.TextField()
-    in_favor = models.BooleanField(default=True)
 
+# Debating Models
 
 class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
-    argument = models.ForeignKey(Argument, related_name="comments")
-    text = models.TextField()
+
+    target_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    target_id = models.IntegerField()
+    target = GenericForeignKey('target_type', 'target_id')
+
+    text = models.CharField(max_length=500)
 
 
 class Like(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
-    argument = models.ForeignKey(Argument, related_name="likes")
+
+    target_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    target_id = models.IntegerField()
+    target = GenericForeignKey('target_type', 'target_id')
 
     class Meta:
-        unique_together = (("user", "argument"),)
+        unique_together = (("user", "target_type", "target_id"),)
 
-class Vote(models.Model):
+
+### Abstracts
+
+class Likeable(models.Model):
+    class Meta:
+        abstract = True
+
+    likes_count = models.IntegerField(default=0)
+    likes = GenericRelation(Like,
+                            content_type_field='target_type',
+                            object_id_field='target_id')
+
+
+class Commentable(models.Model):
+    class Meta:
+        abstract = True
+
+    comments_count = models.IntegerField(default=0)
+    comments = GenericRelation(Comment,
+                               content_type_field='target_type',
+                               object_id_field='target_id')
+
+
+class Response(Likeable, Commentable):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User)
-    initiative = models.ForeignKey(Initiative, related_name="votes")
-    in_favor = models.BooleanField(default=True)
+    user = models.ForeignKey(User, related_name="%(class)ss")
+    initiative = models.ForeignKey(Initiative, related_name="%(class)ss")
 
     class Meta:
-        unique_together = (("user", "initiative"),)
+        abstract = True
+
+    @property
+    def unique_id(self):
+        return "{}-{}".format(self.type, self.id)
 
 
+class Argument(Response):
+    title = models.CharField(max_length=80)
+    text = models.CharField(max_length=500)
+
+    class Meta:
+        abstract = True
+
+### End of Abstract
+
+class Proposal(Response):
+    type = "proposal"
+    text = models.CharField(max_length=1024)
+
+class Pro(Argument):
+    type = "pro"
+    css_class = "success"
+    icon = "thumb_up"
+
+class Contra(Argument):
+    type = "contra"
+    css_class = "danger"
+    icon = "thumb_down"

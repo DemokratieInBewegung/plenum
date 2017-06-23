@@ -354,6 +354,42 @@
 		</div>
     </div>
 </div>
+
+
+
+{% if initiative.show_debate %}
+
+<div class="container-fluid cta">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <ul class="nav nav-tabs nav-fill" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#debate" role="tab">Debatte ({{arguments|length}})</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#proposals" role="tab">Vorschläge ({{proposals|length}})</a>
+                  </li>
+                </ul>
+            </div>
+            <div class="col-12 tab-content">
+                <div class="tab-pane active" id="debate" role="tabpanel">
+                    {% include 'fragments/debate.html' %}
+                </div>
+                <div class="tab-pane" id="proposals" role="tabpanel">
+                    {% include 'fragments/proposals.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+
+
+<!-- SEEEEKING SUPPPORTERS AREA -->
+
 {% ifequal initiative.state 's' %}
 <div class="container-fluid cta">
     <div class="container">
@@ -417,8 +453,6 @@
                 </form>
                 {% endif %}
                 {% endifequal %}
-            </div>
-            <div class="col-12">
             </div>
         </div>
     </div>

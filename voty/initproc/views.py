@@ -107,6 +107,7 @@ class NewInitiative(forms.ModelForm):
 
     initiators = forms.ModelMultipleChoiceField(
         label="Mitinitiator/innen",
+        help_text="Hier gibst Du an welche Beweger/innen diese Initiative mit Dir einbringen. Jede Initiative muss von drei Beweger/innen eingebracht werden.",
         queryset=get_user_model().objects,
         validators=[has_enough_initiators],
         widget=autocomplete.ModelSelect2Multiple(
@@ -120,14 +121,26 @@ class NewInitiative(forms.ModelForm):
 
         labels = {
             "title" : "Überschrift",
-            "subtitle": "Teaser",
+            "subtitle": "Anreizer",
             "summary" : "Zusammenfassung",
             "problem": "Problembeschreibung",
-            "fordering" : "Forderung",
+            "forderung" : "Forderung",
             "kosten": "Kosten",
             "fin_vorschlag": "Finanzierungsvorschlag",
             "arbeitsweise": "Arbeitsweise",
             "init_argument": "Argument der Initiator/innen",
+        }
+        help_texts = {
+            "title" : "Die Überschrift sollte kurz und knackig eure Forderung enthalten.",
+            "subtitle": "Hier reißt ihr kurz das Problem an, welches eure Initiative lösen soll. Versucht es auf 1-2 Sätze zu beschränken.",
+            "summary" : "Hier schreibt bitte 3-4 Sätze, die zusammenfassen, worum es in dieser Initiative geht.",
+            "problem": "Hier bitte in 3-4 Sätze das Problem beschreiben, dass ihr mit eurer Initiative lösen wollt.",
+            "forderung" : "Was sind eure konkrete Forderungen?",
+            "kosten": "Entstehen Kosten für Eure Initiative? Versucht bitte, wenn möglich, eine ungefähre Einschätzung über die Höhe der Kosten zu geben.ten",
+            "fin_vorschlag": "Hier solltet ihr kurz erklären, wie die Kosten gedeckt werden könnten. Hier reicht auch zu schreiben, dass die Initiative über Steuereinnahmen finanziert wird.",
+            "arbeitsweise": "Habt ihr mit Expert/innen gesprochen? Wo kommen eure Informationen her? Hier könnt ihr auch Quellen angeben.",
+            "init_argument": "Hier dürft ihr emotional werden: Warum ist euch das wichtig und warum bringt ihr diese Initiative ein?",
+
         }
 
 

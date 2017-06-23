@@ -7,6 +7,16 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
+def delete_old_likes_and_comments(apps, schema_editor):
+    # Let's move the previous direct relationship
+    # over to a certain type of supporter instead
+    Like = apps.get_model('initproc', 'Like')
+    Comment = apps.get_model('initproc', 'Comment')
+    Like.objects.all().delete()
+    Comment.objects.all().delete()
+
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -68,6 +78,7 @@ class Migration(migrations.Migration):
             model_name='argument',
             name='user',
         ),
+        migrations.RunPython(delete_old_likes_and_comments),
         migrations.RemoveField(
             model_name='comment',
             name='argument',

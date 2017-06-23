@@ -18,7 +18,7 @@ from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Quorum, S
 from .forms import NewArgumentForm, NewCommentForm, NewProposalForm
 # Create your views here.
 
-DEFAULT_FILTERS = ['s', 'd', 'v']
+DEFAULT_FILTERS = [Initiative.STATES.SEEKING_SUPPORT, Initiative.STATES.DISCUSSION, Initiative.STATES.VOTING]
 
 
 def can_access_initiative(states=None, check=None):
@@ -184,7 +184,7 @@ def new(request):
             return redirect('/')
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
-            
+
     return render(request, 'initproc/new.html', context=dict(form=form))
 
 
@@ -259,10 +259,64 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
 #
 #                                                                        
 
+@login_required
+# @ensure_state([Initiative.STATES.PREPARE, Initiative.STATES.FINAL_EDIT]) TODO fix state check
+def edit(request, init_id=None, slug=None):
+    if init_id:
+        ini = get_object_or_404(Initiative, pk=init_id)
+        # TODO fix check that only initiator may edit their own initiative
+        if not ini.supporting.filter(Q(first=True) | Q(initiator=True), user_id=request.user.id):
+            raise PermissionDenied()
+    else:
+        ini = Initiative()
+
+
+    form = NewInitiative(request.POST or None, instance=ini)
+
+    if request.method == 'POST' and form.is_valid():
+        ini = form.save(commit=False)
+        # TODO add the current user as initiator of newly created initiative
+        if ini.state == None:
+            ini.state = Initiative.STATES.PREPARE
+            ini.save()
+            Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
+
+        messages.success(request, "Initiative gespeichert.")
+        return redirect('/initiative/{}'.format(ini.id))
+
+    return render(request, 'initproc/new.html', context=dict(form=form))
+
+# @login_required
+# def submit_to_committee(request):
+#     form = NewInitiative()
+#     if request.method == 'POST':
+#         form = NewInitiative(request.POST)
+#         if form.is_valid():
+#             ini = form.save(commit=False)
+#             ini.state = Initiative.STATES.INCOMING
+#             ini.save()
+#
+#             Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
+#
+#             for uid in form.cleaned_data['initiators'].all():
+#                 Supporter(initiative=ini, user=uid, initiator=True, ack=False, public=True).save()
+#
+#             for uid in form.cleaned_data['supporters'].all():
+#                 if uid in ini.supporters.all(): continue # you can only be one
+#                 Supporter(initiative=ini, user=uid, initiator=False, first=True, public=True).save()
+#
+#
+#             notify_initiative_listeners(ini, "wurde eingereicht.")
+#             messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
+#             return redirect('/')
+#         else:
+#             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+#
+#     return render(request, 'initproc/new.html', context=dict(form=form))
 
 @require_POST
 @login_required
-@can_access_initiative('s', 'can_support') # must be seeking for supporters
+@can_access_initiative(Initiative.STATES.SEEKING_SUPPORT, 'can_support') # must be seeking for supporters
 def support(request, initiative):
     Supporter(initiative=initiative, user_id=request.user.id,
               public=not not request.POST.get("public", False)).save()
@@ -272,7 +326,7 @@ def support(request, initiative):
 
 @require_POST
 @login_required
-@can_access_initiative(Initiative.STATES.INCOMING, 'can_publish') # must be unpublished
+@can_access_initiative(Initiative.STATES.INCOMING, 'can_publish') # must be submitted and unpublished
 def publish(request, initiative):
     if initiative.supporting.filter(ack=True, initiator=True).count() != INITIATORS_COUNT:
         messages.error(request, "Nicht genügend Initiatoren haben bestätigt")
@@ -294,7 +348,7 @@ def publish(request, initiative):
 
 @require_POST
 @login_required
-@can_access_initiative('i')
+@can_access_initiative(Initiative.STATES.INCOMING)
 def ack_support(request, initiative):
     sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
     sup.ack = True
@@ -307,7 +361,7 @@ def ack_support(request, initiative):
 
 @require_POST
 @login_required
-@can_access_initiative(['s', 'i'])
+@can_access_initiative([Initiative.STATES.SEEKING_SUPPORT, Initiative.STATES.INCOMING])
 def rm_support(request, initiative):
     sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
     sup.delete()
@@ -322,7 +376,7 @@ def rm_support(request, initiative):
 
 @ajax
 @login_required
-@can_access_initiative('d') # must be in discussion
+@can_access_initiative(Initiative.STATES.DISCUSSION) # must be in discussion
 @simple_form_verifier(NewArgumentForm)
 def new_argument(request, form, initiative):
     data = form.cleaned_data
@@ -346,7 +400,7 @@ def new_argument(request, form, initiative):
 
 @ajax
 @login_required
-@can_access_initiative('d') # must be in discussion
+@can_access_initiative(Initiative.STATES.DISCUSSION) # must be in discussion
 @simple_form_verifier(NewProposalForm)
 def new_proposal(request, form, initiative):
     data = form.cleaned_data
@@ -417,7 +471,7 @@ def unlike(request, target_type, target_id):
 
 @require_POST
 @login_required
-@can_access_initiative('v') # must be in voting
+@can_access_initiative(Initiative.STATES.VOTING) # must be in voting
 def vote(request, init, vote):
     in_favor = vote != 'nay'
     my_vote = Vote.objects.get(initiative=init, user_id=request.user)

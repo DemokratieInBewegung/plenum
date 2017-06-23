@@ -79,10 +79,18 @@
         </div>
         <div class="row initiative-state">
             <div class="col-12">
-                {% ifequal initiative.state 'i' %}
+                {% if initiative.state == 'p' or initiative.state == 'i' %}
                 <p>
-                    Diese Initiative <strong class="badge-arrivals">wurde noch nicht veröffentlicht</strong>.
+                    Diese Initiative <strong class="badge-prepare">wurde noch nicht veröffentlicht</strong>.
                  </p>
+                {% if initiative.is_editable %}
+                <form action="/initiative/{{initiative.id}}/edit" style="display:inline"  method="GET">
+                    {% csrf_token %}
+                    <button title="Bearbeiten" class="btn btn-success edit" type="submit">
+                        <i class="material-icons edit">edit</i><span>Bearbeiten</span>
+                    </button>
+                </form>
+                {% endif %}
                 {% if user.is_staff %}
                     {% if initiative.ready_for_next_stage %}
                         <form action="/initiative/{{initiative.id}}/publish" style="display:inline"  method="POST">
@@ -97,7 +105,7 @@
                             </button>
                     {% endif %}
                 {% endif %}
-                {% endifequal %}
+                {% endif %}
                 {% ifequal initiative.state 'm' %}
                 <p>
                     Diese Initiative <strong class="badge-arrivals">wird gerade moderiert</strong>.

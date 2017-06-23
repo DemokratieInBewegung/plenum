@@ -25,7 +25,15 @@
 	    		</div>
 	    		<div class="col-sm-10">
 				  	<div class="row no-gutters">
-					 	{% if inbox_count %}
+						<div class="col-auto">
+							<label>
+								<input name="f" value="p" type="checkbox" {% if 'p' in filters %} checked{% endif %}>
+								<span class="badge badge-prepare">
+						      		In Vorbereitung
+						      	</span>
+							</label>
+						</div>
+						{% if inbox_count %}
 					    <div class="col-auto">
 						    <label>
 						      	<input name="f" value="i" type="checkbox" {% if 'i' in filters %} checked{% endif %}>

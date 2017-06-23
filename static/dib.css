@@ -635,15 +635,26 @@ header .alert {
   color: #EB9316;
 }
 
-/* Badge Color: New Arrivals */
+/* Badge Color: Preparation */
 
-.badge-arrivals {
+.badge-prepare {
   color: #636c72;
   border-color: #636c72;
 }
 
-.typefilter input:checked + .badge-arrivals {
+.typefilter input:checked + .badge-prepare {
   background-color: #636c72;
+}
+
+/* Badge Color: New Arrivals */
+
+.badge-arrivals {
+  color: #EB5C4A;
+  border-color: #EB5C4A;
+}
+
+.typefilter input:checked + .badge-arrivals {
+  background-color: #EB5C4A;
 }
 
 /* Badge Color: Seeking Support */

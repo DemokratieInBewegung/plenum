@@ -19,7 +19,7 @@
      command: gunicorn -w 3 -b 0.0.0.0 voty.wsgi
      volumes:
        - ./data/public:/code/public
-     ports:
-       - "8000:8000"
+     expose:
+       - 8000
      links:
        - db

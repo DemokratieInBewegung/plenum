@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'notifications',
     'bootstrapform',
     'fullurl',
+    'django_ajax',
 
     # must be before admin ...
     'dal',
@@ -68,7 +69,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "account.middleware.LocaleMiddleware",
-    "account.middleware.TimezoneMiddleware",
+    "account.middleware.TimezoneMiddleware"
 ]
 
 LOGGING = {

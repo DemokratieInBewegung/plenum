@@ -133,6 +133,10 @@ class Initiative(models.Model):
     def quorum(self):
         return Quorum.current_quorum()
 
+    @property
+    def show_supporters(self):
+        return self.state in [self.STATES.INCOMING, self.STATES.SEEKING_SUPPORT]
+
 
     @property
     def yays(self):
@@ -158,7 +162,7 @@ class Initiative(models.Model):
 
     @property
     def public_supporters(self):
-        return self.supporting.filter(public=True)
+        return self.supporting.filter(public=True, first=False, initiator=False)
 
     @property
     def initiators(self):

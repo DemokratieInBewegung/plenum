@@ -253,7 +253,9 @@ class Likeable(models.Model):
         abstract = True
 
     likes_count = models.IntegerField(default=0)
-    likes = GenericRelation(Like)
+    likes = GenericRelation(Like,
+                            content_type_field='target_type',
+                            object_id_field='target_id')
 
 
 class Commentable(models.Model):
@@ -261,7 +263,9 @@ class Commentable(models.Model):
         abstract = True
 
     comments_count = models.IntegerField(default=0)
-    comments = GenericRelation(Comment)
+    comments = GenericRelation(Comment,
+                               content_type_field='target_type',
+                               object_id_field='target_id')
 
 
 class Response(Likeable, Commentable):
@@ -287,8 +291,11 @@ class Proposal(Response):
     text = models.CharField(max_length=1024)
 
 class Pro(Argument):
-    pass
-
+    type = "pro"
+    css_class = "success"
+    icon = "thumb_up"
 
 class Contra(Argument):
-    pass
+    type = "contra"
+    css_class = "danger"
+    icon = "thumb_down"

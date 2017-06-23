@@ -1,0 +1,4 @@
+{% load avatar_tags %} 
+{% load markdown %}
+
+<div id="comment-{{comment.id}}"><i class="material-icons">heart</i> {{comment.likes.count}} {{comment.text|markdown}} {{comment.created_at|timesince}} -- {% avatar comment.user 25 %}</div>

@@ -5,15 +5,17 @@ from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.contrib.auth import get_user_model
 from django.contrib import messages
+from django.apps import apps
 from django.db.models import Q
 from dal import autocomplete
 from django import forms
 from datetime import datetime
 from django_ajax.decorators import ajax
 
+from .apps import InitprocConfig
 from .helpers import notify_initiative_listeners
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Quorum, Supporter, Like, INITIATORS_COUNT)
-from .forms import NewArgumentForm
+from .forms import NewArgumentForm, NewCommentForm
 # Create your views here.
 
 DEFAULT_FILTERS = ['s', 'd', 'v']
@@ -239,6 +241,33 @@ def item(request, init, slug=None):
     return render(request, 'initproc/item.html', context=ctx)
 
 
+@ajax
+@can_access_initiative()
+def show_argument(request, initiative, arg_type, arg_id, slug=None):
+
+    arg = get_object_or_404(Pro if arg_type == 'pro' else Contra, pk=arg_id)
+    assert arg.initiative == initiative, "How can this be?"
+
+    ctx = dict(argument=arg,
+               has_commented=False,
+               can_like=False,
+               has_liked=False,
+               comments=arg.comments.order_by('-created_at').all())
+
+    if request.user:
+        if arg.user == request.user:
+            ctx['has_commented'] = True
+            ctx['can_like'] = False
+        else:
+            ctx['has_liked'] = arg.likes.filter(user=request.user).count() > 0
+
+    return {'fragments': {
+        '#{arg.type}-{arg.id}'.format(arg=arg): render_to_string('fragments/argument/full.html',
+                                                                 context=ctx, request=request)
+        }}
+
+
+
 #
 #      ___       ______ .___________. __    ______   .__   __.      _______.
 #     /   \     /      ||           ||  |  /  __  \  |  \ |  |     /       |
@@ -334,18 +363,25 @@ def new_argument(request, form, initiative):
                                                   request=request)}
     }
 
-
-@require_POST
+@ajax
 @login_required
-@can_access_initiative('d') # must be in discussion
-def post_comment(request, init, arg_id):
-    argument = get_object_or_404(Argument, pk=arg_id)
-    assert init.id == argument.initiative.id, "Argument doesn't belong to Initiative"
+@simple_form_verifier(NewCommentForm)
+def comment(request, form, target_type, target_id):
+    data = form.cleaned_data
+    model_cls = apps.get_model('initproc', target_type)
+    model = get_object_or_404(model_cls, pk=target_id)
 
-    Comment(argument=argument, user_id=request.user.id,
-             text=request.POST.get('text', '')).save()
+    cmt = Comment(target=model, user=request.user, **data)
+    cmt.save()
 
-    return redirect('/initiative/{}#argument-{}'.format(init.id, argument.id))
+    return {
+        'inner-fragments': {'#{}-new-comment'.format(model.unique_id):
+                "<strong>Danke für deine Kommentar</strong>"},
+        'append-fragments': {'#{}-comment-list'.format(model.unique_id):
+            render_to_string("fragments/comment/item.html",
+                             context=dict(comment=cmt),
+                             request=request)}
+    }
 
 
 @require_POST

@@ -1,0 +1,20 @@
+{% load avatar_tags %} 
+{% load markdown %}
+
+<div id="{{argument.unique_id}}">
+	<span class="badge badge-{{argument.css_class}}"><i class="material-icons">{{argument.icon}}</i></span> {{argument.title}}<br/>
+	<i class="material-icons">heart</i> {{argument.likes.count}}
+	<i class="material-icons">comment</i> {{argument.comments.count}}<br />
+	{% avatar argument.user %} {{argument.created_at|timesince}}
+	<p>
+	{{argument.text|markdown}}
+	</p>
+	<div id="{{argument.unique_id}}-comment-list">
+	    {% for comment in comments %}
+	    	{% include 'fragments/comment/item.html' %}
+	    {% endfor %}
+	</div>
+	<div id="{{argument.unique_id}}-new-comment">
+	    <a data-ajax="true" href="/comment/{{argument.type}}/{{argument.id}}?fragment=%23{{argument.unique_id}}-new-comment" class="btn btn-small btn-outline-primary">Kommentieren</a>
+	</div>
+</div>

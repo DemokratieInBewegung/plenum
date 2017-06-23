@@ -277,6 +277,10 @@ class Response(Likeable, Commentable):
     class Meta:
         abstract = True
 
+    @property
+    def unique_id(self):
+        return "{}-{}".format(self.type, self.id)
+
 
 class Argument(Response):
     title = models.CharField(max_length=80)
@@ -288,6 +292,7 @@ class Argument(Response):
 ### End of Abstract
 
 class Proposal(Response):
+    type = "proposal"
     text = models.CharField(max_length=1024)
 
 class Pro(Argument):

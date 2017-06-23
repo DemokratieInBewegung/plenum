@@ -17,7 +17,7 @@ urlpatterns = [
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/publish$', views.publish),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/new_argument$', views.new_argument),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/(?P<arg_type>.*)/(?P<arg_id>\d+)$', views.show_argument),
-    url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/(?P<arg_type>.*)/(?P<arg_id>\d+)/like$', views.like_argument),
-    url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/(?P<arg_type>.*)/(?P<arg_id>\d+)/unlike$', views.unlike_argument),
-    url('^comment/(?P<target_type>.*)/(?P<target_id>\d+)$', views.comment)
+    url('^comment/(?P<target_type>.*)/(?P<target_id>\d+)$', views.comment),
+    url('^like/(?P<target_type>.*)/(?P<target_id>\d+)$', views.like),
+    url('^unlike/(?P<target_type>.*)/(?P<target_id>\d+)$', views.unlike)
 ]

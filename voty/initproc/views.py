@@ -255,11 +255,10 @@ def show_argument(request, initiative, arg_type, arg_id, slug=None):
                comments=arg.comments.order_by('-created_at').all())
 
     if request.user:
+        ctx['has_liked'] = arg.likes.filter(user=request.user).count() > 0
         if arg.user == request.user:
             ctx['has_commented'] = True
-            ctx['can_like'] = False
-        else:
-            ctx['has_liked'] = arg.likes.filter(user=request.user).count() > 0
+            # users can self-like at the moment...
 
     return {'fragments': {
         '#{arg.type}-{arg.id}'.format(arg=arg): render_to_string('fragments/argument/full.html',
@@ -384,30 +383,33 @@ def comment(request, form, target_type, target_id):
     }
 
 
-@require_POST
+@ajax
 @login_required
-@can_access_initiative('d') # must be in discussion
-def like_argument(request, init, arg_id):
-    argument = get_object_or_404(Argument, pk=arg_id)
-    assert init.id == argument.initiative.id, "Argument doesn't belong to Initiative"
+def like(request, target_type, target_id):
+    model_cls = apps.get_model('initproc', target_type)
+    model = get_object_or_404(model_cls, pk=target_id)
 
-    Like(argument=argument, user_id=request.user.id).save()
+    Like(target=model, user=request.user).save()
+    return {'fragments': {
+        '#{}-like'.format(model.unique_id): render_to_string("fragments/like.html",
+                                                             context=dict(has_liked=True, target=model),
+                                                             request=request)
+    }}
 
-    return redirect('/initiative/{}#argument-{}'.format(init.id, argument.id))
 
-
-@require_POST
+@ajax
 @login_required
-@can_access_initiative('d') # must be in discussion
-def unlike_argument(request, init, arg_id):
-    argument = get_object_or_404(Argument, pk=arg_id)
-    assert init.id == argument.initiative.id, "Argument doesn't belong to Initiative"
+def unlike(request, target_type, target_id):
+    model_cls = apps.get_model('initproc', target_type)
+    model = get_object_or_404(model_cls, pk=target_id)
 
-    like = Like.objects.get(argument=arg_id, user_id=request.user.id)
-    if like:
-        like.delete()
+    model.likes.filter(user_id=request.user.id).delete()
 
-    return redirect('/initiative/{}#argument-{}'.format(init.id, argument.id))
+    return {'fragments': {
+        '#{}-like'.format(model.unique_id): render_to_string("fragments/like.html",
+                                                             context=dict(has_liked=False, target=model),
+                                                             request=request)
+    }}
 
 
 

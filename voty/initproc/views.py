@@ -15,7 +15,7 @@ from django_ajax.decorators import ajax
 from .apps import InitprocConfig
 from .helpers import notify_initiative_listeners
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Quorum, Supporter, Like, INITIATORS_COUNT)
-from .forms import NewArgumentForm, NewCommentForm
+from .forms import NewArgumentForm, NewCommentForm, NewProposalForm
 # Create your views here.
 
 DEFAULT_FILTERS = ['s', 'd', 'v']
@@ -215,10 +215,13 @@ def new(request):
 def item(request, init, slug=None):
 
     ctx = dict(initiative=init,
-               show_proposals=request.GET.get('show_proposals', False),
+               proposals=[x for x in init.proposals.prefetch_related('likes').all()],
                arguments=[x for x in init.pros.prefetch_related('likes').all()] +\
                          [x for x in init.contras.prefetch_related('likes').all()])
+
     ctx['arguments'].sort(key=lambda x: (x.likes.count(), x.created_at), reverse=True)
+    ctx['proposals'].sort(key=lambda x: (x.likes.count(), x.created_at), reverse=True)
+
 
     if request.user.is_authenticated:
         user_id = request.user.id
@@ -227,25 +230,26 @@ def item(request, init, slug=None):
         if ctx['has_voted']:
             ctx['vote'] = init.votes.filter(user=user_id).first().vote
 
-        if ctx['arguments']:
-            for arg in ctx['arguments']:
-                arg.has_liked = arg.likes.filter(user=user_id).count() > 0
-                if arg.user.id == user_id:
-                    arg.has_commented = True
-                else:
-                    for cmt in arg.comments:
-                        if cmt.user.id == user_id:
-                            arg.has_commented = True
-                            break
+        for arg in ctx['arguments'] + ctx['proposals']:
+            arg.has_liked = arg.likes.filter(user=user_id).count() > 0
+            if arg.user.id == user_id:
+                arg.has_commented = True
+            else:
+                for cmt in arg.comments:
+                    if cmt.user.id == user_id:
+                        arg.has_commented = True
+                        break
 
     return render(request, 'initproc/item.html', context=ctx)
 
 
 @ajax
 @can_access_initiative()
-def show_argument(request, initiative, arg_type, arg_id, slug=None):
+def show_resp(request, initiative, target_type, target_id, slug=None):
 
-    arg = get_object_or_404(Pro if arg_type == 'pro' else Contra, pk=arg_id)
+    model_cls = apps.get_model('initproc', target_type)
+    arg = get_object_or_404(model_cls, pk=target_id)
+
     assert arg.initiative == initiative, "How can this be?"
 
     ctx = dict(argument=arg,
@@ -351,7 +355,7 @@ def new_argument(request, form, initiative):
     arg = argCls(initiative=initiative,
                  user_id=request.user.id,
                  title=data['title'],
-                 text=data['title'])
+                 text=data['text'])
 
     arg.save()
 
@@ -361,6 +365,28 @@ def new_argument(request, form, initiative):
                                                   context=dict(argument=arg),
                                                   request=request)}
     }
+
+
+
+@ajax
+@login_required
+@can_access_initiative('d') # must be in discussion
+@simple_form_verifier(NewProposalForm)
+def new_proposal(request, form, initiative):
+    data = form.cleaned_data
+    proposal = Proposal(initiative=initiative,
+                        user_id=request.user.id,
+                        text=data['text'])
+
+    proposal.save()
+
+    return {
+        'inner-fragments': {'#new-proposal': "<strong>Danke für deinen Vorschlag</strong>"},
+        'append-fragments': {'#proposal-list': render_to_string("fragments/argument/small.html",
+                                                  context=dict(argument=proposal),
+                                                  request=request)}
+    }
+
 
 @ajax
 @login_required

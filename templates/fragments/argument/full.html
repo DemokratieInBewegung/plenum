@@ -2,7 +2,7 @@
 {% load markdown %}
 
 <div id="{{argument.unique_id}}">
-	<span class="badge badge-{{argument.css_class}}"><i class="material-icons">{{argument.icon}}</i></span> {{argument.title}}<br/>
+	<span class="badge badge-{{argument.css_class}}"><i class="material-icons">{{argument.icon}}</i></span>  {% if argument.title%}{{argument.title}}{% endif %}
 	{% include 'fragments/like.html' with target=argument has_liked=has_liked %}
 	<i class="material-icons">comment</i> {{argument.comments.count}}<br />
 	{% avatar argument.user %} {{argument.created_at|timesince}}

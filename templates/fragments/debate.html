@@ -1,0 +1,11 @@
+
+<div id="argument-list">
+    {% for argument in arguments %}
+        {% include "fragments/argument/small.html" %}
+    {% empty %}
+        <div> <i>nöscht bisher</i> </div>
+    {% endfor %}
+    <div id="new-argument">
+        <a data-ajax="true" href="/initiative/{{initiative.id}}/new_argument?fragment=%23new-argument" class="btn btn-outline-primary">Argument beitragen</a>
+    </div>
+</div>

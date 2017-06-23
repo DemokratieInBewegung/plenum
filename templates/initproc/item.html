@@ -357,42 +357,33 @@
 
 
 
-{% if show_proposals %}
-<div class="container-fluid cta">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h1>Vorschläge</h1>
-            </div>
-        </div>
-    </div>
-</div>
-{% else %}
-
-{% if initiative.state == 'd' %}
+{% if initiative.show_debate %}
 
 <div class="container-fluid cta">
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h1>Debatte</h1>
+                <ul class="nav nav-tabs nav-fill" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#debate" role="tab">Debatte ({{arguments|length}})</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#proposals" role="tab">Vorschläge ({{proposals|length}})</a>
+                  </li>
+                </ul>
             </div>
-            <div id="argument-list" class="col-12">
-                {% for argument in arguments %}
-                    {% include "fragments/argument/small.html" %}
-                {% empty %}
-                    <div> <i>nöscht bisher</i> </div>
-                {% endfor %}
-                <div id="new-argument">
-                    <a data-ajax="true"  href="/initiative/{{initiative.id}}/new_argument?fragment=%23new-argument" class="btn btn-outline-primary">Argument beitragen</a>
+            <div class="col-12 tab-content">
+                <div class="tab-pane active" id="debate" role="tabpanel">
+                    {% include 'fragments/debate.html' %}
+                </div>
+                <div class="tab-pane" id="proposals" role="tabpanel">
+                    {% include 'fragments/proposals.html' %}
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-
-{% endif %}
 {% endif %}
 
 

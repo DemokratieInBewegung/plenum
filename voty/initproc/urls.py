@@ -9,13 +9,13 @@ urlpatterns = [
 
     # initiative specifics
     url('^ueber/$', views.ueber, name="ueber"),
-    url('^initiative/new$', views.edit, name="new_initiative"),
+    url('^initiative/new$', views.new, name="new_initiative"),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?$', views.item, name="initiative_item"),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/support$', views.support),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/ack_support$', views.ack_support),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/rm_support$', views.rm_support),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/publish$', views.publish),
-    url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/edit$', views.edit, name="edit_initiative"),
+    url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/edit$', views.edit),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/new_argument$', views.new_argument),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/new_proposal$', views.new_proposal),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/(?P<target_type>.*)/(?P<target_id>\d+)$', views.show_resp),

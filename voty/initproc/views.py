@@ -38,6 +38,24 @@ def can_access_initiative(states=None, check=None):
         return view
     return wrap
 
+def can_edit_initiative(states=None):
+    def wrap(fn):
+        def view(request, init_id, slug, *args, **kwargs):
+            init = get_object_or_404(Initiative, pk=init_id)
+            if states:
+                assert init.state in states, "Not in expected state: {}".format(state)
+            if init.state in STAFF_ONLY:
+                if not request.user.is_authenticated:
+                    raise PermissionDenied()
+                if not request.user.is_staff and \
+                        not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=request.user.id):
+                    raise PermissionDenied()
+            if not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=request.user.id):
+                raise PermissionDenied()
+
+            return fn(request, init, *args, **kwargs)
+        return view
+    return wrap
 
 def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_ajax=True,
                          submit_klasses="btn-outline-primary", submit_title="Abschicken"):
@@ -149,9 +167,9 @@ class NewInitiative(forms.ModelForm):
             "title" : "Die Überschrift sollte kurz und knackig eure Forderung enthalten.",
             "subtitle": "Hier reißt ihr kurz das Problem an, welches eure Initiative lösen soll. Versucht es auf 1-2 Sätze zu beschränken.",
             "summary" : "Hier schreibt bitte 3-4 Sätze, die zusammenfassen, worum es in dieser Initiative geht.",
-            "problem": "Hier bitte in 3-4 Sätze das Problem beschreiben, dass ihr mit eurer Initiative lösen wollt.",
-            "forderung" : "Was sind eure konkrete Forderungen?",
-            "kosten": "Entstehen Kosten für Eure Initiative? Versucht bitte, wenn möglich, eine ungefähre Einschätzung über die Höhe der Kosten zu geben.ten",
+            "problem": "Hier bitte in 3-4 Sätzen das Problem beschreiben, das ihr mit eurer Initiative lösen wollt.",
+            "forderung" : "Was sind eure konkreten Forderungen?",
+            "kosten": "Entstehen Kosten für eure Initiative? Versucht bitte, wenn möglich, eine ungefähre Einschätzung über die Höhe der Kosten zu geben.",
             "fin_vorschlag": "Hier solltet ihr kurz erklären, wie die Kosten gedeckt werden könnten. Hier reicht auch zu schreiben, dass die Initiative über Steuereinnahmen finanziert wird.",
             "arbeitsweise": "Habt ihr mit Expert/innen gesprochen? Wo kommen eure Informationen her? Hier könnt ihr auch Quellen angeben.",
             "init_argument": "Hier dürft ihr emotional werden: Warum ist euch das wichtig und warum bringt ihr diese Initiative ein?",
@@ -166,7 +184,7 @@ def new(request):
         form = NewInitiative(request.POST)
         if form.is_valid():
             ini = form.save(commit=False)
-            ini.state = Initiative.STATES.INCOMING
+            ini.state = Initiative.STATES.PREPARE
             ini.save()
 
             Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
@@ -260,59 +278,32 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
 #                                                                        
 
 @login_required
-# @ensure_state([Initiative.STATES.PREPARE, Initiative.STATES.FINAL_EDIT]) TODO fix state check
-def edit(request, init_id=None, slug=None):
-    if init_id:
-        ini = get_object_or_404(Initiative, pk=init_id)
-        # TODO fix check that only initiator may edit their own initiative
-        if not ini.supporting.filter(Q(first=True) | Q(initiator=True), user_id=request.user.id):
-            raise PermissionDenied()
-    else:
-        ini = Initiative()
+@can_access_initiative([Initiative.STATES.PREPARE, Initiative.STATES.FINAL_EDIT], 'can_edit')
+def edit(request, initiative):
+    form = NewInitiative(request.POST or None, instance=initiative)
+    if request.method == 'POST':
+        if form.is_valid():
+            initiative.save()
+            messages.success(request, "Initiative gespeichert.")
+            return redirect('/initiative/{}'.format(initiative.id))
+        else:
+            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-
-    form = NewInitiative(request.POST or None, instance=ini)
-
-    if request.method == 'POST' and form.is_valid():
-        ini = form.save(commit=False)
-        # TODO add the current user as initiator of newly created initiative
-        if ini.state == None:
-            ini.state = Initiative.STATES.PREPARE
-            ini.save()
-            Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
-
-        messages.success(request, "Initiative gespeichert.")
-        return redirect('/initiative/{}'.format(ini.id))
-
-    return render(request, 'initproc/new.html', context=dict(form=form))
+    return render(request, 'initproc/new.html', context=dict(form=form, initiative=initiative))
 
 # @login_required
-# def submit_to_committee(request):
-#     form = NewInitiative()
-#     if request.method == 'POST':
-#         form = NewInitiative(request.POST)
-#         if form.is_valid():
-#             ini = form.save(commit=False)
-#             ini.state = Initiative.STATES.INCOMING
-#             ini.save()
+# @can_edit_initiative(Initiative.STATES.PREPARE)
+# def submit_to_committee(request, init_id=None, slug=None):
+#     ini = get_object_or_404(Initiative, pk=init_id)
+#     if ini.is_valid_for_submission():
+#         notify_initiative_listeners(ini, "wurde eingereicht.")
+#         messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
+#         return redirect('/')
+#     else:
+#         messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 #
-#             Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
+#     return render(request, 'initproc/item.html', context=ctx)
 #
-#             for uid in form.cleaned_data['initiators'].all():
-#                 Supporter(initiative=ini, user=uid, initiator=True, ack=False, public=True).save()
-#
-#             for uid in form.cleaned_data['supporters'].all():
-#                 if uid in ini.supporters.all(): continue # you can only be one
-#                 Supporter(initiative=ini, user=uid, initiator=False, first=True, public=True).save()
-#
-#
-#             notify_initiative_listeners(ini, "wurde eingereicht.")
-#             messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
-#             return redirect('/')
-#         else:
-#             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
-#
-#     return render(request, 'initproc/new.html', context=dict(form=form))
 
 @require_POST
 @login_required

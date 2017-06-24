@@ -107,7 +107,13 @@
 			<div class="container-fluid">
 				 <div class="row no-gutters">
 				 	<div class="col-auto align-self-center">
-				  		{% ifequal init.state 'i' %}
+						{% ifequal init.state 'p' %}
+						<span class="badge badge-prepare">
+							In Vorbereitung
+						</span>
+						{% endifequal %}
+
+						{% ifequal init.state 'i' %}
 						<span class="badge badge-arrivals">
 							Neu eingegangen
 						</span>

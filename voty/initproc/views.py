@@ -21,7 +21,7 @@ from .forms import NewArgumentForm, NewCommentForm, NewProposalForm
 DEFAULT_FILTERS = ['s', 'd', 'v']
 
 
-def can_access_initiative(states=None):
+def can_access_initiative(states=None, check=None):
     def wrap(fn):
         def view(request, init_id, slug, *args, **kwargs):
             init = get_object_or_404(Initiative, pk=init_id)
@@ -29,6 +29,10 @@ def can_access_initiative(states=None):
                 assert init.state in states, "Not in expected state: {}".format(state)
             if  not request.guard.can_view(init):
                 raise PermissionDenied()
+
+            if check:
+                if not getattr(request.guard, check)(init):
+                    raise PermissionDenied()
 
             return fn(request, init, *args, **kwargs)
         return view
@@ -258,7 +262,7 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
 
 @require_POST
 @login_required
-@can_access_initiative('s') # must be seeking for supporters
+@can_access_initiative('s', 'can_support') # must be seeking for supporters
 def support(request, initiative):
     Supporter(initiative=initiative, user_id=request.user.id,
               public=not not request.POST.get("public", False)).save()
@@ -268,8 +272,7 @@ def support(request, initiative):
 
 @require_POST
 @login_required
-@user_passes_test(lambda u: u.is_staff)
-@can_access_initiative(Initiative.STATES.INCOMING) # must be unpublished
+@can_access_initiative(Initiative.STATES.INCOMING, 'can_publish') # must be unpublished
 def publish(request, initiative):
     if initiative.supporting.filter(ack=True, initiator=True).count() != INITIATORS_COUNT:
         messages.error(request, "Nicht genügend Initiatoren haben bestätigt")

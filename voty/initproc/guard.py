@@ -5,7 +5,7 @@ from django.db.models import Q
 
 from functools import wraps
 
-from .models import Initiative
+from .models import Initiative, INITIATORS_COUNT
 
 STAFF_ONLY_STATES = ['i', 'm', 'h']
 
@@ -45,12 +45,15 @@ class Guard:
         # fallback if compound doesn't match
         return False
 
-
     @_compound_action
     def can_publish(self, obj):
         # fallback if compound doesn't match
         return False
 
+    @_compound_action
+    def can_support(self, obj):
+        # fallback if compound doesn't match
+        return False
 
     # 
     #    INITIATIVES
@@ -68,8 +71,16 @@ class Guard:
             return False
 
     def _can_publish_initiative(self, init):
-        if not self.user.is_authenticated:
+        if not self.user.is_staff:
             return False
+
+        if init.supporting.filter(ack=True, initiator=True).count() != INITIATORS_COUNT:
+            return False
+
+
+
+    def _can_support_initiative(self, init):
+        return init.state == INITIATIVES.STATES.SEEKING_SUPPORT and self.user.is_authenticated
 
 
 def add_guard(get_response):

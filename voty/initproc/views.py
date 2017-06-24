@@ -19,7 +19,6 @@ from .forms import NewArgumentForm, NewCommentForm, NewProposalForm
 # Create your views here.
 
 DEFAULT_FILTERS = ['s', 'd', 'v']
-STAFF_ONLY = ['i', 'm', 'h']
 
 
 def can_access_initiative(states=None):
@@ -28,12 +27,8 @@ def can_access_initiative(states=None):
             init = get_object_or_404(Initiative, pk=init_id)
             if states:
                 assert init.state in states, "Not in expected state: {}".format(state)
-            if init.state in STAFF_ONLY:
-                if not request.user.is_authenticated:
-                    raise PermissionDenied()
-                if not request.user.is_staff and \
-                   not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=request.user.id):
-                    raise PermissionDenied()
+            if  not request.guard.can_view(init):
+                raise PermissionDenied()
 
             return fn(request, init, *args, **kwargs)
         return view
@@ -82,31 +77,9 @@ def ueber(request):
 
 
 def index(request):
-    filters = request.GET.getlist("f") or DEFAULT_FILTERS
-    count_inbox = 0
-    if not request.user or not request.user.is_staff:
-        # state i is only available to staff
-        filters = [f for f in filters if f not in STAFF_ONLY]
-
-
-    inits = Initiative.objects.filter(state__in=filters)
-
-    if request.user.is_authenticated:
-        if request.user.is_staff:
-            count_inbox = Initiative.objects.filter(state='i').count()
-        else:
-            count_inbox = Initiative.objects.filter(
-                    Q(supporting__first=True) | Q(supporting__initiator=True),
-                    state='i',
-                    supporting__user_id=request.user.id
-            ).count()
-            if 'i' in request.GET.getlist("f"):
-                inits = Initiative.objects.filter(Q(state__in=filters) | Q(
-                        Q(supporting__first=True) | Q(supporting__initiator=True),
-                        state='i',
-                        supporting__user_id=request.user.id))
-                filters.append('i')
-
+    filters = [f for f in request.GET.getlist("f")] or DEFAULT_FILTERS
+    inits = request.guard.make_intiatives_query(filters)
+    count_inbox = request.guard.make_intiatives_query(['i']).count()
 
     return render(request, 'initproc/index.html',context=dict(initiatives=inits,
                     inbox_count=count_inbox, filters=filters))

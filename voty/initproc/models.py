@@ -78,11 +78,12 @@ class Initiative(models.Model):
 
     @property
     def ready_for_next_stage(self):
+
         if self.state == Initiative.STATES.INCOMING:
-            if self.supporting.filter(initiator=True, ack=True).count() == INITIATORS_COUNT:
-                return True
+            return self.supporting.filter(initiator=True, ack=True).count() == INITIATORS_COUNT
+
         if self.state == Initiative.STATES.PREPARE: #three initiators and no empty text fields
-            if (self.supporting.filter(initiator=True, ack=True).count() == INITIATORS_COUNT and
+            return (self.supporting.filter(initiator=True, ack=True).count() == INITIATORS_COUNT and
                 self.title and
                 self.subtitle and
                 self.arbeitsweise and
@@ -94,24 +95,15 @@ class Initiative(models.Model):
                 self.init_argument and
                 self.kosten and
                 self.problem and
-                self.summary):
-                return True
+                self.summary)
 
-        return False
-
-    # TODO remove because this is now handled by guard?
-    @property
-    def is_editable(self):
-        if self.state == Initiative.STATES.PREPARE:
-            return True
-        elif self.state == Initiative.STATES.FINAL_EDIT:
-            return True
+        if self.state == Initiative.STATES.SEEKING_SUPPORT:
+            return self.supporting.filter().count() >= self.quorum
 
         return False
 
     @property
     def end_of_this_phase(self):
-        today = datetime.today().date()
         week = timedelta(days=7)
         halfyear = timedelta(days=183)
 
@@ -120,7 +112,7 @@ class Initiative(models.Model):
 
         if self.went_public_at:
             if self.went_public_at < SPEED_PHASE_END:
-                if self.state == 's':
+                if self.state == Initiative.STATES.SEEKING_SUPPORT:
                     if self.ready_for_next_stage:
                         return self.went_public_at + week
                     return self.went_public_at + halfyear
@@ -135,7 +127,7 @@ class Initiative(models.Model):
                     return self.went_to_voting_at + week
 
             else:
-                if self.state == 's':
+                if self.state == Initiative.STATES.SEEKING_SUPPORT:
                     if self.ready_for_next_stage:
                         return self.went_public_at + (2 * week)
 

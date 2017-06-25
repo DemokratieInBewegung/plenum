@@ -7,7 +7,7 @@ from functools import wraps
 
 from .models import Initiative, INITIATORS_COUNT
 
-STAFF_ONLY_STATES = ['i', 'm', 'h']
+STAFF_ONLY_STATES = [Initiative.STATES.INCOMING, Initiative.STATES.MODERATION, Initiative.STATES.HIDDEN]
 
 def _compound_action(func):
     @wraps(func)
@@ -46,6 +46,11 @@ class Guard:
         return False
 
     @_compound_action
+    def can_edit(self, obj):
+        # fallback if compound doesn't match
+        return False
+
+    @_compound_action
     def can_publish(self, obj):
         # fallback if compound doesn't match
         return False
@@ -68,6 +73,14 @@ class Guard:
             return False
         if not self.user.is_staff and \
            not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=request.user.id):
+            return False
+
+    def _can_edit_initiative(self, init):
+        if not init.state in [Initiative.STATES.PREPARE, Initiative.STATES.FINAL_EDIT]:
+            return False
+        if not self.user.is_authenticated:
+            return False
+        if not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=request.user.id):
             return False
 
     def _can_publish_initiative(self, init):

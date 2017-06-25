@@ -16,6 +16,7 @@ urlpatterns = [
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/rm_support$', views.rm_support),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/publish$', views.publish),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/edit$', views.edit),
+    url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/submit_to_committee$', views.submit_to_committee),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/new_argument$', views.new_argument),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/new_proposal$', views.new_proposal),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/(?P<target_type>.*)/(?P<target_id>\d+)$', views.show_resp),

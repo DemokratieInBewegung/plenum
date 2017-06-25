@@ -38,25 +38,6 @@ def can_access_initiative(states=None, check=None):
         return view
     return wrap
 
-def can_edit_initiative(states=None):
-    def wrap(fn):
-        def view(request, init_id, slug, *args, **kwargs):
-            init = get_object_or_404(Initiative, pk=init_id)
-            if states:
-                assert init.state in states, "Not in expected state: {}".format(state)
-            if init.state in STAFF_ONLY:
-                if not request.user.is_authenticated:
-                    raise PermissionDenied()
-                if not request.user.is_staff and \
-                        not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=request.user.id):
-                    raise PermissionDenied()
-            if not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=request.user.id):
-                raise PermissionDenied()
-
-            return fn(request, init, *args, **kwargs)
-        return view
-    return wrap
-
 def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_ajax=True,
                          submit_klasses="btn-outline-primary", submit_title="Abschicken"):
     def wrap(fn):
@@ -291,19 +272,19 @@ def edit(request, initiative):
 
     return render(request, 'initproc/new.html', context=dict(form=form, initiative=initiative))
 
-# @login_required
-# @can_edit_initiative(Initiative.STATES.PREPARE)
-# def submit_to_committee(request, init_id=None, slug=None):
-#     ini = get_object_or_404(Initiative, pk=init_id)
-#     if ini.is_valid_for_submission():
-#         notify_initiative_listeners(ini, "wurde eingereicht.")
-#         messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
-#         return redirect('/')
-#     else:
-#         messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
-#
-#     return render(request, 'initproc/item.html', context=ctx)
-#
+@login_required
+@can_access_initiative(Initiative.STATES.PREPARE, 'can_edit')
+def submit_to_committee(request, initiative):
+    if initiative.is_ready_for_next_stage():
+        initiative.state = Initiative.STATES.INCOMING
+        initiative.save()
+        notify_initiative_listeners(initiative, "wurde eingereicht.")
+        messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
+        return redirect('/')
+    else:
+        messages.warning(request, "Die Bedingungen für die Einreichung sind nicht erfüllt.")
+
+    return redirect('/initiative/{}'.format(initiative.id))
 
 @require_POST
 @login_required

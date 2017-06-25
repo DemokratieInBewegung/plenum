@@ -83,13 +83,30 @@
                 <p>
                     Diese Initiative <strong class="badge-prepare">wurde noch nicht veröffentlicht</strong>.
                  </p>
-                {% if initiative.is_editable %}
-                <form action="/initiative/{{initiative.id}}/edit" style="display:inline"  method="GET">
-                    {% csrf_token %}
-                    <button title="Bearbeiten" class="btn btn-success edit" type="submit">
-                        <i class="material-icons edit">edit</i><span>Bearbeiten</span>
+                {% if request.guard.can_edit %}
+                    <form action="/initiative/{{initiative.id}}/edit" style="display:inline"  method="GET">
+                        {% csrf_token %}
+                        <button title="Bearbeiten" class="btn btn-success edit" type="submit">
+                            <i class="material-icons edit">edit</i><span>Bearbeiten</span>
+                        </button>
+                    </form>
+                    {% if initiative.ready_for_next_stage %}
+                    <form action="/initiative/{{initiative.id}}/submit_to_committee" style="display:inline"  method="POST">
+                        {% csrf_token %}
+                        <button title="Einreichen" class="btn btn-success edit" type="submit">
+                            <i class="material-icons public">public</i><span>Einreichen</span>
+                        </button>
+                    </form>
+                    {% else %}
+                    <button title="Kann noch nicht eingereicht werden" class="btn btn-success edit" style="display:inline" disabled=True type="submit">
+                        <i class="material-icons public">public</i><span>Einreichen</span>
                     </button>
-                </form>
+                    <p><i>Um deine Initiative einreichen zu können, müssen folgende Bedingungen erfüllt sein:</i></p>
+                    <p><ol>
+                        <li>Alle Textfelder müssen ausgefüllt sein</li>
+                        <li>Du musst genau 2 Mitinitiatoren angeben</li>
+                    </ol></p>
+                    {% endif %}
                 {% endif %}
                 {% if user.is_staff %}
                     {% if initiative.ready_for_next_stage %}
@@ -100,7 +117,7 @@
                             </button>
                         </form>
                     {% else %}
-                            <button title="Kann noch nicht veröffentlich werden" class="btn btn-success publish" disabled=True type="submit">
+                            <button title="Kann noch nicht veröffentlicht werden" class="btn btn-success publish" disabled=True type="submit">
                                 <i class="material-icons public">public</i><span>Jetzt veröffentlichen</span>
                             </button>
                     {% endif %}

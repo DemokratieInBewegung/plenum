@@ -86,12 +86,28 @@ class Initiative(models.Model):
 
     @property
     def ready_for_next_stage(self):
-        if self.state == 'i':
+        if self.state == Initiative.STATES.INCOMING:
             if self.supporting.filter(initiator=True, ack=True).count() == INITIATORS_COUNT:
+                return True
+        if self.state == Initiative.STATES.PREPARE: #three initiators and no empty text fields
+            if (self.supporting.filter(initiator=True, ack=True).count() == INITIATORS_COUNT and
+                self.title and
+                self.subtitle and
+                self.arbeitsweise and
+                self.bereich and
+                self.ebene and
+                self.einordnung and
+                self.fin_vorschlag and
+                self.forderung and
+                self.init_argument and
+                self.kosten and
+                self.problem and
+                self.summary):
                 return True
 
         return False
 
+    # TODO remove because this is now handled by guard?
     @property
     def is_editable(self):
         if self.state == Initiative.STATES.PREPARE:

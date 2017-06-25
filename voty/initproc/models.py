@@ -121,9 +121,9 @@ class Initiative(models.Model):
         if self.went_public_at:
             if self.went_public_at < SPEED_PHASE_END:
                 if self.state == 's':
-                    if self.went_public_at + week < today:
-                        return self.went_public_at + halfyear
-                    return self.went_public_at + week
+                    if self.ready_for_next_stage:
+                        return self.went_public_at + week
+                    return self.went_public_at + halfyear
 
                 elif self.state == 'd':
                     return self.went_to_discussion_at + (2 * week)
@@ -136,9 +136,8 @@ class Initiative(models.Model):
 
             else:
                 if self.state == 's':
-                    if today - self.went_public_at > (2 * week):
-                        return self.went_public_at + halfyear
-                    return self.went_public_at + (2 * week)
+                    if self.ready_for_next_stage:
+                        return self.went_public_at + (2 * week)
 
                 elif self.state == 'd':
                     return self.went_to_discussion_at + (3 * week)

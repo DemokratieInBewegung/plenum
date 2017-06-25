@@ -15,7 +15,8 @@ from django_ajax.decorators import ajax
 from .guard import can_access_initiative
 from .helpers import notify_initiative_listeners
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Quorum, Supporter, Like, INITIATORS_COUNT)
-from .forms import simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm, NewProposalForm, NewModerationForm
+from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
+                    NewProposalForm, NewModerationForm, InviteUsersForm)
 # Create your views here.
 
 DEFAULT_FILTERS = [
@@ -184,6 +185,32 @@ def submit_to_committee(request, initiative):
         messages.warning(request, "Die Bedingungen für die Einreichung sind nicht erfüllt.")
 
     return redirect('/initiative/{}'.format(initiative.id))
+
+
+
+@ajax
+@login_required
+@can_access_initiative(Initiative.STATES.PREPARE) # must be in discussion
+@simple_form_verifier(InviteUsersForm, submit_title="Einladen")
+def invite_initiators(request, form, initiative):
+    for user in form.cleaned_data['user']:
+        if initiative.supporting.filter(initiator=True).count() >= INITIATORS_COUNT:
+            break
+
+        try:
+            supporting = initiative.supporting.get(user_id=user.id)
+        except Supporter.DoesNotExist:
+            supporting = Supporter(user=user)
+            supporting.initiative = initiative
+
+        supporting.initiator = True
+        supporting.ack = False
+        supporting.save()
+
+    messages.success(request, "Initiatoren eingeladen.")
+    return redirect("/initiative/{}-{}".format(initiative.id, initiative.slug))
+
+
 
 
 @require_POST

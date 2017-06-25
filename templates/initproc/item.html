@@ -204,7 +204,7 @@
                         {{ sup.user.get_full_name|default:sup.user.username }}
                     </div>
                     {% if initiative.state == 'i' or initiative.state == 'p' %}
-                    <div class="initiator-approval">
+                    <div class="approval">
                         {% if sup.ack %}
                             <span title="bestätigt" class=""><i class="material-icons done">done</i></span>
                         {% else %}
@@ -224,7 +224,7 @@
                                     </button>
                                 </form>
                             {% else %}
-                            <span title="unbestätigt" class=""><i class="material-icons warning">warning</i><i></i></span>
+                            <span title="unbestätigt" class=""><i class="material-icons warning">warning</i></span>
                             {% endif %}
                         {% endif %}
                     </div>
@@ -502,10 +502,10 @@
 <!--  IIIIIINNNNBOOOOOOXXXXX  -->
 
 {% if initiative.show_supporters %}
-<div class="container-fluid">
+<div class="container-fluid show-supporters">
     <div class="container">
-        <div class="row">
-            {% if initiative.first_supporters.count %}
+        {% if initiative.first_supporters.count %}
+            <div class="row">
                 <div class="col-12">
                     <h2>Erstunterstützer/innen</h2>
                     <div class="d-flex flex-wrap avatar">
@@ -513,13 +513,15 @@
                             <div class="text-center initiator">
                                 {% avatar sup.user %}
                                 <div class="name">
-                                    {{ sup.user.get_full_name|default:sup.user.username }}<br/>
-                                    {% if initiative.state == 'i' or initiative.state == 'p' %}
+                                    {{ sup.user.get_full_name|default:sup.user.username }}
+                                </div>
+                                {% if initiative.state == 'i' or initiative.state == 'p' %}
+                                    <div class="approval">
                                         {% if sup.ack %}
                                         <span title="bestätigt" class=""><i class="material-icons">done</i></span>
                                         {% else %}
                                             {% if sup.user == user %}
-                                                <b>Jetzt bestätigen</b>
+                                                <strong style="display:block">Jetzt bestätigen</strong>
 
                                                 <form action="/initiative/{{initiative.id}}/ack_support"  style="display:inline"  method="POST">
                                                     {% csrf_token %}
@@ -534,18 +536,20 @@
                                                     </button>
                                                 </form>
                                             {% else %}
-                                                <span title="unbestätigt" class=""><i class="material-icons">warning</i><i></i></span>
+                                                <span title="unbestätigt" class=""><i class="material-icons warning">warning</i></span>
                                             {% endif %}
                                         {% endif %}
+                                    </div>
                                 {% endif %}
-                                </div>
                             </div>
                         {% endfor %}
                     </div>
                 </div>
-            {% endif %}
+            </div>
+        {% endif %}
 
-            {% if initiative.public_supporters.count %}
+        {% if initiative.public_supporters.count %}
+            <div class="row">
                 <div class="col-12">
                     <h2>Unterstützer/innen</h2>
                     <div class="d-flex flex-wrap avatar">
@@ -559,14 +563,18 @@
                         {% endfor %}
                     </div>
                 </div>
-            {% endif %}
+            </div>
+        {% endif %}
 
-            {% if request.guard.can_edit %}
-                <div id="invite-supporters">
-                    <a data-ajax="true" href="/initiative/{{initiative.id}}/invite/supporters?fragment=%23invite-supporters" class="btn btn-success">weitere Unterstützer/innen einladen</a>
+        {% if request.guard.can_edit %}
+            <div class="row">
+                <div class="col-12">
+                    <div id="invite-supporters">
+                        <a data-ajax="true" href="/initiative/{{initiative.id}}/invite/supporters?fragment=%23invite-supporters" class="btn btn-success"><i class="material-icons person-add">person_add</i><span>weitere Unterstützer/innen einladen</a>
+                    </div>
                 </div>
-            {% endif %}
-        </div>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endif %}

@@ -99,7 +99,7 @@ class MultipleSubmitButton(forms.Select):
 
 class InviteUsersForm(forms.Form):
     user = forms.ModelMultipleChoiceField(
-        label="Einzuladen",
+        label="Einladen",
         queryset=get_user_model().objects,
         required=False,
         widget=autocomplete.ModelSelect2Multiple(

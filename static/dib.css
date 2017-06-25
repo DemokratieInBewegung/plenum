@@ -357,12 +357,16 @@ em {
   line-height: 1.875rem;
 }
 
-.material-icons.edit {
-  padding-top: .125rem;
-  padding-right: .3875rem;
+#invite-supporters {
+  padding-top: 1rem;
 }
 
-.material-icons.public {
+#invite-supporters a.btn span {
+  font-size: 1.125rem;
+  line-height: 1.875rem;
+}
+
+.material-icons.edit, .material-icons.public, .material-icons.person-add {
   padding-top: .125rem;
   padding-right: .3875rem;
 }
@@ -441,19 +445,23 @@ em {
   display: block;
 }
 
-.initiator-approval {
+.approval {
   padding-top: .75rem;
 }
 
-.initiator-approval strong {
+.approval strong {
   font-size: 0.875rem;
 }
 
-.initiator-approval .material-icons.warning, .initiator-approval .material-icons.done {
+.approval .material-icons.warning, .approval .material-icons.done {
   padding: 0.5rem 1rem;
   background: #ccc;
   border-radius: 0.25rem;
   border: 1px solid #ccc;
+}
+
+.show-supporters {
+  padding-bottom: 2rem;
 }
 
 .cta {

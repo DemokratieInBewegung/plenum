@@ -97,7 +97,7 @@ class MultipleSubmitButton(forms.Select):
                 return inside_out_choices[value]
         return None
 
-class AddUsersForm(forms.ModelForm):
+class InviteUsersForm(forms.Form):
     user = forms.ModelMultipleChoiceField(
         label="Einzuladen",
         queryset=get_user_model().objects,
@@ -105,12 +105,6 @@ class AddUsersForm(forms.ModelForm):
         widget=autocomplete.ModelSelect2Multiple(
                     url='user_autocomplete',
                     attrs={"data-placeholder": "Zum Suchen tippen"}))
-
-
-
-def has_enough_initiators(value):
-    if len(value) != 2:
-        raise ValidationError("Du brauchst genau zwei Mitinitiator/innen!")
 
 
 class InitiativeForm(forms.ModelForm):

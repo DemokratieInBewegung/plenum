@@ -123,6 +123,16 @@ class Guard:
 
         return (has_female, has_diversity, has_enough)
 
+    def can_inivite_initiators(self, init=None):
+        init = init or self.request.initiative
+        if init.state != Initiative.STATES.PREPARE:
+            return False
+
+        if not self._can_edit_initiative(init):
+            return False
+
+        return init.supporting.filter(initiator=True).count() < INITIATORS_COUNT
+
 
     def should_moderate_initiative(self, init=None):
         init = init or self.request.initiative

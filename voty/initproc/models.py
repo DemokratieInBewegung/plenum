@@ -165,7 +165,7 @@ class Initiative(models.Model):
 
     @property
     def show_supporters(self):
-        return self.state in [self.STATES.INCOMING, self.STATES.SEEKING_SUPPORT]
+        return self.state in [self.STATES.PREPARE, self.STATES.INCOMING, self.STATES.SEEKING_SUPPORT]
 
     @property
     def show_debate(self):

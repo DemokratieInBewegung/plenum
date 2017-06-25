@@ -15,7 +15,7 @@ from django_ajax.decorators import ajax
 from .guard import can_access_initiative
 from .helpers import notify_initiative_listeners
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Quorum, Supporter, Like, INITIATORS_COUNT)
-from .forms import simple_form_verifier, NewArgumentForm, NewCommentForm, NewProposalForm, NewModerationForm
+from .forms import simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm, NewProposalForm, NewModerationForm
 # Create your views here.
 
 DEFAULT_FILTERS = [
@@ -66,84 +66,18 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
 
-def has_enough_initiators(value):
-    if len(value) != 2:
-        raise ValidationError("Du brauchst genau zwei Mitinitiator/innen!")
-
-
-class NewInitiative(forms.ModelForm):
-
-    supporters = forms.ModelMultipleChoiceField(
-        label="Erstunterstützer/innen",
-        queryset=get_user_model().objects,
-        required=False,
-        widget=autocomplete.ModelSelect2Multiple(
-                    url='user_autocomplete',
-                    attrs={"data-placeholder": "Zum Suchen tippen"}))
-
-
-    initiators = forms.ModelMultipleChoiceField(
-        label="Mitinitiator/innen",
-        help_text="Hier gibst Du an welche Beweger/innen diese Initiative mit Dir einbringen. Jede Initiative muss von drei Beweger/innen eingebracht werden.",
-        queryset=get_user_model().objects,
-        validators=[has_enough_initiators],
-        widget=autocomplete.ModelSelect2Multiple(
-                    url='user_autocomplete',
-                    attrs={"data-placeholder": "Zum Suchen tippen"}))
-    class Meta:
-        model = Initiative
-        fields = ['title', 'subtitle', 'initiators', 'summary', 'problem', 'forderung',
-                  'kosten', 'fin_vorschlag', 'arbeitsweise', 'init_argument',
-                  'einordnung', 'ebene', 'bereich']
-
-        labels = {
-            "title" : "Überschrift",
-            "subtitle": "Anreißer",
-            "summary" : "Zusammenfassung",
-            "problem": "Problembeschreibung",
-            "forderung" : "Forderung",
-            "kosten": "Kosten",
-            "fin_vorschlag": "Finanzierungsvorschlag",
-            "arbeitsweise": "Arbeitsweise",
-            "init_argument": "Argument der Initiator/innen",
-        }
-        help_texts = {
-            "title" : "Die Überschrift sollte kurz und knackig Eure Forderung enthalten.",
-            "subtitle": "Hier reißt Ihr kurz das Problem an, welches Eure Initiative lösen soll. Versucht es auf 1-2 Sätze zu beschränken.",
-            "summary" : "Hier schreibt bitte 3-4 Sätze, die zusammenfassen, worum es in dieser Initiative geht.",
-            "problem": "Hier bitte in 3-4 Sätzen das Problem beschreiben, das Ihr mit Eurer Initiative lösen wollt.",
-            "forderung" : "Was sind Eure konkreten Forderungen?",
-            "kosten": "Entstehen Kosten für Eure Initiative? Versucht bitte, wenn möglich, eine ungefähre Einschätzung über die Höhe der Kosten zu geben.",
-            "fin_vorschlag": "Hier solltet Ihr kurz erklären, wie die Kosten gedeckt werden könnten. Hier reicht auch zu schreiben, dass die Initiative über Steuereinnahmen finanziert wird.",
-            "arbeitsweise": "Habt Ihr mit Expert/innen gesprochen? Wo kommen Eure Informationen her? Hier könnt Ihr auch Quellen angeben.",
-            "init_argument": "Hier dürft Ihr emotional werden: Warum ist Euch das wichtig und warum bringt Ihr diese Initiative ein?",
-
-        }
-
-
 @login_required
 def new(request):
-    form = NewInitiative()
+    form = InitiativeForm()
     if request.method == 'POST':
-        form = NewInitiative(request.POST)
+        form = InitiativeForm(request.POST)
         if form.is_valid():
             ini = form.save(commit=False)
             ini.state = Initiative.STATES.PREPARE
             ini.save()
 
             Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
-
-            for uid in form.cleaned_data['initiators'].all():
-                Supporter(initiative=ini, user=uid, initiator=True, ack=False, public=True).save()
-
-            for uid in form.cleaned_data['supporters'].all():
-                if uid in ini.supporters.all(): continue # you can only be one
-                Supporter(initiative=ini, user=uid, initiator=False, first=True, public=True).save()
-
-
-            notify_initiative_listeners(ini, "wurde eingereicht.")
-            messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
-            return redirect('/')
+            return redirect('/initiative/{}-{}'.format(ini.id, ini.slug))
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
@@ -224,7 +158,7 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
 @login_required
 @can_access_initiative([Initiative.STATES.PREPARE, Initiative.STATES.FINAL_EDIT], 'can_edit')
 def edit(request, initiative):
-    form = NewInitiative(request.POST or None, instance=initiative)
+    form = InitiativeForm(request.POST or None, instance=initiative)
     if request.method == 'POST':
         if form.is_valid():
             initiative.save()
@@ -239,12 +173,13 @@ def edit(request, initiative):
 @login_required
 @can_access_initiative(Initiative.STATES.PREPARE, 'can_edit')
 def submit_to_committee(request, initiative):
-    if initiative.is_ready_for_next_stage():
+    if initiative.is_ready_for_next_stage:
         initiative.state = Initiative.STATES.INCOMING
         initiative.save()
         notify_initiative_listeners(initiative, "wurde eingereicht.")
         messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
-        return redirect('/')
+
+        return redirect('/initiative/{}'.format(initiative.id))
     else:
         messages.warning(request, "Die Bedingungen für die Einreichung sind nicht erfüllt.")
 
@@ -266,9 +201,8 @@ def support(request, initiative):
 @can_access_initiative(Initiative.STATES.INCOMING, 'can_publish') # must be submitted and unpublished
 def publish(request, initiative):
     if initiative.supporting.filter(ack=True, initiator=True).count() != INITIATORS_COUNT:
-        messages.error(request, "Nicht genügend Initiatoren haben bestätigt")
+        messages.error(request, "Nicht die passende Zahl Initiator/innen haben bestätigt")
         return redirect('/initiative/{}'.format(initiative.id))
-
 
     # clean out unknown 
     initiative.supporting.filter(ack=False).delete()
@@ -285,7 +219,7 @@ def publish(request, initiative):
 
 @require_POST
 @login_required
-@can_access_initiative(Initiative.STATES.INCOMING)
+@can_access_initiative([Initiative.STATES.PREPARE, Initiative.STATES.INCOMING])
 def ack_support(request, initiative):
     sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
     sup.ack = True
@@ -298,7 +232,7 @@ def ack_support(request, initiative):
 
 @require_POST
 @login_required
-@can_access_initiative([Initiative.STATES.SEEKING_SUPPORT, Initiative.STATES.INCOMING])
+@can_access_initiative([Initiative.STATES.SEEKING_SUPPORT, Initiative.STATES.INCOMING, Initiative.STATES.PREPARE])
 def rm_support(request, initiative):
     sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
     sup.delete()

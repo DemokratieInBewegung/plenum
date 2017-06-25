@@ -1,8 +1,12 @@
 from django import forms
 from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
+from django.contrib.auth import get_user_model
 
-from .models import Pro, Contra, Like, Comment, Proposal, Moderation
+from dal import autocomplete
 from uuid import uuid4
+
+from .models import Pro, Contra, Like, Comment, Proposal, Moderation, Initiative
 
 
 def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_ajax=True,
@@ -28,10 +32,6 @@ def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_aj
         return view
     return wrap
 
-
-# -*- coding: utf-8 -*-
-from django import forms
-from django.utils.safestring import mark_safe
 
 class SubmitButton(forms.Widget):
     """
@@ -97,7 +97,53 @@ class MultipleSubmitButton(forms.Select):
                 return inside_out_choices[value]
         return None
 
+class AddUsersForm(forms.ModelForm):
+    user = forms.ModelMultipleChoiceField(
+        label="Einzuladen",
+        queryset=get_user_model().objects,
+        required=False,
+        widget=autocomplete.ModelSelect2Multiple(
+                    url='user_autocomplete',
+                    attrs={"data-placeholder": "Zum Suchen tippen"}))
 
+
+
+def has_enough_initiators(value):
+    if len(value) != 2:
+        raise ValidationError("Du brauchst genau zwei Mitinitiator/innen!")
+
+
+class InitiativeForm(forms.ModelForm):
+
+    class Meta:
+        model = Initiative
+        fields = ['title', 'subtitle', 'summary', 'problem', 'forderung',
+                  'kosten', 'fin_vorschlag', 'arbeitsweise', 'init_argument',
+                  'einordnung', 'ebene', 'bereich']
+
+        labels = {
+            "title" : "Überschrift",
+            "subtitle": "Anreißer",
+            "summary" : "Zusammenfassung",
+            "problem": "Problembeschreibung",
+            "forderung" : "Forderung",
+            "kosten": "Kosten",
+            "fin_vorschlag": "Finanzierungsvorschlag",
+            "arbeitsweise": "Arbeitsweise",
+            "init_argument": "Argument der Initiator/innen",
+        }
+        help_texts = {
+            "title" : "Die Überschrift sollte kurz und knackig Eure Forderung enthalten.",
+            "subtitle": "Hier reißt Ihr kurz das Problem an, welches Eure Initiative lösen soll. Versucht es auf 1-2 Sätze zu beschränken.",
+            "summary" : "Hier schreibt bitte 3-4 Sätze, die zusammenfassen, worum es in dieser Initiative geht.",
+            "problem": "Hier bitte in 3-4 Sätzen das Problem beschreiben, das Ihr mit Eurer Initiative lösen wollt.",
+            "forderung" : "Was sind Eure konkreten Forderungen?",
+            "kosten": "Entstehen Kosten für Eure Initiative? Versucht bitte, wenn möglich, eine ungefähre Einschätzung über die Höhe der Kosten zu geben.",
+            "fin_vorschlag": "Hier solltet Ihr kurz erklären, wie die Kosten gedeckt werden könnten. Hier reicht auch zu schreiben, dass die Initiative über Steuereinnahmen finanziert wird.",
+            "arbeitsweise": "Habt Ihr mit Expert/innen gesprochen? Wo kommen Eure Informationen her? Hier könnt Ihr auch Quellen angeben.",
+            "init_argument": "Hier dürft Ihr emotional werden: Warum ist Euch das wichtig und warum bringt Ihr diese Initiative ein?",
+
+        }
 
 
 class NewArgumentForm(forms.Form):

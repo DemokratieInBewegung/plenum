@@ -8,7 +8,7 @@ from django.db.models import Q
 
 from functools import wraps
 from voty.initadmin.models import UserConfig
-from .globals import STATES, PUBLIC_STATES, STAFF_ONLY_STATES, INITIATORS_COUNT
+from .globals import STATES, PUBLIC_STATES, STAFF_ONLY_STATES, INITIATORS_COUNT, MINIMUM_MODERATOR_VOTES
 from .models import Initiative, Supporter
 
 
@@ -104,9 +104,9 @@ class Guard:
             if config.is_female_mod:
                 has_female = True
             if config.is_diverse_mod:
-                has_diversity = False
+                has_diversity = True
 
-            if c >= 3:
+            if count + 1 >= MINIMUM_MODERATOR_VOTES:
                 has_enough = True
 
         return (has_female, has_diversity, has_enough)

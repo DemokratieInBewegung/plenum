@@ -50,3 +50,5 @@ STAFF_ONLY_STATES = [STATES.INCOMING,
 
 SPEED_PHASE_END = date(2017, 8, 21) # Everything published before this has speed phase
 INITIATORS_COUNT = 3
+
+MINIMUM_MODERATOR_VOTES = 3

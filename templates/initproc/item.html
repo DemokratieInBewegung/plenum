@@ -119,18 +119,6 @@
                 
                 {% if request.guard.can_moderate %}
                     {% include 'fragments/moderation/index.html' %}
-                    {% if initiative.ready_for_next_stage %}
-                        <form action="/initiative/{{initiative.id}}/publish" style="display:inline"  method="POST">
-                            {% csrf_token %}
-                            <button title="Veröffentlichen" class="btn btn-success publish" type="submit">
-                                <i class="material-icons public">public</i><span>Jetzt veröffentlichen</span>
-                            </button>
-                        </form>
-                    {% else %}
-                            <button title="Kann noch nicht veröffentlicht werden" class="btn btn-success publish" disabled=True type="submit">
-                                <i class="material-icons public">public</i><span>Jetzt veröffentlichen</span>
-                            </button>
-                    {% endif %}
                 {% endif %}
                 {% endif %}
                 {% ifequal initiative.state 'm' %}

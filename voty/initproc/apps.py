@@ -24,6 +24,10 @@ def create_notice_types(sender, **kwargs):
 
 
     # Initiative
+    NoticeType.create(NOTIFICATIONS.INITIATIVE.EDITED,
+                      'Initiative überarbeitet',
+                      'Die Initiative wurde überarbeitet')
+
     NoticeType.create(NOTIFICATIONS.INITIATIVE.SUBMITTED,
                       'Initiative eingereicht',
                       'Die Initiative wurde eingereicht')

@@ -165,6 +165,7 @@ def edit(request, initiative):
         if form.is_valid():
             initiative.save()
             messages.success(request, "Initiative gespeichert.")
+            initiative.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
             return redirect('/initiative/{}'.format(initiative.id))
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")

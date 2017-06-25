@@ -1,28 +1,20 @@
-from django.contrib.auth.models import User
-from datetime import datetime, timedelta, date
-from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
+from django.utils.text import slugify
 
+from pinax.notifications.models import send as notify
+
+from datetime import datetime, timedelta, date
+
+from .globals import STATES, INITIATORS_COUNT, SPEED_PHASE_END
 from django.db import models
 import pytz
 
-SPEED_PHASE_END = date(2017, 8, 21) # Everything published before this has speed phase
-INITIATORS_COUNT = 3
-
-
 class Initiative(models.Model):
-    class STATES:
-        PREPARE = 'p'
-        INCOMING = 'i'
-        SEEKING_SUPPORT = 's'
-        DISCUSSION = 'd'
-        FINAL_EDIT = 'e'
-        MODERATION = 'm'
-        HIDDEN = 'h'
-        VOTING = 'v'
-        ACCEPTED = 'a'
-        REJECTED = 'r'
+
+    # fallback 
+    STATES = STATES 
 
     title = models.CharField(max_length=80)
     subtitle = models.CharField(max_length=1024, blank=True)
@@ -206,12 +198,24 @@ class Initiative(models.Model):
         return 'item-{} state-{} area-{}'.format(slugify(self.title),
                     slugify(self.state), slugify(self.bereich))
 
-
-    ## HACKY way to get the url into the live update menu
-    ## for the notifications
     def __str__(self):
-        return """<a class="{cls}" href="/initiative/{id}" title="{state}">{title}</a>""".format(
-                cls=self.custom_cls, id=self.id, state=self.state, title=self.title)
+        return self.title;
+
+    def notify_moderators(self, *args, **kwargs):
+        return self.notify([m.user for m in self.moderation.all()], *args, **kwargs)
+
+    def notify_followers(self, *args, **kwargs):
+        return self.notify(self.supporters.all(), *args, **kwargs)
+
+    def notify(self, recipients, notice_type, extra_context=None, subject=None, **kwargs):
+        context = extra_context or dict()
+        if subject:
+            kwargs['sender'] = subject
+            context['target'] = self
+        else:
+            kwargs['sender'] = self
+
+        notify(recipients, notice_type, context, **kwargs)
 
 
 class Vote(models.Model):

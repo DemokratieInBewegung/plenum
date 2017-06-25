@@ -190,11 +190,12 @@ def submit_to_committee(request, initiative):
 
 @ajax
 @login_required
-@can_access_initiative(Initiative.STATES.PREPARE) # must be in discussion
+@can_access_initiative(Initiative.STATES.PREPARE, 'can_edit') 
 @simple_form_verifier(InviteUsersForm, submit_title="Einladen")
-def invite_initiators(request, form, initiative):
+def invite(request, form, initiative, invite_type):
     for user in form.cleaned_data['user']:
-        if initiative.supporting.filter(initiator=True).count() >= INITIATORS_COUNT:
+        if invite_type == 'initiators' and \
+            initiative.supporting.filter(initiator=True).count() >= INITIATORS_COUNT:
             break
 
         try:
@@ -203,11 +204,14 @@ def invite_initiators(request, form, initiative):
             supporting = Supporter(user=user)
             supporting.initiative = initiative
 
-        supporting.initiator = True
+        if invite_type == 'initiators':
+            supporting.initiator = True
+        elif invite_type == 'supporters':
+            supporting.first = True
         supporting.ack = False
         supporting.save()
 
-    messages.success(request, "Initiatoren eingeladen.")
+    messages.success(request, "Initiatoren eingeladen." if invite_type == 'initiators' else 'Unterstützer eingeladen.' )
     return redirect("/initiative/{}-{}".format(initiative.id, initiative.slug))
 
 

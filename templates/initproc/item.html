@@ -233,7 +233,7 @@
                 {% endfor %}
                 {% if request.guard.can_inivite_initiators %}
                 <div id="invite-initiators">
-                    <a data-ajax="true" href="/initiative/{{initiative.id}}/invite_initiators?fragment=%23invite-initiators" class="btn btn-success">weitere einladen</a>
+                    <a data-ajax="true" href="/initiative/{{initiative.id}}/invite/initiators?fragment=%23invite-initiators" class="btn btn-success">weitere einladen</a>
                 </div>
                 {% endif %}
             </div>
@@ -514,7 +514,7 @@
                                 {% avatar sup.user %}
                                 <div class="name">
                                     {{ sup.user.get_full_name|default:sup.user.username }}<br/>
-                                    {% if initiative.state == 'i' %}
+                                    {% if initiative.state == 'i' or initiative.state == 'p' %}
                                         {% if sup.ack %}
                                         <span title="bestätigt" class=""><i class="material-icons">done</i></span>
                                         {% else %}
@@ -558,6 +558,12 @@
                             </div>
                         {% endfor %}
                     </div>
+                </div>
+            {% endif %}
+
+            {% if request.guard.can_edit %}
+                <div id="invite-supporters">
+                    <a data-ajax="true" href="/initiative/{{initiative.id}}/invite/supporters?fragment=%23invite-supporters" class="btn btn-success">weitere Unterstützer/innen einladen</a>
                 </div>
             {% endif %}
         </div>

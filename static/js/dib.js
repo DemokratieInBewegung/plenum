@@ -45,7 +45,7 @@ function update_notifications(data) {
                 <i class="material-icons">public</i>${item.actor} hat "${item.target}" veröffentlicht
             </a>`
           } else {
-            message = `<a href="/initiative/${item.target_object_id}">
+            message = `<a href="/initiative/${item.actor_object_id}">
                 <i class="material-icons">public</i>${item.actor} wurde veröffentlicht
             </a>`
           }

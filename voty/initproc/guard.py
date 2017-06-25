@@ -8,7 +8,7 @@ from django.db.models import Q
 
 from functools import wraps
 from voty.initadmin.models import UserConfig
-from .models import Initiative, INITIATORS_COUNT
+from .models import Initiative, Supporter, INITIATORS_COUNT
 
 PUBLIC_STATES = [Initiative.STATES.SEEKING_SUPPORT,
                  Initiative.STATES.DISCUSSION,
@@ -70,10 +70,8 @@ class Guard:
             filters = [f for f in filters if f not in STAFF_ONLY_STATES]
 
         if self.user.is_authenticated and not self.user.is_staff:
-            return Initiative.objects.filter(Q(state__in=filters) | Q(
-                    Q(supporting__first=True) | Q(supporting__initiator=True),
-                    state__in=STAFF_ONLY_STATES,
-                    supporting__user_id=self.user.id))
+            return Initiative.objects.filter(Q(state__in=filters) | Q(state__in=STAFF_ONLY_STATES,
+                    id__in=Supporter.objects.filter(Q(first=True) | Q(initiator=True), user_id=self.user.id).values('initiative_id')))
 
         return Initiative.objects.filter(state__in=filters)
 

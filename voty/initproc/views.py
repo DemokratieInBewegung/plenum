@@ -11,9 +11,10 @@ from dal import autocomplete
 from django import forms
 from datetime import datetime
 from django_ajax.decorators import ajax
+from pinax.notifications.models import send as notify
 
+from .globals import NOTIFICATIONS
 from .guard import can_access_initiative
-from .helpers import notify_initiative_listeners
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Quorum, Supporter, Like, INITIATORS_COUNT)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
                     NewProposalForm, NewModerationForm, InviteUsersForm)
@@ -211,6 +212,8 @@ def invite(request, form, initiative, invite_type):
         supporting.ack = False
         supporting.save()
 
+        notify([user], NOTIFICATIONS.INVITED, {"target": initiative}, sender=request.user)
+
     messages.success(request, "Initiatoren eingeladen." if invite_type == 'initiators' else 'Unterstützer eingeladen.' )
     return redirect("/initiative/{}-{}".format(initiative.id, initiative.slug))
 
@@ -242,8 +245,6 @@ def publish(request, initiative):
     initiative.save()
 
     messages.success(request, "Initiative veröffentlicht")
-
-    # FIXME: notifications would be cool.
 
     return redirect('/initiative/{}'.format(initiative.id))
 

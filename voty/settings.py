@@ -73,6 +73,12 @@ MIDDLEWARE = [
     "account.middleware.TimezoneMiddleware"
 ]
 
+
+PINAX_NOTIFICATIONS_BACKENDS = [
+    ("site", "voty.initadmin.notify_backend.SiteBackend"),
+    ("email", "pinax.notifications.backends.email.EmailBackend"),
+]
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

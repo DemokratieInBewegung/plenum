@@ -255,7 +255,7 @@ class Likeable(models.Model):
     class Meta:
         abstract = True
 
-    likes_count = models.IntegerField(default=0)
+    likes_count = models.IntegerField(default=0) # FIXME: should be updated per DB-trigger
     likes = GenericRelation(Like,
                             content_type_field='target_type',
                             object_id_field='target_id')
@@ -265,7 +265,7 @@ class Commentable(models.Model):
     class Meta:
         abstract = True
 
-    comments_count = models.IntegerField(default=0)
+    comments_count = models.IntegerField(default=0) # FIXME: should be updated per DB-trigger
     comments = GenericRelation(Comment,
                                content_type_field='target_type',
                                object_id_field='target_id')

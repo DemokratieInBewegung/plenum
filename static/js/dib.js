@@ -7,11 +7,23 @@ function update_notifications(data) {
         menu.innerHTML = data.unread_list.map(function (item) {
         	var message = "";
         	switch (item.verb) {
-        		case "init_invite":
+        		case "inivited":
         			message = `<a href="/initiative/${item.target_object_id}">
-        				<i class="material-icons">email</i>${item.actor} hat dich zu "${item.description}" eingeladen
+        				<i class="material-icons">email</i>${item.actor} hat dich zu "${item.target}" eingeladen
         			</a>`
         			break;
+
+        		case "invite_accepted":
+        			message = `<a href="/initiative/${item.target_object_id}">
+        				<i class="material-icons">check</i>${item.actor} hat die Einladung zu "${item.target}" angenommen
+        			</a>`
+        			break;
+
+        		case "invite_rejected":
+        			message = `<a href="/initiative/${item.target_object_id}">
+        				<i class="material-icons">block</i>${item.actor} hat die Einladung zu "${item.target}" abgelehnt
+        			</a>`
+        			break;	
         		default:
 		            if(typeof item.actor !== 'undefined'){
 		                message = item.actor;

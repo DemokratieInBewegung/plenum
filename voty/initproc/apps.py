@@ -6,11 +6,32 @@ from .globals import NOTIFICATIONS
 def create_notice_types(sender, **kwargs):
 
     from pinax.notifications.models import NoticeType
-    print("Creating notices for Initproc") 
+    print("Creating notices for Initproc")
 
-    NoticeType.create(NOTIFICATIONS.INVITED,
+
+    # Invitations
+    NoticeType.create(NOTIFICATIONS.INVITE.SEND,
                       'Initativen Einladung',
                       'Du wurdest zu einer neuen Initiative eingeladen')
+
+    NoticeType.create(NOTIFICATIONS.INVITE.ACCEPTED,
+                      'Einladung angenommen',
+                      'Die Einladung wurde angenommen')
+
+    NoticeType.create(NOTIFICATIONS.INVITE.REJECTED,
+                      'Einladung abgelehnt',
+                      'Die Einladung wurde abgelehnt')
+
+
+    # Initiative
+    NoticeType.create(NOTIFICATIONS.INITIATIVE.SUBMITTED,
+                      'Initiative eingereicht',
+                      'Die Initiative wurde eingereicht')
+
+    NoticeType.create(NOTIFICATIONS.INITIATIVE.PUBLISHED,
+                      'Initiative veröffentlicht',
+                      'Die Initiative wurde veröffentlicht')
+
 
 class InitprocConfig(AppConfig):
     name = 'voty.initproc'

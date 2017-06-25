@@ -8,18 +8,8 @@ from django.db.models import Q
 
 from functools import wraps
 from voty.initadmin.models import UserConfig
-from .models import Initiative, Supporter, INITIATORS_COUNT
-
-PUBLIC_STATES = [Initiative.STATES.SEEKING_SUPPORT,
-                 Initiative.STATES.DISCUSSION,
-                 Initiative.STATES.FINAL_EDIT,
-                 Initiative.STATES.VOTING,
-                 Initiative.STATES.ACCEPTED,
-                 Initiative.STATES.REJECTED]
-
-STAFF_ONLY_STATES = [Initiative.STATES.INCOMING,
-                     Initiative.STATES.MODERATION,
-                     Initiative.STATES.HIDDEN]
+from .globals import STATES, PUBLIC_STATES, STAFF_ONLY_STATES, INITIATORS_COUNT
+from .models import Initiative, Supporter
 
 
 def can_access_initiative(states=None, check=None):
@@ -123,7 +113,7 @@ class Guard:
 
     def can_inivite_initiators(self, init=None):
         init = init or self.request.initiative
-        if init.state != Initiative.STATES.PREPARE:
+        if init.state != STATES.PREPARE:
             return False
 
         if not self._can_edit_initiative(init):
@@ -174,7 +164,7 @@ class Guard:
         return True
 
     def _can_edit_initiative(self, init):
-        if not init.state in [Initiative.STATES.PREPARE, Initiative.STATES.FINAL_EDIT]:
+        if not init.state in [STATES.PREPARE, STATES.FINAL_EDIT]:
             return False
         if not self.user.is_authenticated:
             return False
@@ -196,10 +186,10 @@ class Guard:
         return self._mod_counts_for_i(init) == (True, True, True)
 
     def _can_support_initiative(self, init):
-        return init.state == Initiative.STATES.SEEKING_SUPPORT and self.user.is_authenticated
+        return init.state == STATES.SEEKING_SUPPORT and self.user.is_authenticated
 
     def _can_moderate_initiative(self, init):
-        return init.state == Initiative.STATES.INCOMING and self.user.is_staff
+        return init.state == STATES.INCOMING and self.user.is_staff
 
 
 def add_guard(get_response):

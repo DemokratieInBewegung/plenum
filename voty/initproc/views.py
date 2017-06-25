@@ -13,7 +13,7 @@ from datetime import datetime
 from django_ajax.decorators import ajax
 from pinax.notifications.models import send as notify
 
-from .globals import NOTIFICATIONS
+from .globals import NOTIFICATIONS, STATES
 from .guard import can_access_initiative
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Quorum, Supporter, Like, INITIATORS_COUNT)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
@@ -21,11 +21,11 @@ from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCo
 # Create your views here.
 
 DEFAULT_FILTERS = [
-    Initiative.STATES.PREPARE,
-    Initiative.STATES.INCOMING,
-    Initiative.STATES.SEEKING_SUPPORT,
-    Initiative.STATES.DISCUSSION,
-    Initiative.STATES.VOTING]
+    STATES.PREPARE,
+    STATES.INCOMING,
+    STATES.SEEKING_SUPPORT,
+    STATES.DISCUSSION,
+    STATES.VOTING]
 
 
 #
@@ -75,7 +75,7 @@ def new(request):
         form = InitiativeForm(request.POST)
         if form.is_valid():
             ini = form.save(commit=False)
-            ini.state = Initiative.STATES.PREPARE
+            ini.state = STATES.PREPARE
             ini.save()
 
             Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
@@ -158,7 +158,7 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
 #                                                                        
 
 @login_required
-@can_access_initiative([Initiative.STATES.PREPARE, Initiative.STATES.FINAL_EDIT], 'can_edit')
+@can_access_initiative([STATES.PREPARE, STATES.FINAL_EDIT], 'can_edit')
 def edit(request, initiative):
     form = InitiativeForm(request.POST or None, instance=initiative)
     if request.method == 'POST':
@@ -173,14 +173,14 @@ def edit(request, initiative):
 
 
 @login_required
-@can_access_initiative(Initiative.STATES.PREPARE, 'can_edit')
+@can_access_initiative(STATES.PREPARE, 'can_edit')
 def submit_to_committee(request, initiative):
     if initiative.is_ready_for_next_stage:
-        initiative.state = Initiative.STATES.INCOMING
+        initiative.state = STATES.INCOMING
         initiative.save()
-        notify_initiative_listeners(initiative, "wurde eingereicht.")
-        messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
 
+        messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
+        initiative.notify_followers(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         return redirect('/initiative/{}'.format(initiative.id))
     else:
         messages.warning(request, "Die Bedingungen für die Einreichung sind nicht erfüllt.")
@@ -191,7 +191,7 @@ def submit_to_committee(request, initiative):
 
 @ajax
 @login_required
-@can_access_initiative(Initiative.STATES.PREPARE, 'can_edit') 
+@can_access_initiative(STATES.PREPARE, 'can_edit') 
 @simple_form_verifier(InviteUsersForm, submit_title="Einladen")
 def invite(request, form, initiative, invite_type):
     for user in form.cleaned_data['user']:
@@ -212,7 +212,7 @@ def invite(request, form, initiative, invite_type):
         supporting.ack = False
         supporting.save()
 
-        notify([user], NOTIFICATIONS.INVITED, {"target": initiative}, sender=request.user)
+        notify([user], NOTIFICATIONS.INVITE.SEND, {"target": initiative}, sender=request.user)
 
     messages.success(request, "Initiatoren eingeladen." if invite_type == 'initiators' else 'Unterstützer eingeladen.' )
     return redirect("/initiative/{}-{}".format(initiative.id, initiative.slug))
@@ -222,7 +222,7 @@ def invite(request, form, initiative, invite_type):
 
 @require_POST
 @login_required
-@can_access_initiative(Initiative.STATES.SEEKING_SUPPORT, 'can_support') # must be seeking for supporters
+@can_access_initiative(STATES.SEEKING_SUPPORT, 'can_support') # must be seeking for supporters
 def support(request, initiative):
     Supporter(initiative=initiative, user_id=request.user.id,
               public=not not request.POST.get("public", False)).save()
@@ -232,7 +232,7 @@ def support(request, initiative):
 
 @require_POST
 @login_required
-@can_access_initiative(Initiative.STATES.INCOMING, 'can_publish') # must be submitted and unpublished
+@can_access_initiative(STATES.INCOMING, 'can_publish') # must be submitted and unpublished
 def publish(request, initiative):
     if initiative.supporting.filter(ack=True, initiator=True).count() != INITIATORS_COUNT:
         messages.error(request, "Nicht die passende Zahl Initiator/innen haben bestätigt")
@@ -241,35 +241,39 @@ def publish(request, initiative):
     # clean out unknown 
     initiative.supporting.filter(ack=False).delete()
     initiative.went_public_at = datetime.now()
-    initiative.state = Initiative.STATES.SEEKING_SUPPORT
+    initiative.state = STATES.SEEKING_SUPPORT
     initiative.save()
 
     messages.success(request, "Initiative veröffentlicht")
+    initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
+    initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=request.user)
 
     return redirect('/initiative/{}'.format(initiative.id))
 
 
 @require_POST
 @login_required
-@can_access_initiative([Initiative.STATES.PREPARE, Initiative.STATES.INCOMING])
+@can_access_initiative([STATES.PREPARE, STATES.INCOMING])
 def ack_support(request, initiative):
     sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
     sup.ack = True
     sup.save()
 
     messages.success(request, "Danke für die Bestätigung")
+    initiative.notify_followers(NOTIFICATIONS.INVITE.ACCEPTED, subject=request.user)
 
     return redirect('/initiative/{}'.format(initiative.id))
 
 
 @require_POST
 @login_required
-@can_access_initiative([Initiative.STATES.SEEKING_SUPPORT, Initiative.STATES.INCOMING, Initiative.STATES.PREPARE])
+@can_access_initiative([STATES.SEEKING_SUPPORT, STATES.INCOMING, STATES.PREPARE])
 def rm_support(request, initiative):
     sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
     sup.delete()
 
     messages.success(request, "Deine Unterstützung wurde zurückgezogen")
+    initiative.notify_followers(NOTIFICATIONS.INVITE.REJECTED, subject=request.user)
 
     if initiative.state == 's':
         return redirect('/initiative/{}'.format(initiative.id))
@@ -279,7 +283,7 @@ def rm_support(request, initiative):
 
 @ajax
 @login_required
-@can_access_initiative(Initiative.STATES.DISCUSSION) # must be in discussion
+@can_access_initiative(STATES.DISCUSSION) # must be in discussion
 @simple_form_verifier(NewArgumentForm)
 def new_argument(request, form, initiative):
     data = form.cleaned_data
@@ -303,7 +307,7 @@ def new_argument(request, form, initiative):
 
 @ajax
 @login_required
-@can_access_initiative(Initiative.STATES.DISCUSSION) # must be in discussion
+@can_access_initiative(STATES.DISCUSSION) # must be in discussion
 @simple_form_verifier(NewProposalForm)
 def new_proposal(request, form, initiative):
     data = form.cleaned_data
@@ -330,6 +334,7 @@ def moderate(request, form, initiative):
     model.initiative = initiative
     model.user = request.user
     model.save()
+    
     return {
         'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>",
                             '#moderation-list'.format(initiative.id):
@@ -393,7 +398,7 @@ def unlike(request, target_type, target_id):
 
 @require_POST
 @login_required
-@can_access_initiative(Initiative.STATES.VOTING) # must be in voting
+@can_access_initiative(STATES.VOTING) # must be in voting
 def vote(request, init, vote):
     in_favor = vote != 'nay'
     my_vote = Vote.objects.get(initiative=init, user_id=request.user)

@@ -1,6 +1,8 @@
 {% load bootstrap %}
 
 <form method="POST" {%if ajax%}data-ajax-submit="true"{%endif%} action="{{request.path}}{% if fragment %}?fragment={{fragment|urlencode}}{% endif %}">
+	{% if form.TITLE %}<h2>{{form.TITLE }}</h2>{% endif %}
+	{% if form.TEXT %}<p>{{form.TEXT }}</p>{% endif %}
     {% csrf_token %}
 	{{form|bootstrap}}
 	{% if submit_title %}<button type="submit" class="btn {{submit_klasses}}">{{submit_title}}</button>{% endif %}

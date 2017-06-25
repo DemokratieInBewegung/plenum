@@ -17,6 +17,7 @@ urlpatterns = [
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/publish$', views.publish),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/new_argument$', views.new_argument),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/new_proposal$', views.new_proposal),
+    url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/new_moderation$', views.moderate),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/(?P<target_type>.*)/(?P<target_id>\d+)$', views.show_resp),
     url('^comment/(?P<target_type>.*)/(?P<target_id>\d+)$', views.comment),
     url('^like/(?P<target_type>.*)/(?P<target_id>\d+)$', views.like),

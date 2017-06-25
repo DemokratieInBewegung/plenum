@@ -98,9 +98,12 @@ class Guard:
 
         if not self.user.is_authenticated:
             return False
+
         if not self.user.is_staff and \
            not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=request.user.id):
             return False
+
+        return True
 
     def _can_publish_initiative(self, init):
         if not self.user.is_staff:
@@ -109,10 +112,11 @@ class Guard:
         if init.supporting.filter(ack=True, initiator=True).count() != INITIATORS_COUNT:
             return False
 
-
-
     def _can_support_initiative(self, init):
-        return init.state == INITIATIVES.STATES.SEEKING_SUPPORT and self.user.is_authenticated
+        return init.state == Initiative.STATES.SEEKING_SUPPORT and self.user.is_authenticated
+
+    def _can_moderate_initiative(self, init):
+        return init.state == Initiative.STATES.INCOMING and self.user.is_staff
 
 
 def add_guard(get_response):

@@ -610,10 +610,11 @@ header .alert {
   border-radius: 0.125rem;
   border-width: 1px;
   border-style: solid;
-  background: transparent;
+  /*background: transparent;*/
 }
 
 .typefilter .badge {
+  background: transparent;
   background: inherit;
 }
 

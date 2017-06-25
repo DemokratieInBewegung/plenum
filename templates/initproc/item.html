@@ -83,7 +83,8 @@
                 <p>
                     Diese Initiative <strong class="badge-arrivals">wurde noch nicht veröffentlicht</strong>.
                  </p>
-                {% if user.is_staff %}
+                {% if request.guard.can_moderate %}
+                    {% include 'fragments/moderation/index.html' %}
                     {% if initiative.ready_for_next_stage %}
                         <form action="/initiative/{{initiative.id}}/publish" style="display:inline"  method="POST">
                             {% csrf_token %}

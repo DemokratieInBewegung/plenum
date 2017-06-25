@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Initiative, Quorum, Supporter, Pro, Contra, Proposal, Comment, Vote
+from .models import Initiative, Quorum, Supporter, Pro, Contra, Proposal, Comment, Vote, Moderation
 
 
 class InitiativeAdmin(admin.ModelAdmin):
@@ -23,4 +23,5 @@ admin.site.register(Pro)
 admin.site.register(Contra)
 admin.site.register(Proposal)
 admin.site.register(Comment)
+admin.site.register(Moderation)
 admin.site.register(Vote)

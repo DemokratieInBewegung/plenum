@@ -1,5 +1,103 @@
 from django import forms
-from .models import Pro, Contra, Like, Comment, Proposal
+from django.template.loader import render_to_string
+
+from .models import Pro, Contra, Like, Comment, Proposal, Moderation
+from uuid import uuid4
+
+
+def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_ajax=True,
+                         submit_klasses="btn-outline-primary", submit_title="Abschicken"):
+    def wrap(fn):
+        def view(request, *args, **kwargs):
+            if request.method == "POST":
+                form = form_cls(request.POST)
+                if form.is_valid():
+                    return fn(request, form, *args, **kwargs)
+            else:
+                form = form_cls()
+
+            fragment = request.GET.get('fragment')
+            rendered = render_to_string(template,
+                        context=dict(fragment=fragment, form=form, ajax=via_ajax,
+                                     submit_klasses=submit_klasses,
+                                     submit_title=submit_title),
+                        request=request)
+            if fragment:
+                return {'inner-fragments': {fragment: rendered}}
+            return rendered
+        return view
+    return wrap
+
+
+# -*- coding: utf-8 -*-
+from django import forms
+from django.utils.safestring import mark_safe
+
+class SubmitButton(forms.Widget):
+    """
+    A widget that handles a submit button.
+    """
+    def __init__(self, name, value, label, attrs):
+        self.name, self.value, self.label = name, value, label
+        self.attrs = attrs
+        
+    def render(self):
+        label = self.label
+        icon = self.attrs.pop('icon', None)
+        if icon:
+            label = '<i class="material-icons">{}</i>'.format(icon)
+
+        final_attrs = self.build_attrs(
+            self.attrs,
+            type="submit",
+            name="{}-btn".format(self.name),
+            value=self.value,
+            )
+
+        return mark_safe(u'<button {}>{}</button>'.format(
+            forms.widgets.flatatt(final_attrs),
+            label,
+            ))
+
+class MultipleSubmitButton(forms.Select):
+    """
+    A widget that handles a list of submit buttons.
+    """
+    def __init__(self, attrs={}, btn_attrs={}, choices=()):
+        self.attrs = attrs
+        self.choices = choices
+        self.btn_attrs = btn_attrs
+        self.uid  = uuid4().hex
+
+    def buttons(self):
+        for value, label in self.choices:
+            attrs = self.attrs.copy()
+            if value in self.btn_attrs:
+                attrs.update(self.btn_attrs[value])
+            # attrs['class'] = attrs.get('class','') + " {}-submit-btn".format(self.uid)
+            yield SubmitButton(self.name, value, label, attrs)
+
+        
+    def render(self, name, value, attrs=None, choices=()):
+        self.name = name
+        return mark_safe('\n'.join([w.render() for w in self.buttons()]))
+
+    def value_from_datadict(self, data, files, name):
+        """
+        returns the value of the widget: IE posts inner HTML of the button
+        instead of the value.
+        """
+        value = data.get(name, None)
+        if value in dict(self.choices):
+            print("found")
+            return value
+        else:
+            inside_out_choices = dict([(v, k) for (k, v) in self.choices])
+            if value in inside_out_choices:
+                return inside_out_choices[value]
+        return None
+
+
 
 
 class NewArgumentForm(forms.Form):
@@ -17,4 +115,49 @@ class NewCommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['text']
+
+
+QESTIONS_COUNT = 11
+class NewModerationForm(forms.ModelForm):
+
+
+    TITLE = "Moderation"
+    TEXT = "Die Inititiative ... (bitte nicht passendes streichen)"
+
+    q0 = forms.BooleanField(required=False, initial=True, label="Widerspricht in irgendeinem Punkt den Menschenrechten, der Würde des Menschen oder dem Grundgesetz")
+    q1 = forms.BooleanField(required=False, initial=True, label="Enthält abwertende Begriffe gegen Gruppen (zB “Asylanten”)")
+    q2 = forms.BooleanField(required=False, initial=True, label="Ist ausgrenzend/rassistisch/homophob/behindertenfeindlich/transphob/sexistisch")
+    q3 = forms.BooleanField(required=False, initial=True, label="Ist nationalistisch")
+    q4 = forms.BooleanField(required=False, initial=True, label="Ist un-demokratisch?")
+    q5 = forms.BooleanField(required=False, initial=True, label="Führt zu weniger Transparenz")
+    q6 = forms.BooleanField(required=False, initial=True, label="Führt zu weiterer Bevormundung oder Ausschluss von Personen an der Beteiligung")
+    q7 = forms.BooleanField(required=False, initial=True, label="Läuft auf Kosten folgender Generationen")
+    q8 = forms.BooleanField(required=False, initial=True, label="Gefährdet unser Klima und unseren Planeten")
+    q9 = forms.BooleanField(required=False, initial=True, label="trägt dazu bei, dass Reiche noch reicher werden und/oder Arme noch ärmer")
+    q10 = forms.BooleanField(required=False, initial=True, label="Benachteiligt bestimmte Personengruppen, die sowieso schon benachteiligt sind")
+    text = forms.CharField(required=False, label="Kommentar/Hinweis/Anmerkung", widget=forms.Textarea)
+    vote = forms.ChoiceField(required=True, label="Deine Beurteilung",
+            choices=[('y', 'yay'),('n', 'nope')],
+            widget=forms.RadioSelect())
+            # widget=MultipleSubmitButton(btn_attrs={
+            #     'y': { 'class': 'btn btn-outline-success',
+            #            'icon': 'thumb_up' },
+            #     'n': {'class': 'btn btn-outline-danger',
+            #            'icon': 'thumb_down'}
+            #     }))
+
+    def clean(self):
+        cleanded_data = super().clean()
+        if cleanded_data['vote'] == 'y':
+            for i in range(QESTIONS_COUNT):
+                if cleanded_data['q{}'.format(i) ]:
+                    self.add_error("vote", "Du hast positive gewertet, dabei hast du mindestens ein Problem oben markiert")
+                    break
+        else:
+            if not cleanded_data['text']:
+                self.add_error("text", "Kannst du das bitte begründen?")
+
+    class Meta:
+        model = Moderation
+        fields = ['q{}'.format(i) for i in range(QESTIONS_COUNT)] + ['text', 'vote']
 

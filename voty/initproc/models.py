@@ -307,3 +307,19 @@ class Contra(Argument):
     type = "contra"
     css_class = "danger"
     icon = "thumb_down"
+
+
+class Moderation(Response):
+    type = "moderation"
+    stale = models.BooleanField(default=False)
+    vote = models.CharField(max_length=1, choices=[
+            ('y', 'okay'),
+            ('a', 'abstain'),
+            ('r', 'request'),
+            ('n', 'no!')
+        ])
+    text = models.CharField(max_length=500, blank=True)
+
+    
+    class Meta:
+        unique_together = (("user", "initiative"),)

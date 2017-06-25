@@ -15,37 +15,10 @@ from django_ajax.decorators import ajax
 from .guard import can_access_initiative
 from .helpers import notify_initiative_listeners
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Quorum, Supporter, Like, INITIATORS_COUNT)
-from .forms import NewArgumentForm, NewCommentForm, NewProposalForm
+from .forms import simple_form_verifier, NewArgumentForm, NewCommentForm, NewProposalForm, NewModerationForm
 # Create your views here.
 
 DEFAULT_FILTERS = ['s', 'd', 'v']
-
-
-
-
-def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_ajax=True,
-                         submit_klasses="btn-outline-primary", submit_title="Abschicken"):
-    def wrap(fn):
-        def view(request, *args, **kwargs):
-            if request.method == "POST":
-                form = form_cls(request.POST)
-                if form.is_valid():
-                    return fn(request, form, *args, **kwargs)
-            else:
-                form = form_cls()
-
-            fragment = request.GET.get('fragment')
-            rendered = render_to_string(template,
-                        context=dict(fragment=fragment, form=form, ajax=via_ajax,
-                                     submit_klasses=submit_klasses,
-                                     submit_title=submit_title),
-                        request=request)
-            if fragment:
-                return {'inner-fragments': {fragment: rendered}}
-            return rendered
-        return view
-    return wrap
-
 
 
 #
@@ -346,6 +319,25 @@ def new_proposal(request, form, initiative):
                                                   context=dict(argument=proposal),
                                                   request=request)}
     }
+
+
+@ajax
+@login_required
+@can_access_initiative('i', 'can_moderate') # must be in discussion
+@simple_form_verifier(NewModerationForm)
+def moderate(request, form, initiative):
+    model = form.save(commit=False)
+    model.initiative = initiative
+    model.user = request.user
+    model.save()
+    return {
+        'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>",
+                            '#moderation-list'.format(initiative.id):
+                                render_to_string("fragments/moderation/list_small.html",
+                                                  context=dict(initiative=initiative),
+                                                  request=request)}
+    }
+
 
 
 @ajax

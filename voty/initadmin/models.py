@@ -8,3 +8,10 @@ class InviteBatch(models.Model):
 	total_found = models.IntegerField(default=0)
 	new_added = models.IntegerField(default=0)
 	payload = models.TextField()
+
+
+
+class UserConfig(models.Model):
+    user = models.OneToOneField(User, related_name="config", on_delete=models.CASCADE)
+    is_diverse_mod = models.BooleanField(default=False)
+    is_female_mod = models.BooleanField(default=False)

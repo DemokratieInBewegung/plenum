@@ -2,11 +2,12 @@
 The Single one place, where all permissions are defined
 """
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
 from functools import wraps
-
+from voty.initadmin.models import UserConfig
 from .models import Initiative, INITIATORS_COUNT
 
 STAFF_ONLY_STATES = ['i', 'm', 'h']
@@ -87,10 +88,55 @@ class Guard:
         # fallback if compound doesn't match
         return False
 
+
     # 
     #    INITIATIVES
     #    -----------
     # 
+
+    def _mod_counts_for_i(self, ini):
+
+        has_female = has_diversity = has_enough = False
+        for count, config in enumerate(UserConfig.objects.filter(user_id__in=init.moderations.filter(stale=False).values("user_id"))):
+            if config.is_female_mod:
+                has_female = True
+            if config.is_diverse_mod:
+                has_diversity = False
+
+            if c >= 3:
+                has_enough = True
+
+        return (has_female, has_diversity, has_enough)
+
+
+
+    def should_moderate_initiative(self, init=None):
+        init = init or self.request.initiative
+        if not self._can_moderate_initiative(init):
+            return False
+
+        moderations = init.moderations.filter(stale=False)
+
+        if moderations.filter(user=self.user):
+            # has already voted, thanks, bye
+            return False
+
+        (has_female, has_diversity, has_enough) = self._mod_counts_for_i(init)
+
+        try:
+            if not has_female:
+                if self.user.config.is_female_mod:
+                    return True
+
+            if not has_diversity:
+                if self.user.config.is_diverse_mod:
+                    return True
+        except User.config.RelatedObjectDoesNotExist:
+            pass
+
+        return not has_enough
+
+    ## compounds
 
     def _can_view_initiative(self, init):
         if init.state not in STAFF_ONLY_STATES:
@@ -111,6 +157,11 @@ class Guard:
 
         if init.supporting.filter(ack=True, initiator=True).count() != INITIATORS_COUNT:
             return False
+
+        if init.moderations.filter(stale=False, vote='n'): # We have NAYs
+            return False
+
+        return self._mod_counts_for_i(init) == (True, True, True)
 
     def _can_support_initiative(self, init):
         return init.state == Initiative.STATES.SEEKING_SUPPORT and self.user.is_authenticated

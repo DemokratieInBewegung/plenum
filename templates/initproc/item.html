@@ -80,34 +80,42 @@
         <div class="row initiative-state">
             <div class="col-12">
                 {% if initiative.state == 'p' or initiative.state == 'i' %}
-                <p>
-                    Diese Initiative <strong class="badge-prepare">wurde noch nicht veröffentlicht</strong>.
-                 </p>
                 {% if request.guard.can_edit %}
-                    <form action="/initiative/{{initiative.id}}/edit" style="display:inline"  method="GET">
-                        {% csrf_token %}
-                        <button title="Bearbeiten" class="btn btn-success edit" type="submit">
-                            <i class="material-icons edit">edit</i><span>Bearbeiten</span>
-                        </button>
-                    </form>
-                    {% if initiative.ready_for_next_stage %}
-                    <form action="/initiative/{{initiative.id}}/submit_to_committee" style="display:inline"  method="POST">
-                        {% csrf_token %}
-                        <button title="Einreichen" class="btn btn-success edit" type="submit">
+                    {% if not initiative.ready_for_next_stage %}
+                    <div class="pre-submit">
+                        <div class="alert alert-info" role="alert">
+                        <h6>Um Deine Initiative einreichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
+                        <ol>
+                            <li>Alle Textfelder beim Einreichen müssen ausgefüllt sein</li>
+                            <li>Du musst genau 2 Mitinitiator/innen angeben</li>
+                            <li>Deine Mitiniator/innen müssten ihre Mitautorschaft bestätigt haben</li>
+                        </ol>
+                        </div>
+                        {% endif %}
+                        <form action="/initiative/{{initiative.id}}/edit" style="display:inline"  method="GET">
+                            {% csrf_token %}
+                            <button title="Bearbeiten" class="btn btn-success edit" type="submit">
+                                <i class="material-icons edit">edit</i><span>Bearbeiten</span>
+                            </button>
+                        </form>
+                        {% if initiative.ready_for_next_stage %}
+                        <form action="/initiative/{{initiative.id}}/submit_to_committee" style="display:inline"  method="POST">
+                            {% csrf_token %}
+                            <button title="Einreichen" class="btn btn-success submit" type="submit">
+                                <i class="material-icons public">public</i><span>Einreichen</span>
+                            </button>
+                        </form>
+                        {% else %}
+                        <button title="Kann noch nicht eingereicht werden" class="btn btn-success submit" style="display:inline" disabled=True type="submit">
                             <i class="material-icons public">public</i><span>Einreichen</span>
                         </button>
-                    </form>
-                    {% else %}
-                    <button title="Kann noch nicht eingereicht werden" class="btn btn-success edit" style="display:inline" disabled=True type="submit">
-                        <i class="material-icons public">public</i><span>Einreichen</span>
-                    </button>
-                    <p><i>Um deine Initiative einreichen zu können, müssen folgende Bedingungen erfüllt sein:</i></p>
-                    <p><ol>
-                        <li>Alle Textfelder müssen ausgefüllt sein</li>
-                        <li>Du musst genau 2 Mitinitiatoren angeben</li>
-                    </ol></p>
+                    </div>
                     {% endif %}
                 {% endif %}
+
+                <p>
+                    Diese Initiative <strong class="badge-prepare">wurde noch nicht veröffentlicht</strong>.
+                </p>
                 
                 {% if request.guard.can_moderate %}
                     {% include 'fragments/moderation/index.html' %}

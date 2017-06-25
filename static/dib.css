@@ -352,14 +352,19 @@ em {
   display: block;
 }
 
-.initiative-state .publish span {
+.initiative-state .publish span, .pre-submit .edit span, .pre-submit .submit span {
   font-size: 1.125rem;
   line-height: 1.875rem;
 }
 
+.material-icons.edit {
+  padding-top: .125rem;
+  padding-right: .3875rem;
+}
+
 .material-icons.public {
-  padding-top: 0.125rem;
-  padding-right: 0.3785rem;
+  padding-top: .125rem;
+  padding-right: .3875rem;
 }
 
 .card.initiative-meta {
@@ -400,6 +405,19 @@ em {
 
 .meta .row > div {
   padding-top: 1.25rem;
+}
+
+.pre-submit .alert {
+  margin-bottom: 1rem;
+}
+
+.pre-submit .alert ol {
+  margin-bottom: 0;
+}
+
+.pre-submit button {
+  margin-bottom: 1rem;
+  margin-right: .25rem;
 }
 
 .initiators {
@@ -557,6 +575,14 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 400;
 }
 
+h6 {
+  font-weight: 500;
+}
+
+h6.classification {
+  font-weight: 400;
+}
+
 h1 {
   margin-bottom: 0;
 }
@@ -570,7 +596,7 @@ h2 {
 }
 
 #filters h6 {
-  font-weight: normal;
+  font-weight: 400;
   line-height: 150%;
   margin: 0.25rem 0.5rem 0 0;
 }

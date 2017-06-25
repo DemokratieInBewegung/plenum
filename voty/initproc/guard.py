@@ -10,7 +10,7 @@ from functools import wraps
 from voty.initadmin.models import UserConfig
 from .models import Initiative, INITIATORS_COUNT
 
-STAFF_ONLY_STATES = ['i', 'm', 'h']
+STAFF_ONLY_STATES = [Initiative.STATES.INCOMING, Initiative.STATES.MODERATION, Initiative.STATES.HIDDEN]
 
 
 def can_access_initiative(states=None, check=None):
@@ -74,6 +74,11 @@ class Guard:
         return False
 
     @_compound_action
+    def can_edit(self, obj=None):
+        # fallback if compound doesn't match
+        return False
+
+    @_compound_action
     def can_publish(self, obj=None):
         # fallback if compound doesn't match
         return False
@@ -94,7 +99,7 @@ class Guard:
     #    -----------
     # 
 
-    def _mod_counts_for_i(self, ini):
+    def _mod_counts_for_i(self, init):
 
         has_female = has_diversity = has_enough = False
         for count, config in enumerate(UserConfig.objects.filter(user_id__in=init.moderations.filter(stale=False).values("user_id"))):
@@ -107,7 +112,6 @@ class Guard:
                 has_enough = True
 
         return (has_female, has_diversity, has_enough)
-
 
 
     def should_moderate_initiative(self, init=None):
@@ -146,7 +150,17 @@ class Guard:
             return False
 
         if not self.user.is_staff and \
-           not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=request.user.id):
+           not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=self.request.user.id):
+            return False
+
+        return True
+
+    def _can_edit_initiative(self, init):
+        if not init.state in [Initiative.STATES.PREPARE, Initiative.STATES.FINAL_EDIT]:
+            return False
+        if not self.user.is_authenticated:
+            return False
+        if not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=self.request.user.id):
             return False
 
         return True

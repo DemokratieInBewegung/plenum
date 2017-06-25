@@ -13,6 +13,7 @@ INITIATORS_COUNT = 3
 
 class Initiative(models.Model):
     class STATES:
+        PREPARE = 'p'
         INCOMING = 'i'
         SEEKING_SUPPORT = 's'
         DISCUSSION = 'd'
@@ -24,8 +25,9 @@ class Initiative(models.Model):
         REJECTED = 'r'
 
     title = models.CharField(max_length=80)
-    subtitle = models.CharField(max_length=1024)
+    subtitle = models.CharField(max_length=1024, blank=True)
     state = models.CharField(max_length=1, choices=[
+            (STATES.PREPARE, "preparation"),
             (STATES.INCOMING, "new arrivals"),
             (STATES.SEEKING_SUPPORT, "seeking support"),
             (STATES.DISCUSSION, "in discussion"),
@@ -41,13 +43,13 @@ class Initiative(models.Model):
     changed_at = models.DateTimeField(auto_now=True)
 
 
-    summary = models.TextField()
-    problem = models.TextField()
-    forderung = models.TextField()
-    kosten = models.TextField()
-    fin_vorschlag = models.TextField()
-    arbeitsweise = models.TextField()
-    init_argument = models.TextField()
+    summary = models.TextField(blank=True)
+    problem = models.TextField(blank=True)
+    forderung = models.TextField(blank=True)
+    kosten = models.TextField(blank=True)
+    fin_vorschlag = models.TextField(blank=True)
+    arbeitsweise = models.TextField(blank=True)
+    init_argument = models.TextField(blank=True)
 
     einordnung = models.CharField(max_length=50, choices=[('Einzellinitiatve','Einzelinitiative')])
     ebene = models.CharField(max_length=50, choices=[('Bund', 'Bund')])
@@ -84,9 +86,34 @@ class Initiative(models.Model):
 
     @property
     def ready_for_next_stage(self):
-        if self.state == 'i':
+        if self.state == Initiative.STATES.INCOMING:
             if self.supporting.filter(initiator=True, ack=True).count() == INITIATORS_COUNT:
                 return True
+        if self.state == Initiative.STATES.PREPARE: #three initiators and no empty text fields
+            if (self.supporting.filter(initiator=True, ack=True).count() == INITIATORS_COUNT and
+                self.title and
+                self.subtitle and
+                self.arbeitsweise and
+                self.bereich and
+                self.ebene and
+                self.einordnung and
+                self.fin_vorschlag and
+                self.forderung and
+                self.init_argument and
+                self.kosten and
+                self.problem and
+                self.summary):
+                return True
+
+        return False
+
+    # TODO remove because this is now handled by guard?
+    @property
+    def is_editable(self):
+        if self.state == Initiative.STATES.PREPARE:
+            return True
+        elif self.state == Initiative.STATES.FINAL_EDIT:
+            return True
 
         return False
 

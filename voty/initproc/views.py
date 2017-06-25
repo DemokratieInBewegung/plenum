@@ -18,7 +18,7 @@ from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Quorum, S
 from .forms import simple_form_verifier, NewArgumentForm, NewCommentForm, NewProposalForm, NewModerationForm
 # Create your views here.
 
-DEFAULT_FILTERS = ['s', 'd', 'v']
+DEFAULT_FILTERS = [Initiative.STATES.SEEKING_SUPPORT, Initiative.STATES.DISCUSSION, Initiative.STATES.VOTING]
 
 
 #
@@ -106,9 +106,9 @@ class NewInitiative(forms.ModelForm):
             "title" : "Die Überschrift sollte kurz und knackig eure Forderung enthalten.",
             "subtitle": "Hier reißt ihr kurz das Problem an, welches eure Initiative lösen soll. Versucht es auf 1-2 Sätze zu beschränken.",
             "summary" : "Hier schreibt bitte 3-4 Sätze, die zusammenfassen, worum es in dieser Initiative geht.",
-            "problem": "Hier bitte in 3-4 Sätze das Problem beschreiben, dass ihr mit eurer Initiative lösen wollt.",
-            "forderung" : "Was sind eure konkrete Forderungen?",
-            "kosten": "Entstehen Kosten für Eure Initiative? Versucht bitte, wenn möglich, eine ungefähre Einschätzung über die Höhe der Kosten zu geben.ten",
+            "problem": "Hier bitte in 3-4 Sätzen das Problem beschreiben, das ihr mit eurer Initiative lösen wollt.",
+            "forderung" : "Was sind eure konkreten Forderungen?",
+            "kosten": "Entstehen Kosten für eure Initiative? Versucht bitte, wenn möglich, eine ungefähre Einschätzung über die Höhe der Kosten zu geben.",
             "fin_vorschlag": "Hier solltet ihr kurz erklären, wie die Kosten gedeckt werden könnten. Hier reicht auch zu schreiben, dass die Initiative über Steuereinnahmen finanziert wird.",
             "arbeitsweise": "Habt ihr mit Expert/innen gesprochen? Wo kommen eure Informationen her? Hier könnt ihr auch Quellen angeben.",
             "init_argument": "Hier dürft ihr emotional werden: Warum ist euch das wichtig und warum bringt ihr diese Initiative ein?",
@@ -123,7 +123,7 @@ def new(request):
         form = NewInitiative(request.POST)
         if form.is_valid():
             ini = form.save(commit=False)
-            ini.state = Initiative.STATES.INCOMING
+            ini.state = Initiative.STATES.PREPARE
             ini.save()
 
             Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
@@ -141,7 +141,7 @@ def new(request):
             return redirect('/')
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
-            
+
     return render(request, 'initproc/new.html', context=dict(form=form))
 
 
@@ -216,10 +216,39 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
 #
 #                                                                        
 
+@login_required
+@can_access_initiative([Initiative.STATES.PREPARE, Initiative.STATES.FINAL_EDIT], 'can_edit')
+def edit(request, initiative):
+    form = NewInitiative(request.POST or None, instance=initiative)
+    if request.method == 'POST':
+        if form.is_valid():
+            initiative.save()
+            messages.success(request, "Initiative gespeichert.")
+            return redirect('/initiative/{}'.format(initiative.id))
+        else:
+            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+
+    return render(request, 'initproc/new.html', context=dict(form=form, initiative=initiative))
+
+
+@login_required
+@can_access_initiative(Initiative.STATES.PREPARE, 'can_edit')
+def submit_to_committee(request, initiative):
+    if initiative.is_ready_for_next_stage():
+        initiative.state = Initiative.STATES.INCOMING
+        initiative.save()
+        notify_initiative_listeners(initiative, "wurde eingereicht.")
+        messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
+        return redirect('/')
+    else:
+        messages.warning(request, "Die Bedingungen für die Einreichung sind nicht erfüllt.")
+
+    return redirect('/initiative/{}'.format(initiative.id))
+
 
 @require_POST
 @login_required
-@can_access_initiative('s', 'can_support') # must be seeking for supporters
+@can_access_initiative(Initiative.STATES.SEEKING_SUPPORT, 'can_support') # must be seeking for supporters
 def support(request, initiative):
     Supporter(initiative=initiative, user_id=request.user.id,
               public=not not request.POST.get("public", False)).save()
@@ -229,7 +258,7 @@ def support(request, initiative):
 
 @require_POST
 @login_required
-@can_access_initiative(Initiative.STATES.INCOMING, 'can_publish') # must be unpublished
+@can_access_initiative(Initiative.STATES.INCOMING, 'can_publish') # must be submitted and unpublished
 def publish(request, initiative):
     if initiative.supporting.filter(ack=True, initiator=True).count() != INITIATORS_COUNT:
         messages.error(request, "Nicht genügend Initiatoren haben bestätigt")
@@ -251,7 +280,7 @@ def publish(request, initiative):
 
 @require_POST
 @login_required
-@can_access_initiative('i')
+@can_access_initiative(Initiative.STATES.INCOMING)
 def ack_support(request, initiative):
     sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
     sup.ack = True
@@ -264,7 +293,7 @@ def ack_support(request, initiative):
 
 @require_POST
 @login_required
-@can_access_initiative(['s', 'i'])
+@can_access_initiative([Initiative.STATES.SEEKING_SUPPORT, Initiative.STATES.INCOMING])
 def rm_support(request, initiative):
     sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
     sup.delete()
@@ -279,7 +308,7 @@ def rm_support(request, initiative):
 
 @ajax
 @login_required
-@can_access_initiative('d') # must be in discussion
+@can_access_initiative(Initiative.STATES.DISCUSSION) # must be in discussion
 @simple_form_verifier(NewArgumentForm)
 def new_argument(request, form, initiative):
     data = form.cleaned_data
@@ -303,7 +332,7 @@ def new_argument(request, form, initiative):
 
 @ajax
 @login_required
-@can_access_initiative('d') # must be in discussion
+@can_access_initiative(Initiative.STATES.DISCUSSION) # must be in discussion
 @simple_form_verifier(NewProposalForm)
 def new_proposal(request, form, initiative):
     data = form.cleaned_data
@@ -393,7 +422,7 @@ def unlike(request, target_type, target_id):
 
 @require_POST
 @login_required
-@can_access_initiative('v') # must be in voting
+@can_access_initiative(Initiative.STATES.VOTING) # must be in voting
 def vote(request, init, vote):
     in_favor = vote != 'nay'
     my_vote = Vote.objects.get(initiative=init, user_id=request.user)

@@ -13,9 +13,9 @@ from datetime import datetime
 from django_ajax.decorators import ajax
 from pinax.notifications.models import send as notify
 
-from .globals import NOTIFICATIONS, STATES
+from .globals import NOTIFICATIONS, STATES, INITIATORS_COUNT
 from .guard import can_access_initiative
-from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Quorum, Supporter, Like, INITIATORS_COUNT)
+from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
                     NewProposalForm, NewModerationForm, InviteUsersForm)
 # Create your views here.
@@ -144,6 +144,30 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
                                                                  context=ctx, request=request)
         }}
 
+@ajax
+@login_required
+@can_access_initiative(None, 'can_moderate')
+def show_moderation(request, initiative, target_id, slug=None):
+    arg = get_object_or_404(Moderation, pk=target_id)
+
+    assert arg.initiative == initiative, "How can this be?"
+
+    ctx = dict(m=arg,
+               has_commented=False,
+               can_like=False,
+               has_liked=False,
+               comments=arg.comments.order_by('-created_at').all())
+
+    if request.user:
+        ctx['has_liked'] = arg.likes.filter(user=request.user).count() > 0
+        if arg.user == request.user:
+            ctx['has_commented'] = True
+            # users can self-like at the moment...
+
+    return {'fragments': {
+        '#{arg.type}-{arg.id}'.format(arg=arg): render_to_string('fragments/moderation/full.html',
+                                                                 context=ctx, request=request)
+        }}
 
 
 #

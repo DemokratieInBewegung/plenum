@@ -157,7 +157,7 @@
 						</span>
 						{% endifequal %}
 					</div>
-					{% if init.state != 'i' and init.state != 'a' and init.state != 'r' %}
+					{% if init.state != 'i' and init.state != 'a' and init.state != 'r' and init.state != 'p' %}
 					<div class="col text-right align-self-center">
 						<span class="text-muted align-middle">
 							Noch {{init.end_of_this_phase | timeuntil}}
@@ -181,7 +181,7 @@
 	  	<div class="card-footer">
 	  		<div class="container-fluid">
 				 <div class="row no-gutters">
-				 	{% if init.state != 'i' %}
+				 	{% if init.state != 'i' and init.state != 'p' %}
 				 	<div class="col text-muted align-self-center">
 				 		Veröffentlicht am {{init.went_public_at}}
 				 	</div>

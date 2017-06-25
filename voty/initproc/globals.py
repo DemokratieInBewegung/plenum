@@ -14,7 +14,7 @@ class NOTIFICATIONS:
         EDITED = "init_edited"
         SUBMITTED = "init_submitted"
         PUBLISHED = "init_published"
-        WENT_TO_DEBATE = "init_debatable"
+        WENT_TO_DISCUSSION = "init_discussion"
         WENT_TO_VOTE = 'init_vote'
 
 

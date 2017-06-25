@@ -36,6 +36,10 @@ def create_notice_types(sender, **kwargs):
                       'Initiative veröffentlicht',
                       'Die Initiative wurde veröffentlicht')
 
+    NoticeType.create(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION,
+                      'Initiative in Diskussion',
+                      'Die Initiative ist in die Diskussionphase eingetreten')
+
 
 class InitprocConfig(AppConfig):
     name = 'voty.initproc'

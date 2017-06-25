@@ -18,7 +18,12 @@ from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Quorum, S
 from .forms import simple_form_verifier, NewArgumentForm, NewCommentForm, NewProposalForm, NewModerationForm
 # Create your views here.
 
-DEFAULT_FILTERS = [Initiative.STATES.SEEKING_SUPPORT, Initiative.STATES.DISCUSSION, Initiative.STATES.VOTING]
+DEFAULT_FILTERS = [
+    Initiative.STATES.PREPARE,
+    Initiative.STATES.INCOMING,
+    Initiative.STATES.SEEKING_SUPPORT,
+    Initiative.STATES.DISCUSSION,
+    Initiative.STATES.VOTING]
 
 
 #

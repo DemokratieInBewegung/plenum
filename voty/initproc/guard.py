@@ -10,7 +10,16 @@ from functools import wraps
 from voty.initadmin.models import UserConfig
 from .models import Initiative, INITIATORS_COUNT
 
-STAFF_ONLY_STATES = [Initiative.STATES.INCOMING, Initiative.STATES.MODERATION, Initiative.STATES.HIDDEN]
+PUBLIC_STATES = [Initiative.STATES.SEEKING_SUPPORT,
+                 Initiative.STATES.DISCUSSION,
+                 Initiative.STATES.FINAL_EDIT,
+                 Initiative.STATES.VOTING,
+                 Initiative.STATES.ACCEPTED,
+                 Initiative.STATES.REJECTED]
+
+STAFF_ONLY_STATES = [Initiative.STATES.INCOMING,
+                     Initiative.STATES.MODERATION,
+                     Initiative.STATES.HIDDEN]
 
 
 def can_access_initiative(states=None, check=None):
@@ -55,14 +64,15 @@ class Guard:
         self.request = request
 
     def make_intiatives_query(self, filters):
-        if not self.user or not self.user.is_staff:
-            # state i is only available to staff
+        if not self.user.is_authenticated:
+            filters = [f for f in filters if f in PUBLIC_STATES]
+        elif not self.user.is_staff:
             filters = [f for f in filters if f not in STAFF_ONLY_STATES]
 
         if self.user.is_authenticated and not self.user.is_staff:
             return Initiative.objects.filter(Q(state__in=filters) | Q(
                     Q(supporting__first=True) | Q(supporting__initiator=True),
-                    state='i',
+                    state__in=STAFF_ONLY_STATES,
                     supporting__user_id=self.user.id))
 
         return Initiative.objects.filter(state__in=filters)

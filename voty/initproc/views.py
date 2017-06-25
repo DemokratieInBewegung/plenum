@@ -12,7 +12,7 @@ from django import forms
 from datetime import datetime
 from django_ajax.decorators import ajax
 
-from .apps import InitprocConfig
+from .guard import can_access_initiative
 from .helpers import notify_initiative_listeners
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Quorum, Supporter, Like, INITIATORS_COUNT)
 from .forms import NewArgumentForm, NewCommentForm, NewProposalForm
@@ -21,22 +21,6 @@ from .forms import NewArgumentForm, NewCommentForm, NewProposalForm
 DEFAULT_FILTERS = ['s', 'd', 'v']
 
 
-def can_access_initiative(states=None, check=None):
-    def wrap(fn):
-        def view(request, init_id, slug, *args, **kwargs):
-            init = get_object_or_404(Initiative, pk=init_id)
-            if states:
-                assert init.state in states, "Not in expected state: {}".format(state)
-            if  not request.guard.can_view(init):
-                raise PermissionDenied()
-
-            if check:
-                if not getattr(request.guard, check)(init):
-                    raise PermissionDenied()
-
-            return fn(request, init, *args, **kwargs)
-        return view
-    return wrap
 
 
 def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_ajax=True,

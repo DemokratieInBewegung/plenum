@@ -1,6 +1,8 @@
 """
 The Single one place, where all permissions are defined
 """
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
 from functools import wraps
@@ -9,9 +11,33 @@ from .models import Initiative, INITIATORS_COUNT
 
 STAFF_ONLY_STATES = ['i', 'm', 'h']
 
+
+def can_access_initiative(states=None, check=None):
+    def wrap(fn):
+        def view(request, init_id, slug, *args, **kwargs):
+            init = get_object_or_404(Initiative, pk=init_id)
+            if states:
+                assert init.state in states, "Not in expected state: {}".format(state)
+            if  not request.guard.can_view(init):
+                raise PermissionDenied()
+
+            if check:
+                if not getattr(request.guard, check)(init):
+                    raise PermissionDenied()
+
+            request.initiative = init
+
+            return fn(request, init, *args, **kwargs)
+        return view
+    return wrap
+
+
+
 def _compound_action(func):
     @wraps(func)
-    def wrapped(self, obj, *args, **kwargs):
+    def wrapped(self, obj=None, *args, **kwargs):
+        if obj is None: # if none given, fall back to the initiative of the request
+            obj = self.request.initiative
         try:
             return getattr(self, "_{}_{}".format(func.__name__, obj._meta.model_name))(obj, *args, **kwargs)
         except AttributeError:
@@ -23,8 +49,9 @@ class Guard:
     """
     An instance of the guard for the given user
     """
-    def __init__(self, user):
+    def __init__(self, user, request=None):
         self.user = user
+        self.request = request
 
     def make_intiatives_query(self, filters):
         if not self.user or not self.user.is_staff:
@@ -41,17 +68,22 @@ class Guard:
 
 
     @_compound_action
-    def can_view(self, obj):
+    def can_view(self, obj=None):
         # fallback if compound doesn't match
         return False
 
     @_compound_action
-    def can_publish(self, obj):
+    def can_publish(self, obj=None):
         # fallback if compound doesn't match
         return False
 
     @_compound_action
-    def can_support(self, obj):
+    def can_support(self, obj=None):
+        # fallback if compound doesn't match
+        return False
+
+    @_compound_action
+    def can_moderate(self, obj=None):
         # fallback if compound doesn't match
         return False
 
@@ -88,7 +120,7 @@ def add_guard(get_response):
     Add the guard of the `request.user` to it and make it accessible directly at `request.guard`
     """
     def middleware(request):
-        guard = Guard(request.user)
+        guard = Guard(request.user, request)
         request.guard = guard
         request.user.guard = guard
 

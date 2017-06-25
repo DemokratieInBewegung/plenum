@@ -176,7 +176,7 @@ def edit(request, initiative):
 @login_required
 @can_access_initiative(STATES.PREPARE, 'can_edit')
 def submit_to_committee(request, initiative):
-    if initiative.is_ready_for_next_stage:
+    if initiative.ready_for_next_stage:
         initiative.state = STATES.INCOMING
         initiative.save()
 

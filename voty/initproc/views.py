@@ -98,7 +98,7 @@ class NewInitiative(forms.ModelForm):
 
         labels = {
             "title" : "Überschrift",
-            "subtitle": "Anreizer",
+            "subtitle": "Anreißer",
             "summary" : "Zusammenfassung",
             "problem": "Problembeschreibung",
             "forderung" : "Forderung",
@@ -108,15 +108,15 @@ class NewInitiative(forms.ModelForm):
             "init_argument": "Argument der Initiator/innen",
         }
         help_texts = {
-            "title" : "Die Überschrift sollte kurz und knackig eure Forderung enthalten.",
-            "subtitle": "Hier reißt ihr kurz das Problem an, welches eure Initiative lösen soll. Versucht es auf 1-2 Sätze zu beschränken.",
+            "title" : "Die Überschrift sollte kurz und knackig Eure Forderung enthalten.",
+            "subtitle": "Hier reißt Ihr kurz das Problem an, welches Eure Initiative lösen soll. Versucht es auf 1-2 Sätze zu beschränken.",
             "summary" : "Hier schreibt bitte 3-4 Sätze, die zusammenfassen, worum es in dieser Initiative geht.",
-            "problem": "Hier bitte in 3-4 Sätzen das Problem beschreiben, das ihr mit eurer Initiative lösen wollt.",
-            "forderung" : "Was sind eure konkreten Forderungen?",
-            "kosten": "Entstehen Kosten für eure Initiative? Versucht bitte, wenn möglich, eine ungefähre Einschätzung über die Höhe der Kosten zu geben.",
-            "fin_vorschlag": "Hier solltet ihr kurz erklären, wie die Kosten gedeckt werden könnten. Hier reicht auch zu schreiben, dass die Initiative über Steuereinnahmen finanziert wird.",
-            "arbeitsweise": "Habt ihr mit Expert/innen gesprochen? Wo kommen eure Informationen her? Hier könnt ihr auch Quellen angeben.",
-            "init_argument": "Hier dürft ihr emotional werden: Warum ist euch das wichtig und warum bringt ihr diese Initiative ein?",
+            "problem": "Hier bitte in 3-4 Sätzen das Problem beschreiben, das Ihr mit Eurer Initiative lösen wollt.",
+            "forderung" : "Was sind Eure konkreten Forderungen?",
+            "kosten": "Entstehen Kosten für Eure Initiative? Versucht bitte, wenn möglich, eine ungefähre Einschätzung über die Höhe der Kosten zu geben.",
+            "fin_vorschlag": "Hier solltet Ihr kurz erklären, wie die Kosten gedeckt werden könnten. Hier reicht auch zu schreiben, dass die Initiative über Steuereinnahmen finanziert wird.",
+            "arbeitsweise": "Habt Ihr mit Expert/innen gesprochen? Wo kommen Eure Informationen her? Hier könnt Ihr auch Quellen angeben.",
+            "init_argument": "Hier dürft Ihr emotional werden: Warum ist Euch das wichtig und warum bringt Ihr diese Initiative ein?",
 
         }
 

@@ -257,27 +257,6 @@ def support(request, initiative):
 
 @require_POST
 @login_required
-@can_access_initiative(STATES.INCOMING, 'can_publish') # must be submitted and unpublished
-def publish(request, initiative):
-    if initiative.supporting.filter(ack=True, initiator=True).count() != INITIATORS_COUNT:
-        messages.error(request, "Nicht die passende Zahl Initiator/innen haben bestätigt")
-        return redirect('/initiative/{}'.format(initiative.id))
-
-    # clean out unknown 
-    initiative.supporting.filter(ack=False).delete()
-    initiative.went_public_at = datetime.now()
-    initiative.state = STATES.SEEKING_SUPPORT
-    initiative.save()
-
-    messages.success(request, "Initiative veröffentlicht")
-    initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
-    initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=request.user)
-
-    return redirect('/initiative/{}'.format(initiative.id))
-
-
-@require_POST
-@login_required
 @can_access_initiative([STATES.PREPARE, STATES.INCOMING])
 def ack_support(request, initiative):
     sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
@@ -359,6 +338,19 @@ def moderate(request, form, initiative):
     model.initiative = initiative
     model.user = request.user
     model.save()
+
+    if request.guard.can_publish(initiative):
+        initiative.supporting.filter(ack=False).delete()
+        initiative.went_public_at = datetime.now()
+        initiative.state = STATES.SEEKING_SUPPORT
+        initiative.save()
+
+        messages.success(request, "Initiative veröffentlicht")
+        initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
+        initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=request.user)
+
+        return redirect('/initiative/{}'.format(initiative.id))
+
     
     return {
         'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>",

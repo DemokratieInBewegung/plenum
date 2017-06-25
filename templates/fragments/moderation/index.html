@@ -9,16 +9,4 @@
 			<a data-ajax=True href="/initiative/{{initiative.id}}/new_moderation?fragment=%23moderation-new" class="btn btn-outline-primary">Moderationsbewertung eintragen</a>
 		</div>
 	{% endif %}
-    {% if request.guard.can_publish %}
-        <form action="/initiative/{{initiative.id}}/publish" style="display:inline"  method="POST">
-            {% csrf_token %}
-            <button title="Veröffentlichen" class="btn btn-success publish" type="submit">
-                <i class="material-icons public">public</i><span>Jetzt veröffentlichen</span>
-            </button>
-        </form>
-    {% else %}
-            <button title="Kann noch nicht veröffentlicht werden" class="btn btn-success publish" disabled=True type="submit">
-                <i class="material-icons public">public</i><span>Jetzt veröffentlichen</span>
-            </button>
-    {% endif %}
 </div>

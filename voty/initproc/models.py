@@ -202,7 +202,7 @@ class Initiative(models.Model):
         return self.title;
 
     def notify_moderators(self, *args, **kwargs):
-        return self.notify([m.user for m in self.moderation.all()], *args, **kwargs)
+        return self.notify([m.user for m in self.moderations.all()], *args, **kwargs)
 
     def notify_followers(self, *args, **kwargs):
         return self.notify(self.supporters.all(), *args, **kwargs)

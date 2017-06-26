@@ -313,7 +313,7 @@ class Response(Likeable, Commentable):
 
 
 class Argument(Response):
-    title = models.CharField(max_length=80)
+    title = models.CharField(max_length=140)
     text = models.CharField(max_length=500)
 
     class Meta:

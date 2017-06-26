@@ -18,7 +18,7 @@ def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_aj
                 if form.is_valid():
                     return fn(request, form, *args, **kwargs)
             else:
-                form = form_cls()
+                form = form_cls(initial=request.GET)
 
             fragment = request.GET.get('fragment')
             rendered = render_to_string(template,
@@ -141,9 +141,16 @@ class InitiativeForm(forms.ModelForm):
 
 
 class NewArgumentForm(forms.Form):
-    type = forms.ChoiceField(choices=[('👍', '👍'), ('👎', '👎')], widget=forms.RadioSelect())
-    title = forms.CharField(required=True, max_length=80)
-    text = forms.CharField(required=True, max_length=500, widget=forms.Textarea())
+    TITLE = "Neues Argument hinzufügen"
+    type = forms.ChoiceField(choices=[('👍', '👍'), ('👎', '👎')], widget=forms.HiddenInput())
+    title = forms.CharField(required=True,
+                            label="Zusammenfassung (max. 140 Zeichen)",
+                            max_length=140,
+                            widget=forms.Textarea(attrs=dict(rows=3)))
+    text = forms.CharField(required=True,
+                           label="Ausführliche Darstellung (max. 500 Zeichen)",
+                           max_length=500,
+                           widget=forms.Textarea(attrs=dict(rows=10)))
 
 
 class NewProposalForm(forms.Form):

@@ -6,14 +6,14 @@
 </div>
 <div id="new-argument" class="container-fluid">
     <div class="row">
-        <div class="offset-md-2 col text-center">
+        <div class="{% if arguments %}offset-md-2 {% endif %}col text-center">
             <a data-ajax="true" href="/initiative/{{initiative.id}}/new_argument?type=👍&fragment=%23new-argument" class="btn">
         		<i class="material-icons">thumb_up</i> Pro-Argument hinzufügen
         	</a>
         </div>
         <div class="col text-center">
             <a data-ajax="true" href="/initiative/{{initiative.id}}/new_argument?type=👎&fragment=%23new-argument" class="btn">
-        		<i class="material-icons">thumb_down</i> Contra-Argument hinzufügen
+        		<i class="material-icons">thumb_down</i> Kontra-Argument hinzufügen
         	</a>
         </div>
     </div>

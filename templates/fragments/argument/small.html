@@ -3,7 +3,7 @@
 <div id="{{argument.unique_id}}" class="argument container argument-{{argument.type}}">
 	<div class="row">
 		<div class="col-2 text-center">
-			<i class="argument-type-icon material-icons">{{argument.icon}}</i> <br/> {{argument.type|upper}}
+			<i class="argument-type-icon material-icons">{{argument.icon}}</i> <br /> {% if argument.type == 'contra' %}KONTRA{% elif argument.type == "pro"%}PRO{% endif %}
 	    </div>
 	    <div class="col-10">
 		    {% if argument.title%}{{argument.title}}{% else %}{{argument.text|markdown}}{% endif %}

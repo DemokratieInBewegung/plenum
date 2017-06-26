@@ -99,17 +99,14 @@ class Guard:
 
     def _mod_counts_for_i(self, init):
 
-        has_female = has_diversity = has_enough = False
-        for count, config in enumerate(UserConfig.objects.filter(user_id__in=init.moderations.filter(stale=False).values("user_id"))):
+        has_female = has_diversity = False
+        for config in UserConfig.objects.filter(user_id__in=init.moderations.filter(stale=False).values("user_id")):
             if config.is_female_mod:
                 has_female = True
             if config.is_diverse_mod:
                 has_diversity = True
 
-            if count + 1 >= MINIMUM_MODERATOR_VOTES:
-                has_enough = True
-
-        return (has_female, has_diversity, has_enough)
+        return (has_female, has_diversity, init.moderations.filter(stale=False).count() >= MINIMUM_MODERATOR_VOTES )
 
     def can_inivite_initiators(self, init=None):
         init = init or self.request.initiative

@@ -807,22 +807,6 @@ label.deactivated {
   color: #22b24c;
 }
 
-/* argument specific avatars */
-
-.argument .profiles {
-  flex-flow: row-reverse;
-}
-
-.argument .profiles img {
-  height: 1.25em;
-  margin: 0.2em;
-}
-
-.argument .profiles li:last-of-type::before {
-  content: "-";
-  font-size: 1em;  
-}
-
 .history-title {
   font-size: 1em;
   color: #999;
@@ -891,116 +875,6 @@ label.deactivated {
   list-style: none;
 }
 
-.pro .argument:after,
-.contra .argument:before {
-  top: 50%;
-  z-index: 0;
-  content: " ";
-  border-top: 2px solid #eee;
-  display: inline-block;
-  position: absolute;
-}
-
-.pro .argument:after {
-  right: -10px;
-  width: 10px;
-}
-
-.contra .argument:before {
-  left: -10px;
-  width: 10px;
-}
-
-.argument .short {
-  display: flex;
-  padding: 3px 0;
-  cursor: pointer;
-}
-.argument img.avatar {
-  border-radius: 100%;
-  height: 2em;
-  margin-right: 0.5em;
-  border: 1px solid #aaa;
-  cursor: pointer;
-}
-
-.argument .long {
-  display: none;
-}
-
-.argument .meta {
-  color: #aaa;
-  font-size: 0.75em;
-}
-
-.argument .meta .has_liked {
-  color: #eb6864;
-}
-
-.argument .meta .has_commented {
-  color: #336699;
-}
-
-.argument .long .content {
-  display: flex;
-}
-
-.argument .long .comments {
-  margin-left: 3em;
-  font-size: 0.85em;
-}
-
-.argument .long .comments .avatar {
-  height: 1.5em;
-}
-
-.post-argument {
-  width: 50%;
-  min-width: 320px;
-  margin: 0 auto;
-}
-
-.post-argument input[type=radio] {
-  vertical-align: top;
-  margin: 2px;
-}
-
-.post-argument textarea {
-  width: 100%;
-  min-height: 5em;
-}
-
-
-.argument .long .content > div:first-child {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.argument .long .content .avatar {
-  margin: 0;
-  width: 2em;
-}
-.argument .long .content .like {
-  font-size: 1em;
-  padding: 0;
-  background: transparent;
-  border: transparent;
-  color: #aaa;
-}
-
-.argument .long .content .like:hover {
-  cursor: pointer;
-  color: #eb6864;
-}
-
-.argument .long .content .like .has_liked {
-  color: #eb6864;
-}
-
-.argument .comments {
-  opacity: 0.65;
-  margin-top: 2em;
-}
 
 .hyphenate {
   hyphens: auto; -webkit-hyphens: auto; -moz-hyphens: auto; -ms-hyphens: auto;
@@ -1015,56 +889,6 @@ label.deactivated {
 }
 
 
-
-
-
-
-/* 
- *
- *   ITEM COLORS
- *
- *
- *
- *
-*/
-
-.item-header {
-  /*background: #999;
-  color: white;*/
-  /*background: linear-gradient(to right, #21466b 0%,#263d82 30%,#263d82 30%,#eb5c4a 100%);*/
-}
-
-.subtitle p {
-  font-size: 1.25rem;
-  line-height: 2rem;
-  margin-bottom: 0;
-}
-
-.display-4 {
-  font-size: 2.75rem;
-  padding-top: 3rem;
-  line-height: 3.25rem;
-  padding-bottom: 2rem;
-}
-
-.item-header.area-demokratisches-und-solidarisches-europa {
-  background: #4768AB;
-}
-
-#live_notify_list .area-demokratisches-und-solidarisches-europa,
-.card.area-demokratisches-und-solidarisches-europa {
-  border-left: 3px solid #4768AB;
-}
-
-
-.item-header.area-zukunft-aktiv-gestalten {
-  background: #D2892B;
-}
-
-#live_notify_list .area-zukunft-aktiv-gestalten,
-.card.area-zukunft-aktiv-gestalten {
-  border-left: 3px solid #D2892B;
-}
 
 /*
 green: #47AB64;

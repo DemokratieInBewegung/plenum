@@ -3,9 +3,9 @@
     {% for argument in proposals %}
         {% include "fragments/argument/small.html" %}
     {% empty %}
-        <div> <i>nöscht bisher</i> </div>
+        <div>Es wurden noch keine Vorschläge eingebracht.</div>
     {% endfor %}
     <div id="new-proposal">
-        <a data-ajax="true" href="/initiative/{{initiative.id}}/new_proposal?fragment=%23new-proposal" class="btn btn-outline-primary">Neuen Vorschlag bereiten</a>
+        <a data-ajax="true" href="/initiative/{{initiative.id}}/new_proposal?fragment=%23new-proposal" class="btn btn-outline-primary">Neuen Vorschlag einbringen</a>
     </div>
 </div>

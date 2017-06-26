@@ -898,6 +898,15 @@ Argument base design
   margin: 2rem 0;
 }
 
+.argument.container-fluid {
+  padding: 1rem 0 2rem 0;
+}
+
+.argument .short {
+  font-size: 1.25rem;
+  line-height: 1.875rem;
+}
+
 .argument .argument-type-icon {
   font-size: 3rem;
   margin: 1rem auto;
@@ -937,20 +946,28 @@ Argument base design
 }
 
 .argument .argument-text {
-  padding: 0 0 0 0;
+  padding: 0;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
 }
 
 .argument .argument-comment-list {
-  background: white;
-  margin-bottom: 1rem;
+  background: rgba(255, 255, 255, 1);
 }
+
+.argument .new-comment {
+  padding-top: .75rem;
+}
+
 .argument .comment {
-  border-top: 1px solid #eeee;
+  border-top: 1px solid #eee;
   padding: 1rem 1rem;
 }
 
 .argument .comment .comment-text {
-  margin: 0 0 1rem 0;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.625rem;
 }
 
 .argument .comment .comment-head {
@@ -966,11 +983,30 @@ Argument base design
 #new-argument form .material-icons {
   display: block;
   margin-top: 2rem;
-  line-height: 5rem;
-  font-size: 4.5rem;
+  line-height: 3.5rem;
+  font-size: 3rem;
 }
 
+#new-argument label {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.0625rem;
+  color: #636c72;
+  margin-bottom: .125rem;
+}
 
+#new-argument h4 {
+  margin-bottom: 1rem;
+  line-height: 2rem;
+}
+
+#new-argument.container-fluid {
+  padding: 0;
+}
+
+.argument-meta .stats > span {
+  padding-right: .25rem;
+}
 
 /*
 green: #47AB64;

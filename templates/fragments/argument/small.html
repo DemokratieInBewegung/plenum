@@ -1,14 +1,14 @@
 {% load avatar_tags %}
 {% load markdown %}
-<div id="{{argument.unique_id}}" class="argument container argument-{{argument.type}}">
+<div id="{{argument.unique_id}}" class="argument container-fluid argument-{{argument.type}}">
     <div class="row no-gutters">
     	{% if argument.icon %}
 			<div class="col-2 text-center">
 				<i class="argument-type-icon material-icons">{{argument.icon}}</i> <br /> {% if argument.type == 'contra' %}KONTRA{% elif argument.type == "pro"%}PRO{% endif %}
 		    </div>
-	        <div class="col-10 align-self-center">
+	        <div class="col-10 align-self-center short">
         {% else %}
-        	<div class="col-12 align-self-center">
+        	<div class="col-12 align-self-center short">
         {% endif %}
 
 		    {{argument.title}}
@@ -25,7 +25,7 @@
                     <div class="col-auto">
 						Mehr anzeigen
 					</div>
-                    <div class="col-auto ml-auto">
+                    <div class="col-auto ml-auto stats">
 			    		{% include 'fragments/like.html' with has_liked=argument.has_liked target=argument show_text=0 show_count=1 with_link=0 %}
                         <i class="material-icons">chat_bubble_outline</i> {{argument.comments.count}}
                         <br />

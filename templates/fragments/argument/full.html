@@ -1,14 +1,14 @@
 {% load avatar_tags %}
 {% load markdown %}
-<div id="{{argument.unique_id}}" class="argument container argument-{{argument.type}}">
+<div id="{{argument.unique_id}}" class="argument container-fluid argument-{{argument.type}}">
     <div class="row no-gutters">
     	{% if argument.icon %}
-			<div class="col-2 text-center">
+			<div class="col-3 col-md-2 text-center">
 				<i class="argument-type-icon material-icons">{{argument.icon}}</i> <br /> {% if argument.type == 'contra' %}KONTRA{% elif argument.type == "pro"%}PRO{% endif %}
 		    </div>
-	        <div class="col-10 align-self-center">
+	        <div class="col-9 col-md-10 align-self-center short">
         {% else %}
-        	<div class="col-12 align-self-center">
+        	<div class="col-12 col-md-12 align-self-center short">
         {% endif %}
 
 		    {{argument.title}}
@@ -22,9 +22,9 @@
     	{% endif %}
             <div class="row argument-meta no-gutters">
                 <div class="col-auto">
-					weniger anzeigen
+					<!--weniger anzeigen-->
 				</div>
-                <div class="col-auto ml-auto">
+                <div class="col-auto ml-auto stats">
 			    {% include 'fragments/like.html' with has_liked=has_liked target=argument show_text=0 show_count=1 with_link=0 %}
                     <i class="material-icons">chat_bubble_outline</i> {{argument.comments.count}}
                     <br />
@@ -46,13 +46,14 @@
             <div class="row no-gutters argument-actions">
 			    {% include 'fragments/like.html' with has_liked=has_liked target=argument show_text=1 show_count=0 with_link=1 %}
 			</div>
+			{% if comments %}
             <h6 class="text-muted classification">Kommentare</h6>
 			<div id="{{argument.unique_id}}-comment-list" class="argument-comment-list">
-                {% for comment in comments %} {% include 'fragments/comment/item.html' %} {% empty %}
-			    	<p><i>Bisher nicht kommentiert worden.</i></p>
+                {% for comment in comments %} {% include 'fragments/comment/item.html' %}
 			    {% endfor %}
 			</div>
-			<div id="{{argument.unique_id}}-new-comment" class="-new-comment">
+			{% endif %}
+			<div id="{{argument.unique_id}}-new-comment" class="new-comment">
 		    	<a data-ajax="true" href="/comment/{{argument.type}}/{{argument.id}}?fragment=%23{{argument.unique_id}}-new-comment"><i class="material-icons">chat_bubble_outline</i> Kommentieren</a>
 		    </div>
 		</div>

@@ -140,7 +140,7 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
                has_liked=False,
                comments=arg.comments.order_by('-created_at').all())
 
-    if request.user:
+    if request.user.is_authenticated:
         ctx['has_liked'] = arg.likes.filter(user=request.user).count() > 0
         if arg.user == request.user:
             ctx['has_commented'] = True

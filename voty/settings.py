@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('SECRET', '&v--b40hjwtfre(o^(4=-s!g7!x&za1u_=v#140ex
 
 DEBUG = not os.environ.get('VIRTUAL_HOST', False)
 
-ALLOWED_HOSTS = os.environ.get('VIRTUAL_HOST', 'localhost').split(',')
+ALLOWED_HOSTS = os.environ.get('VIRTUAL_HOST', 'screwdriver.fritz.box').split(',')
 
 
 # Application definition

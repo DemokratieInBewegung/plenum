@@ -3,8 +3,8 @@
 
 <div id="comment-{{comment.id}}" class="comment container">
 
-	<div class="row">
-		<div class="col-2 text-center author">
+	<div class="row no-gutters comment-head">
+		<div class="col-auto author">
 			{% avatar comment.user 55 class="avatar" %}
 		</div>
 		<div class="col-auto">
@@ -12,16 +12,16 @@
 			<span class="arg-meta">{{comment.created_at|timesince}}</span>
 		</div>
 
-		<div class="col-auto text-right">
+		<div class="col-auto ml-auto comment-likes">
 			{% include 'fragments/like.html' with has_liked=comment.has_liked target=comment show_text=0 show_count=1 with_link=0 %}
 			
 		</div>
 	</div>
 
-	<div class="comment-text">
+	<div class="row no-gutters comment-text">
 		{{comment.text|urlize|linebreaks}}
 	</div>
-	<div class="">
+	<div class="row no-gutters">
 		{% include 'fragments/like.html' with has_liked=comment.has_liked target=comment show_text=1 show_count=0 with_link=1 %}
 	</div>
 </div>

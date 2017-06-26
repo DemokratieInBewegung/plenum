@@ -1,32 +1,28 @@
 {% load avatar_tags %}
 {% load markdown %}
 <div id="{{argument.unique_id}}" class="argument container argument-{{argument.type}}">
-	<div class="row">
+    <div class="row no-gutters">
 		<div class="col-2 text-center">
 			<i class="argument-type-icon material-icons">{{argument.icon}}</i> <br /> {% if argument.type == 'contra' %}KONTRA{% elif argument.type == "pro"%}PRO{% endif %}
 	    </div>
-	    <div class="col-10">
+        <div class="col-10 align-self-center">
 		    {% if argument.title%}{{argument.title}}{% else %}{{argument.text|markdown}}{% endif %}
 		</div>
 	</div>
-	<div class="row">
-    	<div class="col-2">
-    	</div>
-
-    	<div class="col-10">
+    <div class="row no-gutters">
+    	<div class="col col-md-10 offset-md-2">
 			<a data-ajax="true" href="/initiative/{{argument.initiative.id}}/{{argument.type}}/{{argument.id}}?fragment={{argument.unique_id}}">
-	
-			    <div class="row argument-meta">
-					<div class="col-8">
+                <div class="row no-gutters argument-meta">
+                    <div class="col-auto">
 						Mehr anzeigen
 					</div>
-					<div class="col-4 text-right">
+                    <div class="col-auto ml-auto">
 			    		{% include 'fragments/like.html' with has_liked=argument.has_liked target=argument show_text=0 show_count=1 with_link=0 %}
-			    		<i class="material-icons">chat_bubble_outline</i> {{argument.comments.count}}<br />
+                        <i class="material-icons">chat_bubble_outline</i> {{argument.comments.count}}
+                        <br />
+                    </div>
 					</div>
-				</div>	
 			</a>
 		</div>
     </div>
-	
 </div>

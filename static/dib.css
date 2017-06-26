@@ -904,10 +904,10 @@ Argument base design
 }
 
 .argument .argument-meta {
-  margin: 2rem 0 1rem 0;
+  margin: .5rem 0 1rem 0;
   text-transform: uppercase;
   border-bottom: 2px solid #ddd;
-  padding: 0.5rem 0;
+  padding: 0.25rem 0;
 }
 
 .argument .avatar {
@@ -919,19 +919,25 @@ Argument base design
   display: block
 }
 
+.argument .author {
+  padding-right: 1rem;
+}
+
 .argument .arg-meta {
   color: #aaa;
   font-size: 0.85em;
 }
 
-.argument h3 {
-  font-size: 1rem;
-  text-transform: uppercase;
+.argument h6 {
   margin-top: 1.5rem;
 }
 
+.argument .argument-head {
+  margin-bottom: 1rem;
+}
+
 .argument .argument-text {
-  padding: 1em 0;
+  padding: 0 0 0 0;
 }
 
 .argument .argument-comment-list {
@@ -940,15 +946,15 @@ Argument base design
 }
 .argument .comment {
   border-top: 1px solid #eeee;
-  padding: 0.5rem 1rem;
+  padding: 1rem 1rem;
 }
 
 .argument .comment .comment-text {
-  margin: 1rem 0;
+  margin: 0 0 1rem 0;
 }
 
-#new-argument {
-  padding: 2rem 0;
+.argument .comment .comment-head {
+  margin: 0 0 1rem 0;
 }
 
 #new-argument .btn .material-icons {

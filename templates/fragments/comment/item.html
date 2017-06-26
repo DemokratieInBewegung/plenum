@@ -1,4 +1,19 @@
 {% load avatar_tags %} 
 {% load markdown %}
 
-<div id="comment-{{comment.id}}"><i class="material-icons">heart</i> {{comment.likes.count}} {{comment.text|urlize}} {{comment.created_at|timesince}} -- {% avatar comment.user 25 %}</div>
+<div id="comment-{{comment.id}}" class="comment container">
+
+	<div class="row">
+		<div class="col-2 text-center author">
+			{% avatar comment.user 55 class="avatar" %}
+		</div>
+		<div class="col-auto">
+			<span class="author-name">{{comment.user.get_full_name|default:comment.user.username}}</span>
+			<span class="arg-meta">{{comment.created_at|timesince}}</span>
+		</div>
+	</div>
+
+	<div class="comment-text">
+		{{comment.text|urlize|linebreaks}}
+	</div>
+</div>

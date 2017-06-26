@@ -904,10 +904,47 @@ Argument base design
 }
 
 .argument .argument-meta {
-  margin-top: 2rem;
+  margin: 2rem 0 1rem 0;
   text-transform: uppercase;
-  border-top: 2px solid #ddd;
+  border-bottom: 2px solid #ddd;
   padding: 0.5rem 0;
+}
+
+.argument .avatar {
+  border-radius: 50%;
+}
+
+.argument .author-name {
+  margin-top: 0.3em;
+  display: block
+}
+
+.argument .arg-meta {
+  color: #aaa;
+  font-size: 0.85em;
+}
+
+.argument h3 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  margin-top: 1.5rem;
+}
+
+.argument .argument-text {
+  padding: 1em 0;
+}
+
+.argument .argument-comment-list {
+  background: white;
+  margin-bottom: 1rem;
+}
+.argument .comment {
+  border-top: 1px solid #eeee;
+  padding: 0.5rem 1rem;
+}
+
+.argument .comment .comment-text {
+  margin: 1rem 0;
 }
 
 

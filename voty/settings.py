@@ -98,9 +98,8 @@ LOGGING = {
 
 
 AUTHENTICATION_BACKENDS = (
-    # Needed to login by username in Django admin, regardless of `allauth`
+    "account.auth_backends.EmailAuthenticationBackend",
     'django.contrib.auth.backends.ModelBackend',
-
 )
 
 ROOT_URLCONF = 'voty.urls'
@@ -172,6 +171,7 @@ USE_TZ = True
 
 NOTIFICATIONS_USE_JSONFIELD=True
 
+ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_OPEN_SIGNUP = False
 AVATAR_GRAVATAR_DEFAULT = 'retro'
 

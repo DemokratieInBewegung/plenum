@@ -11,6 +11,9 @@ from django.contrib import messages
 from django.conf import settings
 from datetime import datetime, timedelta
 from django import forms
+import account.forms
+import account.views
+
 
 from .models import InviteBatch
 from uuid import uuid4
@@ -110,3 +113,12 @@ def profile_edit(request):
         form = UserEditForm(instance=user)
 
     return render(request, 'initadmin/profile_edit.html', context=dict(form=form))
+
+
+class LoginEmailOrUsernameForm(account.forms.LoginEmailForm):
+
+    email = forms.CharField(label="Email oder Benutzername", max_length=50) 
+
+class LoginView(account.views.LoginView):
+
+    form_class = LoginEmailOrUsernameForm

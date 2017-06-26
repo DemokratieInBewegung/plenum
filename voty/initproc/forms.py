@@ -154,7 +154,14 @@ class NewArgumentForm(forms.Form):
 
 
 class NewProposalForm(forms.Form):
-    text = forms.CharField(required=True, max_length=1024, widget=forms.Textarea())
+    title = forms.CharField(required=True,
+                            label="Zusammenfassung (max. 140 Zeichen)",
+                            max_length=140,
+                            widget=forms.Textarea(attrs=dict(rows=3)))
+    text = forms.CharField(required=True,
+                           label="Ausführliche Darstellung (max. 1000 Zeichen)",
+                           max_length=1000,
+                           widget=forms.Textarea(attrs=dict(rows=10)))
 
 
 class NewCommentForm(forms.ModelForm):

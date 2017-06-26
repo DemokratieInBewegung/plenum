@@ -331,6 +331,7 @@ def new_proposal(request, form, initiative):
     data = form.cleaned_data
     proposal = Proposal(initiative=initiative,
                         user_id=request.user.id,
+                        title=data['title'],
                         text=data['text'])
 
     proposal.save()

@@ -323,6 +323,8 @@ class Argument(Response):
 
 class Proposal(Response):
     type = "proposal"
+    icon = False
+    title = models.CharField(max_length=140)
     text = models.CharField(max_length=1024)
 
 class Pro(Argument):

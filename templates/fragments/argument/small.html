@@ -2,15 +2,24 @@
 {% load markdown %}
 <div id="{{argument.unique_id}}" class="argument container argument-{{argument.type}}">
     <div class="row no-gutters">
-		<div class="col-2 text-center">
-			<i class="argument-type-icon material-icons">{{argument.icon}}</i> <br /> {% if argument.type == 'contra' %}KONTRA{% elif argument.type == "pro"%}PRO{% endif %}
-	    </div>
-        <div class="col-10 align-self-center">
-		    {% if argument.title%}{{argument.title}}{% else %}{{argument.text|markdown}}{% endif %}
+    	{% if argument.icon %}
+			<div class="col-2 text-center">
+				<i class="argument-type-icon material-icons">{{argument.icon}}</i> <br /> {% if argument.type == 'contra' %}KONTRA{% elif argument.type == "pro"%}PRO{% endif %}
+		    </div>
+	        <div class="col-10 align-self-center">
+        {% else %}
+        	<div class="col-12 align-self-center">
+        {% endif %}
+
+		    {{argument.title}}
 		</div>
 	</div>
     <div class="row no-gutters">
-    	<div class="col col-md-10 offset-md-2">
+	    	{% if argument.icon %}
+	    		<div class="col col-md-10 offset-md-2">
+	        {% else %}
+	    		<div class="col col-md-12">
+	    	{% endif %}
 			<a data-ajax="true" href="/initiative/{{argument.initiative.id}}/{{argument.type}}/{{argument.id}}?fragment={{argument.unique_id}}">
                 <div class="row no-gutters argument-meta">
                     <div class="col-auto">

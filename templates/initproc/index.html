@@ -2,6 +2,7 @@
 
 {% load fullurl %}
 {% load avatar_tags %}
+{% load guard %}
 
 {% block custom_header %}
 <div class="container-fluid init-index-header">
@@ -117,7 +118,17 @@
 
 						{% ifequal init.state 'i' %}
 						<span class="badge badge-arrivals">
+
+							{% if user.is_staff %}
+								{% guard should_moderate_initiative init %}
+								{% if should_moderate_initiative %}
+								💥💥 Bitte prüfen  💥💥
+								{% else %}
+								In Prüfung
+								{% endif %}
+							{% else %}
 							In Prüfung
+							{% endif %}
 						</span>
 						{% endifequal %}
 

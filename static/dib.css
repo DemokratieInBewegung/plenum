@@ -889,6 +889,27 @@ label.deactivated {
 }
 
 
+/*
+
+Argument base design
+
+*/
+.argument {
+  margin: 2rem 0;
+}
+
+.argument .argument-type-icon {
+  font-size: 3rem;
+  margin: 1rem auto;
+}
+
+.argument .argument-meta {
+  margin-top: 2rem;
+  text-transform: uppercase;
+  border-top: 2px solid #ddd;
+  padding: 0.5rem 0;
+}
+
 
 /*
 green: #47AB64;

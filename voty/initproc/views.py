@@ -138,13 +138,18 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
                has_commented=False,
                can_like=False,
                has_liked=False,
-               comments=arg.comments.order_by('-created_at').all())
+               comments=arg.comments.order_by('-created_at').prefetch_related('likes').all())
 
     if request.user.is_authenticated:
         ctx['has_liked'] = arg.likes.filter(user=request.user).count() > 0
         if arg.user == request.user:
             ctx['has_commented'] = True
             # users can self-like at the moment...
+
+        for cmt in ctx['comments']:
+            cmt.has_liked = cmt.likes.filter(user=request.user).count() > 0
+            if cmt.user == request.user:
+                ctx['has_commented'] = True
 
     return {'fragments': {
         '#{arg.type}-{arg.id}'.format(arg=arg): render_to_string('fragments/argument/full.html',
@@ -396,16 +401,19 @@ def like(request, target_type, target_id):
     model_cls = apps.get_model('initproc', target_type)
     model = get_object_or_404(model_cls, pk=target_id)
 
-    ctx = {"target": model, "show_text": False, "show_count": True, "has_liked": True}
+    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": True}
     for key in ['show_text', 'show_count']:
         if key in request.GET:
             ctx[key] = param_as_bool(request.GET[key])
 
     Like(target=model, user=request.user).save()
     return {'fragments': {
-        '#{}-like'.format(model.unique_id): render_to_string("fragments/like.html",
+        '.{}-like'.format(model.unique_id): render_to_string("fragments/like.html",
                                                              context=ctx,
                                                              request=request)
+    }, 'inner-fragments': {
+        '.{}-like-icon'.format(model.unique_id): 'favorite',
+        '.{}-like-count'.format(model.unique_id): model.likes.count(),
     }}
 
 
@@ -417,15 +425,18 @@ def unlike(request, target_type, target_id):
 
     model.likes.filter(user_id=request.user.id).delete()
 
-    ctx = {"target": model, "show_text": False, "show_count": True, "has_liked": False}
+    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": False}
     for key in ['show_text', 'show_count']:
         if key in request.GET:
             ctx[key] = param_as_bool(request.GET[key])
 
     return {'fragments': {
-        '#{}-like'.format(model.unique_id): render_to_string("fragments/like.html",
+        '.{}-like'.format(model.unique_id): render_to_string("fragments/like.html",
                                                              context=ctx,
                                                              request=request)
+    }, 'inner-fragments': {
+        '.{}-like-icon'.format(model.unique_id): 'favorite_border',
+        '.{}-like-count'.format(model.unique_id): model.likes.count(),
     }}
 
 

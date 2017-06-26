@@ -11,9 +11,17 @@
 			<span class="author-name">{{comment.user.get_full_name|default:comment.user.username}}</span>
 			<span class="arg-meta">{{comment.created_at|timesince}}</span>
 		</div>
+
+		<div class="col-auto text-right">
+			{% include 'fragments/like.html' with has_liked=comment.has_liked target=comment show_text=0 show_count=1 with_link=0 %}
+			
+		</div>
 	</div>
 
 	<div class="comment-text">
 		{{comment.text|urlize|linebreaks}}
+	</div>
+	<div class="">
+		{% include 'fragments/like.html' with has_liked=comment.has_liked target=comment show_text=1 show_count=0 with_link=1 %}
 	</div>
 </div>

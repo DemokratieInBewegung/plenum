@@ -247,18 +247,6 @@ class Supporter(models.Model):
 
 # Debating Models
 
-class Comment(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    changed_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User)
-
-    target_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    target_id = models.IntegerField()
-    target = GenericForeignKey('target_type', 'target_id')
-
-    text = models.CharField(max_length=500)
-
-
 class Like(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
@@ -281,6 +269,23 @@ class Likeable(models.Model):
     likes = GenericRelation(Like,
                             content_type_field='target_type',
                             object_id_field='target_id')
+
+
+class Comment(Likeable):
+    type = "comment"
+    created_at = models.DateTimeField(auto_now_add=True)
+    changed_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User)
+
+    target_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    target_id = models.IntegerField()
+    target = GenericForeignKey('target_type', 'target_id')
+
+    text = models.CharField(max_length=500)
+
+    @property
+    def unique_id(self):
+        return "{}-{}".format(self.type, self.id)
 
 
 class Commentable(models.Model):

@@ -21,7 +21,8 @@
 						Mehr anzeigen
 					</div>
 					<div class="col-4 text-right">
-			    		<i class="material-icons">{% if argument.has_liked %}favorite{% else %}favorite_border{% endif %}</i> {{argument.likes.count}} <i class="material-icons">chat_bubble_outline</i> {{argument.comments.count}}<br />
+			    		{% include 'fragments/like.html' with has_liked=argument.has_liked target=argument show_text=0 show_count=1 with_link=0 %}
+			    		<i class="material-icons">chat_bubble_outline</i> {{argument.comments.count}}<br />
 					</div>
 				</div>	
 			</a>

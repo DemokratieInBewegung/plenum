@@ -947,6 +947,24 @@ Argument base design
   margin: 1rem 0;
 }
 
+#new-argument {
+  padding: 2rem 0;
+}
+
+#new-argument .btn .material-icons {
+  display: block;
+  font-size: 8rem;
+  line-height: 10rem;
+}
+
+#new-argument form .material-icons {
+  display: block;
+  margin-top: 2rem;
+  line-height: 5rem;
+  font-size: 4.5rem;
+}
+
+
 
 /*
 green: #47AB64;

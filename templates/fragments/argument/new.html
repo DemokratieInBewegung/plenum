@@ -1,0 +1,38 @@
+{% load bootstrap %}
+
+<div>
+<form method="POST" {%if ajax%}data-ajax-submit="true"{%endif%} action="{{request.path}}{% if fragment %}?fragment={{fragment|urlencode}}{% endif %}">
+
+
+<div class="row">
+	<div class="col-2"></div>
+	<div class="col-auto">
+		{% if request.GET.type == "👍"%}
+			<h4>Neues Pro-Argument hinzufügen</h4>
+		{% else %}
+			<h4>Neues Kontra-Argument hinzufügen</h4>
+		{% endif %}
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-2 text-center">
+		{% if request.GET.type == "👍"%}
+			<i class="material-icons">thumb_up</i> Pro
+		{% else %}
+			<i class="material-icons">thumb_down</i> Kontra
+		{% endif %}
+	</div>
+	<div class="col-auto">
+		
+	    {% csrf_token %}
+		{{form|bootstrap}}
+		<div class="text-right">
+			<button type="submit" class="btn {{submit_klasses}}">Veröffentlichen</button>
+		</div>
+	</div>
+</div>
+
+</form>
+{{form.media}}
+</div>

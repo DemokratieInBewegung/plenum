@@ -300,7 +300,7 @@ def rm_support(request, initiative):
 @ajax
 @login_required
 @can_access_initiative(STATES.DISCUSSION) # must be in discussion
-@simple_form_verifier(NewArgumentForm)
+@simple_form_verifier(NewArgumentForm, template="fragments/argument/new.html")
 def new_argument(request, form, initiative):
     data = form.cleaned_data
     argCls = Pro if data['type'] == "👍" else Contra

@@ -28,6 +28,13 @@ DEFAULT_FILTERS = [
     STATES.VOTING]
 
 
+
+def param_as_bool(param):
+    try:
+        return bool(int(param))
+    except ValueError:
+        return param.lower() in ['true', 'y', 'yes', '✔', '✔️', 'j', 'ja' 'yay', 'yop', 'yope']
+
 #
 # ____    ____  __   ___________    __    ____   _______.
 # \   \  /   / |  | |   ____\   \  /  \  /   /  /       |
@@ -389,10 +396,15 @@ def like(request, target_type, target_id):
     model_cls = apps.get_model('initproc', target_type)
     model = get_object_or_404(model_cls, pk=target_id)
 
+    ctx = {"target": model, "show_text": False, "show_count": True, "has_liked": True}
+    for key in ['show_text', 'show_count']:
+        if key in request.GET:
+            ctx[key] = param_as_bool(request.GET[key])
+
     Like(target=model, user=request.user).save()
     return {'fragments': {
         '#{}-like'.format(model.unique_id): render_to_string("fragments/like.html",
-                                                             context=dict(has_liked=True, target=model),
+                                                             context=ctx,
                                                              request=request)
     }}
 
@@ -405,9 +417,14 @@ def unlike(request, target_type, target_id):
 
     model.likes.filter(user_id=request.user.id).delete()
 
+    ctx = {"target": model, "show_text": False, "show_count": True, "has_liked": False}
+    for key in ['show_text', 'show_count']:
+        if key in request.GET:
+            ctx[key] = param_as_bool(request.GET[key])
+
     return {'fragments': {
         '#{}-like'.format(model.unique_id): render_to_string("fragments/like.html",
-                                                             context=dict(has_liked=False, target=model),
+                                                             context=ctx,
                                                              request=request)
     }}
 

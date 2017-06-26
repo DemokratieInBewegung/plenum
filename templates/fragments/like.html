@@ -1,8 +1,8 @@
 <span id="{{target.unique_id}}-like">
 {% if has_liked %}
-<a data-ajax="true" href="/unlike/{{target.type}}/{{target.id}}"><i class="material-icons">favorite</i></a>
+<a data-ajax="true" href="/unlike/{{target.type}}/{{target.id}}?show_text={{show_text}}&show_count={{show_count}}" title="Zum Zurücknehmen klicken"><i class="material-icons">favorite</i>{% if show_text %} Dir gefällt das{% endif %}</a>
 {% else %}
 <a data-ajax="true"
-   href="/like/{{target.type}}/{{target.id}}"><i class="material-icons">favorite_border</i></a>
+   href="/like/{{target.type}}/{{target.id}}?show_text={{show_text}}&show_count={{show_count}}"><i class="material-icons">favorite_border</i>{% if show_text %} Gefällt mir{% endif %}</a>
 {% endif %}
-{{target.likes.count}}</span>
+{% if show_count %}{{target.likes.count}}{% endif %}</span>

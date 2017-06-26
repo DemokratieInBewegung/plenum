@@ -51,6 +51,13 @@ function update_notifications(data) {
           }
           break;
 
+        case "init_new_arg":
+            message = `<a href="/initiative/${item.target_object_id}">
+                <i class="material-icons">comment</i>${item.actor} hat ein neues Argument zu "${item.target}"" veröffentlicht.
+            </a>`
+          break;
+
+
         default:
           if (typeof item.actor !== 'undefined'){
             message = item.actor;

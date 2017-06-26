@@ -17,6 +17,8 @@ class NOTIFICATIONS:
         WENT_TO_DISCUSSION = "init_discussion"
         WENT_TO_VOTE = 'init_vote'
 
+        NEW_ARGUMENT = 'init_new_arg'
+
 
 class STATES:
     """

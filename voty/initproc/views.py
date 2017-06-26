@@ -312,6 +312,8 @@ def new_argument(request, form, initiative):
 
     arg.save()
 
+    initiative.notify_followers(NOTIFICATIONS.INITIATIVE.NEW_ARGUMENT, subject=request.user)
+
     return {
         'inner-fragments': {'#new-argument': "<strong>Danke für dein Argument</strong>"},
         'append-fragments': {'#argument-list': render_to_string("fragments/argument/small.html",

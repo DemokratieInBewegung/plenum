@@ -330,11 +330,16 @@ class Pro(Argument):
     css_class = "success"
     icon = "thumb_up"
 
+    def __str__(self):
+        return "Pro: {}".format(self.title)
+
 class Contra(Argument):
     type = "contra"
     css_class = "danger"
     icon = "thumb_down"
 
+    def __str__(self):
+        return "Kontra: {}".format(self.title)
 
 class Moderation(Response):
     type = "moderation"

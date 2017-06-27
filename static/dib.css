@@ -924,6 +924,7 @@ Argument base design
 .argument .short {
   font-size: 1.25rem;
   line-height: 1.875rem;
+  overflow: hidden; /* prevent argument content from overflowing */
 }
 
 .argument .argument-type-icon {
@@ -968,6 +969,7 @@ Argument base design
   padding: 0;
   font-size: 1.125rem;
   line-height: 1.75rem;
+  overflow: hidden; /* prevent argument content from overflowing */
 }
 
 .argument .argument-comment-list {
@@ -986,7 +988,11 @@ Argument base design
 .argument .comment .comment-text {
   margin: 0;
   font-size: 1rem;
-  line-height: 1.625rem;
+  line-height: 1.625rem; 
+}
+
+.argument .comment .comment-text * {
+  overflow: hidden; /* prevent comment content from overflowing */
 }
 
 .argument .comment .comment-head {

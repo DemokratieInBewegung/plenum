@@ -165,9 +165,9 @@ class NewProposalForm(forms.Form):
 
 
 class NewCommentForm(forms.ModelForm):
-    text = forms.CharField(required=True, label="Dein Kommentar",
+    text = forms.CharField(required=True, label="Dein Kommentar (max. 500 Zeichen)",
                            help_text="Absätze sowie URLs werden passend formatiert",
-                           max_length=500, widget=forms.Textarea())
+                           max_length=500, widget=forms.Textarea(attrs={'rows':10, 'placeholder':'Bitte beziehe Dich in deinem Kommentar auf das obige Argument.'}))
 
     class Meta:
         model = Comment

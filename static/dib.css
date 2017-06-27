@@ -1130,3 +1130,16 @@ orange: #D2892B;
     max-width: 100%;
   }
 }
+
+textarea#id_title::-webkit-input-placeholder, textarea#id_text::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  opacity: .7;
+}
+textarea#id_title::-moz-placeholder, textarea#id_text::-moz-placeholder { /* Firefox 19+ */
+  opacity: .7;
+}
+textarea#id_title:-ms-input-placeholder, textarea#id_text:-ms-input-placeholder { /* IE 10+ */
+  opacity: .7;
+}
+textarea#id_title:-moz-placeholder, textarea#id_text:-moz-placeholder { /* Firefox 18- */
+  opacity: .7;
+}

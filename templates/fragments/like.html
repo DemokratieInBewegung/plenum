@@ -1,22 +1,27 @@
 <span {% if with_link or show_text %} class="{{target.unique_id}}-like" {% endif %}>
-	{% if with_link %}
-		{% if has_liked %}
-			<a data-ajax="true"
-				href="/unlike/{{target.type}}/{{target.id}}?show_text={{show_text}}&show_count={{show_count}}" title="Zum Zurücknehmen klicken">
-		{% else %}
-			<a data-ajax="true"
-		   		href="/like/{{target.type}}/{{target.id}}?show_text={{show_text}}&show_count={{show_count}}">
+	{% if author == user %}
+		{% if show_count %}
+			<i class="material-icons {{target.unique_id}}-like-icon">favorite_border</i>
+		    <span class="{{target.unique_id}}-like-count">{{target.likes.count}}</span>
 		{% endif %}
-	{% endif %}
-	{% if has_liked %}
-		<i class="material-icons {{target.unique_id}}-like-icon">favorite</i>{% if show_text %} Dir gefällt das{% endif %}
 	{% else %}
-		<i class="material-icons {{target.unique_id}}-like-icon">favorite_border</i>{% if show_text %} Gefällt mir{% endif %}
+		{% if with_link %}
+			{% if has_liked %}
+				<a data-ajax="true"
+					href="/unlike/{{target.type}}/{{target.id}}?show_text={{show_text}}&show_count={{show_count}}" title="Zum Zurücknehmen klicken">
+			{% else %}
+				<a data-ajax="true"
+					href="/like/{{target.type}}/{{target.id}}?show_text={{show_text}}&show_count={{show_count}}">
+			{% endif %}
+		{% endif %}
+		{% if has_liked %}
+			<i class="material-icons {{target.unique_id}}-like-icon">favorite</i>{% if show_text %} Dir gefällt das{% endif %}
+		{% else %}
+			<i class="material-icons {{target.unique_id}}-like-icon">favorite_border</i>{% if show_text %} Gefällt mir{% endif %}
+		{% endif %}
+		{% if show_count %}
+			<span class="{{target.unique_id}}-like-count">{{target.likes.count}}</span>
+		{% endif %}
+		{% if with_link %}</a>{% endif %}
 	{% endif %}
-
-	{% if show_count %}
-		<span class="{{target.unique_id}}-like-count">{{target.likes.count}}</span>
-	{% endif %}
-
-	{% if with_link %}</a>{% endif %}
 </span>

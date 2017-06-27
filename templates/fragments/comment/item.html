@@ -13,7 +13,7 @@
 		</div>
 
 		<div class="col-auto ml-auto comment-likes">
-			{% include 'fragments/like.html' with has_liked=comment.has_liked target=comment show_text=0 show_count=1 with_link=0 %}
+			{% include 'fragments/like.html' with author=comment.user has_liked=comment.has_liked target=comment show_text=0 show_count=1 with_link=0 %}
 			
 		</div>
 	</div>
@@ -22,6 +22,6 @@
 		{{comment.text|urlize|linebreaks}}
 	</div>
 	<div class="row no-gutters">
-		{% include 'fragments/like.html' with has_liked=comment.has_liked target=comment show_text=1 show_count=0 with_link=1 %}
+		{% include 'fragments/like.html' with author=comment.user has_liked=comment.has_liked target=comment show_text=1 show_count=0 with_link=1 %}
 	</div>
 </div>

@@ -154,9 +154,11 @@
                 {% endif %}
                 {% endifequal %}
                 {% ifequal initiative.state 'd' %}
-                <span class="badge badge-discussion">
-                    In Diskussion
-                </span> {% endifequal %} {% ifequal initiative.state 'e' %}
+                <p>
+                    Diese Initiative befindet sich <a href="#debate">in Diskussion</a>.
+                </p>
+                {% endifequal %}
+                {% ifequal initiative.state 'e' %}
                 <span class="badge badge-edits">
                     Finale Überarbeitung
                 </span> {% endifequal %} {% ifequal initiative.state 'v' %}
@@ -271,7 +273,6 @@
         <div class="row">
             <div class="col-12">
                 <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
-                {% ifequal initiative.state 's' %}
                 <span class="meta-content current-supporters">
                     <strong>
                         {{initiative.absolute_supporters|default:0}} 
@@ -327,7 +328,22 @@
                     </div>
                 </form>
                 {% endif %}
-                {% endifequal %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endifequal %}
+{% ifequal initiative.state 'd' %}
+<div id="cta" class="container-fluid cta">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
+                <p>Diese Initiative befindet sich in Diskussion.</p>
+                {% csrf_token %}
+                <a href="#debate-proposals" class="btn bg-discussion">
+                    Jetzt diskutieren
+                </a>
             </div>
         </div>
     </div>
@@ -387,7 +403,7 @@
 
 {% if initiative.show_debate %}
 
-<div class="container-fluid cta">
+<div id="debate-proposals" class="container-fluid cta">
     <div class="container">
         <div class="row no-gutters">
             <div class="col-12">

@@ -673,10 +673,16 @@ header .alert {
   color: rgba(255, 255, 255, 1);
 }
 
-.bg-support {
+.bg-support, .bg-support:hover, .bg-support:focus, .bg-support:visited{
   color: rgba(255, 255, 255, 1);
   background-color: #F0AD4E;
   border-color: #F0AD4E;
+}
+
+.bg-discussion, .bg-discussion:hover, .bg-discussion:focus, .bg-discussion:visited {
+  color: rgba(255, 255, 255, 1);
+  background-color: #01549B;
+  border-color: #01549B;
 }
 
 .support {

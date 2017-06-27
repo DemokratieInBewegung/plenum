@@ -340,8 +340,7 @@
             <div class="col-12">
                 <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
                 <p>Diese Initiative befindet sich in Diskussion.</p>
-                {% csrf_token %}
-                <a href="#debate-proposals" class="btn bg-discussion">
+                <a href="#discuss" class="btn bg-discussion">
                     Jetzt diskutieren
                 </a>
             </div>
@@ -403,7 +402,7 @@
 
 {% if initiative.show_debate %}
 
-<div id="debate-proposals" class="container-fluid cta">
+<div id="discuss" class="container-fluid cta">
     <div class="container">
         <div class="row no-gutters">
             <div class="col-12">

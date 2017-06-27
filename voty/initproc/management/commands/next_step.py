@@ -17,7 +17,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         
         for i in Initiative.objects.filter(state__in=AUTOMATIC_STAGES):
-            if i.ready_for_next_stage and i.end_of_this_phase < date.today():
+            if i.ready_for_next_stage and i.end_of_this_phase <= date.today():
                 if i.state == STATES.SEEKING_SUPPORT:
                     i.state = STATES.DISCUSSION
                     i.went_to_discussion_at = datetime.now()

@@ -584,22 +584,22 @@
 
 {% endblock %} {% block body-javascript %} {{ block.super }}
 <script type="text/javascript">
-$('.argument .short').click(function(item) {
-    var $this = $(this);
-    $this.parent().find('.long').show();
-    $this.hide();
-});
-$('.argument .long .content').click(function(item) {
-    var $this = $(this);
-    $this.parent().parent().find('.short').show();
-    $this.parent().hide();
-});
+// $('.argument .short').click(function(item) {
+//     var $this = $(this);
+//     $this.parent().find('.long').show();
+//     $this.hide();
+// });
+// $('.argument .long .content').click(function(item) {
+//     var $this = $(this);
+//     $this.parent().parent().find('.short').show();
+//     $this.parent().hide();
+// });
 
-$(function() {
-    if (document.location.hash) {
-        let id = document.location.hash.slice(1);
-        $('#' + id + ' .short').click();
-    }
-});
+// $(function() {
+//     if (document.location.hash) {
+//         let id = document.location.hash.slice(1);
+//         $('#' + id + ' .short').click();
+//     }
+// });
 </script>
 {% endblock %}

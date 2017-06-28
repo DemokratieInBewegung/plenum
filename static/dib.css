@@ -596,14 +596,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 400;
 }
 
-h6 {
-  font-weight: 500;
-}
-
-h6.classification {
-  font-weight: 400;
-}
-
 h1 {
   margin-bottom: 0;
 }
@@ -616,10 +608,37 @@ h2 {
   padding-bottom: 1rem;
 }
 
+h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  margin-bottom: 0;
+  padding-top: 1.5rem;
+  padding-bottom: .5rem;
+}
+
+h6 {
+  font-weight: 500;
+}
+
+h6.classification {
+  font-weight: 400;
+}
+
 #filters h6 {
   font-weight: 400;
   line-height: 150%;
   margin: 0.25rem 0.5rem 0 0;
+}
+
+.help p, .help ul, .help ol {
+  font-family: 'Merriweather', serif;
+  font-weight: 300;
+  font-size: 1.125rem;
+  line-height: 2.25rem;
+}
+
+.help .btn {
+  margin: 0 0 1rem 0;
 }
 
 header .alert {

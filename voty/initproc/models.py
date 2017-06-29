@@ -176,15 +176,15 @@ class Initiative(models.Model):
 
     @property
     def first_supporters(self):
-        return self.supporting.filter(first=True)
+        return self.supporting.filter(first=True).order_by("-created_at")
 
     @property
     def public_supporters(self):
-        return self.supporting.filter(public=True, first=False, initiator=False)
+        return self.supporting.filter(public=True, first=False, initiator=False).order_by("-created_at")
 
     @property
     def initiators(self):
-        return self.supporting.filter(initiator=True)
+        return self.supporting.filter(initiator=True).order_by("created_at")
 
     @property
     def custom_cls(self):

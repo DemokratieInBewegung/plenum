@@ -3,6 +3,7 @@ from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied, ValidationError
+from django.utils.decorators import available_attrs
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.apps import apps
@@ -12,6 +13,8 @@ from django import forms
 from datetime import datetime
 from django_ajax.decorators import ajax
 from pinax.notifications.models import send as notify
+
+from functools import wraps
 
 from .globals import NOTIFICATIONS, STATES, INITIATORS_COUNT
 from .guard import can_access_initiative
@@ -34,6 +37,19 @@ def param_as_bool(param):
         return bool(int(param))
     except ValueError:
         return param.lower() in ['true', 'y', 'yes', '✔', '✔️', 'j', 'ja' 'yay', 'yop', 'yope']
+
+
+def non_ajax_redir(*redir_args, **redir_kwargs):
+    def decorator(func):
+        @wraps(func, assigned=available_attrs(func))
+        def inner(request, *args, **kwargs):
+            if not request.is_ajax():
+                # we redirect you 
+                return redirect(*redir_args, **redir_kwargs)
+            return func(request, *args, **kwargs)
+
+        return inner
+    return decorator
 
 #
 # ____    ____  __   ___________    __    ____   _______.
@@ -305,7 +321,7 @@ def rm_support(request, initiative):
     return redirect('/')
 
 
-
+@non_ajax_redir('/')
 @ajax
 @login_required
 @can_access_initiative(STATES.DISCUSSION) # must be in discussion
@@ -332,6 +348,7 @@ def new_argument(request, form, initiative):
 
 
 
+@non_ajax_redir('/')
 @ajax
 @login_required
 @can_access_initiative(STATES.DISCUSSION) # must be in discussion
@@ -386,6 +403,7 @@ def moderate(request, form, initiative):
 
 
 
+@non_ajax_redir('/')
 @ajax
 @login_required
 @simple_form_verifier(NewCommentForm)
@@ -407,6 +425,7 @@ def comment(request, form, target_type, target_id):
     }
 
 
+@non_ajax_redir('/')
 @ajax
 @login_required
 def like(request, target_type, target_id):
@@ -429,6 +448,7 @@ def like(request, target_type, target_id):
     }}
 
 
+@non_ajax_redir('/')
 @ajax
 @login_required
 def unlike(request, target_type, target_id):

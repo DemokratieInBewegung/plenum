@@ -420,10 +420,14 @@ def moderate(request, form, initiative):
 @login_required
 @simple_form_verifier(NewCommentForm)
 def comment(request, form, target_type, target_id):
-    data = form.cleaned_data
     model_cls = apps.get_model('initproc', target_type)
     model = get_object_or_404(model_cls, pk=target_id)
 
+    if not request.guard.can_comment(model):
+        raise PermissionDenied()
+
+
+    data = form.cleaned_data
     cmt = Comment(target=model, user=request.user, **data)
     cmt.save()
 

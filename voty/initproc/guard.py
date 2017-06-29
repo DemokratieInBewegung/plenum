@@ -52,6 +52,9 @@ class Guard:
     def __init__(self, user, request=None):
         self.user = user
         self.request = request
+        # REASON IS NOT THREAD SAFE, but works good enough for us
+        # for now.
+        self.reason = None
 
     def make_intiatives_query(self, filters):
         if not self.user.is_authenticated:
@@ -64,6 +67,19 @@ class Guard:
                     id__in=Supporter.objects.filter(Q(first=True) | Q(initiator=True), user_id=self.user.id).values('initiative_id')))
 
         return Initiative.objects.filter(state__in=filters)
+
+    def can_comment(self, obj=None):
+        self.reason = None
+        latest_comment = obj.comments.order_by("-created_at").first()
+
+        if not latest_comment and obj.user == self.user:
+            self.reason = "Du darfst erst kommentieren, wenn jemand anders deinen Beitrag kommentiert hat"
+            return False
+        elif latest_comment and latest_comment.user == self.user:
+            self.reason = "Du darfst nicht zweimal aufeinander kommentieren"
+            return False
+
+        return True
 
 
     @_compound_action

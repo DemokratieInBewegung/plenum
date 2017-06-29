@@ -73,10 +73,10 @@ class Guard:
         latest_comment = obj.comments.order_by("-created_at").first()
 
         if not latest_comment and obj.user == self.user:
-            self.reason = "Du darfst erst kommentieren, wenn jemand anders deinen Beitrag kommentiert hat"
+            self.reason = "Du darfst erst kommentieren, wenn jemand anders deinen Beitrag kommentiert hat."
             return False
         elif latest_comment and latest_comment.user == self.user:
-            self.reason = "Du darfst nicht zweimal aufeinander kommentieren"
+            self.reason = "Du darfst nicht zweimal aufeinander kommentieren."
             return False
 
         return True
@@ -202,7 +202,12 @@ class Guard:
         return init.state == STATES.SEEKING_SUPPORT and self.user.is_authenticated
 
     def _can_moderate_initiative(self, init):
-        return init.state == STATES.INCOMING and self.user.is_staff
+        if init.state == STATES.INCOMING and self.user.is_staff:
+            if init.supporting.filter(user=self.user, initiator=True):
+                self.reason = "Als Mitinitator/in darfst du nicht mit moderieren."
+                return False
+            return True
+        return False
 
 
 def add_guard(get_response):

@@ -116,10 +116,11 @@
                 <p>
                     Diese Initiative <strong class="badge-prepare">wurde noch nicht veröffentlicht</strong>.
                 </p>
-                
-                {% if request.guard.can_moderate %}
-                    {% include 'fragments/moderation/index.html' %}
-                {% endif %}
+                    {% if request.guard.can_moderate %}
+                        {% include 'fragments/moderation/index.html' %}
+                    {% elif initiative.state == 'i' and request.user.is_staff %}
+                        <div class="alert alert-info">{{request.guard.reason}}</div>
+                    {% endif %}
                 {% endif %}
                 {% ifequal initiative.state 'm' %}
                 <p>

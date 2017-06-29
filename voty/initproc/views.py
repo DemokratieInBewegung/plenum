@@ -95,6 +95,9 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
 
         return qs
 
+    def get_result_label(self, item):
+        return render_to_string('fragments/autocomplete/user_item.html',
+                                context=dict(user=item))
 
 @login_required
 def new(request):

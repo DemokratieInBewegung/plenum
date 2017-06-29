@@ -104,7 +104,8 @@ class InviteUsersForm(forms.Form):
         required=False,
         widget=autocomplete.ModelSelect2Multiple(
                     url='user_autocomplete',
-                    attrs={"data-placeholder": "Zum Suchen tippen"}))
+                    attrs={"data-placeholder": "Zum Suchen tippen",
+                           'data-html': "True"}))
 
 
 class InitiativeForm(forms.ModelForm):

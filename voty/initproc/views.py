@@ -91,7 +91,7 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
         qs = get_user_model().objects.all()
 
         if self.q:
-            qs = qs.filter(Q(first_name__startswith=self.q) | Q(last_name__startswith=self.q) | Q(username__startswith=self.q))
+            qs = qs.filter(Q(first_name__icontains=self.q) | Q(last_name__icontains=self.q) | Q(username__icontains=self.q))
 
         return qs
 

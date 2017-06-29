@@ -60,6 +60,8 @@ class Initiative(models.Model):
     went_to_voting_at = models.DateField(blank=True, null=True)
     was_closed_at = models.DateField(blank=True, null=True)
 
+    variant_of = models.ForeignKey('self', blank=True, null=True, default=None, related_name="variants")
+
     supporters = models.ManyToManyField(User, through="Supporter")
 
     @property

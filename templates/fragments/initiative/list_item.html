@@ -1,0 +1,113 @@
+{% load avatar_tags %}
+{% load guard %}
+{% load fullurl %}
+<div class="card">
+	<div class="card-header">
+		<div class="container-fluid">
+			 <div class="row no-gutters">
+			 	<div class="col-auto align-self-center">
+					{% ifequal initiative.state 'p' %}
+					<span class="badge badge-prepare">
+						In Vorbereitung
+					</span>
+					{% endifequal %}
+
+					{% ifequal initiative.state 'i' %}
+					<span class="badge badge-arrivals">
+
+						{% if user.is_staff %}
+							{% guard should_moderate_initiative initiative %}
+							{% if should_moderate_initiative %}
+							💥💥 Bitte prüfen  💥💥
+							{% else %}
+							In Prüfung
+							{% endif %}
+						{% else %}
+						In Prüfung
+						{% endif %}
+					</span>
+					{% endifequal %}
+
+					{% ifequal initiative.state 's' %}
+					<span class="badge badge-support">
+						Sucht Unterstützung
+					</span>
+					{% endifequal %}
+
+					{% ifequal initiative.state 'd' %}
+					<span class="badge badge-discussion">
+						In Diskussion
+					</span>
+					{% endifequal %}
+
+					{% ifequal initiative.state 'e' %}
+					<span class="badge badge-edits">
+						Finale Überarbeitung
+					</span>
+					{% endifequal %}
+
+					{% ifequal initiative.state 'v' %}
+					<span class="badge badge-vote">
+						Abstimmung
+					</span>
+					{% endifequal %}
+
+					{% ifequal initiative.state 'a' %}
+					<span class="badge badge-accepted">
+						Angenommen
+					</span>
+					{% endifequal %}
+
+					{% ifequal initiative.state 'r' %}
+					<span class="badge badge-rejected">
+						Abgelehnt
+					</span>
+					{% endifequal %}
+
+					{% guard is_supporting initiative %}
+					{% if is_supporting %}
+						<span class="material-icons">check</span> Du unterstützt diese Initiative
+					{% endif %}
+				</div>
+				{% if initiative.state != 'i' and initiative.state != 'a' and initiative.state != 'r' and initiative.state != 'p' %}
+				<div class="col text-right align-self-center">
+					<span class="text-muted align-middle">
+						Noch {{initiative.end_of_this_phase | timeuntil}}
+					</span>
+				</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	<div class="card-block">
+    	<h4 class="card-title init-title">
+    		<a href="{% fullurl 'initiative_item' init_id=initiative.id slug=initiative.slug %}">
+				{{initiative.title}}
+			</a>
+		</h4>
+    	<p class="card-text">
+    		{{initiative.subtitle}}
+    	</p>
+    	<a href="{% fullurl 'initiative_item' init_id=initiative.id slug=initiative.slug %}" class="go-to-intiative"><i class="material-icons chevron-right">chevron_right</i>zur Initiative</a>
+  	</div>
+  	<div class="card-footer">
+  		<div class="container-fluid">
+			 <div class="row no-gutters">
+			 	{% if initiative.state != 'i' and initiative.state != 'p' %}
+			 	<div class="col text-muted align-self-center">
+			 		Veröffentlicht am {{initiative.went_public_at}}
+			 	</div>
+			 	{% else %}
+			 	<div class="col text-muted align-self-center">
+			 		Noch nicht veröffentlicht
+			 	</div>
+			 	{% endif %}
+			 	<div class="col text-right avatar align-self-center">
+			 		{% for ini in initiative.initiators %}
+			          {% avatar ini.user 40 %}
+			        {% endfor %}
+			 	</div>
+			</div>
+		</div>
+  	</div>
+</div>

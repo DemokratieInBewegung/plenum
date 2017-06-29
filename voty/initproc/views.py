@@ -156,8 +156,12 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
             if cmt.user == request.user:
                 ctx['has_commented'] = True
 
+
+    template = 'fragments/argument/{}.html'.format('full' if param_as_bool(request.GET.get('full', 0)) else 'small')
+
+
     return {'fragments': {
-        '#{arg.type}-{arg.id}'.format(arg=arg): render_to_string('fragments/argument/full.html',
+        '#{arg.type}-{arg.id}'.format(arg=arg): render_to_string(template,
                                                                  context=ctx, request=request)
         }}
 

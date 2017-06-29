@@ -331,6 +331,10 @@ em {
   border-radius: 50%;
 }
 
+img.avatar {
+  border-radius: 50%;
+}
+
 .initiative-single {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;

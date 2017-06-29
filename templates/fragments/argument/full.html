@@ -68,7 +68,7 @@
 			    	<a data-ajax="true" href="/comment/{{argument.type}}/{{argument.id}}?fragment=%23{{argument.unique_id}}-new-comment"><i class="material-icons">chat_bubble_outline</i> Kommentieren</a>
 			    </div>
 		    {% else %}
-		    	<div class="alert alert-info">{{request.guard.reason}}</div>
+		    	<button class="new-comment" disabled title="{{request.guard.reason}}"> <i class="material-icons">chat_bubble_outline</i> Kommentieren</button>
 		    {% endif %}
 		</div>
     </div>

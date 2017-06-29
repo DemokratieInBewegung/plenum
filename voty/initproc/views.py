@@ -52,7 +52,12 @@ def ueber(request):
 
 
 def index(request):
-    filters = [f for f in request.GET.getlist("f")] or DEFAULT_FILTERS
+    filters = [f for f in request.GET.getlist("f")]
+    if filters:
+        request.session['init_filters'] = filters
+    else:
+        filters = request.session.get('init_filters', DEFAULT_FILTERS)
+
     inits = request.guard.make_intiatives_query(filters)
     count_inbox = request.guard.make_intiatives_query(['i']).count()
 

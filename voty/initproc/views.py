@@ -257,6 +257,7 @@ def submit_to_committee(request, initiative):
 @simple_form_verifier(InviteUsersForm, submit_title="Einladen")
 def invite(request, form, initiative, invite_type):
     for user in form.cleaned_data['user']:
+        if user == request.user: continue # we skip ourselves
         if invite_type == 'initiators' and \
             initiative.supporting.filter(initiator=True).count() >= INITIATORS_COUNT:
             break
@@ -264,14 +265,22 @@ def invite(request, form, initiative, invite_type):
         try:
             supporting = initiative.supporting.get(user_id=user.id)
         except Supporter.DoesNotExist:
-            supporting = Supporter(user=user)
-            supporting.initiative = initiative
+            supporting = Supporter(user=user, initiative=initiative, ack=False)
 
-        if invite_type == 'initiators':
-            supporting.initiator = True
-        elif invite_type == 'supporters':
-            supporting.first = True
-        supporting.ack = False
+            if invite_type == 'initiators':
+                supporting.initiator = True
+            elif invite_type == 'supporters':
+                supporting.first = True
+        else:
+            if invite_type == 'initiators' and not supporting.initiator:
+                # we only allow promoting of supporters to initiators
+                # not downwards.
+                supporting.initiator = True
+                supporting.first = False
+                supporting.ack = False
+            else:
+                continue
+        
         supporting.save()
 
         notify([user], NOTIFICATIONS.INVITE.SEND, {"target": initiative}, sender=request.user)

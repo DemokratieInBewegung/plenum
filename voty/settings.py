@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'mathfilters',
     'mailer',
     'pinax.notifications',
+    'pinax.messages',
     'notifications',
     'bootstrapform',
     'fullurl',

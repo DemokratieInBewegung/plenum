@@ -2,6 +2,7 @@ from django import forms
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.contrib.auth import get_user_model
+from pinax.messages.forms import NewMessageFormMultiple
 
 from dal import autocomplete
 from uuid import uuid4
@@ -96,6 +97,18 @@ class MultipleSubmitButton(forms.Select):
             if value in inside_out_choices:
                 return inside_out_choices[value]
         return None
+
+
+class MultiUserMessageForm(NewMessageFormMultiple):
+    to_user = forms.ModelMultipleChoiceField(
+        label="Einladen",
+        queryset=get_user_model().objects,
+        required=True,
+        widget=autocomplete.ModelSelect2Multiple(
+                    url='user_autocomplete',
+                    attrs={"data-placeholder": "Zum Suchen tippen",
+                           'data-html': "True"}))
+
 
 class InviteUsersForm(forms.Form):
     user = forms.ModelMultipleChoiceField(

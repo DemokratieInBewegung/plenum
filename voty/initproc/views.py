@@ -74,7 +74,7 @@ def index(request):
     else:
         filters = request.session.get('init_filters', DEFAULT_FILTERS)
 
-    inits = request.guard.make_intiatives_query(filters)
+    inits = request.guard.make_intiatives_query(filters).prefetch_related("supporting")
     count_inbox = request.guard.make_intiatives_query(['i']).count()
 
     return render(request, 'initproc/index.html',context=dict(initiatives=inits,

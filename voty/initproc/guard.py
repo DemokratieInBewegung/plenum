@@ -81,6 +81,12 @@ class Guard:
 
         return True
 
+    def is_initiator(self, init):
+        return init.supporting.filter(initiator=True, user_id=self.user.id)
+
+    def is_supporting(self, init):
+        return init.supporting.filter(user_id=self.user.id)
+
 
     @_compound_action
     def can_view(self, obj=None):

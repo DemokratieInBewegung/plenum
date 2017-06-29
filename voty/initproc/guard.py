@@ -73,10 +73,10 @@ class Guard:
         latest_comment = obj.comments.order_by("-created_at").first()
 
         if not latest_comment and obj.user == self.user:
-            self.reason = "Du darfst erst kommentieren, wenn jemand anders deinen Beitrag kommentiert hat."
+            self.reason = "Erst wenn eine Person Dein Argument kommentiert hat, kannst du dieses ebenfalls kommentieren."
             return False
         elif latest_comment and latest_comment.user == self.user:
-            self.reason = "Du darfst nicht zweimal aufeinander kommentieren."
+            self.reason = "Im Sinne einer abwechslungsreichen Diskussion kannst Du dieses Argument erst nach einer anderen Person wieder kommentieren."
             return False
 
         return True

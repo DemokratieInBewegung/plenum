@@ -105,7 +105,7 @@
 {% block content %}
 <div class="container init-index">
 	{% for initiative in initiatives %}
-		{% include "fragments/initiative/list_item.html" %}
+		{% include "fragments/initiative/card.html" %}
 	{% empty %}
 	<div class="card">
 		<div class="card-block">

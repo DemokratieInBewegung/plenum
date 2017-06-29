@@ -209,7 +209,8 @@ MESSAGE_TAGS = {
 
 ## What we allow in the editor
 
-MARKDOWN_FILTER_WHITELIST_TAGS = ['a', 'p', 'b', 'em', 'strong', 'i', 'code', 'pre', 'blockquote', 'ul', 'ol', 'li']
+MARKDOWN_FILTER_WHITELIST_TAGS = ['a', 'p', 'b', 'br', 'em', 'strong',
+    'i', 'code', 'pre', 'blockquote', 'ul', 'ol', 'li']
 
 
 # Static files (CSS, JavaScript, Images)

@@ -1,5 +1,11 @@
+dist: trusty
+services:
+  - docker
 addons:
   ssh_known_hosts: 'abstimmen.bewegung.jetzt'
+
+script:
+  - docker build .
 
 before_deploy:
 - openssl aes-256-cbc -K $encrypted_5ba0802f0861_key -iv $encrypted_5ba0802f0861_iv

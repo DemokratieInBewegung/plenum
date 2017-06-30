@@ -349,7 +349,7 @@ def new_argument(request, form, initiative):
 
     arg.save()
 
-    initiative.notify_followers(NOTIFICATIONS.INITIATIVE.NEW_ARGUMENT, subject=request.user)
+    initiative.notify_followers(NOTIFICATIONS.INITIATIVE.NEW_ARGUMENT, dict(argument=arg), subject=request.user)
 
     return {
         'inner-fragments': {'#new-argument': "<strong>Danke für dein Argument</strong>"},

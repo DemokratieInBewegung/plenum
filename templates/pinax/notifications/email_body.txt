@@ -1,6 +1,11 @@
-{% load i18n %}{% url "notification_notice_settings" as notices_url %}{% blocktrans %}You have received the following notice from {{ current_site }}:
+{% url "notification_notice_settings" as notices_url %}
 
-{{ message }}
+Hallo {{recipient.first_name|default:recipient.username}},
 
-To change how you receive notifications, please go to {{ default_http_protocol }}://{{ current_site }}{{ notices_url }}
-{% endblocktrans %}
+{{ current_site }} freut sich Dir mitzuteilen:
+
+{{message}}
+
+
+
+Übrigens kannst du in Deinem Profil unter {{ base_url }}{{ notices_url }} einstellen, welche Benachrichtigungen du erhalten möchtest.

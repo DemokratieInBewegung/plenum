@@ -208,6 +208,10 @@ p.card-text {
   overflow: hidden;
 }
 
+.initiative-text ul, .initiative-text ol {
+  overflow: visible;
+}
+
 .initiative-text .classification {
   margin-bottom: 0;
   padding-bottom: 1rem;

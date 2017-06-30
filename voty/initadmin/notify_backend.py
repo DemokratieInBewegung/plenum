@@ -6,19 +6,10 @@ from pinax.notifications.backends.base import BaseBackend
 from notifications.signals import notify
 
 
-
 class SiteBackend(BaseBackend):
     spam_sensitivity = 0
     
     def deliver(self, recipient, sender, notice_type, extra_context):
-        context = self.default_context()
-        context.update({
-          "recipient": recipient,
-          "sender": sender,
-          "notice": ugettext(notice_type.display),  
-        })
-        context.update(extra_context)
-
         notify_kw = {
           "verb": notice_type.label
         }

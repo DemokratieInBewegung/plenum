@@ -198,7 +198,7 @@ class Initiative(models.Model):
         return self.notify([m.user for m in self.moderations.all()], *args, **kwargs)
 
     def notify_followers(self, *args, **kwargs):
-        query = self.supporters.filter(ack=True).all() if self.state == 'p' else self.supporters.all()
+        query = [s.user for s in self.supporting.filter(ack=True).all()] if self.state == 'p' else self.supporters.all()
 
         return self.notify(query, *args, **kwargs)
 

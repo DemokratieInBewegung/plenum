@@ -1030,6 +1030,12 @@ Argument base design
   margin: 0 0 1rem 0;
 }
 
+.argument button:disabled.new-comment {
+  border: none;
+  background: transparent;
+  display: none;
+}
+
 #new-argument .btn .material-icons {
   display: block;
   font-size: 8rem;

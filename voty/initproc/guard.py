@@ -17,7 +17,7 @@ def can_access_initiative(states=None, check=None):
         def view(request, init_id, slug, *args, **kwargs):
             init = get_object_or_404(Initiative, pk=init_id)
             if states:
-                assert init.state in states, "Not in expected state: {}".format(state)
+                assert init.state in states, "{} Not in expected state: {}".format(init.state, states)
             if  not request.guard.can_view(init):
                 raise PermissionDenied()
 

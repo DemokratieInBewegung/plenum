@@ -246,6 +246,8 @@ def submit_to_committee(request, initiative):
 
         messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
         initiative.notify_followers(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
+        initiative.notify(get_user_model().objects.filter(is_staff=True).all(),
+                          NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         return redirect('/initiative/{}'.format(initiative.id))
     else:
         messages.warning(request, "Die Bedingungen für die Einreichung sind nicht erfüllt.")

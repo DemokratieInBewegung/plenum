@@ -208,7 +208,7 @@ p.card-text {
   overflow: hidden;
 }
 
-.initiative-text ul, .initiative-text ol {
+.initiative-text li {
   overflow: visible;
 }
 

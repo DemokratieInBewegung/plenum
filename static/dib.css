@@ -261,13 +261,17 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e35242', end
   box-shadow: none;
 }
 
-em {
+.notice em {
   color: rgba(201,40,28,1);
   background-color: rgba(255, 255, 255, 1);
   padding: 0 .3785rem;
   border-radius: .25rem;
   font-style: normal;
   white-space:nowrap;
+}
+
+em {
+  font-style: italic;
 }
 
 .container-fluid {

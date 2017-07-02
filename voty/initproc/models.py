@@ -116,8 +116,8 @@ class Initiative(models.Model):
             if self.went_public_at < SPEED_PHASE_END:
                 if self.state == Initiative.STATES.SEEKING_SUPPORT:
                     if self.variant_of:
-                        if self.variant_of.went_public_at:
-                            return self.variant_of.went_public_at + week
+                        if self.variant_of.went_to_discussion_at:
+                            return self.variant_of.went_to_discussion_at + week
                     if self.ready_for_next_stage:
                         return self.went_public_at + week
                     return self.went_public_at + halfyear
@@ -134,8 +134,8 @@ class Initiative(models.Model):
             else:
                 if self.state == Initiative.STATES.SEEKING_SUPPORT:
                     if self.variant_of:
-                        if self.variant_of.went_public_at:
-                            return self.variant_of.went_public_at +( 2 * week)
+                        if self.variant_of.went_to_discussion_at:
+                            return self.variant_of.went_to_discussion_at +( 2 * week)
                     if self.ready_for_next_stage:
                         return self.went_public_at + (2 * week)
 

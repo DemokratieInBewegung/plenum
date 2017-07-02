@@ -204,12 +204,8 @@ p.card-text {
   line-height: 2.25rem;
 }
 
-.initiative-text *, .initiative-subtitle *, .initiative-title * {
+.initiative-text > .col, .initiative-subtitle > .col, .initiative-title > .col {
   overflow: hidden;
-}
-
-.initiative-text li {
-  overflow: visible;
 }
 
 .initiative-text .classification {

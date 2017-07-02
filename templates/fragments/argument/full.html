@@ -61,6 +61,12 @@
 			    {% endfor %}
 			</div>
 
+			{% if comments.count >= 2 %}
+				<a data-ajax="true" href="/initiative/{{argument.initiative.id}}/{{argument.type}}/{{argument.id}}?fragment={{argument.unique_id}}&full=0">
+			Weniger anzeigen
+			</a>
+			{% endif %}
+
 
 			{% guard can_comment argument %}
 			{% if can_comment %}

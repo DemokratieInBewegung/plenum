@@ -295,13 +295,11 @@ def invite(request, form, initiative, invite_type):
 
 
 
-
-@require_POST
 @login_required
 @can_access_initiative(STATES.SEEKING_SUPPORT, 'can_support') # must be seeking for supporters
 def support(request, initiative):
     Supporter(initiative=initiative, user_id=request.user.id,
-              public=not not request.POST.get("public", False)).save()
+              public=not not request.GET.get("public", False)).save()
 
     return redirect('/initiative/{}'.format(initiative.id))
 

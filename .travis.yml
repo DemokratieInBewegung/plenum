@@ -18,7 +18,7 @@ deploy:
 - provider: script
   script: ssh root@abstimmen.bewegung.jetzt "cd ~/voty-beta && git fetch && git checkout $TRAVIS_BRANCH && git pull && bash scripts/deploy.sh"
   on:
-    branch: deploy
+    branch: develop
     condition: "$TRAVIS_PULL_REQUEST = false"
 - provider: script
   script: ssh root@abstimmen.bewegung.jetzt "cd ~/abstimmungstool && git fetch && git checkout $TRAVIS_BRANCH && git pull && bash scripts/deploy.sh"

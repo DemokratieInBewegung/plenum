@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^avatar/', include('avatar.urls')),
     url(r'^hilfe', TemplateView.as_view(template_name='static/hilfe.html')),
     url(r'^registrieren', TemplateView.as_view(template_name='static/registrieren.html')),
+    url(r"^messages/", include("pinax.messages.urls", namespace="pinax_messages")),
     url(r'^nachrichten/', include(notifications.urls, namespace='notifications')),
     url(r"^nachrichten/", include("pinax.notifications.urls")),
     url(r'', include('voty.initproc.urls'))

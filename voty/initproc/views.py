@@ -13,6 +13,7 @@ from django import forms
 from datetime import datetime
 from django_ajax.decorators import ajax
 from pinax.notifications.models import send as notify
+from pinax.messages.views import MessageCreateView
 
 from functools import wraps
 
@@ -20,7 +21,7 @@ from .globals import NOTIFICATIONS, STATES, INITIATORS_COUNT
 from .guard import can_access_initiative
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
-                    NewProposalForm, NewModerationForm, InviteUsersForm)
+                    NewProposalForm, NewModerationForm, InviteUsersForm, MultiUserMessageForm)
 # Create your views here.
 
 DEFAULT_FILTERS = [
@@ -208,6 +209,18 @@ def show_moderation(request, initiative, target_id, slug=None):
         '#{arg.type}-{arg.id}'.format(arg=arg): render_to_string('fragments/moderation/full.html',
                                                                  context=ctx, request=request)
         }}
+
+
+class NewMessagesToInitiatorsView(MessageCreateView):
+
+    def get_form_class(self):
+        return MultiUserMessageForm
+
+    def get_initial(self):
+        init = get_object_or_404(Initiative, pk=self.kwargs.get("init_id", None))
+
+        return {"to_user": init.supporting.filter(initiator=True, ack=True).all(),
+                "subject": 'Bezüglich der Initiative "{}" '.format(init.title)}
 
 
 #

@@ -10,7 +10,7 @@ urlpatterns = [
     # initiative specifics
     url('^ueber/$', views.ueber, name="ueber"),
     url('^initiative/new$', views.new, name="new_initiative"),
-    url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?$', views.item, name="initiative_item"),
+    url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/send_message$', views.NewMessagesToInitiatorsView.as_view()),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/support$', views.support),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/ack_support$', views.ack_support),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/rm_support$', views.rm_support),
@@ -22,6 +22,7 @@ urlpatterns = [
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/invite/(?P<invite_type>.*)$', views.invite),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/moderation/(?P<target_id>\d+)$', views.show_moderation),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/(?P<target_type>.*)/(?P<target_id>\d+)$', views.show_resp),
+    url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?$', views.item, name="initiative_item"),
     url('^comment/(?P<target_type>.*)/(?P<target_id>\d+)$', views.comment),
     url('^like/(?P<target_type>.*)/(?P<target_id>\d+)$', views.like),
     url('^unlike/(?P<target_type>.*)/(?P<target_id>\d+)$', views.unlike)

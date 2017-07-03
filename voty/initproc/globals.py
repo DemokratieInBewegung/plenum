@@ -22,7 +22,7 @@ class NOTIFICATIONS:
 
 class STATES:
     """
-    The states and initiative can have
+    The states an initiative can have
     """
     PREPARE = 'p'
     INCOMING = 'i'
@@ -47,7 +47,15 @@ STAFF_ONLY_STATES = [STATES.INCOMING,
                      STATES.MODERATION,
                      STATES.HIDDEN]
 
-
+# states shown on index page
+INDEX_STATES = [STATES.PREPARE,
+                STATES.INCOMING,
+                STATES.SEEKING_SUPPORT,
+                STATES.DISCUSSION,
+                STATES.FINAL_EDIT,
+                STATES.VOTING,
+                STATES.ACCEPTED,
+                STATES.REJECTED]
 
 
 SPEED_PHASE_END = date(2017, 8, 21) # Everything published before this has speed phase

@@ -16,7 +16,7 @@ from pinax.notifications.models import send as notify
 
 from functools import wraps
 
-from .globals import NOTIFICATIONS, STATES, INITIATORS_COUNT
+from .globals import NOTIFICATIONS, STATES, INDEX_STATES, INITIATORS_COUNT
 from .guard import can_access_initiative
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
@@ -75,12 +75,14 @@ def index(request):
         filters = request.session.get('init_filters', DEFAULT_FILTERS)
 
     inits = request.guard.make_intiatives_query(filters).prefetch_related("supporting")
-    count_inbox = request.guard.make_intiatives_query(['i']).count()
+
+    # counts are independent of user status and selected request filters
+    counts = {}
+    for state in INDEX_STATES:
+        counts[state] = Initiative.objects.filter(state__in=state).count()
 
     return render(request, 'initproc/index.html',context=dict(initiatives=inits,
-                    inbox_count=count_inbox, filters=filters))
-
-
+                    counts = counts, filters=filters))
 
 class UserAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):

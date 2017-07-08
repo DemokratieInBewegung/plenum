@@ -297,7 +297,7 @@
             <h6 class="col-md-6 text-muted classification">Text der Initiative</h6>
             {% if initiative.versions.count > 1 %}
                 <div class="col-md-6 text-muted text-right">
-                    <a href=""><span class="material-icons">history</span> {{initiative.versions.count}}</a>
+                    <a href="/initiative/{{initiative.id}}-{{initiative.slug}}/compare/{{initiative.versions.1.id}}" data-ajax="true"><span class="material-icons">history</span> {{initiative.versions.count}}</a>
                 </div>
             {% endif %}
         </div>

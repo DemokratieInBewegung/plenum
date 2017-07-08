@@ -48,6 +48,11 @@ STAFF_ONLY_STATES = [STATES.INCOMING,
                      STATES.HIDDEN]
 
 
+COMPARING_FIELDS = [
+    'title', 'subtitle',  "summary", "problem", "forderung", "kosten",
+    "fin_vorschlag", "arbeitsweise", "init_argument",
+    "einordnung", "ebene", "bereich",
+]
 
 
 SPEED_PHASE_END = date(2017, 8, 21) # Everything published before this has speed phase

@@ -1,0 +1,87 @@
+
+{% load avatar_tags %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <a href="/initiative/{{initiative.id}}-{{initiative.slug}}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zurück zur Initiative</a>
+        </div>
+    </div>
+	<div class="row">
+		<h2>Änderungshistorie Initiative #{{initiative.id}}</h2>	
+	</div>
+
+	<div class="row">
+		<div class="col-md-4 text-right">
+	        <h6 class="text-muted classification">Vergleiche Version</h6>
+	        <div class="dropdown">
+	        	<a id="versionSelectDropdown" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-has-popup="true" aria-expanded="false"><strong>{{selected.revision.date_created}}</strong> {% if selected.revision.user %} — {% avatar selected.revision.user 25 %}{% endif %}</a>
+	        	<br />{% if selected.revision.comment %}<em>{{selected.revision.comment}}</em>{% endif %}
+
+	        	<div class="dropdown-menu dropdown-menu-right " aria-labelledby="versionSelectDropdown">
+	        		{% for v in initiative.versions %}
+	        			{% if v == latest %}
+	        			{% else %}
+	        				<a href="/initiative/{{initiative.id}}-{{initiative.slug}}/compare/{{v.id}}"
+	        					class="dropdown-item"
+	        					data-ajax="true">
+	        					{% if v == selected %}<strong>{%endif%}
+
+	        					{{v.revision.date_created}} {% if v.revision.user %} — {% avatar v.revision.user 12 %}{% endif %}
+
+	        					{% if v == selected %}</strong>{%endif%}
+	        				</a>
+	        			{% endif %}
+	        		{% endfor %}
+                </div>
+	        </div> 
+	    </div>
+		<div class="col-md-8">
+	        <h6 class="text-muted classification">mit Aktueller Version</h6>
+	        <div>
+	        	<strong>{{latest.revision.date_created}}</strong> {% if latest.revision.user %} — {% avatar latest.revision.user 25 %}{% endif %}
+	        	<br />{% if latest.revision.comment %}<em>{{latest.revision.comment}}</em>{% endif %}
+	        </div>
+	</div>
+</div>
+
+<hr />
+
+<div class="container-fluid">
+    <div class="container">
+        <div class="row initiative-title">
+            <div class="col-12">
+                <h1 class="display-4">{{compare.title}}</h1>
+            </div>
+        </div>
+        <div class="row initiative-subtitle">
+            <div class="col-12">
+                <p>{{compare.subtitle}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "initproc/blocks/meta.html" with initiative=compare %}
+
+<div class="container">
+<div class="row initiative-text">
+    <div class="col-12">
+    	<h3>Zusammenfassung</h3>
+        {{compare.summary}}
+        <h2>Problembeschreibung</h2>
+        {{compare.problem}}
+        <h2>Forderung</h2>
+        {{compare.forderung}}
+        <h2>Kosten</h2>
+        {{compare.kosten}}
+        <h2>Finanzierungsvorschlag</h2>
+        {{compare.fin_vorschlag}}
+        <h2>Arbeitsweise</h2>
+        {{compare.arbeitsweise}}
+        <h2>Argument der Initiatoren</h2>
+        <blockquote class="blockquote">
+            {{compare.init_argument}}
+        </blockquote>
+    </div>
+</div>
+</div>

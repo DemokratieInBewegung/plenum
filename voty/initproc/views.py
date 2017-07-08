@@ -134,7 +134,7 @@ def item(request, init, slug=None):
         ctx.update({'has_supported': init.supporting.filter(user=user_id).count(),
                     'has_voted': init.votes.filter(user=user_id).count()})
         if ctx['has_voted']:
-            ctx['vote'] = init.votes.filter(user=user_id).first().vote
+            ctx['vote'] = init.votes.filter(user_id=user_id).first()
 
         for arg in ctx['arguments'] + ctx['proposals']:
             arg.has_liked = arg.likes.filter(user=user_id).count() > 0
@@ -146,6 +146,7 @@ def item(request, init, slug=None):
                         arg.has_commented = True
                         break
 
+    print(ctx)
     return render(request, 'initproc/item.html', context=ctx)
 
 
@@ -489,17 +490,40 @@ def unlike(request, target_type, target_id):
 
 
 
-@require_POST
+@non_ajax_redir('/')
+@ajax
 @login_required
+@require_POST
 @can_access_initiative(STATES.VOTING) # must be in voting
-def vote(request, init, vote):
-    in_favor = vote != 'nay'
-    my_vote = Vote.objects.get(initiative=init, user_id=request.user)
-    if my_vote:
-        if my_vote.in_favor != in_favor:
-            my_vote.in_favor = in_favor
-            my_vote.save()
+def vote(request, init):
+    in_favor = request.POST.get('v', 'n') != 'n'
+    reason = request.POST.get("reason", "")
+    try:
+        my_vote = Vote.objects.get(initiative=init, user_id=request.user)
+    except Vote.DoesNotExist:
+        my_vote = Vote(initiative=init, user_id=request.user.id, in_favor=in_favor)
     else:
-        Vote(initiative=initiative, user_id=request.user.id, in_favor=in_favor).save()
+        my_vote.in_favor = in_favor
+        my_vote.reason = reason
+    my_vote.save()
 
-    return redirect('/initiative/{}'.format(initiative.id))
+    return {'fragments': {
+        '#voting': render_to_string("fragments/voting.html",
+                                    context=dict(vote=my_vote, initiative=init),
+                                    request=request)
+        }}
+
+
+
+@non_ajax_redir('/')
+@ajax
+@login_required
+@require_POST
+@can_access_initiative(STATES.VOTING) # must be in voting
+def reset_vote(request, init):
+    Vote.objects.filter(initiative=init, user_id=request.user).delete()
+    return {'fragments': {
+        '#voting': render_to_string("fragments/voting.html",
+                                    context=dict(vote=None, initiative=init),
+                                    request=request)
+        }}

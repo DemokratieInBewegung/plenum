@@ -4,6 +4,7 @@ from django.utils.functional import cached_property
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.utils.text import slugify
+from django.conf import settings
 
 from pinax.notifications.models import send as notify
 
@@ -243,9 +244,14 @@ class Vote(models.Model):
     user = models.ForeignKey(User)
     initiative = models.ForeignKey(Initiative, related_name="votes")
     in_favor = models.BooleanField(default=True)
+    reason = models.CharField(max_length=100, blank=True)
 
     class Meta:
         unique_together = (("user", "initiative"),)
+
+    @property
+    def nay_survey_options(self):
+        return settings.OPTIONAL_NOPE_REASONS
 
 
 

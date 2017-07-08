@@ -405,6 +405,19 @@
 
 {% include "initproc/blocks/variants.html" %}
 
+{% if initiative.state == 'v' %}
+
+<div id="discuss" class="container-fluid cta">
+    <div class="container">
+        <div class="row no-gutters">
+            {% include "fragments/voting.html" %}
+
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
 
 {% if initiative.show_debate %}
 
@@ -436,19 +449,6 @@
 {% endif %}
 
 
-
-{% if initiative.state == 'v' %}
-
-<div id="discuss" class="container-fluid cta">
-    <div class="container">
-        <div class="row no-gutters">
-            {% include "fragments/voting.html" with vote=initiative.my_vote %}
-
-        </div>
-    </div>
-</div>
-
-{% endif %}
 
 
 

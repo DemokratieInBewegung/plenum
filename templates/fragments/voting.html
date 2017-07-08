@@ -2,17 +2,51 @@
 <div class="col-12" id="voting">
     <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}} in Abstimmung</h6>
     {% if vote %}
+     	<h3>Danke, deine Stimme wurde gezählt!</h3>
+     	<form data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/reset_vote" method="POST">
+
+     		<p>{{initiative.votes.count}} Personen haben bisher abgestimmt. Du hast mit {% if vote.in_favor %}<i class="material-icons">thumb_up</i> JA{%else%}<i class="material-icons">thumb_down</i> NEIN{% endif %} gestimmt.
+     		{% csrf_token %}
+     		<button class="btn btn-sm btn-default" type="submit" title="hier klicken um zurück zu nehmen">Stimme zurücknehmen</button>
+	 		</p>
+	 	</form>
+
+ 		{% if vote.nay_survey_options and not vote.in_favor and not vote.reason %}
+ 			<br />
+ 			<h5>Magst du uns sagen warum?</h5>
+ 			
+		 	<form data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
+		 		{% csrf_token %}
+		 		<input type="hidden" name="v" value="n" />
+		 		<p>Die Initiative ...</p>
+		 		<ul>
+		 			{% for r in vote.nay_survey_options %}
+			 			<li>
+			 				<label for="{{ r|slugify }}"><input id="{{ r|slugify }}" type="radio" name="reason" value="{{r}}"> {{r}}</label>
+			 			</li>
+			 		{% endfor %}
+		 		</ul>
+		 		<button type="btn btn-default">Abschicken</button>
+		 	</form>
+		 	<form data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
+		 		{% csrf_token %}
+		 		<input type="hidden" name="v" value="n" />
+		 		<input type="hidden" name="reason" value=' ' />
+	 			<button type="btn btn-default">keine Angabe machen</button>
+	 		</form>
+		 {% endif %}
+
     {% else %}
      	<h3> Stimmst du dieser Initiative zu?</h3>
-	 	<form class="row" method="POST">
+	 	<form id="initial_vote" class="row" data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
 	 		{% csrf_token %}
 	 		<div class="col-6 text-center">
-		 		<label for="v_y"><input type="radio" id="v_y" name="v" value="y" />
+		 		<label for="v_y"><input type="radio" required="true" id="v_y" name="v" value="y" />
 		    		<i class="material-icons">thumb_up</i> 
 		    	</label>
 		    </div>
 	 		<div class="col-6 text-center">
-		 		<label for="v_n"><input type="radio" id="v_n" name="v" value="n" />
+		 		<label for="v_n"><input type="radio" required="true" id="v_n" name="v" value="n" />
 		    		<i class="material-icons">thumb_down</i> 
 	    		</label>
 	    	</div>

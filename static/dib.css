@@ -1078,22 +1078,22 @@ Argument base design
 */
 
 
-#voting form .material-icons {
+#initial_vote .material-icons {
   font-size: 7em;
   line-height: 2.5em;
   color: #aaa;
 }
 
-#voting input[type=radio] {
+#initial_vote input[type=radio] {
   display: none;
 }
 
-#voting input[type=radio][value=y]:checked + .material-icons {
+#initial_vote input[type=radio][value=y]:checked + .material-icons {
   color: #47AB64;
 }
 
 
-#voting input[type=radio][value=n]:checked + .material-icons {
+#initial_vote input[type=radio][value=n]:checked + .material-icons {
   color: #AB4778;
 }
 

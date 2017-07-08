@@ -230,3 +230,17 @@ STATICFILES_DIRS = (
 
 STATIC_ROOT = os.path.join( BASE_DIR, 'public', 'static')
 MEDIA_ROOT = os.path.join( BASE_DIR, 'public', 'media')
+
+
+
+#  AND OUR OWN STUFF
+
+
+OPTIONAL_NOPE_REASONS = [
+    'entspricht nicht meiner Überzeugung',
+    'ist nicht wichtig genug',
+    'ist nicht konkret genug',
+    'ist inhaltlich noch nicht ausgereift',
+    'passt nicht zu DiB',
+    'lässt sich nicht vertreten'
+]

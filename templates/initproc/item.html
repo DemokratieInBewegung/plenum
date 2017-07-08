@@ -269,37 +269,7 @@
     </div>
 </div>
 
-{% if initiative.variants.count %}
-
-    <div class="container-fluid">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h3>Es wurden auch folgenden Varianten eingebracht</h3>
-                </div>
-            </div>
-            <div>
-                {% for initiative in initiative.variants.all %}
-                    {% include "fragments/initiative/card.html" %}
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-{% elif initiative.variant_of %}
-
-    <div class="container-fluid">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h3>Dies ist eine Variante der Initiative</h3>
-                </div>
-            </div>
-            <div>
-                {% include "fragments/initiative/card.html" with initiative=initiative.variant_of %}
-            </div>
-        </div>
-    </div>
-{% endif %}
+{% include "initproc/blocks/variants.html" %}
 
 
 {% ifequal initiative.state 's' %}
@@ -433,6 +403,21 @@
 </div>
 
 
+{% include "initproc/blocks/variants.html" %}
+
+{% if initiative.state == 'v' %}
+
+<div id="discuss" class="container-fluid cta">
+    <div class="container">
+        <div class="row no-gutters">
+            {% include "fragments/voting.html" %}
+
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
 
 {% if initiative.show_debate %}
 
@@ -462,6 +447,8 @@
 </div>
 
 {% endif %}
+
+
 
 
 
@@ -617,22 +604,5 @@
 
 {% endblock %} {% block body-javascript %} {{ block.super }}
 <script type="text/javascript">
-// $('.argument .short').click(function(item) {
-//     var $this = $(this);
-//     $this.parent().find('.long').show();
-//     $this.hide();
-// });
-// $('.argument .long .content').click(function(item) {
-//     var $this = $(this);
-//     $this.parent().parent().find('.short').show();
-//     $this.parent().hide();
-// });
-
-// $(function() {
-//     if (document.location.hash) {
-//         let id = document.location.hash.slice(1);
-//         $('#' + id + ' .short').click();
-//     }
-// });
 </script>
 {% endblock %}

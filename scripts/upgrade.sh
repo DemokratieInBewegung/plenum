@@ -11,6 +11,6 @@ echo "Apply database migrations"
 python manage.py migrate
 
 echo "Creating new revisions"
-python manage.py createinitialrevisions
+python manage.py createinitialrevisions --comment "Erste Fassung"
 
 echo "------ Upgrade done -----"

@@ -13,6 +13,7 @@ from django import forms
 from datetime import datetime
 from django_ajax.decorators import ajax
 from pinax.notifications.models import send as notify
+import reversion
 
 from functools import wraps
 
@@ -106,9 +107,16 @@ def new(request):
         form = InitiativeForm(request.POST)
         if form.is_valid():
             ini = form.save(commit=False)
-            ini.state = STATES.PREPARE
-            ini.save()
+            with reversion.create_revision():
+                ini.state = STATES.PREPARE
+                ini.save()
 
+                # Store some meta-information.
+                reversion.set_user(request.user)
+                if request.POST.get('commit_message', None):
+                    reversion.set_comment(request.POST.get('commit_message'))
+
+                    
             Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
             return redirect('/initiative/{}-{}'.format(ini.id, ini.slug))
         else:
@@ -228,7 +236,14 @@ def edit(request, initiative):
     form = InitiativeForm(request.POST or None, instance=initiative)
     if request.method == 'POST':
         if form.is_valid():
-            initiative.save()
+            with reversion.create_revision():
+                initiative.save()
+
+                # Store some meta-information.
+                reversion.set_user(request.user)
+                if request.POST.get('commit_message', None):
+                    reversion.set_comment(request.POST.get('commit_message'))
+
             messages.success(request, "Initiative gespeichert.")
             initiative.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
             return redirect('/initiative/{}'.format(initiative.id))

@@ -357,9 +357,17 @@
 {% block content %}
 <div id="initiative-text" class="container-fluid initiative-single">
     <div class="container">
+        <div class="row">
+            <h6 class="col-md-6 text-muted classification">Text der Initiative</h6>
+            {% if initiative.versions.count > 1 %}
+                <div class="col-md-6 text-muted text-right">
+                    <a href=""><span class="material-icons">history</span> {{initiative.versions.count}}</a>
+                </div>
+            {% endif %}
+        </div>
+
         <div class="row initiative-text">
             <div class="col-12">
-                <h6 class="text-muted classification">Text der Initiative</h6>
                 {{initiative.summary|markdown}}
                 <h2>Problembeschreibung</h2>
                 {{initiative.problem|markdown}}

@@ -1,8 +1,9 @@
 from django.contrib import admin
+from reversion.admin import VersionAdmin
+
 from .models import Initiative, Quorum, Supporter, Pro, Contra, Proposal, Comment, Vote, Moderation
 
-
-class InitiativeAdmin(admin.ModelAdmin):
+class InitiativeAdmin(VersionAdmin):
     list_display = ['title', 'state', 'created_at', 'changed_at']
     ordering = ['title', 'created_at', 'changed_at']
     # actions = ['move_on', 'send_invite', 'decline']

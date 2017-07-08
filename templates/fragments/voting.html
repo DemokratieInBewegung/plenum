@@ -1,0 +1,25 @@
+
+<div class="col-12" id="voting">
+    <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}} in Abstimmung</h6>
+    {% if vote %}
+    {% else %}
+     	<h3> Stimmst du dieser Initiative zu?</h3>
+	 	<form class="row" method="POST">
+	 		{% csrf_token %}
+	 		<div class="col-6 text-center">
+		 		<label for="v_y"><input type="radio" id="v_y" name="v" value="y" />
+		    		<i class="material-icons">thumb_up</i> 
+		    	</label>
+		    </div>
+	 		<div class="col-6 text-center">
+		 		<label for="v_n"><input type="radio" id="v_n" name="v" value="n" />
+		    		<i class="material-icons">thumb_down</i> 
+	    		</label>
+	    	</div>
+	 		<div class="col-12 text-center">
+	    		<button type="submit" class="btn btn-lg btn-danger">Abstimmen</button>
+	    	</div>
+	 	</form>
+	{% endif %}
+
+</div>

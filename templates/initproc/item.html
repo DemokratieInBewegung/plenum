@@ -437,6 +437,21 @@
 
 
 
+{% if initiative.state == 'v' %}
+
+<div id="discuss" class="container-fluid cta">
+    <div class="container">
+        <div class="row no-gutters">
+            {% include "fragments/voting.html" with vote=initiative.my_vote %}
+
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+
+
 <!-- SEEEEKING SUPPPORTERS AREA -->
 
 {% ifequal initiative.state 's' %}
@@ -589,22 +604,5 @@
 
 {% endblock %} {% block body-javascript %} {{ block.super }}
 <script type="text/javascript">
-// $('.argument .short').click(function(item) {
-//     var $this = $(this);
-//     $this.parent().find('.long').show();
-//     $this.hide();
-// });
-// $('.argument .long .content').click(function(item) {
-//     var $this = $(this);
-//     $this.parent().parent().find('.short').show();
-//     $this.parent().hide();
-// });
-
-// $(function() {
-//     if (document.location.hash) {
-//         let id = document.location.hash.slice(1);
-//         $('#' + id + ' .short').click();
-//     }
-// });
 </script>
 {% endblock %}

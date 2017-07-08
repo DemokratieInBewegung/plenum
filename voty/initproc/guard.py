@@ -81,6 +81,12 @@ class Guard:
 
         return True
 
+    def can_like(self, obj=None):
+        if obj.user == self.user: # should apply for both arguments and comments
+            return False
+
+        return True
+
     def is_initiator(self, init):
         return init.supporting.filter(initiator=True, user_id=self.user.id)
 

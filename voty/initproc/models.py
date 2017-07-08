@@ -5,8 +5,10 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.utils.text import slugify
 from django.conf import settings
+from reversion.models import Version
 
 from pinax.notifications.models import send as notify
+import reversion
 
 from datetime import datetime, timedelta, date
 
@@ -14,6 +16,8 @@ from .globals import STATES, INITIATORS_COUNT, SPEED_PHASE_END
 from django.db import models
 import pytz
 
+
+@reversion.register()
 class Initiative(models.Model):
 
     # fallback 
@@ -70,6 +74,10 @@ class Initiative(models.Model):
     @cached_property
     def slug(self):
         return slugify(self.title)
+
+    @cached_property
+    def versions(self):
+        return Version.objects.get_for_object(self)
 
 
     @cached_property

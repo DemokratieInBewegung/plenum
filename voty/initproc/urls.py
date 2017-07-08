@@ -20,6 +20,7 @@ urlpatterns = [
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/new_moderation$', views.moderate),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/vote$', views.vote, name="vote"),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/reset_vote$', views.reset_vote, name="reset_vote"),
+    url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/compare/(?P<version_id>\d+)$', views.compare),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/invite/(?P<invite_type>.*)$', views.invite),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/moderation/(?P<target_id>\d+)$', views.show_moderation),
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?/(?P<target_type>.*)/(?P<target_id>\d+)$', views.show_resp),

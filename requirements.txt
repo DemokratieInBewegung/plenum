@@ -2,6 +2,7 @@ appdirs==1.4.3
 beautifulsoup4==4.6.0
 bleach==2.0.0
 defusedxml==0.5.0
+diff-match-patch==20121119
 dj-database-url==0.4.2
 Django==1.10.6
 django-appconf==1.0.2
@@ -14,6 +15,8 @@ git+https://github.com/DemokratieInBewegung/django-mailer.git
 django-mathfilters==0.4.0
 django-model-utils==3.0.0
 django-notifications-hq==1.2
+django-reversion==2.0.9
+django-reversion-compare==0.7.5
 django-tag-parser==2.1
 django-user-accounts==2.0.1
 djangoajax==2.3.7

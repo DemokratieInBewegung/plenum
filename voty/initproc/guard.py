@@ -193,7 +193,9 @@ class Guard:
             return False
         if not self.user.is_authenticated:
             return False
-        if not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=self.request.user.id):
+        if self.user.is_superuser:
+            return True
+        if not init.supporting.filter(initiator=True, user_id=self.request.user.id):
             return False
 
         return True

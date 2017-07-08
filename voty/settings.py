@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'bootstrapform',
     'fullurl',
     'django_ajax',
+    'reversion',
 
     # must be before admin ...
     'dal',

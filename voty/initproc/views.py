@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.utils.decorators import available_attrs
+from django.utils.safestring import mark_safe
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.apps import apps
@@ -13,10 +14,13 @@ from django import forms
 from datetime import datetime
 from django_ajax.decorators import ajax
 from pinax.notifications.models import send as notify
+from reversion_compare.helpers import html_diff
+from reversion.models import Version
+import reversion
 
 from functools import wraps
 
-from .globals import NOTIFICATIONS, STATES, INITIATORS_COUNT
+from .globals import NOTIFICATIONS, STATES, INITIATORS_COUNT, COMPARING_FIELDS
 from .guard import can_access_initiative
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
@@ -106,8 +110,15 @@ def new(request):
         form = InitiativeForm(request.POST)
         if form.is_valid():
             ini = form.save(commit=False)
-            ini.state = STATES.PREPARE
-            ini.save()
+            with reversion.create_revision():
+                ini.state = STATES.PREPARE
+                ini.save()
+
+                # Store some meta-information.
+                reversion.set_user(request.user)
+                if request.POST.get('commit_message', None):
+                    reversion.set_comment(request.POST.get('commit_message'))
+
 
             Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
             return redirect('/initiative/{}-{}'.format(ini.id, ini.slug))
@@ -228,7 +239,16 @@ def edit(request, initiative):
     form = InitiativeForm(request.POST or None, instance=initiative)
     if request.method == 'POST':
         if form.is_valid():
-            initiative.save()
+            with reversion.create_revision():
+                initiative.save()
+
+                # Store some meta-information.
+                reversion.set_user(request.user)
+                if request.POST.get('commit_message', None):
+                    reversion.set_comment(request.POST.get('commit_message'))
+
+            initiative.supporting.filter(initiator=True).update(ack=False)
+
             messages.success(request, "Initiative gespeichert.")
             initiative.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
             return redirect('/initiative/{}'.format(initiative.id))
@@ -515,6 +535,33 @@ def vote(request, init):
                                     context=dict(vote=my_vote, initiative=init),
                                     request=request)
         }}
+
+
+
+@non_ajax_redir('/')
+@ajax
+@can_access_initiative()
+def compare(request, initiative, version_id):
+    versions = Version.objects.get_for_object(initiative)
+    latest = versions.first()
+    selected = versions.filter(id=version_id).first()
+    compare = {key: mark_safe(html_diff(selected.field_dict.get(key, ''),
+                                        latest.field_dict.get(key, '')))
+            for key in COMPARING_FIELDS}
+
+    compare['went_public_at'] = initiative.went_public_at
+
+
+    return {
+        'inner-fragments': {
+            'header': "",
+            '.main': render_to_string("fragments/compare.html",
+                                      context=dict(initiative=initiative,
+                                                    selected=selected,
+                                                    latest=latest,
+                                                    compare=compare),
+                                      request=request)}
+    }
 
 
 

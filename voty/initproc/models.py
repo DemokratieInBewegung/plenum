@@ -1,6 +1,8 @@
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.utils.functional import cached_property
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.utils.text import slugify
 
 from pinax.notifications.models import send as notify
@@ -64,12 +66,12 @@ class Initiative(models.Model):
 
     supporters = models.ManyToManyField(User, through="Supporter")
 
-    @property
+    @cached_property
     def slug(self):
         return slugify(self.title)
 
 
-    @property
+    @cached_property
     def time_ramaining_in_phase(self):
         end_of_phase = self.end_of_this_phase
 
@@ -78,7 +80,7 @@ class Initiative(models.Model):
 
         return None
 
-    @property
+    @cached_property
     def ready_for_next_stage(self):
 
         if self.state == Initiative.STATES.INCOMING:
@@ -104,7 +106,7 @@ class Initiative(models.Model):
 
         return False
 
-    @property
+    @cached_property
     def end_of_this_phase(self):
         week = timedelta(days=7)
         halfyear = timedelta(days=183)
@@ -150,7 +152,7 @@ class Initiative(models.Model):
 
         return None
 
-    @property
+    @cached_property
     def quorum(self):
         return Quorum.current_quorum()
 
@@ -162,37 +164,53 @@ class Initiative(models.Model):
     def show_debate(self):
         return self.state in [self.STATES.DISCUSSION, self.STATES.FINAL_EDIT]
 
-    @property
+    @cached_property
     def yays(self):
         print(self.votes)
         return self.votes.filter(Vote.in_favor==True).count()
 
-    @property
+    @cached_property
     def nays(self):
         return self.votes.filter(Vote.in_favor==False).count()
 
+    @cached_property
+    def all_variants(self):
+        if self.variants.count():
+            return self.variants.all()
+
+        if self.variant_of:
+            variants = [self.variant_of]
+            if self.variant_of.variants.count() > 1:
+                for ini in self.variant_of.variants.all():
+                    if ini.id == self.id: continue
+                    variants.append(ini)
+
+            return variants 
+
+        return []
+
     # FIXME: cache this
-    @property
+    @cached_property
     def absolute_supporters(self):
         return self.supporting.count()
 
-    @property
+    @cached_property
     def relative_support(self):
         return self.absolute_supporters / self.quorum * 100
 
-    @property
+    @cached_property
     def first_supporters(self):
         return self.supporting.filter(first=True).order_by("-created_at")
 
-    @property
+    @cached_property
     def public_supporters(self):
         return self.supporting.filter(public=True, first=False, initiator=False).order_by("-created_at")
 
-    @property
+    @cached_property
     def initiators(self):
         return self.supporting.filter(initiator=True).order_by("created_at")
 
-    @property
+    @cached_property
     def custom_cls(self):
         return 'item-{} state-{} area-{}'.format(slugify(self.title),
                     slugify(self.state), slugify(self.bereich))

@@ -269,37 +269,7 @@
     </div>
 </div>
 
-{% if initiative.variants.count %}
-
-    <div class="container-fluid">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h3>Es wurden auch folgenden Varianten eingebracht</h3>
-                </div>
-            </div>
-            <div>
-                {% for initiative in initiative.variants.all %}
-                    {% include "fragments/initiative/card.html" %}
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-{% elif initiative.variant_of %}
-
-    <div class="container-fluid">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h3>Dies ist eine Variante der Initiative</h3>
-                </div>
-            </div>
-            <div>
-                {% include "fragments/initiative/card.html" with initiative=initiative.variant_of %}
-            </div>
-        </div>
-    </div>
-{% endif %}
+{% include "fragments/initiative/variants_block.html" %}
 
 
 {% ifequal initiative.state 's' %}
@@ -432,6 +402,8 @@
     </div>
 </div>
 
+
+{% include "fragments/initiative/variants_block.html" %}
 
 
 {% if initiative.show_debate %}

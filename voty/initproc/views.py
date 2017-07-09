@@ -8,7 +8,7 @@ from django.utils.safestring import mark_safe
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.apps import apps
-from django.db.models import Q
+from django.db.models import Q, Count
 from dal import autocomplete
 from django import forms
 from datetime import datetime
@@ -80,10 +80,18 @@ def index(request):
 
     inits = request.guard.make_intiatives_query(filters).prefetch_related("supporting")
 
-    # counts are independent of user status and selected request filters
+    totalSet = Initiative.objects.filter(
+        id__in=request.guard.make_intiatives_query(INDEX_STATES) # filter out those invisible to the user
+        ).values('state').annotate(total=Count('state')) # then group by state and count
+
+    # transform the query set into what the template expects
     counts = {}
-    for state in INDEX_STATES:
-        counts[state] = Initiative.objects.filter(state__in=state).count()
+    for elem in totalSet:
+        counts[elem.get('state')]=elem.get('total')
+
+    for state in INDEX_STATES: # add back those states that have count 0
+        if state not in counts:
+            counts[state] = 0
 
     return render(request, 'initproc/index.html',context=dict(initiatives=inits,
                     counts = counts, filters=filters))

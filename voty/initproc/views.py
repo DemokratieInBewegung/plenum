@@ -12,6 +12,7 @@ from django.db.models import Q
 from dal import autocomplete
 from django import forms
 from datetime import datetime
+from django_ajax.shortcuts import render_to_json
 from django_ajax.decorators import ajax
 from pinax.notifications.models import send as notify
 from reversion_compare.helpers import html_diff
@@ -79,6 +80,30 @@ def index(request):
         filters = request.session.get('init_filters', DEFAULT_FILTERS)
 
     inits = request.guard.make_intiatives_query(filters).prefetch_related("supporting")
+
+    ids = [i for i in request.GET.getlist('id')]
+
+    if ids:
+        inits = inits.filter(id__in=ids)
+
+    if request.is_ajax():
+        all_inits = inits.all()
+        return render_to_json(
+            {'fragments': {
+                "#init-card-{}".format(init.id) : render_to_string("fragments/initiative/card.html",
+                                                               context=dict(initiative=init),
+                                                               request=request)
+                    for init in all_inits },
+             'inner-fragments': {
+                '#init-list': render_to_string("fragments/initiative/list.html",
+                                               context=dict(initiatives=all_inits),
+                                               request=request)
+             }
+        }
+)
+
+
+
     count_inbox = request.guard.make_intiatives_query(['i']).count()
 
     return render(request, 'initproc/index.html',context=dict(initiatives=inits,

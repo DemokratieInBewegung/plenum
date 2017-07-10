@@ -145,28 +145,28 @@ class NewArgumentForm(forms.Form):
     TITLE = "Neues Argument hinzufügen"
     type = forms.ChoiceField(choices=[('👍', '👍'), ('👎', '👎')], widget=forms.HiddenInput())
     title = forms.CharField(required=True,
-                            label="Zusammenfassung (max. 140 Zeichen)",
+                            label="Zusammenfassung",
                             max_length=140,
                             widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Wir wollen die Argumente so übersichtlich wie möglich halten. Bitte achte darauf, dass Dein Argument wirklich neu ist.'}))
     text = forms.CharField(required=True,
-                           label="Ausführliche Darstellung (max. 500 Zeichen)",
+                           label="Ausführliche Darstellung",
                            max_length=500,
                            widget=forms.Textarea(attrs={'rows':10, 'placeholder':'Wenn es bereits ein ähnliches Argument gibt, dann äußere Dich bitte in den Kommentaren zu diesem.'}))
 
 
 class NewProposalForm(forms.Form):
     title = forms.CharField(required=True,
-                            label="Zusammenfassung (max. 140 Zeichen)",
+                            label="Zusammenfassung",
                             max_length=140,
                             widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Wir wollen die Vorschläge so übersichtlich wie möglich halten. Bitte achte darauf, dass Dein Vorschlag wirklich neu ist.'}))
     text = forms.CharField(required=True,
-                           label="Ausführliche Darstellung (max. 1000 Zeichen)",
+                           label="Ausführliche Darstellung",
                            max_length=1000,
                            widget=forms.Textarea(attrs={'rows':10, 'placeholder':'Wenn es bereits einen ähnlichen Vorschlag gibt, dann äußere Dich bitte in den Kommentaren zu diesem.'}))
 
 
 class NewCommentForm(forms.ModelForm):
-    text = forms.CharField(required=True, label="Dein Kommentar (max. 500 Zeichen)",
+    text = forms.CharField(required=True, label="Dein Kommentar",
                            help_text="Absätze sowie URLs werden passend formatiert",
                            max_length=500, widget=forms.Textarea(attrs={'rows':10, 'placeholder':'Bitte beziehe Dich in deinem Kommentar auf das obige Argument.'}))
 

@@ -101,3 +101,18 @@ function update_notifications(data) {
     }).join('')
   } 
 }
+
+function setup_char_counter(prefix){
+  // automatically show counter for all text-fields where applicable
+  $((prefix || '') + "[maxlength]").keyup(function(evt){
+    var t = $(evt.currentTarget);
+    $('[for=' + t.attr('id') + ']'
+      ).attr("data-text-after", "(noch " + (parseInt(t.attr('maxlength')) - t.val().length) + " Zeichen)");
+  }).keyup();
+
+}
+
+
+$(function() {
+  setup_char_counter();
+});

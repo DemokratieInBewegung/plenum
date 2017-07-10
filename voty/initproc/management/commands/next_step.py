@@ -23,3 +23,8 @@ class Command(BaseCommand):
                     i.went_to_discussion_at = datetime.now()
                     i.save()
                     i.notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION)
+
+                if i.state == STATES.DISCUSSION:
+                    i.state = STATES.FINAL_EDIT
+                    i.save()
+                    i.notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION_CLOSED)

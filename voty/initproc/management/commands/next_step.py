@@ -27,4 +27,4 @@ class Command(BaseCommand):
                 if i.state == STATES.DISCUSSION:
                     i.state = STATES.FINAL_EDIT
                     i.save()
-                    i.notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION_CLOSED)
+                    i.notify_followers(NOTIFICATIONS.INITIATIVE.DISCUSSION_CLOSED)

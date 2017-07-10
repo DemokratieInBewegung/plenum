@@ -1,0 +1,3 @@
+"{{sender}}" ist jetzt in der Diskussionsphase.
+
+Du findest die Initiative unter {{ base_url }}/initiative/{{sender.id}}-{{sender.slug}}s

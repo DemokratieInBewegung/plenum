@@ -1,0 +1,70 @@
+
+<div class="col-12" id="voting">
+    <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}} in Abstimmung</h6>
+    {% if vote %}
+     	<h3>Danke, deine Stimme wurde gezählt!</h3>
+     	<form data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/reset_vote" method="POST">
+
+     		<p>{% if initiative.votes.count == 1 %}<strong>{{initiative.votes.count}}</strong> Person hat{% else %} Personen haben{% endif %} bisher abgestimmt.
+     		</p> 
+     		<p>Du hast mit 
+     		</p>
+     		<div class="your-vote">
+     		{% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>{%else%}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>{% endif %}
+     		</div>
+     		<p>abgestimmt.
+	 		</p>
+	 		{% csrf_token %}
+     		<button class="btn btn-sm btn-default" type="submit" title="hier klicken um zurück zu nehmen">Stimme zurücknehmen</button>
+	 	</form>
+
+ 		{% if vote.nay_survey_options and not vote.in_favor and not vote.reason %}
+ 			<div class="feedback">
+ 			<hr />
+ 			<h3>Magst du den Initiator/innen sagen warum?</h3>
+ 			
+		 	<form data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
+		 		{% csrf_token %}
+		 		<input type="hidden" name="v" value="n" />
+		 		<p>Die Initiative ...</p>
+		 		<ul>
+		 			{% for r in vote.nay_survey_options %}
+			 			<li>
+			 				<label for="{{ r|slugify }}"><input id="{{ r|slugify }}" type="radio" name="reason" value="{{r}}"> {{r}}</label>
+			 			</li>
+			 		{% endfor %}
+		 		</ul>
+		 		<button class="btn btn-default btn-primary">Abschicken</button>
+		 	</form>
+		 	<form data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
+		 		{% csrf_token %}
+		 		<input type="hidden" name="v" value="n" />
+		 		<input type="hidden" name="reason" value=' ' />
+	 			<button class="btn btn-sm btn-default no-feedback">Keine Angabe machen</button>
+	 		</form>
+	 		</div>
+		 {% endif %}
+
+    {% else %}
+     	<h3> Stimmst du dieser Initiative zu?</h3>
+	 	<form id="initial_vote" class="row" data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
+	 		{% csrf_token %}
+	 		<div class="col-12 col-sm-6 text-center">
+		 		<label for="v_y"><input type="radio" required="true" id="v_y" name="v" value="y" />
+		    		<i class="material-icons">thumb_up</i>
+		    		<span>Ja</span>
+		    	</label>
+		    </div>
+	 		<div class="col-12 col-sm-6 text-center">
+		 		<label for="v_n"><input type="radio" required="true" id="v_n" name="v" value="n" />
+		    		<i class="material-icons">thumb_down</i>
+		    		<span>Nein</span>
+	    		</label>
+	    	</div>
+	 		<div class="col-12 text-center submit-vote">
+	    		<button type="submit" class="btn btn-lg btn-primary">Abstimmen</button>
+	    	</div>
+	 	</form>
+	{% endif %}
+
+</div>

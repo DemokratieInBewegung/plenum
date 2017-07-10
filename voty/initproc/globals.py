@@ -15,6 +15,7 @@ class NOTIFICATIONS:
         SUBMITTED = "init_submitted"
         PUBLISHED = "init_published"
         WENT_TO_DISCUSSION = "init_discussion"
+        DISCUSSION_CLOSED = "init_discussion_closed"
         WENT_TO_VOTE = 'init_vote'
 
         NEW_ARGUMENT = 'init_new_arg'
@@ -48,6 +49,11 @@ STAFF_ONLY_STATES = [STATES.INCOMING,
                      STATES.HIDDEN]
 
 
+COMPARING_FIELDS = [
+    'title', 'subtitle',  "summary", "problem", "forderung", "kosten",
+    "fin_vorschlag", "arbeitsweise", "init_argument",
+    "einordnung", "ebene", "bereich",
+]
 
 
 SPEED_PHASE_END = date(2017, 8, 21) # Everything published before this has speed phase

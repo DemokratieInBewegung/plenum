@@ -51,6 +51,31 @@ function update_notifications(data) {
           }
           break;
 
+        case "init_discussion":
+            message = `<a href="/initiative/${item.actor_object_id}">
+                <i class="material-icons">forum</i>${item.actor} kann jetzt diskutiert werden.
+            </a>`
+          break;
+
+        case "init_discussion_closed":
+            message = `<a href="/initiative/${item.actor_object_id}">
+                <i class="material-icons">create</i>${item.actor} kann jetzt final editiert werden.
+            </a>`
+          break;
+
+
+        case "init_vote":
+          if (item.target){
+            message = `<a href="/initiative/${item.target_object_id}">
+                <i class="material-icons">thumbs_up_down</i>${item.actor} hat "${item.target}" zur Abstimmung frei gegeben
+            </a>`
+          } else {
+            message = `<a href="/initiative/${item.actor_object_id}">
+                <i class="material-icons">thumbs_up_down</i>${item.actor} steht jetzt zur Abstimmung
+            </a>`
+          }
+          break;
+
         case "init_new_arg":
             message = `<a href="/initiative/${item.target_object_id}">
                 <i class="material-icons">comment</i>${item.actor} hat ein neues Argument zu "${item.target}"" veröffentlicht.

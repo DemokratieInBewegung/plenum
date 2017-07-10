@@ -31,7 +31,7 @@ def can_access_initiative(states=None, check=None):
         return view
     return wrap
 
-
+class ContinueChecking(Exception): pass
 
 def _compound_action(func):
     @wraps(func)
@@ -40,8 +40,8 @@ def _compound_action(func):
             obj = self.request.initiative
         try:
             return getattr(self, "_{}_{}".format(func.__name__, obj._meta.model_name))(obj, *args, **kwargs)
-        except AttributeError:
-            return func(obj)
+        except (AttributeError, ContinueChecking):
+            return func(self, obj)
     return wrapped
 
 
@@ -68,6 +68,7 @@ class Guard:
 
         return Initiative.objects.filter(state__in=filters)
 
+    @_compound_action
     def can_comment(self, obj=None):
         self.reason = None
         latest_comment = obj.comments.order_by("-created_at").first()
@@ -77,6 +78,12 @@ class Guard:
             return False
         elif latest_comment and latest_comment.user == self.user:
             self.reason = "Im Sinne einer abwechslungsreichen Diskussion kannst Du dieses Argument erst nach einer anderen Person wieder kommentieren."
+            return False
+
+        return True
+
+    def can_like(self, obj=None):
+        if obj.user == self.user: # should apply for both arguments and comments
             return False
 
         return True
@@ -187,7 +194,9 @@ class Guard:
             return False
         if not self.user.is_authenticated:
             return False
-        if not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=self.request.user.id):
+        if self.user.is_superuser:
+            return True
+        if not init.supporting.filter(initiator=True, user_id=self.request.user.id):
             return False
 
         return True
@@ -208,11 +217,27 @@ class Guard:
         return init.state == STATES.SEEKING_SUPPORT and self.user.is_authenticated
 
     def _can_moderate_initiative(self, init):
-        if init.state == STATES.INCOMING and self.user.is_staff:
+        if init.state in [STATES.INCOMING, STATES.MODERATION] and self.user.is_staff:
             if init.supporting.filter(user=self.user, initiator=True):
                 self.reason = "Als Mitinitator/in darfst du nicht mit moderieren."
                 return False
             return True
+        return False
+
+
+    def _can_comment_pro(self, obj=None):
+        if obj.initiative.state == STATES.DISCUSSION:
+            raise ContinueChecking()
+        return False
+
+    def _can_comment_contra(self, obj=None):
+        if obj.initiative.state == STATES.DISCUSSION:
+            raise ContinueChecking()
+        return False
+
+    def _can_comment_proposal(self, obj=None):
+        if obj.initiative.state == STATES.DISCUSSION:
+            raise ContinueChecking()
         return False
 
 

@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.utils.decorators import available_attrs
+from django.utils.safestring import mark_safe
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.apps import apps
@@ -13,10 +14,13 @@ from django import forms
 from datetime import datetime
 from django_ajax.decorators import ajax
 from pinax.notifications.models import send as notify
+from reversion_compare.helpers import html_diff
+from reversion.models import Version
+import reversion
 
 from functools import wraps
 
-from .globals import NOTIFICATIONS, STATES, INITIATORS_COUNT
+from .globals import NOTIFICATIONS, STATES, INITIATORS_COUNT, COMPARING_FIELDS
 from .guard import can_access_initiative
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
@@ -106,8 +110,15 @@ def new(request):
         form = InitiativeForm(request.POST)
         if form.is_valid():
             ini = form.save(commit=False)
-            ini.state = STATES.PREPARE
-            ini.save()
+            with reversion.create_revision():
+                ini.state = STATES.PREPARE
+                ini.save()
+
+                # Store some meta-information.
+                reversion.set_user(request.user)
+                if request.POST.get('commit_message', None):
+                    reversion.set_comment(request.POST.get('commit_message'))
+
 
             Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
             return redirect('/initiative/{}-{}'.format(ini.id, ini.slug))
@@ -134,7 +145,7 @@ def item(request, init, slug=None):
         ctx.update({'has_supported': init.supporting.filter(user=user_id).count(),
                     'has_voted': init.votes.filter(user=user_id).count()})
         if ctx['has_voted']:
-            ctx['vote'] = init.votes.filter(user=user_id).first().vote
+            ctx['vote'] = init.votes.filter(user_id=user_id).first()
 
         for arg in ctx['arguments'] + ctx['proposals']:
             arg.has_liked = arg.likes.filter(user=user_id).count() > 0
@@ -146,6 +157,7 @@ def item(request, init, slug=None):
                         arg.has_commented = True
                         break
 
+    print(ctx)
     return render(request, 'initproc/item.html', context=ctx)
 
 
@@ -227,7 +239,16 @@ def edit(request, initiative):
     form = InitiativeForm(request.POST or None, instance=initiative)
     if request.method == 'POST':
         if form.is_valid():
-            initiative.save()
+            with reversion.create_revision():
+                initiative.save()
+
+                # Store some meta-information.
+                reversion.set_user(request.user)
+                if request.POST.get('commit_message', None):
+                    reversion.set_comment(request.POST.get('commit_message'))
+
+            initiative.supporting.filter(initiator=True).update(ack=False)
+
             messages.success(request, "Initiative gespeichert.")
             initiative.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
             return redirect('/initiative/{}'.format(initiative.id))
@@ -238,11 +259,14 @@ def edit(request, initiative):
 
 
 @login_required
-@can_access_initiative(STATES.PREPARE, 'can_edit')
+@can_access_initiative([STATES.PREPARE, STATES.FINAL_EDIT], 'can_edit')
 def submit_to_committee(request, initiative):
     if initiative.ready_for_next_stage:
-        initiative.state = STATES.INCOMING
+        initiative.state = STATES.INCOMING if initiative.state == STATES.PREPARE else STATES.MODERATION
         initiative.save()
+
+        # make sure moderation starts from the top
+        initiative.moderations.update(stale=True)
 
         messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
         initiative.notify_followers(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
@@ -306,7 +330,7 @@ def support(request, initiative):
 
 @require_POST
 @login_required
-@can_access_initiative([STATES.PREPARE, STATES.INCOMING])
+@can_access_initiative([STATES.PREPARE, STATES.INCOMING, STATES.FINAL_EDIT])
 def ack_support(request, initiative):
     sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
     sup.ack = True
@@ -384,7 +408,7 @@ def new_proposal(request, form, initiative):
 
 @ajax
 @login_required
-@can_access_initiative('i', 'can_moderate') # must be in discussion
+@can_access_initiative([STATES.INCOMING, STATES.MODERATION], 'can_moderate') # must be in discussion
 @simple_form_verifier(NewModerationForm)
 def moderate(request, form, initiative):
     model = form.save(commit=False)
@@ -393,23 +417,47 @@ def moderate(request, form, initiative):
     model.save()
 
     if request.guard.can_publish(initiative):
-        initiative.supporting.filter(ack=False).delete()
-        initiative.went_public_at = datetime.now()
-        initiative.state = STATES.SEEKING_SUPPORT
-        initiative.save()
+        if initiative.state == STATES.INCOMING:
+            initiative.supporting.filter(ack=False).delete()
+            initiative.went_public_at = datetime.now()
+            initiative.state = STATES.SEEKING_SUPPORT
+            initiative.save()
 
-        messages.success(request, "Initiative veröffentlicht")
-        initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
-        initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=request.user)
+            messages.success(request, "Initiative veröffentlicht")
+            initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
+            initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=user)
+            return redirect('/initiative/{}'.format(initiative.id))
 
-        return redirect('/initiative/{}'.format(initiative.id))
+        elif initiative.state == STATES.MODERATION:
+
+            publish = [initiative]
+            if initiative.all_variants:
+                # check the variants, too
+
+                for ini in initiative.all_variants:
+                    if ini.state != STATES.MODERATION or not request.guard.can_publish(ini):
+                        publish = None
+                        break
+                    publish.append(ini)
+
+            if publish:
+                for init in publish:
+                    init.went_to_voting_at = datetime.now()
+                    init.state = STATES.VOTING
+                    init.save()
+                    init.notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE)
+                    init.notify_moderators(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE, subject=request.user)
+
+                messages.success(request, "Initiative(n) zur Abstimmung frei gegeben.")
+                return redirect('/initiative/{}-{}'.format(initiative.id, initiative.slug))
+
 
     
     return {
         'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>",
-                            '#moderation-list'.format(initiative.id):
+                            '#moderation-list':
                                 render_to_string("fragments/moderation/list_small.html",
-                                                  context=dict(initiative=initiative),
+                                                  context=dict(moderations=initiative.current_moderations),
                                                   request=request)}
     }
 
@@ -447,6 +495,9 @@ def comment(request, form, target_type, target_id):
 def like(request, target_type, target_id):
     model_cls = apps.get_model('initproc', target_type)
     model = get_object_or_404(model_cls, pk=target_id)
+
+    if not request.guard.can_like(model):
+        raise PermissionDenied()
 
     ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": True}
     for key in ['show_text', 'show_count']:
@@ -489,17 +540,67 @@ def unlike(request, target_type, target_id):
 
 
 
-@require_POST
+@non_ajax_redir('/')
+@ajax
 @login_required
+@require_POST
 @can_access_initiative(STATES.VOTING) # must be in voting
-def vote(request, init, vote):
-    in_favor = vote != 'nay'
-    my_vote = Vote.objects.get(initiative=init, user_id=request.user)
-    if my_vote:
-        if my_vote.in_favor != in_favor:
-            my_vote.in_favor = in_favor
-            my_vote.save()
+def vote(request, init):
+    in_favor = request.POST.get('v', 'n') != 'n'
+    reason = request.POST.get("reason", "")
+    try:
+        my_vote = Vote.objects.get(initiative=init, user_id=request.user)
+    except Vote.DoesNotExist:
+        my_vote = Vote(initiative=init, user_id=request.user.id, in_favor=in_favor)
     else:
-        Vote(initiative=initiative, user_id=request.user.id, in_favor=in_favor).save()
+        my_vote.in_favor = in_favor
+        my_vote.reason = reason
+    my_vote.save()
 
-    return redirect('/initiative/{}'.format(initiative.id))
+    return {'fragments': {
+        '#voting': render_to_string("fragments/voting.html",
+                                    context=dict(vote=my_vote, initiative=init),
+                                    request=request)
+        }}
+
+
+
+@non_ajax_redir('/')
+@ajax
+@can_access_initiative()
+def compare(request, initiative, version_id):
+    versions = Version.objects.get_for_object(initiative)
+    latest = versions.first()
+    selected = versions.filter(id=version_id).first()
+    compare = {key: mark_safe(html_diff(selected.field_dict.get(key, ''),
+                                        latest.field_dict.get(key, '')))
+            for key in COMPARING_FIELDS}
+
+    compare['went_public_at'] = initiative.went_public_at
+
+
+    return {
+        'inner-fragments': {
+            'header': "",
+            '.main': render_to_string("fragments/compare.html",
+                                      context=dict(initiative=initiative,
+                                                    selected=selected,
+                                                    latest=latest,
+                                                    compare=compare),
+                                      request=request)}
+    }
+
+
+
+@non_ajax_redir('/')
+@ajax
+@login_required
+@require_POST
+@can_access_initiative(STATES.VOTING) # must be in voting
+def reset_vote(request, init):
+    Vote.objects.filter(initiative=init, user_id=request.user).delete()
+    return {'fragments': {
+        '#voting': render_to_string("fragments/voting.html",
+                                    context=dict(vote=None, initiative=init),
+                                    request=request)
+        }}

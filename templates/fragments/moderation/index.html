@@ -1,12 +1,24 @@
-<div id="moderation">
+<div id="moderation" class="moderation alert alert-warning">
 
+	<strong>Moderationsberwertungen</strong>
 	<div id="moderation-list">
-        {% include 'fragments/moderation/list_small.html' %}
+        {% include 'fragments/moderation/list_small.html' with moderations=initiative.current_moderations %}
 	</div>
 
 	{% if request.guard.should_moderate_initiative %}
+		<br/>
 		<div id="moderation-new">
 			<a data-ajax=True href="/initiative/{{initiative.id}}/new_moderation?fragment=%23moderation-new" class="btn btn-outline-primary">Moderationsbewertung eintragen</a>
 		</div>
 	{% endif %}
+
+
+	{% if initiative.stale_moderations.count %}
+		<br>
+		<hr>
+		<br>
+		<strong>Moderation vorheriger Versionen</strong>
+	    {% include 'fragments/moderation/list_small.html' with moderations=initiative.stale_moderations %}
+	{% endif %}
+
 </div>

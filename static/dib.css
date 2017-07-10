@@ -204,12 +204,8 @@ p.card-text {
   line-height: 2.25rem;
 }
 
-.initiative-text *, .initiative-subtitle *, .initiative-title * {
+.initiative-text > .col, .initiative-subtitle > .col, .initiative-title > .col {
   overflow: hidden;
-}
-
-.initiative-text li {
-  overflow: visible;
 }
 
 .initiative-text .classification {
@@ -720,6 +716,12 @@ header .alert {
   border-color: #01549B;
 }
 
+.bg-vote, .bg-vote:hover, .bg-vote:focus, .bg-vote:visited {
+  color: rgba(255, 255, 255, 1);
+  background-color: #AE2568;
+  border-color: #AE2568;
+}
+
 .support {
   color: #EB9316;
 }
@@ -782,12 +784,12 @@ header .alert {
 /* Badge Color: Is Being Voted On */
 
 .badge-vote {
-  color: #C12E2A;
-  border-color: #C12E2A;
+  color: #AE2568;
+  border-color: #AE2568;
 }
 
 .typefilter input:checked + .badge-vote {
-  background-color: #C9302C;
+  background-color: #AE2568;
 }
 
 /* Badge Color: Was Accepted */
@@ -1074,6 +1076,134 @@ Argument base design
 .argument-meta .stats > span {
   padding-right: .25rem;
 }
+
+/*
+
+        VOTING 
+
+*/
+
+#voting h3 {
+  padding-top: .5rem;
+}
+
+#voting .in-favor {
+  color: #47AB64;
+  font-size: inherit;
+}
+
+#voting .declined {
+  color: #c9302c;
+  font-size: inherit;
+}
+
+#voting .btn-primary {
+  background-color: #AB4778;
+  border-color: #AB4778;
+}
+
+#voting .btn-primary:hover, #voting .btn-primary:active {
+  background-color: #AE2568;
+  border-color: #AE2568;
+}
+
+
+#voting .your-vote strong {
+ display: block;
+ width: 4rem;
+ padding-top: .5rem;
+ padding-bottom: 1rem;
+}
+
+#voting .in-favor .material-icons, #voting .declined .material-icons {
+  font-size: 4rem;
+  line-height: 4rem;
+}
+
+#voting .feedback {
+  padding-top: 1.5rem;
+}
+
+#voting .feedback ul{
+  list-style-type: none;
+  padding-left: 0;
+}
+
+#voting .feedback ul li label input {
+  margin-right: .25rem;
+}
+
+#voting .no-feedback {
+  margin-top: .75rem;
+}
+
+#initial_vote {
+  margin-top: 2rem;
+}
+
+#initial_vote .submit-vote {
+  margin-top: 3rem;
+}
+
+#initial_vote label span {
+  display: block;
+  font-size: 1.5rem;
+  color: #aaa;
+}
+
+#initial_vote .material-icons {
+  font-size: 7rem;
+  line-height: 7rem;
+  color: #aaa;
+  padding-bottom: .5rem;
+  padding-top: 2rem;
+}
+
+#initial_vote input[type=radio] {
+  display: none;
+}
+
+#initial_vote input[type=radio][value=y]:checked + .material-icons, #initial_vote input[type=radio][value=y]:checked + .material-icons + span {
+  color: #47AB64;
+}
+
+
+#initial_vote input[type=radio][value=n]:checked + .material-icons, #initial_vote input[type=radio][value=n]:checked + .material-icons + span {
+  color: #c9302c;
+}
+
+.show-debate {
+  margin-top: 2rem;
+}
+
+/*
+ 
+
+      MODERATION
+
+*/
+
+.moderation .badge {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: inline-block;
+  border-radius: 50%;
+  padding: 0;
+  text-align: center;
+  height: 2em;
+  width: 2em;
+}
+
+.moderation-item{
+  position: relative;
+}
+
+.moderation .badge .material-icons {
+  font-size: 1em;
+  line-height: 2em;
+}
+
 
 /*
 green: #47AB64;

@@ -243,5 +243,6 @@ OPTIONAL_NOPE_REASONS = [
     'ist nicht konkret genug.',
     'ist inhaltlich noch nicht ausgereift.',
     'passt nicht zu DiB.',
-    'lässt sich nicht vertreten.'
+    'lässt sich nicht vertreten.',
+    'ist nicht mehr relevant.'
 ]

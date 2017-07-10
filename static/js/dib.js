@@ -101,3 +101,19 @@ function update_notifications(data) {
     }).join('')
   } 
 }
+
+
+$(function() {
+  // automatically show counter for all text-fields where applicable
+  $("[data-max-chars]").keyup(function(evt){
+    var t = $(evt.currentTarget);
+    $('[for=' + t.attr('id') + ']'
+      ).attr("data-text-after", "(noch " + (parseInt(t.data('max-chars')) - t.val().length) + " Zeichen)");
+  }).keyup();
+
+  $("[maxlength]").keyup(function(evt){
+    var t = $(evt.currentTarget);
+    $('[for=' + t.attr('id') + ']'
+      ).attr("data-text-after", "(noch " + (parseInt(t.attr('maxlength')) - t.val().length) + " Zeichen)");
+  }).keyup();
+});

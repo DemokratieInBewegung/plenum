@@ -45,7 +45,17 @@ body {
   font-feature-settings: 'liga';
 }
 
+
 /* custom elements */
+
+[data-text-after]:after  {
+  display: inline-block;
+  margin-left: 0.5em;
+  font-size: 0.9em;
+  font-style: italic;
+  color: #aaa;
+  content: attr(data-text-after);
+}
 
 .container-fluid.dib-nav {
   background: linear-gradient(to right, #21466b 0%,#263d82 30%,#263d82 30%,#eb5c4a 100%);

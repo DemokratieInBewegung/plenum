@@ -15,6 +15,7 @@ class NOTIFICATIONS:
         SUBMITTED = "init_submitted"
         PUBLISHED = "init_published"
         WENT_TO_DISCUSSION = "init_discussion"
+        DISCUSSION_CLOSED = "init_discussion_closed"
         WENT_TO_VOTE = 'init_vote'
 
         NEW_ARGUMENT = 'init_new_arg'

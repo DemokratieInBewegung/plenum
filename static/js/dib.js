@@ -51,9 +51,15 @@ function update_notifications(data) {
           }
           break;
 
-        case "init_published":
+        case "init_discussion":
             message = `<a href="/initiative/${item.actor_object_id}">
                 <i class="material-icons">forum</i>${item.actor} kann jetzt diskutiert werden.
+            </a>`
+          break;
+
+        case "init_discussion_closed":
+            message = `<a href="/initiative/${item.actor_object_id}">
+                <i class="material-icons">create</i>${item.actor} kann jetzt final editiert werden.
             </a>`
           break;
 

@@ -734,10 +734,14 @@ header .alert {
   border-color: #01549B;
 }
 
-.bg-vote, .bg-vote:hover, .bg-vote:focus, .bg-vote:visited {
+.bg-vote, .bg-vote:focus, .bg-vote:visited {
   color: rgba(255, 255, 255, 1);
+  background-color: #AB4778;
+  border-color: #AB4778;
+}
+
+.bg-vote:hover {
   background-color: #AE2568;
-  border-color: #AE2568;
 }
 
 .support {

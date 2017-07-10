@@ -5,13 +5,18 @@ from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.utils.decorators import available_attrs
 from django.utils.safestring import mark_safe
+from django.contrib.postgres.search import SearchVector
 from django.contrib.auth import get_user_model
 from django.contrib import messages
+from django.conf import settings
 from django.apps import apps
 from django.db.models import Q
+from django.db import connection
 from dal import autocomplete
 from django import forms
+
 from datetime import datetime
+
 from django_ajax.shortcuts import render_to_json
 from django_ajax.decorators import ajax
 from pinax.notifications.models import send as notify
@@ -85,6 +90,17 @@ def index(request):
 
     if ids:
         inits = inits.filter(id__in=ids)
+
+    elif request.GET.get('s', None):
+        searchstr = request.GET.get('s')
+
+        if len(searchstr) >= settings.MIN_SEARCH_LENGTH:
+            if connection.vendor == 'postgresql':
+                inits = inits.annotate(search=SearchVector('title', 'subtitle','summary',
+                        'problem', 'forderung', 'kosten', 'fin_vorschlag', 'arbeitsweise', 'init_argument')
+                    ).filter(search=searchstr)
+            else:
+                inits = inits.filter(Q(title__icontains=searchstr) | Q(subtitle__icontains=searchstr))
 
     if request.is_ajax():
         all_inits = inits.all()

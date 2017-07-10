@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
 
     # 3rd party
     'account',
@@ -246,6 +247,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 #  AND OUR OWN STUFF
 
+MIN_SEARCH_LENGTH = 3
 
 OPTIONAL_NOPE_REASONS = [
     'entspricht nicht meiner Überzeugung.',

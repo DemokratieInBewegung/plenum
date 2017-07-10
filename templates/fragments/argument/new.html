@@ -1,7 +1,7 @@
 {% load bootstrap %}
 
 <div>
-<form method="POST" {%if ajax%}data-ajax-submit="true"{%endif%} action="{{request.path}}{% if fragment %}?fragment={{fragment|urlencode}}{% endif %}">
+<form id="js-new-argument" method="POST" {%if ajax%}data-ajax-submit="true"{%endif%} action="{{request.path}}{% if fragment %}?fragment={{fragment|urlencode}}{% endif %}">
 
 
 <div class="row no-gutters">
@@ -34,4 +34,7 @@
 
 </form>
 {{form.media}}
+<script type="text/javascript">
+	setup_char_counter('#js-new-argument ');
+</script>
 </div>

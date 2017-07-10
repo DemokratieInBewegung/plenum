@@ -141,7 +141,7 @@
 
                 {% ifequal initiative.state 'v' %}
                     <p>
-                        Über diese Initiative <a href="#voting">wird gerade abgestimmt</a>.
+                        Über diese Initiative <a href="#voting"><strong class="badge-vote">wird gerade abgestimmt</strong></a>.
                     </p>
                 {% endifequal %} {% ifequal initiative.state 'a' %}
                 <span class="badge badge-accepted">
@@ -308,7 +308,7 @@
             <div class="col-12">
                 <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
                 <p>Über diese Initiative wird gerade abgestimmt .</p>
-                <a href="#discuss" class="btn bg-discussion">
+                <a href="#discuss" class="btn bg-vote">
                     Jetzt abstimmen
                 </a>
             </div>
@@ -357,7 +357,7 @@
 
 {% if initiative.state == 'v' %}
 
-<div id="discuss" class="container-fluid cta">
+<div id="vote" class="container-fluid cta">
     <div class="container">
         <div class="row no-gutters">
             {% include "fragments/voting.html" %}
@@ -371,7 +371,7 @@
 
 {% if initiative.show_debate %}
 
-<div id="discuss" class="container-fluid cta">
+<div id="discuss" class="container-fluid show-debate">
     <div class="container">
         <div class="row no-gutters">
             <div class="col-12">

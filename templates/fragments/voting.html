@@ -5,10 +5,10 @@
      	<h3>Danke, deine Stimme wurde gezählt!</h3>
      	<form data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/reset_vote" method="POST">
 
-     		<p>{{initiative.votes.count}} Personen haben bisher abgestimmt. Du hast mit {% if vote.in_favor %}<i class="material-icons">thumb_up</i> JA{%else%}<i class="material-icons">thumb_down</i> NEIN{% endif %} gestimmt.
-     		{% csrf_token %}
-     		<button class="btn btn-sm btn-default" type="submit" title="hier klicken um zurück zu nehmen">Stimme zurücknehmen</button>
+     		<p>{% if initiative.votes.count == 1 %}{{initiative.votes.count}} Person hat{% else %} Personen haben{% endif %} bisher abgestimmt. Du hast mit {% if vote.in_favor %}<span class="in-favor"><i class="material-icons">thumb_up</i> JA</span>{%else%}<span class="declined"><i class="material-icons">thumb_down</i> NEIN</span>{% endif %} abgestimmt.
 	 		</p>
+	 		{% csrf_token %}
+     		<button class="btn btn-sm btn-default revoke" type="submit" title="hier klicken um zurück zu nehmen">Stimme zurücknehmen</button>
 	 	</form>
 
  		{% if vote.nay_survey_options and not vote.in_favor and not vote.reason %}
@@ -40,17 +40,19 @@
      	<h3> Stimmst du dieser Initiative zu?</h3>
 	 	<form id="initial_vote" class="row" data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
 	 		{% csrf_token %}
-	 		<div class="col-6 text-center">
+	 		<div class="col-12 col-sm-6 text-center">
 		 		<label for="v_y"><input type="radio" required="true" id="v_y" name="v" value="y" />
-		    		<i class="material-icons">thumb_up</i> 
+		    		<i class="material-icons">thumb_up</i>
+		    		<span>Ja</span>
 		    	</label>
 		    </div>
-	 		<div class="col-6 text-center">
+	 		<div class="col-12 col-sm-6 text-center">
 		 		<label for="v_n"><input type="radio" required="true" id="v_n" name="v" value="n" />
-		    		<i class="material-icons">thumb_down</i> 
+		    		<i class="material-icons">thumb_down</i>
+		    		<span>Nein</span>
 	    		</label>
 	    	</div>
-	 		<div class="col-12 text-center">
+	 		<div class="col-12 text-center submit-vote">
 	    		<button type="submit" class="btn btn-lg btn-danger">Abstimmen</button>
 	    	</div>
 	 	</form>

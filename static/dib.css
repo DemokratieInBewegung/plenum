@@ -1077,23 +1077,56 @@ Argument base design
 
 */
 
+/*#voting .revoke {
+  display: block;
+}*/
+
+#voting .in-favor {
+  color: #47AB64;
+  font-size: inherit;
+}
+
+#voting .declined {
+  color: #AB4778;
+}
+
+#voting .in-favor .material-icons, #voting .declined .material-icons {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+#initial_vote {
+  margin-top: 2rem;
+}
+
+#initial_vote .submit-vote {
+  margin-top: 3rem;
+}
+
+#initial_vote label span {
+  display: block;
+  font-size: 1.5rem;
+  color: #aaa;
+}
 
 #initial_vote .material-icons {
-  font-size: 7em;
-  line-height: 2.5em;
+  font-size: 7rem;
+  line-height: 7rem;
   color: #aaa;
+  padding-bottom: .5rem;
+  padding-top: 2rem;
 }
 
 #initial_vote input[type=radio] {
   display: none;
 }
 
-#initial_vote input[type=radio][value=y]:checked + .material-icons {
+#initial_vote input[type=radio][value=y]:checked + .material-icons, #initial_vote input[type=radio][value=y]:checked + .material-icons + span {
   color: #47AB64;
 }
 
 
-#initial_vote input[type=radio][value=n]:checked + .material-icons {
+#initial_vote input[type=radio][value=n]:checked + .material-icons, #initial_vote input[type=radio][value=n]:checked + .material-icons + span {
   color: #AB4778;
 }
 

@@ -216,7 +216,7 @@ class Guard:
         return init.state == STATES.SEEKING_SUPPORT and self.user.is_authenticated
 
     def _can_moderate_initiative(self, init):
-        if init.state == STATES.INCOMING and self.user.is_staff:
+        if init.state in [STATES.INCOMING, STATES.MODERATION] and self.user.is_staff:
             if init.supporting.filter(user=self.user, initiator=True):
                 self.reason = "Als Mitinitator/in darfst du nicht mit moderieren."
                 return False

@@ -92,10 +92,11 @@ class Initiative(models.Model):
     @cached_property
     def ready_for_next_stage(self):
 
-        if self.state == Initiative.STATES.INCOMING:
+        if self.state in [Initiative.STATES.INCOMING, Initiative.STATES.MODERATION]:
             return self.supporting.filter(initiator=True, ack=True).count() == INITIATORS_COUNT
 
-        if self.state == Initiative.STATES.PREPARE: #three initiators and no empty text fields
+        if self.state in [Initiative.STATES.PREPARE, Initiative.STATES.FINAL_EDIT]:
+            #three initiators and no empty text fields
             return (self.supporting.filter(initiator=True, ack=True).count() == INITIATORS_COUNT and
                 self.title and
                 self.subtitle and
@@ -113,7 +114,12 @@ class Initiative(models.Model):
         if self.state == Initiative.STATES.SEEKING_SUPPORT:
             return self.supporting.filter().count() >= self.quorum
 
+        if self.state == Initiative.STATES.DISCUSSION:
+            # there is nothing we have to accomplish
+            return True
+
         return False
+
 
     @cached_property
     def end_of_this_phase(self):
@@ -223,6 +229,14 @@ class Initiative(models.Model):
     def custom_cls(self):
         return 'item-{} state-{} area-{}'.format(slugify(self.title),
                     slugify(self.state), slugify(self.bereich))
+
+    @property
+    def current_moderations(self):
+        return self.moderations.filter(stale=False)
+
+    @property
+    def stale_moderations(self):
+        return self.moderations.filter(stale=True)
 
     def __str__(self):
         return self.title;
@@ -395,7 +409,3 @@ class Moderation(Response):
             ('n', 'no!')
         ])
     text = models.CharField(max_length=500, blank=True)
-
-    
-    class Meta:
-        unique_together = (("user", "initiative"),)

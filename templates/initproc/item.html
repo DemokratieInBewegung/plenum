@@ -48,59 +48,68 @@
     <div class="container">
         <div class="row initiative-state">
             <div class="col-12">
-                {% if initiative.state == 'p' or initiative.state == 'i' %}
-                {% if request.guard.can_edit %}
-                    {% if not initiative.ready_for_next_stage %}
-                    <div class="pre-submit">
-                        <div class="alert alert-info" role="alert">
-                        <h6>Um Deine Initiative einreichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
-                        <ol>
-                            <li>Alle Textfelder beim Einreichen müssen ausgefüllt sein.</li>
-                            <li>Du musst genau 2 Mitinitiator/innen angeben.</li>
-                            <li>Deine Mitinitiator/innen müssen ihre Mitautorschaft bestätigt haben.</li>
-                        </ol>
-                        </div>
-                        {% endif %}
-                        <form action="/initiative/{{initiative.id}}/edit" style="display:inline"  method="GET">
-                            {% csrf_token %}
-                            <button title="Bearbeiten" class="btn btn-success edit" type="submit">
-                                <i class="material-icons edit">edit</i><span>Bearbeiten</span>
-                            </button>
-                        </form>
-                        {% if initiative.ready_for_next_stage %}
-                        <form action="/initiative/{{initiative.id}}/submit_to_committee" style="display:inline"  method="POST">
-                            {% csrf_token %}
-                            <button title="Einreichen" class="btn btn-success submit" type="submit">
+                {% if initiative.state == 'p' or initiative.state == 'i' or initiative.state == 'e' %}
+                    {% if request.guard.can_edit %}
+                        {% if not initiative.ready_for_next_stage %}
+                        <div class="pre-submit">
+                            <div class="alert alert-info" role="alert">
+                            <h6>Um Deine Initiative einreichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
+                            <ol>
+                                <li>Alle Textfelder beim Einreichen müssen ausgefüllt sein.</li>
+                                <li>Du musst genau 2 Mitinitiator/innen angeben.</li>
+                                <li>Deine Mitinitiator/innen müssen ihre Mitautorschaft bestätigt haben.</li>
+                            </ol>
+                            </div>
+                            {% endif %}
+                            <form action="/initiative/{{initiative.id}}/edit" style="display:inline"  method="GET">
+                                {% csrf_token %}
+                                <button title="Bearbeiten" class="btn btn-success edit" type="submit">
+                                    <i class="material-icons edit">edit</i><span>Bearbeiten</span>
+                                </button>
+                            </form>
+                            {% if initiative.ready_for_next_stage %}
+                            <form action="/initiative/{{initiative.id}}/submit_to_committee" style="display:inline"  method="POST">
+                                {% csrf_token %}
+                                <button title="Einreichen" class="btn btn-success submit" type="submit">
+                                    <i class="material-icons public">public</i><span>Einreichen</span>
+                                </button>
+                            </form>
+                            {% else %}
+                            <button title="Kann noch nicht eingereicht werden" class="btn btn-success submit" style="display:inline" disabled=True type="submit">
                                 <i class="material-icons public">public</i><span>Einreichen</span>
                             </button>
-                        </form>
-                        {% else %}
-                        <button title="Kann noch nicht eingereicht werden" class="btn btn-success submit" style="display:inline" disabled=True type="submit">
-                            <i class="material-icons public">public</i><span>Einreichen</span>
-                        </button>
-                    </div>
+                        </div>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
 
-                <p>
-                    Diese Initiative <strong class="badge-prepare">wurde noch nicht veröffentlicht</strong>.
-                </p>
-                    {% if request.guard.can_moderate %}
-                        {% include 'fragments/moderation/index.html' %}
-                    {% elif initiative.state == 'i' and request.user.is_staff %}
-                        <div class="alert alert-info">{{request.guard.reason}}</div>
+                {% if initiative.state == 'p' %}
+                    <p>
+                    An diese Initiative <strong class="badge-prepare">wird noch gearbeitet</strong>.
+                    </p>
+                {% elif initiative.state == 'e' %}
+                    <p>
+                    Diese Initiative <strong class="badge-prepare">wird für die Abstimmung finalisiert</strong>.
+                    </p>
+                {% elif initiative.state == 'i' or initiative.state == 'm' %}
+                    <p>
+                    Diese Initiative <strong class="badge-prepare">wird gerade geprüft</strong> und {% if initiative.state == 'i' %} wird dann veröffentlicht {% else %} geht dann in <strong  class="badge-prepare">die Abstimmung</strong>{% endif %}.
+                    </p>
+                    {% if request.user.is_staff %}
+                        {% if request.guard.can_moderate %}
+                            {% include 'fragments/moderation/index.html' %}
+                        {% else %}
+                            <div class="alert alert-info">{{request.guard.reason}}</div>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
-                {% ifequal initiative.state 'm' %}
-                <p>
-                    Diese Initiative <strong class="badge-arrivals">wird gerade moderiert</strong>.
-                </p>
-                {% endifequal %}
+
                 {% ifequal initiative.state 'h' %}
                 <p>
-                    Diese Initiative <strong class="badge-arrivals">ist gerade nicht sichtbar</strong>.
+                    Diese Initiative <strong class="badge-arrivals">ist nicht sichtbar</strong>.
                 </p>
                 {% endifequal %}
+
                 {% ifequal initiative.state 's' %}
                 {% if initiative.absolute_supporters < initiative.quorum %}
                 <p>
@@ -128,13 +137,13 @@
                     Diese Initiative befindet sich <a href="#debate">in Diskussion</a>.
                 </p>
                 {% endifequal %}
-                {% ifequal initiative.state 'e' %}
-                <span class="badge badge-edits">
-                    Finale Überarbeitung
-                </span> {% endifequal %} {% ifequal initiative.state 'v' %}
-                <span class="badge badge-vote">
-                    Abstimmung
-                </span> {% endifequal %} {% ifequal initiative.state 'a' %}
+
+
+                {% ifequal initiative.state 'v' %}
+                    <p>
+                        Über diese Initiative <a href="#voting">wird gerade abgestimmt</a>.
+                    </p>
+                {% endifequal %} {% ifequal initiative.state 'a' %}
                 <span class="badge badge-accepted">
                     Angenommen
                 </span> {% endifequal %} {% ifequal initiative.state 'r' %} {% if initiative.went_to_discussion_at %}
@@ -165,7 +174,7 @@
                     <div class="name">
                         {{ sup.user.get_full_name|default:sup.user.username }}
                     </div>
-                    {% if initiative.state == 'i' or initiative.state == 'p' %}
+                    {% if initiative.state == 'i' or initiative.state == 'p'  or initiative.state == 'e' %}
                     <div class="approval">
                         {% if sup.ack %}
                             <span title="bestätigt" class=""><i class="material-icons done">done</i></span>
@@ -275,6 +284,7 @@
 </div>
 {% endifequal %}
 
+
 {% ifequal initiative.state 'd' %}
 <div id="cta" class="container-fluid cta">
     <div class="container">
@@ -284,6 +294,22 @@
                 <p>Diese Initiative befindet sich in Diskussion.</p>
                 <a href="#discuss" class="btn bg-discussion">
                     Jetzt diskutieren
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endifequal %}
+
+{% ifequal initiative.state 'v' %}
+<div id="cta" class="container-fluid cta">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
+                <p>Über diese Initiative wird gerade abgestimmt .</p>
+                <a href="#discuss" class="btn bg-discussion">
+                    Jetzt abstimmen
                 </a>
             </div>
         </div>

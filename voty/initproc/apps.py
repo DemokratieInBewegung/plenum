@@ -40,6 +40,11 @@ def create_notice_types(sender, **kwargs):
                       'Initiative in Diskussion',
                       'Die Initiative ist in die Diskussionphase eingetreten')
 
+
+    NoticeType.create(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE,
+                      'Initiative in Abstimmung',
+                      'Die Initiative ist in die Abstimmung gegangen')
+
     # DISCUSSION
 
     NoticeType.create(NOTIFICATIONS.INITIATIVE.NEW_ARGUMENT,

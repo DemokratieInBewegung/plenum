@@ -1,5 +1,6 @@
 {% load avatar_tags %}
 {% load markdown %}
+<div id="{{m.unique_id}}" class="moderation-item">
 
 {% avatar m.user 50 %} {% if m.vote == 'y' %}<span class="badge badge-success"><i class="material-icons">thumb_up</i></span>{% elif m.vote == 'n' %}<span class="badge badge-danger"><i class="material-icons">thumb_down</i></span>{% else %}<span class="badge badge-default"><i class="material-icons">thumbs_updown</i></span>{% endif %}{{m.created_at|timesince}}
 <p>
@@ -13,4 +14,5 @@
 </div>
 <div id="{{m.unique_id}}-new-comment">
     <a data-ajax="true" href="/comment/{{m.type}}/{{m.id}}?fragment=%23{{m.unique_id}}-new-comment" class="btn btn-small btn-outline-primary">Kommentieren</a>
+</div>
 </div>

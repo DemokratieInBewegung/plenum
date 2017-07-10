@@ -8,7 +8,7 @@ from django.utils.safestring import mark_safe
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.apps import apps
-from django.db.models import Q
+from django.db.models import Q, Count
 from dal import autocomplete
 from django import forms
 from datetime import datetime
@@ -20,7 +20,7 @@ import reversion
 
 from functools import wraps
 
-from .globals import NOTIFICATIONS, STATES, INITIATORS_COUNT, COMPARING_FIELDS
+from .globals import NOTIFICATIONS, STATES, INDEX_STATES, INITIATORS_COUNT, COMPARING_FIELDS
 from .guard import can_access_initiative
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
@@ -79,12 +79,22 @@ def index(request):
         filters = request.session.get('init_filters', DEFAULT_FILTERS)
 
     inits = request.guard.make_intiatives_query(filters).prefetch_related("supporting")
-    count_inbox = request.guard.make_intiatives_query(['i']).count()
+
+    totalSet = Initiative.objects.filter(
+        id__in=request.guard.make_intiatives_query(INDEX_STATES) # filter out those invisible to the user
+        ).values('state').annotate(total=Count('state')) # then group by state and count
+
+    # transform the query set into what the template expects
+    counts = {}
+    for elem in totalSet:
+        counts[elem.get('state')]=elem.get('total')
+
+    for state in INDEX_STATES: # add back those states that have count 0
+        if state not in counts:
+            counts[state] = 0
 
     return render(request, 'initproc/index.html',context=dict(initiatives=inits,
-                    inbox_count=count_inbox, filters=filters))
-
-
+                    counts = counts, filters=filters))
 
 class UserAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):

@@ -31,16 +31,16 @@
 							<label>
 								<input name="f" value="p" type="checkbox" {% if 'p' in filters %} checked{% endif %}>
 								<span class="badge badge-prepare">
-						      		In Vorbereitung
+						      		In Vorbereitung ({{counts.p}})
 						      	</span>
 							</label>
 						</div>
-							{% if inbox_count %}
+							{% if counts.i %}
 						    <div class="col-auto">
 							    <label>
 							      	<input name="f" value="i" type="checkbox" {% if 'i' in filters %} checked{% endif %}>
 							      	<span class="badge badge-arrivals">
-							      		In Prüfung ({{inbox_count}})
+							      		In Prüfung ({{counts.i}})
 							      	</span>
 							    </label>
 							</div>
@@ -50,7 +50,7 @@
 						    <label>
 						      	<input name="f" value="s" type="checkbox" {% if 's' in filters %} checked{% endif %}>
 						      	<span class="badge badge-support">
-						      		Sucht Unterstützung
+						      		Sucht Unterstützung ({{counts.s}})
 						      	</span>
 						    </label>
 						</div>
@@ -58,7 +58,7 @@
 						    <label>
 						      	<input name="f" value="d" type="checkbox" {% if 'd' in filters %} checked{% endif %}>
 						      	<span class="badge badge-discussion">
-						      		In Diskussion
+						      		In Diskussion ({{counts.d}})
 						      	</span>
 						    </label>
 						</div>
@@ -66,7 +66,7 @@
 						    <label>
 						      	<input name="f" value="e" type="checkbox" {% if 'e' in filters %} checked{% endif %}>
 						      	<span class="badge badge-edits">
-						      		Finale Überarbeitung
+						      		Finale Überarbeitung ({{counts.e}})
 						      	</span>
 						    </label>
 						</div>
@@ -82,7 +82,7 @@
 						    <label>
 						      	<input name="f" value="v" type="checkbox" {% if 'v' in filters %} checked{% endif %}>
 						      	<span class="badge badge-vote">
-						      		Abstimmung
+						      		Abstimmung ({{counts.v}})
 						      	</span>
 						    </label>
 						</div>
@@ -90,7 +90,7 @@
 						    <label>
 						      	<input name="f" value="a" type="checkbox" {% if 'a' in filters %} checked{% endif %}>
 						      	<span class="badge badge-accepted">
-						      		Angenommen
+						      		Angenommen ({{counts.a}})
 						      	</span>
 						    </label>
 						</div>
@@ -98,7 +98,7 @@
 						    <label>
 						      	<input name="f" value="r" type="checkbox" {% if 'r' in filters %} checked{% endif %}>
 						      	<span class="badge badge-rejected">
-						      		Abgelehnt
+						      		Abgelehnt ({{counts.r}})
 						      	</span>
 						    </label>
 						</div>

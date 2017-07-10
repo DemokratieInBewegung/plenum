@@ -23,7 +23,7 @@ class NOTIFICATIONS:
 
 class STATES:
     """
-    The states and initiative can have
+    The states an initiative can have
     """
     PREPARE = 'p'
     INCOMING = 'i'
@@ -48,6 +48,15 @@ STAFF_ONLY_STATES = [STATES.INCOMING,
                      STATES.MODERATION,
                      STATES.HIDDEN]
 
+# states shown on index page
+INDEX_STATES = [STATES.PREPARE,
+                STATES.INCOMING,
+                STATES.SEEKING_SUPPORT,
+                STATES.DISCUSSION,
+                STATES.FINAL_EDIT,
+                STATES.VOTING,
+                STATES.ACCEPTED,
+                STATES.REJECTED]
 
 COMPARING_FIELDS = [
     'title', 'subtitle',  "summary", "problem", "forderung", "kosten",

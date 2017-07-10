@@ -53,11 +53,20 @@
                         {% if not initiative.ready_for_next_stage %}
                         <div class="pre-submit">
                             <div class="alert alert-info" role="alert">
+                            {% if initiative.state != 'e' %}
                             <h6>Um Deine Initiative einreichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
+                            {% else %}
+                            <h6>Um Deine Initiative nach der Überarbeitung zur Abstimmung einreichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
+                            {% endif %}
                             <ol>
+                                {% if initiative.state != 'e' %}
                                 <li>Alle Textfelder beim Einreichen müssen ausgefüllt sein.</li>
                                 <li>Du musst genau 2 Mitinitiator/innen angeben.</li>
                                 <li>Deine Mitinitiator/innen müssen ihre Mitautorschaft bestätigt haben.</li>
+                                {% else %}
+                                <li>Alle Textfelder müssen ausgefüllt sein.</li>
+                                <li>Deine Mitinitiator/innen müssen ihre Mitautorschaft erneut bestätigt haben.</li>
+                                {% endif %}
                             </ol>
                             </div>
                             {% endif %}
@@ -70,14 +79,26 @@
                             {% if initiative.ready_for_next_stage %}
                             <form action="/initiative/{{initiative.id}}/submit_to_committee" style="display:inline"  method="POST">
                                 {% csrf_token %}
+                                {% if initiative.state != 'e' %}
                                 <button title="Einreichen" class="btn btn-success submit" type="submit">
                                     <i class="material-icons public">public</i><span>Einreichen</span>
                                 </button>
+                                {% else %}
+                                <button title="Zur Abstimmung einreichen" class="btn bg-vote submit" type="submit">
+                                    <i class="material-icons thumbs-up-down">thumbs_up_down</i><span>Zur Abstimmung einreichen</span>
+                                </button>
+                                {% endif %}
                             </form>
                             {% else %}
+                            {% if initiative.state != 'e' %}
                             <button title="Kann noch nicht eingereicht werden" class="btn btn-success submit" style="display:inline" disabled=True type="submit">
                                 <i class="material-icons public">public</i><span>Einreichen</span>
                             </button>
+                            {% else %}
+                            <button title="Kann noch nicht zur Abstimmung eingereicht werden" class="btn bg-vote submit" style="display:inline" disabled=True type="submit">
+                                <i class="material-icons thumbs-up-down">thumbs_up_down</i><span>Zur Abstimmung einreichen</span>
+                            </button>
+                            {% endif %}
                         </div>
                         {% endif %}
                     {% endif %}
@@ -307,7 +328,7 @@
         <div class="row">
             <div class="col-12">
                 <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
-                <p>Über diese Initiative wird gerade abgestimmt .</p>
+                <p>Über diese Initiative wird gerade abgestimmt.</p>
                 <a href="#vote" class="btn bg-vote">
                     Jetzt abstimmen
                 </a>

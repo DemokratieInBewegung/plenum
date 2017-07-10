@@ -374,7 +374,7 @@ img.avatar {
   display: block;
 }
 
-.initiative-state .publish span, .pre-submit .edit span, .pre-submit .submit span {
+.initiative-state .publish span, .initiative-state .edit span, .initiative-state .submit span {
   font-size: 1.125rem;
   line-height: 1.875rem;
 }
@@ -450,21 +450,21 @@ img.avatar {
   padding-top: 1.25rem;
 }
 
-.pre-submit .alert {
+.initiative-state .alert {
   margin-bottom: 1rem;
 }
 
-.pre-submit .alert ol {
+.initiative-state .alert ol {
   margin-bottom: 0;
 }
 
-.pre-submit button {
+.initiative-state button {
   margin-bottom: 1rem;
   margin-right: .25rem;
 }
 
 .initiators {
-  margin-top: 2rem;
+  margin-top: 1rem;
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
   background-color: rgba(0, 0, 0, 0.03);

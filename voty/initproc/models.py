@@ -409,7 +409,3 @@ class Moderation(Response):
             ('n', 'no!')
         ])
     text = models.CharField(max_length=500, blank=True)
-
-    
-    class Meta:
-        unique_together = (("user", "initiative"),)

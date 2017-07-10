@@ -2,19 +2,24 @@
 <div id="argument-list">
     {% for argument in arguments %}
         {% include "fragments/argument/small.html" %}
+    {% empty %}
+        <div class="alert alert-info">Diese Debatte hat {% if initiative.state == 'd' %}bisher{% endif %} keine Argumente.</div>
     {% endfor %}
 </div>
-<div id="new-argument" class="container-fluid">
-    <div class="row">
-        <div class="{% if arguments %}offset-md-2 {% endif %}col text-center">
-            <a data-ajax="true" href="/initiative/{{initiative.id}}/new_argument?type=👍&fragment=%23new-argument" class="btn">
-        		<i class="material-icons">thumb_up</i> Pro-Argument hinzufügen
-        	</a>
-        </div>
-        <div class="col text-center">
-            <a data-ajax="true" href="/initiative/{{initiative.id}}/new_argument?type=👎&fragment=%23new-argument" class="btn">
-        		<i class="material-icons">thumb_down</i> Kontra-Argument hinzufügen
-        	</a>
+{% if initiative.state == 'd' %}
+    <div id="new-argument" class="container-fluid">
+        <div class="row">
+            <div class="{% if arguments %}offset-md-2 {% endif %}col text-center">
+                <a data-ajax="true" href="/initiative/{{initiative.id}}/new_argument?type=👍&fragment=%23new-argument" class="btn">
+            		<i class="material-icons">thumb_up</i> Pro-Argument hinzufügen
+            	</a>
+            </div>
+            <div class="col text-center">
+                <a data-ajax="true" href="/initiative/{{initiative.id}}/new_argument?type=👎&fragment=%23new-argument" class="btn">
+            		<i class="material-icons">thumb_down</i> Kontra-Argument hinzufügen
+            	</a>
+            </div>
         </div>
     </div>
-</div>
+{% else %}
+{% endif %}

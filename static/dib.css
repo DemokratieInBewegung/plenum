@@ -1172,8 +1172,9 @@ Argument base design
   color: #c9302c;
 }
 
-.show-debate {
+.closed {
   margin-top: 2rem;
+  background: rgba(255, 255, 255, 1);
 }
 
 /*

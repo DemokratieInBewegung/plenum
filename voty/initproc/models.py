@@ -139,7 +139,10 @@ class Initiative(models.Model):
                         return self.went_public_at + week
                     return self.went_public_at + halfyear
 
-                elif self.state == 'd':
+                elif self.state == Initiative.STATES.DISCUSSION:
+                    if self.variant_of:
+                        if self.variant_of.went_to_discussion_at:
+                            return self.variant_of.went_to_discussion_at + week
                     return self.went_to_discussion_at + (2 * week)
 
                 elif self.state == 'e':

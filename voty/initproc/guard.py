@@ -31,7 +31,7 @@ def can_access_initiative(states=None, check=None):
         return view
     return wrap
 
-
+class ContinueChecking(Exception): pass
 
 def _compound_action(func):
     @wraps(func)
@@ -40,8 +40,8 @@ def _compound_action(func):
             obj = self.request.initiative
         try:
             return getattr(self, "_{}_{}".format(func.__name__, obj._meta.model_name))(obj, *args, **kwargs)
-        except AttributeError:
-            return func(obj)
+        except (AttributeError, ContinueChecking):
+            return func(self, obj)
     return wrapped
 
 
@@ -68,6 +68,7 @@ class Guard:
 
         return Initiative.objects.filter(state__in=filters)
 
+    @_compound_action
     def can_comment(self, obj=None):
         self.reason = None
         latest_comment = obj.comments.order_by("-created_at").first()
@@ -221,6 +222,22 @@ class Guard:
                 self.reason = "Als Mitinitator/in darfst du nicht mit moderieren."
                 return False
             return True
+        return False
+
+
+    def _can_comment_pro(self, obj=None):
+        if obj.initiative.state == STATES.DISCUSSION:
+            raise ContinueChecking()
+        return False
+
+    def _can_comment_contra(self, obj=None):
+        if obj.initiative.state == STATES.DISCUSSION:
+            raise ContinueChecking()
+        return False
+
+    def _can_comment_proposal(self, obj=None):
+        if obj.initiative.state == STATES.DISCUSSION:
+            raise ContinueChecking()
         return False
 
 

@@ -1099,6 +1099,35 @@ Argument base design
 
 
 /*
+ 
+
+      MODERATION
+
+*/
+
+.moderation .badge {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: inline-block;
+  border-radius: 50%;
+  padding: 0;
+  text-align: center;
+  height: 2em;
+  width: 2em;
+}
+
+.moderation-item{
+  position: relative;
+}
+
+.moderation .badge .material-icons {
+  font-size: 1em;
+  line-height: 2em;
+}
+
+
+/*
 green: #47AB64;
 lightgreen: #82AB47;
 violet: #9E47AB;

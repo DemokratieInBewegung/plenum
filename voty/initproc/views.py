@@ -259,11 +259,14 @@ def edit(request, initiative):
 
 
 @login_required
-@can_access_initiative(STATES.PREPARE, 'can_edit')
+@can_access_initiative([STATES.PREPARE, STATES.FINAL_EDIT], 'can_edit')
 def submit_to_committee(request, initiative):
     if initiative.ready_for_next_stage:
-        initiative.state = STATES.INCOMING
+        initiative.state = STATES.INCOMING if initiative.state == STATES.PREPARE else STATES.MODERATION
         initiative.save()
+
+        # make sure moderation starts from the top
+        initiative.moderations.update(stale=True)
 
         messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
         initiative.notify_followers(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
@@ -327,7 +330,7 @@ def support(request, initiative):
 
 @require_POST
 @login_required
-@can_access_initiative([STATES.PREPARE, STATES.INCOMING])
+@can_access_initiative([STATES.PREPARE, STATES.INCOMING, STATES.FINAL_EDIT])
 def ack_support(request, initiative):
     sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
     sup.ack = True
@@ -405,7 +408,7 @@ def new_proposal(request, form, initiative):
 
 @ajax
 @login_required
-@can_access_initiative('i', 'can_moderate') # must be in discussion
+@can_access_initiative([STATES.INCOMING, STATES.MODERATION], 'can_moderate') # must be in discussion
 @simple_form_verifier(NewModerationForm)
 def moderate(request, form, initiative):
     model = form.save(commit=False)
@@ -414,23 +417,47 @@ def moderate(request, form, initiative):
     model.save()
 
     if request.guard.can_publish(initiative):
-        initiative.supporting.filter(ack=False).delete()
-        initiative.went_public_at = datetime.now()
-        initiative.state = STATES.SEEKING_SUPPORT
-        initiative.save()
+        if initiative.state == STATES.INCOMING:
+            initiative.supporting.filter(ack=False).delete()
+            initiative.went_public_at = datetime.now()
+            initiative.state = STATES.SEEKING_SUPPORT
+            initiative.save()
 
-        messages.success(request, "Initiative veröffentlicht")
-        initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
-        initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=request.user)
+            messages.success(request, "Initiative veröffentlicht")
+            initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
+            initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=user)
+            return redirect('/initiative/{}'.format(initiative.id))
 
-        return redirect('/initiative/{}'.format(initiative.id))
+        elif initiative.state == STATES.MODERATION:
+
+            publish = [initiative]
+            if initiative.all_variants:
+                # check the variants, too
+
+                for ini in initiative.all_variants:
+                    if ini.state != STATES.MODERATION or not request.guard.can_publish(ini):
+                        publish = None
+                        break
+                    publish.append(ini)
+
+            if publish:
+                for init in publish:
+                    init.went_to_voting_at = datetime.now()
+                    init.state = STATES.VOTING
+                    init.save()
+                    init.notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE)
+                    init.notify_moderators(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE, subject=request.user)
+
+                messages.success(request, "Initiative(n) zur Abstimmung frei gegeben.")
+                return redirect('/initiative/{}-{}'.format(initiative.id, initiative.slug))
+
 
     
     return {
         'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>",
-                            '#moderation-list'.format(initiative.id):
+                            '#moderation-list':
                                 render_to_string("fragments/moderation/list_small.html",
-                                                  context=dict(initiative=initiative),
+                                                  context=dict(moderations=initiative.current_moderations),
                                                   request=request)}
     }
 

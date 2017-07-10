@@ -388,9 +388,13 @@ img.avatar {
   line-height: 1.875rem;
 }
 
-.material-icons.edit, .material-icons.public, .material-icons.person-add {
+.material-icons.edit, .material-icons.public, .material-icons.person-add, .material-icons.thumbs-up-down {
   padding-top: .125rem;
   padding-right: .3875rem;
+}
+
+.material-icons.thumbs-up-down{
+  padding-right: .625rem;
 }
 
 .card.initiative-meta {
@@ -661,6 +665,10 @@ h6.classification {
 
 .help .btn {
   margin: 0 0 1rem 0;
+}
+
+.alert h6 {
+  line-height: 1.25rem;
 }
 
 header .alert {

@@ -134,16 +134,17 @@ class Initiative(models.Model):
                 if self.state == Initiative.STATES.SEEKING_SUPPORT:
                     if self.variant_of:
                         if self.variant_of.went_to_discussion_at:
-                            return self.variant_of.went_to_discussion_at + week
+                            return self.variant_of.went_to_discussion_at + (2 * week)
                     if self.ready_for_next_stage:
                         return self.went_public_at + week
                     return self.went_public_at + halfyear
 
                 elif self.state == Initiative.STATES.DISCUSSION:
+                    base = self.went_to_discussion_at
                     if self.variant_of:
                         if self.variant_of.went_to_discussion_at:
-                            return self.variant_of.went_to_discussion_at + week
-                    return self.went_to_discussion_at + (2 * week)
+                            base = self.variant_of.went_to_discussion_at
+                    return base + (2 * week)
 
                 elif self.state == 'e':
                     return self.went_to_discussion_at + (3 * week)

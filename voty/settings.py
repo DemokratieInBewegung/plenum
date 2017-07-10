@@ -238,10 +238,10 @@ MEDIA_ROOT = os.path.join( BASE_DIR, 'public', 'media')
 
 
 OPTIONAL_NOPE_REASONS = [
-    'entspricht nicht meiner Überzeugung',
-    'ist nicht wichtig genug',
-    'ist nicht konkret genug',
-    'ist inhaltlich noch nicht ausgereift',
-    'passt nicht zu DiB',
-    'lässt sich nicht vertreten'
+    'entspricht nicht meiner Überzeugung.',
+    'ist nicht wichtig genug.',
+    'ist nicht konkret genug.',
+    'ist inhaltlich noch nicht ausgereift.',
+    'passt nicht zu DiB.',
+    'lässt sich nicht vertreten.'
 ]

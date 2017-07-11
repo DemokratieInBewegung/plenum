@@ -5,7 +5,7 @@
      	<h3>Danke, deine Stimme wurde gezählt!</h3>
      	<form data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/reset_vote" method="POST">
 
-     		<p>{% if initiative.votes.count == 1 %}<strong>{{initiative.votes.count}}</strong> Person hat{% else %} Personen haben{% endif %} bisher abgestimmt.
+     		<p><strong>{{initiative.votes.count}}</strong>{% if initiative.votes.count == 1 %} Person hat{% else %} Personen haben{% endif %} bisher abgestimmt.
      		</p> 
      		<p>Du hast mit 
      		</p>

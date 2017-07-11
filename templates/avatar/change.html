@@ -1,5 +1,5 @@
 {% extends "in_box.html" %}
-{% load i18n avatar_tags bootstrap %}
+{% load i18n bootstrap %}
 
 {% block body %}
 
@@ -10,7 +10,7 @@
         <div class="row">
             <div style="text-align:center">
                 <h3>{% trans "Your current avatar: " %}</h3>
-                <p>{% avatar user %}</p>
+                <p>{% include "fragments/avatar.html" %}</p>
             </div>
         </div>
         <hr/>

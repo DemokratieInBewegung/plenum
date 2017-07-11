@@ -1,5 +1,3 @@
-
-{% load avatar_tags %}
 <div class="container">
     <div class="row">
         <div class="col">
@@ -14,7 +12,7 @@
 		<div class="col-md-4 text-right">
 	        <h6 class="text-muted classification">Vergleiche Version</h6>
 	        <div class="dropdown">
-	        	<a id="versionSelectDropdown" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-has-popup="true" aria-expanded="false"><strong>{{selected.revision.date_created}}</strong> {% if selected.revision.user %} — {% avatar selected.revision.user 25 %}{% endif %}</a>
+	        	<a id="versionSelectDropdown" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-has-popup="true" aria-expanded="false"><strong>{{selected.revision.date_created}}</strong> {% if selected.revision.user %} —  {% include "fragments/avatar.html" with size=25 user=selected.revision.user %}{% endif %}</a>
 	        	<br />{% if selected.revision.comment %}<em>{{selected.revision.comment}}</em>{% endif %}
 
 	        	<div class="dropdown-menu dropdown-menu-right " aria-labelledby="versionSelectDropdown">
@@ -26,7 +24,7 @@
 	        					data-ajax="true">
 	        					{% if v == selected %}<strong>{%endif%}
 
-	        					{{v.revision.date_created}} {% if v.revision.user %} — {% avatar v.revision.user 12 %}{% endif %}
+	        					{{v.revision.date_created}} {% if v.revision.user %} — {% include "fragments/avatar.html" with size=25 user=v.revision.user %}{% endif %}
 
 	        					{% if v == selected %}</strong>{%endif%}
 	        				</a>
@@ -38,7 +36,7 @@
 		<div class="col-md-8">
 	        <h6 class="text-muted classification">mit Aktueller Version</h6>
 	        <div>
-	        	<strong>{{latest.revision.date_created}}</strong> {% if latest.revision.user %} — {% avatar latest.revision.user 25 %}{% endif %}
+	        	<strong>{{latest.revision.date_created}}</strong> {% if latest.revision.user %} — {% include "fragments/avatar.html" with size=25 user=latest.revision.user %}{% endif %}
 	        	<br />{% if latest.revision.comment %}<em>{{latest.revision.comment}}</em>{% endif %}
 	        </div>
 	</div>

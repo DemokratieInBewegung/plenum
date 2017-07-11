@@ -103,6 +103,12 @@ class UserEditForm(forms.ModelForm):
         fields = ['first_name', 'last_name']
 
 
+def avatar_wall(request):
+    # showing recently logged in first should give us a neat randomization over time
+    users_q = get_user_model().objects.filter(is_active=True, avatar__primary=True).order_by("-last_login")
+    return render(request, "initadmin/avatar_wall.html", dict(users=users_q))
+
+
 @login_required
 def profile_edit(request):
     user = get_object_or_404(get_user_model(), pk=request.user.id)

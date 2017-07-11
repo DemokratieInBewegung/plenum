@@ -12,4 +12,8 @@ def avatar_full_url(context, user, size=settings.AVATAR_DEFAULT_SIZE):
 	url = avatar_url(user, size)
 	if url.startswith("http"):
 		return url
-	return context.request.build_absolute_uri(url)
+	if getattr(context, "request", None):
+		return context.request.build_absolute_uri(url)
+	## YAK!!!
+	site = Site.objects.get_current()
+	return "http://" + site.domain + url

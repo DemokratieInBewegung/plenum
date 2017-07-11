@@ -23,14 +23,14 @@
 			      	<i class="material-icons filter-list">filter_list</i> Zeige nur:
 			      </h6>
 	    		</div>
-	    		<div class="col-sm-10">
+	    		<div class="col-sm-8">
 				  	<div class="row no-gutters">
 						{% if user.is_authenticated %}
 						<div class="col-auto">
 							<label>
 								<input name="f" value="p" type="checkbox" {% if 'p' in filters %} checked{% endif %}>
 								<span class="badge badge-prepare">
-						      		In Vorbereitung
+						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>In Vorbereitung
 						      	</span>
 							</label>
 						</div>
@@ -39,7 +39,7 @@
 							    <label>
 							      	<input name="f" value="i" type="checkbox" {% if 'i' in filters %} checked{% endif %}>
 							      	<span class="badge badge-arrivals">
-							      		In Prüfung ({{inbox_count}})
+							      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>In Prüfung ({{inbox_count}})
 							      	</span>
 							    </label>
 							</div>
@@ -49,7 +49,7 @@
 						    <label>
 						      	<input name="f" value="s" type="checkbox" {% if 's' in filters %} checked{% endif %}>
 						      	<span class="badge badge-support">
-						      		Sucht Unterstützung
+						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Sucht Unterstützung
 						      	</span>
 						    </label>
 						</div>
@@ -57,7 +57,7 @@
 						    <label>
 						      	<input name="f" value="d" type="checkbox" {% if 'd' in filters %} checked{% endif %}>
 						      	<span class="badge badge-discussion">
-						      		In Diskussion
+						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>In Diskussion
 						      	</span>
 						    </label>
 						</div>
@@ -65,7 +65,7 @@
 						    <label>
 						      	<input name="f" value="e" type="checkbox" {% if 'e' in filters %} checked{% endif %}>
 						      	<span class="badge badge-edits">
-						      		Finale Überarbeitung
+						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Finale Überarbeitung
 						      	</span>
 						    </label>
 						</div>
@@ -73,7 +73,7 @@
 						    <label>
 						      	<input name="f" value="m" type="checkbox" {% if 'm' in filters %} checked{% endif %}>
 						      	<span class="badge badge-arrivals">
-						      		Finale Prüfung
+						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Finale Prüfung
 						      	</span>
 						    </label>
 						</div>
@@ -81,7 +81,7 @@
 						    <label>
 						      	<input name="f" value="v" type="checkbox" {% if 'v' in filters %} checked{% endif %}>
 						      	<span class="badge badge-vote">
-						      		Abstimmung
+						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Abstimmung
 						      	</span>
 						    </label>
 						</div>
@@ -89,7 +89,7 @@
 						    <label>
 						      	<input name="f" value="a" type="checkbox" {% if 'a' in filters %} checked{% endif %}>
 						      	<span class="badge badge-accepted">
-						      		Angenommen
+						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Angenommen
 						      	</span>
 						    </label>
 						</div>
@@ -97,7 +97,7 @@
 						    <label>
 						      	<input name="f" value="r" type="checkbox" {% if 'r' in filters %} checked{% endif %}>
 						      	<span class="badge badge-rejected">
-						      		Abgelehnt
+						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Abgelehnt
 						      	</span>
 						    </label>
 						</div>

@@ -1,0 +1,8 @@
+{% load avatar_full_url %}
+<img
+	src="{% avatar_full_url user size %}"
+	title="{{user.firstname|default:user.username}}"
+	width="{{ size }}"
+	height="{{ size }}"
+	class="avatar"
+/>

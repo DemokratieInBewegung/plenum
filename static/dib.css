@@ -653,7 +653,7 @@ h6.classification {
 #filters h6 {
   font-weight: 400;
   line-height: 150%;
-  margin: 0.25rem 0.5rem 0 0;
+  margin: 0.5rem 0.5rem 0 0;
 }
 
 .help p, .help ul, .help ol {
@@ -712,10 +712,33 @@ header .alert {
 .typefilter .badge {
   background: transparent;
   background: inherit;
+  line-height: 1.125rem;
 }
+
+.typefilter .check-box, .typefilter .check-box-outline-blank {
+  font-size: 1.125rem;
+  padding-right: .25rem;
+  line-height: 1.125rem;
+} 
 
 .typefilter input:not(:checked) + .badge {
   background: transparent;
+}
+
+.typefilter input:not(:checked) + .badge > .check-box {
+  display: none;
+}
+
+.typefilter input:checked + .badge > .check-box {
+  display: initial;
+}
+
+.typefilter input:checked + .badge > .check-box-outline-blank {
+  display: none;
+}
+
+.typefilter input:not(:checked) + .badge > .check-box-outline-blank {
+  display: initial;
 }
 
 .typefilter input:checked + .badge {

@@ -1,0 +1,9 @@
+{% for initiative in initiatives %}
+	{% include "fragments/initiative/card.html" %}
+{% empty %}
+<div class="card">
+	<div class="card-block">
+		<em>Keine Initiativen gefunden, die Deiner Suche entsprechen.</em>
+	</div>
+</div>
+{% endfor %}

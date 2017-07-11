@@ -5,13 +5,19 @@ from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.utils.decorators import available_attrs
 from django.utils.safestring import mark_safe
+from django.contrib.postgres.search import SearchVector
 from django.contrib.auth import get_user_model
 from django.contrib import messages
+from django.conf import settings
 from django.apps import apps
 from django.db.models import Q
+from django.db import connection
 from dal import autocomplete
 from django import forms
-from datetime import datetime
+
+from datetime import datetime, timedelta
+
+from django_ajax.shortcuts import render_to_json
 from django_ajax.decorators import ajax
 from pinax.notifications.models import send as notify
 from reversion_compare.helpers import html_diff
@@ -79,6 +85,46 @@ def index(request):
         filters = request.session.get('init_filters', DEFAULT_FILTERS)
 
     inits = request.guard.make_intiatives_query(filters).prefetch_related("supporting")
+
+    ids = [i for i in request.GET.getlist('id')]
+
+    if ids:
+        inits = inits.filter(id__in=ids)
+
+    elif request.GET.get('s', None):
+        searchstr = request.GET.get('s')
+
+        if len(searchstr) >= settings.MIN_SEARCH_LENGTH:
+            if connection.vendor == 'postgresql':
+                inits = inits.annotate(search=SearchVector('title', 'subtitle','summary',
+                        'problem', 'forderung', 'kosten', 'fin_vorschlag', 'arbeitsweise', 'init_argument')
+                    ).filter(search=searchstr)
+            else:
+                inits = inits.filter(Q(title__icontains=searchstr) | Q(subtitle__icontains=searchstr))
+
+
+    inits = sorted(inits, key=lambda x: x.time_ramaining_in_phase or timedelta(days=1000))
+
+    # now we filter for urgency
+
+
+    if request.is_ajax():
+        return render_to_json(
+            {'fragments': {
+                "#init-card-{}".format(init.id) : render_to_string("fragments/initiative/card.html",
+                                                               context=dict(initiative=init),
+                                                               request=request)
+                    for init in inits },
+             'inner-fragments': {
+                '#init-list': render_to_string("fragments/initiative/list.html",
+                                               context=dict(initiatives=inits),
+                                               request=request)
+             }
+        }
+)
+
+
+
     count_inbox = request.guard.make_intiatives_query(['i']).count()
 
     return render(request, 'initproc/index.html',context=dict(initiatives=inits,

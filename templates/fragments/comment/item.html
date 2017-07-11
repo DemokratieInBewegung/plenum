@@ -1,11 +1,8 @@
-{% load avatar_tags %} 
-{% load markdown %}
-
 <div id="comment-{{comment.id}}" class="comment container">
 
 	<div class="row no-gutters comment-head">
 		<div class="col-auto author">
-			{% avatar comment.user 55 class="avatar" %}
+            {% include "fragments/avatar.html" with user=comment.user size=55 %}
 		</div>
 		<div class="col-auto">
 			<span class="author-name">{{comment.user.get_full_name|default:comment.user.username}}</span>

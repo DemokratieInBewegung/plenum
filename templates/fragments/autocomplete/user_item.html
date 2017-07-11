@@ -1,2 +1,1 @@
-{% load avatar_tags %}
-{% avatar user 25 class="avatar" %} {% if user.get_full_name %} {{user.get_full_name}} (@{{user.username}}){% else %}@{{user.username}}{% endif %}
+{% include "fragments/avatar.html" with size=25 %} {% if user.get_full_name %} {{user.get_full_name}} (@{{user.username}}){% else %}@{{user.username}}{% endif %}

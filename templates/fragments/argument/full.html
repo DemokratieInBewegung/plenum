@@ -1,4 +1,3 @@
-{% load avatar_tags %}
 {% load markdown %}
 {% load guard %}
 
@@ -38,7 +37,8 @@
 			</div>
             <div class="row no-gutters argument-head">
                 <div class="col-auto author">
-					{% avatar argument.user 55 class="avatar" %}
+
+                    {% include "fragments/avatar.html" with user=argument.user size=55 %}
 				</div>
 				<div class="col-auto">
 					<span class="author-name">{{argument.user.get_full_name|default:argument.user.username}}</span>

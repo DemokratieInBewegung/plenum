@@ -20,6 +20,7 @@ from uuid import uuid4
 from io import StringIO, TextIOWrapper
 import csv
 
+
 class UploadFileForm(forms.Form):
     file = forms.FileField()
 

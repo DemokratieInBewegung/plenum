@@ -15,7 +15,7 @@ from django.db import connection
 from dal import autocomplete
 from django import forms
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django_ajax.shortcuts import render_to_json
 from django_ajax.decorators import ajax
@@ -102,17 +102,22 @@ def index(request):
             else:
                 inits = inits.filter(Q(title__icontains=searchstr) | Q(subtitle__icontains=searchstr))
 
+
+    inits = sorted(inits, key=lambda x: x.time_ramaining_in_phase or timedelta(days=1000))
+
+    # now we filter for urgency
+
+
     if request.is_ajax():
-        all_inits = inits.all()
         return render_to_json(
             {'fragments': {
                 "#init-card-{}".format(init.id) : render_to_string("fragments/initiative/card.html",
                                                                context=dict(initiative=init),
                                                                request=request)
-                    for init in all_inits },
+                    for init in inits },
              'inner-fragments': {
                 '#init-list': render_to_string("fragments/initiative/list.html",
-                                               context=dict(initiatives=all_inits),
+                                               context=dict(initiatives=inits),
                                                request=request)
              }
         }

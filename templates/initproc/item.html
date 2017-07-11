@@ -190,7 +190,7 @@
             <div class="d-flex flex-wrap">
                 {% for sup in initiative.initiators %}
                 <div class="text-center initiator">
-                    {% include "fragments/avatar.html" user=sup.user %}
+                    {% include "fragments/avatar.html" with user=sup.user %}
                     <div class="name">
                         {{ sup.user.get_full_name|default:sup.user.username }}
                     </div>
@@ -504,7 +504,7 @@
                     <div class="d-flex flex-wrap avatar">
                         {% for sup in initiative.first_supporters.all %} 
                             <div class="text-center initiator">
-                                {% include "fragments/avatar.html" user=sup.user %}
+                                {% include "fragments/avatar.html" with user=sup.user %}
                                 <div class="name">
                                     {{ sup.user.get_full_name|default:sup.user.username }}
                                 </div>
@@ -548,7 +548,7 @@
                     <div class="d-flex flex-wrap avatar">
                         {% for sup in initiative.public_supporters.all %} 
                             <div class="text-center initiator">
-                                {% include "fragments/avatar.html" user=sup.user %}
+                                {% include "fragments/avatar.html" with user=sup.user %}
                                 <div class="name">
                                     {{ sup.user.get_full_name|default:sup.user.username }}<br/>
                                 </div>

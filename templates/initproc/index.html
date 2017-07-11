@@ -1,7 +1,6 @@
 {% extends "_base.html" %}
 
 {% load fullurl %}
-{% load avatar_tags %}
 {% load guard %}
 
 {% block custom_header %}
@@ -15,7 +14,7 @@
     </div>
 </div>
 
-<form id="filters" method="GET">
+<form id="filters" data-ajax-submit="true" method="GET">
 	<div class="typefilter">
 		<div class="container">
 			<div class="row no-gutters">
@@ -111,16 +110,8 @@
 {% endblock %}
 
 {% block content %}
-<div class="container init-index">
-	{% for initiative in initiatives %}
-		{% include "fragments/initiative/card.html" %}
-	{% empty %}
-	<div class="card">
-		<div class="card-block">
-			<em>Keine Initiativen gefunden, die Deiner Suche entsprechen.</em>
-		</div>
-	</div>
-	{% endfor %}
+<div id="init-list" class="container init-index">
+	{% include "fragments/initiative/list.html" %}
 </div>
 
 {% endblock %}
@@ -133,11 +124,8 @@
   	$(function(){
   		var submitTimeout = null;
 	    $('.typefilter input').change(function(item) {
-	    	if (submitTimeout) window.clearTimeout(submitTimeout);
-	    	submitTimeout = window.setTimeout(function() {
-	    		$("#filters").submit();
-	    	}, 900);
-
+	    	$("#init-list").html("Loading ...");
+	    	$("#filters").submit();
 	    });	
   	});
 </script>

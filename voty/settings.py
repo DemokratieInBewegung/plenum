@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
 
     # 3rd party
     'account',
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     'fullurl',
     'django_ajax',
     'reversion',
+    'corsheaders',
 
     # must be before admin ...
     'dal',
@@ -64,6 +66,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -232,10 +235,19 @@ STATICFILES_DIRS = (
 STATIC_ROOT = os.path.join( BASE_DIR, 'public', 'static')
 MEDIA_ROOT = os.path.join( BASE_DIR, 'public', 'media')
 
+# CORS stuff
+
+CORS_ORIGIN_WHITELIST = (
+    'bewegung.jetzt',
+)
+
+CORS_ALLOW_CREDENTIALS = True
+
 
 
 #  AND OUR OWN STUFF
 
+MIN_SEARCH_LENGTH = 3
 
 OPTIONAL_NOPE_REASONS = [
     'entspricht nicht meiner Überzeugung.',

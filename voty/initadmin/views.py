@@ -20,6 +20,7 @@ from uuid import uuid4
 from io import StringIO, TextIOWrapper
 import csv
 
+
 class UploadFileForm(forms.Form):
     file = forms.FileField()
 
@@ -100,6 +101,12 @@ class UserEditForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
         fields = ['first_name', 'last_name']
+
+
+def avatar_wall(request):
+    # showing recently logged in first should give us a neat randomization over time
+    users_q = get_user_model().objects.filter(is_active=True, avatar__primary=True).order_by("-last_login")
+    return render(request, "initadmin/avatar_wall.html", dict(users=users_q))
 
 
 @login_required

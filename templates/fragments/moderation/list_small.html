@@ -1,7 +1,6 @@
-{% load avatar_tags %}
 {% for m in moderations %}
 	<div id="{{m.unique_id}}" class="moderation-item">
-	{% avatar m.user 35 %} {% if m.vote == 'y' %}<span class="badge badge-success"><i class="material-icons">thumb_up</i></span>{% elif m.vote == 'n' %}<span class="badge badge-danger"><i class="material-icons">thumb_down</i></span>{% else %}<span class="badge badge-default"><i class="material-icons">thumbs_updown</i></span>{% endif %}{% if m.text %}<a data-ajax="true" href="/initiative/{{initiative.id}}/moderation/{{m.id}}?fragment=%23{{m.unique_id}}"><i class="material-icons">comment</i></a>{% endif %}
+	{% include "fragments/avatar.html" with size=35 user=m.user %} {% if m.vote == 'y' %}<span class="badge badge-success"><i class="material-icons">thumb_up</i></span>{% elif m.vote == 'n' %}<span class="badge badge-danger"><i class="material-icons">thumb_down</i></span>{% else %}<span class="badge badge-default"><i class="material-icons">thumbs_updown</i></span>{% endif %}{% if m.text %}<a data-ajax="true" href="/initiative/{{initiative.id}}/moderation/{{m.id}}?fragment=%23{{m.unique_id}}"><i class="material-icons">comment</i></a>{% endif %}
 	</div>
 {% empty %}
 	<i>Es hat noch kein/e Moderator/in bewertet.</i>

@@ -1,0 +1,20 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'magic-search.css' %}" />
+{% verbatim %} 
+<div id="magic-search" class="container">
+	<div class="row no-gutters align-items-center">
+		<div class="col-auto">
+		   	<span class="badge"
+		   		v-for="(f, index) in filters"
+		   		>
+		   	{{f.name}}: {{f.value}}
+		   		<span class="material-icons" v-on:click="filters.splice(index, 1)">clear</span>
+		   	</span>
+		</div>
+		<div class="col">
+   			<input v-on:keyup.enter="add" style="width: 100%; min-width: 100px" v-model="message">
+   		</div>
+	</div>
+</div>
+
+{% endverbatim %}

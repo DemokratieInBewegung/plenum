@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 
+{% load static %}
 {% load fullurl %}
 {% load guard %}
 
@@ -14,6 +15,7 @@
     </div>
 </div>
 
+{% comment %}
 <form id="filters" data-ajax-submit="true" method="GET">
 	<div class="typefilter">
 		<div class="container">
@@ -107,6 +109,8 @@
 		</div>
     </div>
  </form>
+ {% endcomment %}
+ {% include "initproc/blocks/magic_search.html" %}
 {% endblock %}
 
 {% block content %}
@@ -120,13 +124,6 @@
 
 {{ block.super }}
 
-<script type="text/javascript">
-  	$(function(){
-  		var submitTimeout = null;
-	    $('.typefilter input').change(function(item) {
-	    	$("#init-list").html("Loading ...");
-	    	$("#filters").submit();
-	    });	
-  	});
-</script>
+<script type="text/javascript" src="{% static 'js/vendor/vue.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/dib/magic-search.js' %}"></script>
 {% endblock %}

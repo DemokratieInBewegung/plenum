@@ -13,11 +13,26 @@
 			   	</span>
 			</div>
 			<div class="col dropdown show">
-	   			<input v-bind:placeholder="placeholder" v-on:keyup.enter="add" style="width: 100%; min-width: 100px" v-model="curText">
+				<span class="badge" v-if="selected">{{selected.name}}:
+	   				<input v-bind:placeholder="placeholder"
+	   				   v-on:keyup.enter="add"
+	   				   v-on:focus="focus"
+	   				   style="max-width: 100%; min-width: 100px" v-model="curText">
+	   			</span>
+	   			<input
+   					v-else=""
+   					v-bind:placeholder="placeholder"
+   				    v-on:keyup.enter="add"
+   				    v-on:focus="focus"
+   				    style="max-width: 100%; min-width: 100px" v-model="curText" />
 
-				<dropdown v-if="options" v-bind:options="options" inline-template>
+				<dropdown v-if="showList" v-bind:options="options" v-on:select="select" v-bind:has-free-text="hasFreeText" inline-template>
 					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					    <a v-for="opt in filtered" class="dropdown-item">{{opt.name}}</a>
+					    <button v-for="(opt, idx) in options" v-on:click="$emit('select', opt)" class="dropdown-item">{{opt.name}}</button>
+					    <template v-if="hasFreeText">
+					    	<div v-if="options.length" class="dropdown-divider"></div>
+					    	<a class="dropdown-item">Freie Suche</a>
+					    </template>
 					</div>
 				</dropdown>
 	   		</div>

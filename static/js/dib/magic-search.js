@@ -22,7 +22,7 @@ Vue.component('search-bar', {
 
       let opts = this.selected ? ( this.selected.subSelection ? this.selected.subSelection : [] ) : this.searchOptions;
       if (this.curText) {
-        let lowered_text = this.input.toLowerCase();
+        let lowered_text = this.curText.toLowerCase();
         return opts.filter((x) => x.name.toLowerCase().indexOf(lowered_text) != -1)
       }
       return opts;
@@ -42,7 +42,7 @@ Vue.component('search-bar', {
       let msg = this.curText.trim()
       let select = this.selected ? this.selected : {'name': "Suche", 'key': 's'}
       if (msg) {
-        this.filters.push({name: select.name, key: select.key , value: msg});
+        this.filters.push({name: select.name, key: select.key , value: msg, label: msg});
         this.curText = '';
         this.selected = null;
         this.$refs.textInput.focus();
@@ -51,8 +51,18 @@ Vue.component('search-bar', {
       }
     },
     select: function(item) {
-      console.log("selecting", item);
-      this.selected = item;
+      if (this.selected) {
+        this.filters.push({
+          name: this.selected.name,
+          key: this.selected.key,
+          value: item.value,
+          label: item.name
+        })
+        this.selected = null;
+      } else {
+        this.selected = item;
+      }
+      this.curText = '';
       this.$refs.textInput.focus();
     },
     focus: function () {
@@ -60,6 +70,9 @@ Vue.component('search-bar', {
     },
     blur: function () {
       this.focussed = false;
+    },
+    clear: function() {
+      this.selected = null;
     }
    }
 });
@@ -67,13 +80,20 @@ Vue.component('search-bar', {
 var magicSearch = new Vue({
   el: '#magic-search',
   data: {
-    filters: [
-      {name: 'Suche', value: "Yeah"},
-      {name: 'Phase', value: 'Angenommen'}
-    ],
+    filters: [],
     searchOptions: [
       {name: 'Bereich', key: 'b'},
-      {name: 'Phase', key: 'f'}
+      {name: 'Phase', key: 'f', subSelection: [
+        {name: 'In Vorbereitung', value: 'p'},
+        {name: 'In Prüfung', value: 'i'},
+        {name: 'Sucht Unterstützung', value: 's'},
+        {name: 'In Diskussion', value: 'd'},
+        {name: 'Finale Überarbeitung', value:'e'},
+        {name: 'Finale Prüfung', value:'m'},
+        {name: 'Abstimmung', value:'v'},
+        {name: 'Angenommen', value:'a'},
+        {name: 'Abgelehnt', value:'r'}
+      ]}
     ]
   }
 });

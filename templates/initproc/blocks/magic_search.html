@@ -8,18 +8,19 @@
 			   	<span class="badge"
 			   		v-for="(f, index) in filters"
 			   		>
-			   	{{f.name}}: {{f.value}}
+			   	{{f.name}}: {{f.label}}
 			   		<span class="material-icons" v-on:click="filters.splice(index, 1)">clear</span>
 			   	</span>
 			</div>
 			<div class="col dropdown show">
-				<span v-bind:class="searchCls" style="max-width: 100%; min-width: 100px">
+				<span v-bind:class="searchCls" style="width: 100%; min-width: 100px">
 					<template v-if="selected">{{selected.name}}:</template>
 	   				<input v-bind:placeholder="placeholder"
 	   				   ref="textInput"
 	   				   v-on:keyup.enter="add"
 	   				   v-on:focus="focus"
-	   				   style="max-width: 100%; min-width: 100px" v-model="curText">
+	   				   v-on:keyup.esc="clear"
+	   				   style="width: 100%; min-width: 100px" v-model="curText">
 	   			</span>
 
 				<dropdown v-if="showList" v-bind:options="options" v-on:select="select" v-bind:has-free-text="hasFreeText" inline-template>

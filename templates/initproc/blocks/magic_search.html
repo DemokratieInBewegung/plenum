@@ -2,7 +2,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'magic-search.css' %}" />
 {% verbatim %} 
 <div id="magic-search" class="container">
-	<search-bar v-bind:search-options="searchOptions" v-bind:filters="filters" inline-template>
+	<search-bar v-bind:search-options="searchOptions" v-on:blur="blur" v-bind:filters="filters" inline-template>
 		<div class="row no-gutters align-items-center">
 			<div class="col-auto">
 			   	<span class="badge"
@@ -13,18 +13,14 @@
 			   	</span>
 			</div>
 			<div class="col dropdown show">
-				<span class="badge" v-if="selected">{{selected.name}}:
+				<span v-bind:class="searchCls" style="max-width: 100%; min-width: 100px">
+					<template v-if="selected">{{selected.name}}:</template>
 	   				<input v-bind:placeholder="placeholder"
+	   				   ref="textInput"
 	   				   v-on:keyup.enter="add"
 	   				   v-on:focus="focus"
 	   				   style="max-width: 100%; min-width: 100px" v-model="curText">
 	   			</span>
-	   			<input
-   					v-else=""
-   					v-bind:placeholder="placeholder"
-   				    v-on:keyup.enter="add"
-   				    v-on:focus="focus"
-   				    style="max-width: 100%; min-width: 100px" v-model="curText" />
 
 				<dropdown v-if="showList" v-bind:options="options" v-on:select="select" v-bind:has-free-text="hasFreeText" inline-template>
 					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">

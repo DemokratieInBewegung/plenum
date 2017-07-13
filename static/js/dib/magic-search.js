@@ -32,6 +32,9 @@ Vue.component('search-bar', {
     },
     hasFreeText: function () {
       return !this.selected;
+    },
+    searchCls: function() {
+      return this.selected ? 'badge': '';
     }
   },
   methods: {
@@ -39,9 +42,10 @@ Vue.component('search-bar', {
       let msg = this.curText.trim()
       let select = this.selected ? this.selected : {'name': "Suche", 'key': 's'}
       if (msg) {
-        this.filters.push({name: select.name, key: select.key , value: msg})
-        this.curText = ''
-        this.selected = null
+        this.filters.push({name: select.name, key: select.key , value: msg});
+        this.curText = '';
+        this.selected = null;
+        this.$refs.textInput.focus();
       } else {
         // commit search here.
       }
@@ -49,6 +53,7 @@ Vue.component('search-bar', {
     select: function(item) {
       console.log("selecting", item);
       this.selected = item;
+      this.$refs.textInput.focus();
     },
     focus: function () {
       this.focussed = true;

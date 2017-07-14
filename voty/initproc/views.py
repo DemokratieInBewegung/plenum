@@ -86,6 +86,10 @@ def index(request):
 
     inits = request.guard.make_intiatives_query(filters).prefetch_related("supporting")
 
+    bereiche = [f for f in request.GET.getlist('b')]
+    if bereiche:
+        inits = inits.filter(bereich__in=bereiche)
+
     ids = [i for i in request.GET.getlist('id')]
 
     if ids:

@@ -17,19 +17,22 @@
 					<template v-if="selected">{{selected.name}}:</template>
 	   				<input v-bind:placeholder="placeholder"
 	   				   ref="textInput"
-	   				   v-on:keyup.enter="add"
-	   				   v-on:focus="focus"
-	   				   v-on:keyup.esc="clear"
-	   				   style="width: 100%; min-width: 100px" v-model="curText">
+	   				   @keyup.enter="add"
+	   				   @keyup.right="add"
+	   				   @focus="focus"
+	   				   @keyup.esc="clear"
+	   				   @keyup.up="up"
+	   				   @keyup.down="down"
+	   				   style="width: 100%;" v-model="curText">
 	   			</span>
 
-				<dropdown v-if="showList" v-bind:options="options" v-on:select="select" v-bind:has-free-text="hasFreeText" inline-template>
+				<dropdown v-if="showList" v-bind:options="options" v-on:select="select" inline-template>
 					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					    <button v-for="(opt, idx) in options" v-on:click="$emit('select', opt)" class="dropdown-item">{{opt.name}}</button>
-					    <template v-if="hasFreeText">
-					    	<div v-if="options.length" class="dropdown-divider"></div>
-					    	<a class="dropdown-item">Freie Suche</a>
-					    </template>
+						<template v-for="(opt, idx) in options">
+							<dropdown-item v-bind:title="opt.name" v-bind:selected="idx == this.selectedIdx" v-on:select="$emit('select', opt)" inline-template>
+					    		<button @click="$emit('select')" v-bind:class="itemClass">{{title}}</button>
+							</dropdown-item>
+						</template>
 					</div>
 				</dropdown>
 	   		</div>

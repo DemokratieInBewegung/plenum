@@ -1,7 +1,15 @@
+
 Vue.component('dropdown', {
-    props: ['options', 'hasFreeText'],
-    data: function(){
-      return {hasFreeText: this.hasFreeText}
+  props: ['options', 'selectedIdx'],
+  components: {
+    'dropdown-item': {
+        props: ['title', 'selected'],
+        computed: {
+          itemClass: function(){
+            return 'dropdown-item' + (this.selected ? ' active' : '');
+          }
+        }
+      }
     }
 });
 
@@ -12,11 +20,16 @@ Vue.component('search-bar', {
              curText: '',
              focussed: false,
              selected: false,
+             selectedIdx: -1,
            }
   },
   computed: {
     placeholder: function() {
-      return (this.filters && this.filters.length > 0) ? '' : 'Filtern und suchen...';
+      return this.selected
+              ? (this.selected.placeholder || '')
+              : ((this.filters && this.filters.length > 0)
+                  ? ''
+                  : 'Filtern und suchen...');
     },
     options: function(){
 
@@ -29,9 +42,6 @@ Vue.component('search-bar', {
     },
     showList: function() {
       return this.focussed && this.options.length > 0;
-    },
-    hasFreeText: function () {
-      return !this.selected;
     },
     searchCls: function() {
       return this.selected ? 'badge': '';
@@ -46,8 +56,6 @@ Vue.component('search-bar', {
         this.curText = '';
         this.selected = null;
         this.$refs.textInput.focus();
-      } else {
-        // commit search here.
       }
     },
     select: function(item) {
@@ -72,8 +80,21 @@ Vue.component('search-bar', {
       this.focussed = false;
     },
     clear: function() {
-      this.selected = null;
-    }
+      if (!this.selected) {
+        this.focussed = false;
+      } else {
+        this.selected = null;
+      }
+    },
+    down: function() {
+      this.selectedIdx += 1;
+      console.log(this.selectedIdx);
+    },
+    up: function() {
+      if (this.selectedIdx >= 0) {
+        this.selectedIdx -= 1;
+      }
+    },
    }
 });
 
@@ -82,8 +103,8 @@ var magicSearch = new Vue({
   data: {
     filters: [],
     searchOptions: [
-      {name: 'Bereich', key: 'b'},
-      {name: 'Phase', key: 'f', subSelection: [
+      {name: 'Bereich', key: 'b', placeholder: 'nach Bereichen filtern'},
+      {name: 'Phase', key: 'f', placeholder: "nach Phase filtern", subSelection: [
         {name: 'In Vorbereitung', value: 'p'},
         {name: 'In Prüfung', value: 'i'},
         {name: 'Sucht Unterstützung', value: 's'},
@@ -93,7 +114,9 @@ var magicSearch = new Vue({
         {name: 'Abstimmung', value:'v'},
         {name: 'Angenommen', value:'a'},
         {name: 'Abgelehnt', value:'r'}
-      ]}
+      ]},
+
+      {name: 'Suche', key: 's', placeholder: 'nach Freitext suchen', showDevider: true},
     ]
   }
 });

@@ -56,7 +56,14 @@ Vue.component('search-bar', {
         this.curText = '';
         this.selected = null;
         this.$refs.textInput.focus();
+        this.trigger();
       }
+    },
+    remove: function(idx) {
+      this.filters = this.filters.splice(idx, 1);
+      Vue.nextTick(() => {
+        this.trigger();
+      });
     },
     select: function(item) {
       if (this.selected) {
@@ -67,6 +74,7 @@ Vue.component('search-bar', {
           label: item.name
         })
         this.selected = null;
+        this.trigger();
       } else {
         this.selected = item;
       }
@@ -88,13 +96,18 @@ Vue.component('search-bar', {
     },
     down: function() {
       this.selectedIdx += 1;
-      console.log(this.selectedIdx);
     },
     up: function() {
       if (this.selectedIdx >= 0) {
         this.selectedIdx -= 1;
       }
     },
+    trigger: function() {
+      let query = this.filters.map(function(f, idx){
+        return `${f.key}=${f.value}`
+      }).join("&");
+      ajaxGet('/?' + query)
+    }
    }
 });
 

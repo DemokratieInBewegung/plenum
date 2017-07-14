@@ -9,7 +9,7 @@
 			   		v-for="(f, index) in filters"
 			   		>
 			   	{{f.name}}: {{f.label}}
-			   		<span class="material-icons" v-on:click="filters.splice(index, 1)">clear</span>
+			   		<span class="material-icons" v-on:click="remove(index)">clear</span>
 			   	</span>
 			</div>
 			<div class="col dropdown show">

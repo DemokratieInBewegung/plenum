@@ -116,7 +116,16 @@ var magicSearch = new Vue({
   data: {
     filters: [],
     searchOptions: [
-      {name: 'Bereich', key: 'b', placeholder: 'nach Bereichen filtern'},
+      {name: 'Bereich', key: 'b', placeholder: 'nach Bereichen filtern', subSelection: [
+        {name: 'Mitbestimmung', value: 'Mitbestimmung'},
+        {name: 'Transparenz und Lobbyismus', value: 'Transparenz und Lobbyismus'},
+        {name: 'Demokratisches und solidarisches Europa', value: 'Demokratisches und solidarisches Europa'},
+        {name: 'Gerechtigkeit und Verantwortung füreinander', value: 'Gerechtigkeit und Verantwortung füreinander'},
+        {name: 'Vielfältige, weltoffene und inklusive Gesellschaft', value: 'Vielfältige, weltoffene und inklusive Gesellschaft'},
+        {name: 'Nachhaltigkeit', value: 'Nachhaltigkeit'},
+        {name: 'Zukunft aktiv gestalten', value: 'Zukunft aktiv gestalten'},
+        {name: '(andere)', value: '(andere)'}
+      ]},
       {name: 'Phase', key: 'f', placeholder: "nach Phase filtern", subSelection: [
         {name: 'In Vorbereitung', value: 'p'},
         {name: 'In Prüfung', value: 'i'},

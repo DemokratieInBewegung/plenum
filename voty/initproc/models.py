@@ -118,6 +118,10 @@ class Initiative(models.Model):
             # there is nothing we have to accomplish
             return True
 
+        if self.state == Initiative.STATES.VOTING:
+            # there is nothing we have to accomplish
+            return True
+
         return False
 
 
@@ -185,12 +189,17 @@ class Initiative(models.Model):
 
     @cached_property
     def yays(self):
-        print(self.votes)
-        return self.votes.filter(Vote.in_favor==True).count()
+        return self.votes.filter(in_favor=True).count()
 
     @cached_property
     def nays(self):
-        return self.votes.filter(Vote.in_favor==False).count()
+        return self.votes.filter(in_favor=False).count()
+
+    def is_accepted(self):
+        if(self.all_variants): # todo: check variants
+            raise NotImplementedError("Variantenvergleich noch nicht implementiert")
+
+        return self.yays > self.nays
 
     @cached_property
     def all_variants(self):
@@ -251,6 +260,10 @@ class Initiative(models.Model):
     def notify_followers(self, *args, **kwargs):
         query = [s.user for s in self.supporting.filter(ack=True).all()] if self.state == 'p' else self.supporters.all()
 
+        return self.notify(query, *args, **kwargs)
+
+    def notify_initiators(self, *args, **kwargs):
+        query = [s.user for s in self.initiators]
         return self.notify(query, *args, **kwargs)
 
     def notify(self, recipients, notice_type, extra_context=None, subject=None, **kwargs):

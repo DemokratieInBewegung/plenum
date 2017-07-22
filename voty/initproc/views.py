@@ -319,7 +319,7 @@ def submit_to_committee(request, initiative):
         initiative.moderations.update(stale=True)
 
         messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
-        initiative.notify_followers(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
+        initiative.notify_initiators(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         initiative.notify(get_user_model().objects.filter(is_staff=True).all(),
                           NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         return redirect('/initiative/{}'.format(initiative.id))
@@ -387,7 +387,7 @@ def ack_support(request, initiative):
     sup.save()
 
     messages.success(request, "Danke für die Bestätigung")
-    initiative.notify_followers(NOTIFICATIONS.INVITE.ACCEPTED, subject=request.user)
+    initiative.notify_initiators(NOTIFICATIONS.INVITE.ACCEPTED, subject=request.user)
 
     return redirect('/initiative/{}'.format(initiative.id))
 
@@ -400,7 +400,7 @@ def rm_support(request, initiative):
     sup.delete()
 
     messages.success(request, "Deine Unterstützung wurde zurückgezogen")
-    initiative.notify_followers(NOTIFICATIONS.INVITE.REJECTED, subject=request.user)
+    initiative.notify_initiators(NOTIFICATIONS.INVITE.REJECTED, subject=request.user)
 
     if initiative.state == 's':
         return redirect('/initiative/{}'.format(initiative.id))

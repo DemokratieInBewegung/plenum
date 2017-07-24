@@ -196,9 +196,26 @@ class Initiative(models.Model):
         return self.votes.filter(in_favor=False).count()
 
     def is_accepted(self):
-        if(self.all_variants): # todo: check variants
-            raise NotImplementedError("Variantenvergleich noch nicht implementiert")
+        if self.yays <= self.nays: #always reject if too few yays
+            return False
 
+        if(self.all_variants):
+            most_votes = 0
+            for ini in self.all_variants: #find the variant that
+                if ini.yays > ini.nays:       # was accepted
+                   if ini.yays > most_votes:   # and has the most yay votes
+                       most_votes = ini.yays
+            # then check if current initiative has more than the highest variant
+            if self.yays > most_votes:
+                return True
+            elif self.yays == most_votes:
+                print("We have a tie. Problem! {}".format(self.title))
+                # self.notify_moderators("???")
+                raise Exception("Wait until one of them wins")
+            else:
+                return False
+
+        # no variants:
         return self.yays > self.nays
 
     @cached_property

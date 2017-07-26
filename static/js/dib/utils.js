@@ -107,7 +107,7 @@ function setup_char_counter(prefix){
   $((prefix || '') + "[maxlength]").keyup(function(evt){
     var t = $(evt.currentTarget);
     $('[for=' + t.attr('id') + ']'
-      ).attr("data-text-after", "(noch " + (parseInt(t.attr('maxlength')) - t.val().length) + " Zeichen)");
+      ).attr("data-text-after", "(noch " + (parseInt(t.attr('maxlength')) - t.val().replace(/\n/g,"\n\n").length) + " Zeichen)");
   }).keyup();
 
 }

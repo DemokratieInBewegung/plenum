@@ -11,7 +11,7 @@ def create_notice_types(sender, **kwargs):
 
     # Invitations
     NoticeType.create(NOTIFICATIONS.INVITE.SEND,
-                      'Initativen Einladung',
+                      'Einladung zu Initiative',
                       'Du wurdest zu einer neuen Initiative eingeladen')
 
     NoticeType.create(NOTIFICATIONS.INVITE.ACCEPTED,
@@ -41,8 +41,8 @@ def create_notice_types(sender, **kwargs):
                       'Die Initiative ist in die Diskussionphase eingetreten')
 
     NoticeType.create(NOTIFICATIONS.INITIATIVE.DISCUSSION_CLOSED,
-                      'Initiativen Diskussion beendet',
-                      'Die Initiative kann jetzt final überarbeitet werde ')
+                      'Diskussion zu Initiative beendet',
+                      'Die Initiative kann jetzt final überarbeitet werden')
 
 
     NoticeType.create(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE,
@@ -52,7 +52,7 @@ def create_notice_types(sender, **kwargs):
     # DISCUSSION
 
     NoticeType.create(NOTIFICATIONS.INITIATIVE.NEW_ARGUMENT,
-                      'Neues Argument in Diskussion zur Initiative',
+                      'Neues Argument in Diskussion zu Initiative',
                       'Es wurde ein neues Argument in der Diskussion zur Initiative gepostet')
 
 

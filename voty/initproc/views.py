@@ -61,6 +61,16 @@ def non_ajax_redir(*redir_args, **redir_kwargs):
         return inner
     return decorator
 
+def get_voting_fragments(vote,initiative,request):
+    context = dict(vote=vote, initiative=initiative, user_count=get_user_model().objects.count())
+    return {'fragments': {
+        '#voting': render_to_string("fragments/voting.html",
+                                    context=context,
+                                    request=request),
+        '#jump-to-vote': render_to_string("fragments/jump_to_vote.html",
+                                    context=context)
+        }}
+
 #
 # ____    ____  __   ___________    __    ____   _______.
 # \   \  /   / |  | |   ____\   \  /  \  /   /  /       |
@@ -607,12 +617,7 @@ def vote(request, init):
         my_vote.reason = reason
     my_vote.save()
 
-    return {'fragments': {
-        '#voting': render_to_string("fragments/voting.html",
-                                    context=dict(vote=my_vote, initiative=init),
-                                    request=request)
-        }}
-
+    return get_voting_fragments (my_vote,init,request)
 
 
 @non_ajax_redir('/')
@@ -649,8 +654,4 @@ def compare(request, initiative, version_id):
 @can_access_initiative(STATES.VOTING) # must be in voting
 def reset_vote(request, init):
     Vote.objects.filter(initiative=init, user_id=request.user).delete()
-    return {'fragments': {
-        '#voting': render_to_string("fragments/voting.html",
-                                    context=dict(vote=None, initiative=init),
-                                    request=request)
-        }}
+    return get_voting_fragments (None,init,request)

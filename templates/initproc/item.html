@@ -328,9 +328,7 @@
             <div class="col-12">
                 <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
                 <p>Über diese Initiative wird gerade abgestimmt.</p>
-                <a href="#vote" class="btn bg-vote">
-                    Jetzt abstimmen
-                </a>
+                {% include "fragments/jump_to_vote.html" %}
             </div>
         </div>
     </div>

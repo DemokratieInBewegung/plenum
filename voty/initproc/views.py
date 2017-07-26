@@ -475,7 +475,7 @@ def moderate(request, form, initiative):
 
             messages.success(request, "Initiative veröffentlicht")
             initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
-            initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=user)
+            initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=request.user)
             return redirect('/initiative/{}'.format(initiative.id))
 
         elif initiative.state == STATES.MODERATION:

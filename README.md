@@ -4,7 +4,7 @@
 
 This runs on Python Django. For Development, you'll need Python 3.0 and a virtual environment.
 
-The following packages must be present for a successful install (Ubuntu syntax) :
+To install the packages required for a successful install on Ubuntu, run
 
 ```
 sudo apt-get install python3-dev
@@ -13,6 +13,16 @@ sudo apt-get install postgresql postgresql-contrib
 sudo apt-get install libpq-dev
 sudo apt-get install libjpeg8-dev
 ```
+
+On Mac OS X, run
+
+```
+brew install python3
+sudo easy_install pip
+sudo pip install virtualenv
+brew update
+brew install postgres
+ ```
 
 1. Set up your local Virtual environment
 

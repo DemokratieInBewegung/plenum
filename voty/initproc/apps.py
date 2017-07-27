@@ -58,7 +58,7 @@ def create_notice_types(sender, **kwargs):
 
 class InitprocConfig(AppConfig):
     name = 'voty.initproc'
-    verbose_name ="Inititive Process"
+    verbose_name ="Initiative Process"
 
     def ready(self):
         post_migrate.connect(create_notice_types, sender=self)

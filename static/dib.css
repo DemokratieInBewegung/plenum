@@ -26,6 +26,7 @@ body {
   font-size: 1.5rem;  /* Preferred icon size */
   display: inline-block;
   line-height: 1.5rem;
+  width: 1.5rem;
   text-transform: none;
   letter-spacing: normal;
   word-wrap: normal;
@@ -840,23 +841,23 @@ header .alert {
 /* Badge Color: Was Accepted */
 
 .badge-accepted {
-  color: #419641;
-  border-color: #419641;
+  color: #47AB64;
+  border-color: #47AB64;
 }
 
 .typefilter input:checked + .badge-accepted {
-  background-color: #449D44;
+  background-color: #47AB64;
 }
 
 /* Badge Color: Was Rejected */
 
 .badge-rejected {
-  color: #ADADAD;
-  border-color: #ADADAD;
+  color: #D9534F;
+  border-color: #D9534F;
 }
 
 .typefilter input:checked + .badge-rejected {
-  background-color: #B1B1B1;
+  background-color: #D9534F;
 }
 
 .profiles {
@@ -1091,6 +1092,7 @@ Argument base design
   display: block;
   font-size: 8rem;
   line-height: 10rem;
+  padding-left: 2.25rem;
 }
 
 #new-argument form .material-icons {

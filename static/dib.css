@@ -722,11 +722,11 @@ header .alert {
   line-height: 1.125rem;
 } 
 
-.typefilter input:not(:checked) + .badge {
+.typefilter input + .badge {
   background: transparent;
 }
 
-.typefilter input:not(:checked) + .badge > .check-box {
+.typefilter input + .badge > .check-box {
   display: none;
 }
 
@@ -738,7 +738,7 @@ header .alert {
   display: none;
 }
 
-.typefilter input:not(:checked) + .badge > .check-box-outline-blank {
+.typefilter input + .badge > .check-box-outline-blank {
   display: initial;
 }
 

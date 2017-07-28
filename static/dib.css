@@ -1201,6 +1201,7 @@ Argument base design
 #initial_vote .material-icons {
   font-size: 7rem;
   line-height: 7rem;
+  width: 7rem;
   color: #aaa;
   padding-bottom: .5rem;
   padding-top: 2rem;

@@ -498,6 +498,7 @@ img.avatar {
   background: #ccc;
   border-radius: 0.25rem;
   border: 1px solid #ccc;
+  width: auto;
 }
 
 .show-supporters {
@@ -1182,6 +1183,11 @@ Argument base design
 
 #voting .no-feedback {
   margin-top: .75rem;
+}
+
+#voting .progress {
+  margin-bottom: .5rem;
+  margin-top: -.5rem;
 }
 
 #initial_vote {

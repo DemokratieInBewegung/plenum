@@ -8,4 +8,4 @@ Hallo {{recipient.first_name|default:recipient.username}},
 
 
 
-Übrigens kannst du in Deinem Profil unter {{ base_url }}{{ notices_url }} einstellen, welche Benachrichtigungen du erhalten möchtest.
+Übrigens kannst Du in Deinem Profil unter {{ base_url }}{{ notices_url }} einstellen, welche Benachrichtigungen Du erhalten möchtest.

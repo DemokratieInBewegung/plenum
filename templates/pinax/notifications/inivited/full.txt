@@ -1,3 +1,3 @@
-{{sender.get_full_name|default:sender.username}} hat Dich zu "{{target}}" eingeladen.
+{% if sender == recipient %}Du hast{% else %}{{sender.get_full_name|default:sender.username}} hat{% endif %} Dich zu "{{target}}" eingeladen.
 
 Du findest die Initiative unter {{ base_url }}/initiative/{{target.id}}-{{target.slug}}

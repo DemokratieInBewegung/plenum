@@ -182,6 +182,7 @@ def new(request):
 def item(request, init, slug=None):
 
     ctx = dict(initiative=init,
+               user_count=get_user_model().objects.count(),
                proposals=[x for x in init.proposals.prefetch_related('likes').all()],
                arguments=[x for x in init.pros.prefetch_related('likes').all()] +\
                          [x for x in init.contras.prefetch_related('likes').all()])
@@ -609,7 +610,7 @@ def vote(request, init):
 
     return {'fragments': {
         '#voting': render_to_string("fragments/voting.html",
-                                    context=dict(vote=my_vote, initiative=init),
+                                    context=dict(vote=my_vote, initiative=init, user_count=get_user_model().objects.count()),
                                     request=request)
         }}
 
@@ -651,6 +652,6 @@ def reset_vote(request, init):
     Vote.objects.filter(initiative=init, user_id=request.user).delete()
     return {'fragments': {
         '#voting': render_to_string("fragments/voting.html",
-                                    context=dict(vote=None, initiative=init),
+                                    context=dict(vote=None, initiative=init, user_count=get_user_model().objects.count()),
                                     request=request)
         }}

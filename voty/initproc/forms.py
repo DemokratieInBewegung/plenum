@@ -168,7 +168,7 @@ class NewProposalForm(forms.Form):
 class NewCommentForm(forms.ModelForm):
     text = forms.CharField(required=True, label="Dein Kommentar",
                            help_text="Absätze sowie URLs werden passend formatiert",
-                           max_length=500, widget=forms.Textarea(attrs={'rows':10, 'placeholder':'Bitte beziehe Dich in deinem Kommentar auf das obige Argument.'}))
+                           max_length=500, widget=forms.Textarea(attrs={'rows':10, 'placeholder':'Bitte beziehe Dich in Deinem Kommentar auf das obige Argument.'}))
 
     class Meta:
         model = Comment
@@ -209,11 +209,11 @@ class NewModerationForm(forms.ModelForm):
         if cleanded_data['vote'] == 'y':
             for i in range(QESTIONS_COUNT):
                 if cleanded_data['q{}'.format(i) ]:
-                    self.add_error("vote", "Du hast positive gewertet, dabei hast du mindestens ein Problem oben markiert")
+                    self.add_error("vote", "Du hast positive gewertet, dabei hast Du mindestens ein Problem oben markiert")
                     break
         else:
             if not cleanded_data['text']:
-                self.add_error("text", "Kannst du das bitte begründen?")
+                self.add_error("text", "Kannst Du das bitte begründen?")
 
     class Meta:
         model = Moderation

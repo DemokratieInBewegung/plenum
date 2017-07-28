@@ -426,7 +426,7 @@ def new_argument(request, form, initiative):
     initiative.notify_followers(NOTIFICATIONS.INITIATIVE.NEW_ARGUMENT, dict(argument=arg), subject=request.user)
 
     return {
-        'inner-fragments': {'#new-argument': "<strong>Danke für dein Argument</strong>"},
+        'inner-fragments': {'#new-argument': "<strong>Danke für Dein Argument</strong>"},
         'append-fragments': {'#argument-list': render_to_string("fragments/argument/small.html",
                                                   context=dict(argument=arg),
                                                   request=request)}
@@ -449,7 +449,7 @@ def new_proposal(request, form, initiative):
     proposal.save()
 
     return {
-        'inner-fragments': {'#new-proposal': "<strong>Danke für deinen Vorschlag</strong>"},
+        'inner-fragments': {'#new-proposal': "<strong>Danke für Deinen Vorschlag</strong>"},
         'append-fragments': {'#proposal-list': render_to_string("fragments/argument/small.html",
                                                   context=dict(argument=proposal),
                                                   request=request)}
@@ -531,7 +531,7 @@ def comment(request, form, target_type, target_id):
 
     return {
         'inner-fragments': {'#{}-new-comment'.format(model.unique_id):
-                "<strong>Danke für deinen Kommentar</strong>"},
+                "<strong>Danke für Deinen Kommentar</strong>"},
         'append-fragments': {'#{}-comment-list'.format(model.unique_id):
             render_to_string("fragments/comment/item.html",
                              context=dict(comment=cmt),

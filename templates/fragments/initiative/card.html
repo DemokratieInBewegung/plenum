@@ -5,99 +5,104 @@
 	<div class="card-header">
 		<div class="container-fluid">
 			 <div class="row no-gutters">
-			 	<div class="col-auto align-self-center">
-					{% ifequal initiative.state 'p' %}
-					<span class="badge badge-prepare">
-						In Vorbereitung
-					</span>
-					{% endifequal %}
+			 	<div class="col align-self-center">
+			 		<div class="d-flex flex-wrap">
+				 		<div class="flex-item">
+							{% ifequal initiative.state 'p' %}
+							<span class="badge badge-prepare">
+								In Vorbereitung
+							</span>
+							{% endifequal %}
 
-					{% ifequal initiative.state 'i' %}
-					<span class="badge badge-arrivals">
+							{% ifequal initiative.state 'i' %}
+							<span class="badge badge-arrivals">
 
-						{% if user.is_staff %}
-							{% guard should_moderate_initiative initiative %}
-							{% if should_moderate_initiative %}
-							💥💥 Bitte prüfen  💥💥
-							{% else %}
-							In Prüfung
-							{% endif %}
-						{% else %}
-						In Prüfung
+								{% if user.is_staff %}
+									{% guard should_moderate_initiative initiative %}
+									{% if should_moderate_initiative %}
+									💥💥 Bitte prüfen  💥💥
+									{% else %}
+									In Prüfung
+									{% endif %}
+								{% else %}
+								In Prüfung
+								{% endif %}
+							</span>
+							{% endifequal %}
+
+							{% ifequal initiative.state 's' %}
+							<span class="badge badge-support">
+								Sucht Unterstützung -
+								{% if initiative.absolute_supporters < initiative.quorum %}
+								  {{initiative.quorum|sub:initiative.absolute_supporters}} fehlende {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}Unterstützer/in{% else %}Unterstützer/innen{% endif %}
+							    {% else %}
+								  Quorum erreicht
+							    {% endif %}
+							</span>
+							{% endifequal %}
+
+							{% ifequal initiative.state 'd' %}
+							<span class="badge badge-discussion">
+								In Diskussion
+							</span>
+							{% endifequal %}
+
+							{% ifequal initiative.state 'e' %}
+							<span class="badge badge-edits">
+								Finale Überarbeitung
+							</span>
+							{% endifequal %}
+
+							{% ifequal initiative.state 'm' %}
+
+							<span class="badge badge-arrivals">
+
+								{% if user.is_staff %}
+									{% guard should_moderate_initiative initiative %}
+									{% if should_moderate_initiative %}
+									💥💥 Bitte final prüfen  💥💥
+									{% else %}
+									Finale Prüfung
+									{% endif %}
+								{% else %}
+								Finale Prüfung
+								{% endif %}
+					      	</span>
+							{% endifequal %}
+
+							{% ifequal initiative.state 'v' %}
+							<span class="badge badge-vote">
+								Abstimmung
+							</span>
+							{% endifequal %}
+
+							{% ifequal initiative.state 'a' %}
+							<span class="badge badge-accepted">
+								Angenommen
+							</span>
+							{% endifequal %}
+
+							{% ifequal initiative.state 'r' %}
+							<span class="badge badge-rejected">
+								Abgelehnt
+							</span>
+							{% endifequal %}
+						</div>
+						{% if initiative.state != 'i' and initiative.state != 'a' and initiative.state != 'r' and initiative.state != 'p' %}
+						<div class="flex-item">
+							<span class="text-muted align-middle">
+								Noch {{initiative.end_of_this_phase | timeuntil}}
+							</span>
+						</div>
 						{% endif %}
-					</span>
-					{% endifequal %}
-
-					{% ifequal initiative.state 's' %}
-					<span class="badge badge-support">
-						Sucht Unterstützung -
-						{% if initiative.absolute_supporters < initiative.quorum %}
-						  {{initiative.quorum|sub:initiative.absolute_supporters}} fehlende {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}Unterstützer/in{% else %}Unterstützer/innen{% endif %}
-					    {% else %}
-						  Quorum erreicht
-					    {% endif %}
-					</span>
-					{% endifequal %}
-
-					{% ifequal initiative.state 'd' %}
-					<span class="badge badge-discussion">
-						In Diskussion
-					</span>
-					{% endifequal %}
-
-					{% ifequal initiative.state 'e' %}
-					<span class="badge badge-edits">
-						Finale Überarbeitung
-					</span>
-					{% endifequal %}
-
-					{% ifequal initiative.state 'm' %}
-
-					<span class="badge badge-arrivals">
-
-						{% if user.is_staff %}
-							{% guard should_moderate_initiative initiative %}
-							{% if should_moderate_initiative %}
-							💥💥 Bitte final prüfen  💥💥
-							{% else %}
-							Finale Prüfung
-							{% endif %}
-						{% else %}
-						Finale Prüfung
+						{% guard is_supporting initiative %}
+						{% if is_supporting %}
+						<div class="flex-item participation">
+							<i class="material-icons check-circle fg-support" data-toggle="tooltip" title="Du hast diese Initiative unterstützt.">check_circle</i>
+						</div>
 						{% endif %}
-			      	</span>
-					{% endifequal %}
-
-					{% ifequal initiative.state 'v' %}
-					<span class="badge badge-vote">
-						Abstimmung
-					</span>
-					{% endifequal %}
-
-					{% ifequal initiative.state 'a' %}
-					<span class="badge badge-accepted">
-						Angenommen
-					</span>
-					{% endifequal %}
-
-					{% ifequal initiative.state 'r' %}
-					<span class="badge badge-rejected">
-						Abgelehnt
-					</span>
-					{% endifequal %}
-
-					{% guard is_supporting initiative %}
-					{% if is_supporting %}
-						<span class="material-icons">check</span> Du unterstützt diese Initiative
-					{% endif %}
+					</div>
 				</div>
-				{% if initiative.state != 'i' and initiative.state != 'a' and initiative.state != 'r' and initiative.state != 'p' %}
-				<div class="col text-right align-self-center">
-					<span class="text-muted align-middle">
-						Noch {{initiative.end_of_this_phase | timeuntil}}
-					</span>
-				</div>
-				{% endif %}
 			</div>
 		</div>
 	</div>

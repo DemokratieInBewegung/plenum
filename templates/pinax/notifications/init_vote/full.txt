@@ -1,6 +1,6 @@
 
 {% if target %}
-{{sender.get_full_name|default:sender.username}} hat die Initiative "{{target}}" zur Abstimmung freigegeben.
+{% if sender == recipient %}Du hast{% else %}{{sender.get_full_name|default:sender.username}} hat{% endif %} die Initiative "{{target}}" zur Abstimmung freigegeben.
 
 Du findest die Initiative unter {{ base_url }}/initiative/{{target.id}}-{{target.slug}}
 

@@ -74,7 +74,7 @@ class Guard:
         latest_comment = obj.comments.order_by("-created_at").first()
 
         if not latest_comment and obj.user == self.user:
-            self.reason = "Erst wenn eine Person Dein Argument kommentiert hat, kannst du dieses ebenfalls kommentieren."
+            self.reason = "Erst wenn eine Person Dein Argument kommentiert hat, kannst Du dieses ebenfalls kommentieren."
             return False
         elif latest_comment and latest_comment.user == self.user:
             self.reason = "Im Sinne einer abwechslungsreichen Diskussion kannst Du dieses Argument erst nach einer anderen Person wieder kommentieren."
@@ -219,7 +219,7 @@ class Guard:
     def _can_moderate_initiative(self, init):
         if init.state in [STATES.INCOMING, STATES.MODERATION] and self.user.is_staff:
             if init.supporting.filter(user=self.user, initiator=True):
-                self.reason = "Als Mitinitator/in darfst du nicht mit moderieren."
+                self.reason = "Als Mitinitator/in darfst Du nicht mit moderieren."
                 return False
             return True
         return False

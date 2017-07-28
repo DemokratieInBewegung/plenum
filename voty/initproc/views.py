@@ -364,7 +364,7 @@ def invite(request, form, initiative, invite_type):
 
         notify([user], NOTIFICATIONS.INVITE.SEND, {"target": initiative}, sender=request.user)
 
-    messages.success(request, "Initiatoren eingeladen." if invite_type == 'initiators' else 'Unterstützer eingeladen.' )
+    messages.success(request, "Initiator/innen eingeladen." if invite_type == 'initiators' else 'Unterstützer/innen eingeladen.' )
     return redirect("/initiative/{}-{}".format(initiative.id, initiative.slug))
 
 
@@ -475,7 +475,7 @@ def moderate(request, form, initiative):
 
             messages.success(request, "Initiative veröffentlicht")
             initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
-            initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=user)
+            initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=request.user)
             return redirect('/initiative/{}'.format(initiative.id))
 
         elif initiative.state == STATES.MODERATION:

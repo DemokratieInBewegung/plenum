@@ -116,7 +116,7 @@
 							{% endif %}
 							{% endif %}
 
-							{% if initiative.state != 'p' and initiative.state != 'i' and initiative.state != 's' and initiative.state != 'd' %}
+							{% if initiative.state == 'v' or initiative.state == 'a' or initiative.state == 'r' %}
 							{% guard my_vote initiative %}
 							{% if my_vote %}
   								{% if my_vote.in_favor %}

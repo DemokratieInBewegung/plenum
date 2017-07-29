@@ -939,6 +939,15 @@ label.deactivated {
   display: inline;
 }
 
+.participation-indicator .thumb-up {
+  color: #47AB64;
+  margin-top: -.125rem;
+}
+
+.participation-indicator .thumb-down {
+  color: #D9534F;
+}
+
 .history-title {
   font-size: 1em;
   color: #999;

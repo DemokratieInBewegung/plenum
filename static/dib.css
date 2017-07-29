@@ -781,6 +781,18 @@ header .alert {
   background-color: #AE2568;
 }
 
+.fg-vote, .fg-vote:focus, .fg-vote:visited {
+  color: #AB4778;
+}
+
+.fg-vote:hover {
+  color: #AE2568;
+}
+
+.fg-inactive, .fg-inactive:hover, .fg-inactive:focus, .fg-inactive:visited {
+  color: #CFD0D2;
+}
+
 .support {
   color: #EB9316;
 }
@@ -920,6 +932,11 @@ label.deactivated {
 .label-success {
   border-color: #22b24c;
   color: #22b24c;
+}
+
+.participation-indicator {
+  padding: .25rem .25rem;
+  display: inline;
 }
 
 .history-title {

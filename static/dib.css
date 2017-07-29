@@ -937,6 +937,16 @@ label.deactivated {
 .participation-indicator {
   padding: .25rem .25rem;
   display: inline;
+  cursor: help;
+}
+
+.participation-indicator .thumb-up {
+  color: #47AB64;
+  margin-top: -.125rem;
+}
+
+.participation-indicator .thumb-down {
+  color: #D9534F;
 }
 
 .history-title {

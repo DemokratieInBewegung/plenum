@@ -95,7 +95,7 @@
 							</span>
 						</div>
 						{% endif %}
-						
+
 						{% if user.is_authenticated %}
 
 						{% if initiative.state != 'p' and initiative.state != 'i' %}
@@ -111,7 +111,7 @@
 						{% endif %}
 						{% endif %}
 
-						{% if initiative.state != 'p' and initiative.state != 'i' and initiative.state != 's' %}
+						{% if initiative.state != 'p' and initiative.state != 'i' and initiative.state != 's' and initiative.state != 'd' %}
 						{% guard has_voted initiative %}
 						{% if has_voted %}
 						<div class="flex-item">

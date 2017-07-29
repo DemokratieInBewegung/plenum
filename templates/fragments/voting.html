@@ -2,11 +2,17 @@
 <div class="col-12" id="voting">
     <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}} in Abstimmung</h6>
     {% if vote %}
-     	<h3>Danke, deine Stimme wurde gezählt!</h3>
+     	<h3>Danke, Deine Stimme wurde gezählt!</h3>
      	<form data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/reset_vote" method="POST">
 
      		<p><strong>{{initiative.votes.count}}</strong>{% if initiative.votes.count == 1 %} Person hat{% else %} Personen haben{% endif %} bisher abgestimmt.
      		</p> 
+            <div class="progress">
+                <div class="progress-bar bg-vote" role="progressbar" style="width: {% widthratio initiative.votes.count user_count 100 %}%;" aria-valuenow="{{initiative.votes.count}}" aria-valuemin="0" aria-valuemax="{{user_count}}">
+                </div>
+            </div>
+            <p>Das sind <strong>{% widthratio initiative.votes.count user_count 100 %}</strong> Prozent der <strong>{{user_count}}</strong> Wahlberechtigten.
+            </p>
      		<p>Du hast mit 
      		</p>
      		<div class="your-vote">
@@ -21,7 +27,7 @@
  		{% if vote.nay_survey_options and not vote.in_favor and not vote.reason %}
  			<div class="feedback">
  			<hr />
- 			<h3>Magst du den Initiator/innen sagen warum?</h3>
+ 			<h3>Magst Du den Initiator/innen sagen warum?</h3>
  			
 		 	<form data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
 		 		{% csrf_token %}
@@ -46,7 +52,7 @@
 		 {% endif %}
 
     {% else %}
-     	<h3> Stimmst du dieser Initiative zu?</h3>
+     	<h3> Stimmst Du dieser Initiative zu?</h3>
 	 	<form id="initial_vote" class="row" data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
 	 		{% csrf_token %}
 	 		<div class="col-12 col-sm-6 text-center">

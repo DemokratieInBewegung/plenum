@@ -50,7 +50,7 @@ class Initiative(models.Model):
     arbeitsweise = models.TextField(blank=True)
     init_argument = models.TextField(blank=True)
 
-    einordnung = models.CharField(max_length=50, choices=[('Einzellinitiatve','Einzelinitiative')])
+    einordnung = models.CharField(max_length=50, choices=[('Einzelinitiative','Einzelinitiative')])
     ebene = models.CharField(max_length=50, choices=[('Bund', 'Bund')])
     bereich = models.CharField(max_length=50, choices=[
                 ('Mitbestimmung', 'Mitbestimmung'),
@@ -194,7 +194,8 @@ class Initiative(models.Model):
     @cached_property
     def nays(self):
         return self.votes.filter(in_favor=False).count()
-
+      
+      
     def is_accepted(self):
         if self.yays <= self.nays: #always reject if too few yays
             return False

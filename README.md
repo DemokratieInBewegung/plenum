@@ -4,7 +4,7 @@
 
 This runs on Python Django. For Development, you'll need Python 3.0 and a virtual environment.
 
-The following packages must be present for a successful install (Ubuntu syntax) :
+To install the packages required for a successful install on Ubuntu, run
 
 ```
 sudo apt-get install python3-dev
@@ -13,6 +13,16 @@ sudo apt-get install postgresql postgresql-contrib
 sudo apt-get install libpq-dev
 sudo apt-get install libjpeg8-dev
 ```
+
+On Mac OS X, run
+
+```
+brew install python3
+sudo easy_install pip
+sudo pip install virtualenv
+brew update
+brew install postgres
+ ```
 
 1. Set up your local Virtual environment
 
@@ -32,12 +42,17 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
-4. Create a super user
+4. Set a quorum
+```
+python manage.py set_quorum
+```
+
+5. Create a super user
 ```
 python manage.py createsuperuser
 ```
 
-5. Generate some random initiatives (all in pre-visible state)
+6. Generate some random initiatives (all in pre-visible state)
 
 ```
 python manage.py shell -c "from voty.initproc.helpers import generate_initiative_from_random_wikipedia_article; generate_initiative_from_random_wikipedia_article()"
@@ -45,12 +60,12 @@ python manage.py shell -c "from voty.initproc.helpers import generate_initiative
 
 (Run this multiple times for multiple Initiatives)
 
-6. Start the server
+7. Start the server
 ```
 python manage.py runserver
 ```
 
-7. Go to the browser
+8. Go to the browser
 
 The server will host the instance at http://localhost:8000/ . The Admin-Interface (you generated an account for in 4) is available at http://localhost:8000/admin/ . Within that just navigate to the "Initiative"(s) and change the state of some of them to make the available and view them in said state.
 

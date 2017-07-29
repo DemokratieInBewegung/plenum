@@ -105,7 +105,7 @@
 
                 {% if initiative.state == 'p' %}
                     <p>
-                    An diese Initiative <strong class="badge-prepare">wird noch gearbeitet</strong>.
+                    An dieser Initiative <strong class="badge-prepare">wird noch gearbeitet</strong>.
                     </p>
                 {% elif initiative.state == 'e' %}
                     <p>
@@ -164,15 +164,12 @@
                         Über diese Initiative <a href="#voting"><strong class="badge-vote">wird gerade abgestimmt</strong></a>.
                     </p>
                 {% endifequal %} {% ifequal initiative.state 'a' %}
-                <span class="badge badge-accepted">
-                    Angenommen
-                </span> {% endifequal %} {% ifequal initiative.state 'r' %} {% if initiative.went_to_discussion_at %}
-                <span class="badge badge-rejected">
-                    Abstimmung: Abgelehnt
-                </span> {% else %}
-                <span class="badge badge-rejected">
-                    Sucht Unterstützung: gescheitert
-                </span> {% endif %} {% endifequal %}
+                <p>Diese Initiative <a href="#cta"><strong class="badge-accepted">wurde angenommen</strong></a>.
+                {% endifequal %} {% ifequal initiative.state 'r' %} {% if initiative.went_to_discussion_at %}
+                <p>Diese Initiative <a href="#cta"><strong class="badge-rejected">wurde abgelehnt</strong></a>.</p>
+                {% else %}
+                <p>Diese Initiative <strong class="badge-rejected">wurde abgelehnt</strong>, da sie das Quorum nicht erreicht hat.</p>
+                {% endif %} {% endifequal %}
             </div>
         </div>
     </div>
@@ -255,7 +252,7 @@
                     {% endif %}
                 </span>
                 <div class="progress">
-                    <div class="progress-bar bg-support" role="progressbar" style="width: {% if initiative.relative_support <= 100 %}{{initiative.relative_support|floatformat:" 0 "}}{% else %}100{% endif %}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
+                    <div class="progress-bar bg-support" role="progressbar" style="width: {% if initiative.relative_support <= 100 %}{{initiative.relative_support|floatformat:"0"}}{% else %}100{% endif %}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
                     </div>
                 </div>
                 {% if initiative.absolute_supporters < initiative.quorum %}
@@ -337,13 +334,57 @@
 </div>
 {% endifequal %}
 
+{% if initiative.state == 'a' or initiative.state == 'r' %}
+<div id="cta" class="container-fluid cta">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Ergebnis der Abstimmung</h6>
+            </div>
+        </div>
+        {% if initiative.votes.count > 0 %}
+        <div class="row">
+            <div class="col-12" style="padding-top: 1rem">
+                <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
+                <div class="progress">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: {{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div class="progress-bar bg-danger" role="progressbar" style="width: {{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="padding-top: .25rem">
+            <div class="col-6" style="color: #5cb85c">
+                <span class="in-favor text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_up</i> <br /><strong style="text-transform: uppercase">Ja</strong></span>
+                <span style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.yays}}</span>
+            </div>
+            <div class="col-6 text-right" style="color: #d9534f">
+                <span class="declined text-center" style="float: right; padding-right: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_down</i> <br /><strong style="text-transform: uppercase">Nein</strong></span>
+                <span style="margin-right: .75rem; font-size: 2rem; line-height: 2.625rem">{{initiative.nays}}</span>
+            </div>
+        </div>
+        {% else %}
+        <div class="row" style="padding-top: 1rem">
+            <div class="col-12">
+                <span>Bei der Abstimmung zu dieser Initiative wurde keine einzige Stimme abgegeben. Damit gilt die Initiative als abgelehnt.</span>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row" style="padding-top: 1rem">
+            <div class="col-12">
+                <span class="text-muted">Abgegebene Stimmen: {{initiative.votes.count}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <div id="initiative-text" class="container-fluid initiative-single">
     <div class="container">
         <div class="row">
             <h6 class="col-md-6 text-muted classification">Text der Initiative</h6>
             {% if initiative.versions.count > 1 %}
                 <div class="col-md-6 text-muted text-right">
-                    <a href="/initiative/{{initiative.id}}-{{initiative.slug}}/compare/{{initiative.versions.1.id}}" data-ajax="true"><span class="material-icons">history</span> {{initiative.versions.count}}</a>
+                    <a href="/initiative/{{initiative.id}}-{{initiative.slug}}/compare/{{initiative.versions.1.id}}" data-ajax="true"><span class="material-icons history">history</span> {{initiative.versions.count}}</a>
                 </div>
             {% endif %}
         </div>
@@ -351,7 +392,7 @@
         {% include "initproc/blocks/content.html" %}
         
         {% if initiative.was_closed_at %}
-            <div class="row">
+            <!--<div class="row">
                 <div class="col-12">
                     <h3 class="history-title">
                     <span class="date">{{initiative.was_closed_at}}</span>
@@ -367,7 +408,7 @@
                     {% endif %}
                     </h3>
                 </div>
-            </div>
+            </div>-->
         {% endif %}
     </div>
 </div>
@@ -442,7 +483,7 @@
                     {% endif %}
                 </span>
                 <div class="progress">
-                    <div class="progress-bar bg-support" role="progressbar" style="width: {% if initiative.relative_support <= 100 %}{{initiative.relative_support|floatformat:" 0 "}}{% else %}100{% endif %}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
+                    <div class="progress-bar bg-support" role="progressbar" style="width: {% if initiative.relative_support <= 100 %}{{initiative.relative_support|floatformat:"0"}}{% else %}100{% endif %}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
                     </div>
                 </div>
                 {% if initiative.absolute_supporters < initiative.quorum %}

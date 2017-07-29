@@ -26,6 +26,7 @@ body {
   font-size: 1.5rem;  /* Preferred icon size */
   display: inline-block;
   line-height: 1.5rem;
+  width: 1.5rem;
   text-transform: none;
   letter-spacing: normal;
   word-wrap: normal;
@@ -324,6 +325,14 @@ em {
     border-radius: 0;
 }*/
 
+.card-header {
+  padding: 0.5rem 1rem;
+}
+
+.card-header .flex-item {
+  padding: .25rem .25rem;
+}
+
 .card-header, .card-footer {
   background-color: rgba(255, 255, 255, 1);
 }
@@ -497,6 +506,7 @@ img.avatar {
   background: #ccc;
   border-radius: 0.25rem;
   border: 1px solid #ccc;
+  width: auto;
 }
 
 .show-supporters {
@@ -751,6 +761,10 @@ header .alert {
   border-color: #F0AD4E;
 }
 
+.fg-support, .fg-support:hover, .fg-support:focus, .fg-support:visited{
+  color: #F0AD4E;
+}
+
 .bg-discussion, .bg-discussion:hover, .bg-discussion:focus, .bg-discussion:visited {
   color: rgba(255, 255, 255, 1);
   background-color: #01549B;
@@ -840,23 +854,23 @@ header .alert {
 /* Badge Color: Was Accepted */
 
 .badge-accepted {
-  color: #419641;
-  border-color: #419641;
+  color: #47AB64;
+  border-color: #47AB64;
 }
 
 .typefilter input:checked + .badge-accepted {
-  background-color: #449D44;
+  background-color: #47AB64;
 }
 
 /* Badge Color: Was Rejected */
 
 .badge-rejected {
-  color: #ADADAD;
-  border-color: #ADADAD;
+  color: #D9534F;
+  border-color: #D9534F;
 }
 
 .typefilter input:checked + .badge-rejected {
-  background-color: #B1B1B1;
+  background-color: #D9534F;
 }
 
 .profiles {
@@ -1091,6 +1105,7 @@ Argument base design
   display: block;
   font-size: 8rem;
   line-height: 10rem;
+  padding-left: 2.25rem;
 }
 
 #new-argument form .material-icons {
@@ -1180,6 +1195,11 @@ Argument base design
 
 #voting .no-feedback {
   margin-top: .75rem;
+}
+
+#voting .progress {
+  margin-bottom: .5rem;
+  margin-top: -.5rem;
 }
 
 #initial_vote {

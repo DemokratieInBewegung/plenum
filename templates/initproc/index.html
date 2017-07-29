@@ -15,102 +15,10 @@
     </div>
 </div>
 
+{% include "initproc/blocks/filter.html" %}
 {% comment %}
-<form id="filters" data-ajax-submit="true" method="GET">
-	<div class="typefilter">
-		<div class="container">
-			<div class="row no-gutters">
-				<div class="col-auto">
-			      <h6>
-			      	<i class="material-icons filter-list">filter_list</i> Zeige nur:
-			      </h6>
-	    		</div>
-	    		<div class="col-sm-8">
-				  	<div class="row no-gutters">
-						{% if user.is_authenticated %}
-						<div class="col-auto">
-							<label>
-								<input name="f" value="p" type="checkbox" {% if 'p' in filters %} checked{% endif %}>
-								<span class="badge badge-prepare">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>In Vorbereitung
-						      	</span>
-							</label>
-						</div>
-							{% if inbox_count %}
-						    <div class="col-auto">
-							    <label>
-							      	<input name="f" value="i" type="checkbox" {% if 'i' in filters %} checked{% endif %}>
-							      	<span class="badge badge-arrivals">
-							      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>In Prüfung ({{inbox_count}})
-							      	</span>
-							    </label>
-							</div>
-					      	{% endif %}
-						{% endif %}
-				      	<div class="col-auto">
-						    <label>
-						      	<input name="f" value="s" type="checkbox" {% if 's' in filters %} checked{% endif %}>
-						      	<span class="badge badge-support">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Sucht Unterstützung
-						      	</span>
-						    </label>
-						</div>
-						<div class="col-auto">
-						    <label>
-						      	<input name="f" value="d" type="checkbox" {% if 'd' in filters %} checked{% endif %}>
-						      	<span class="badge badge-discussion">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>In Diskussion
-						      	</span>
-						    </label>
-						</div>
-						<div class="col-auto">
-						    <label>
-						      	<input name="f" value="e" type="checkbox" {% if 'e' in filters %} checked{% endif %}>
-						      	<span class="badge badge-edits">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Finale Überarbeitung
-						      	</span>
-						    </label>
-						</div>
-						<div class="col-auto">
-						    <label>
-						      	<input name="f" value="m" type="checkbox" {% if 'm' in filters %} checked{% endif %}>
-						      	<span class="badge badge-arrivals">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Finale Prüfung
-						      	</span>
-						    </label>
-						</div>
-						<div class="col-auto">
-						    <label>
-						      	<input name="f" value="v" type="checkbox" {% if 'v' in filters %} checked{% endif %}>
-						      	<span class="badge badge-vote">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Abstimmung
-						      	</span>
-						    </label>
-						</div>
-						<div class="col-auto">
-						    <label>
-						      	<input name="f" value="a" type="checkbox" {% if 'a' in filters %} checked{% endif %}>
-						      	<span class="badge badge-accepted">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Angenommen
-						      	</span>
-						    </label>
-						</div>
-						<div class="col-auto">
-						    <label>
-						      	<input name="f" value="r" type="checkbox" {% if 'r' in filters %} checked{% endif %}>
-						      	<span class="badge badge-rejected">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Abgelehnt
-						      	</span>
-						    </label>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-    </div>
- </form>
- {% endcomment %}
- {% include "initproc/blocks/magic_search.html" %}
+{% include "initproc/blocks/magic_search.html" %}
+{% endcomment %}
 {% endblock %}
 
 {% block content %}
@@ -123,7 +31,21 @@
 {% block body-javascript %}
 
 {{ block.super }}
-
+<script type="text/javascript">
+  	$(function(){
+  		var submitTimeout = null;
+	    $('.typefilter input').change(function(item) {
+	    	$("#init-list").html("Loading ...");
+	    	$("#filters").submit();
+	    });	
+  	});
+  	// Initialize Tooltips
+  	$(function () {
+	  $('[data-toggle="tooltip"]').tooltip();
+	});
+</script>
+{% comment %}
 <script type="text/javascript" src="{% static 'js/vendor/vue.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/dib/magic-search.js' %}"></script>
+{% endcomment %}
 {% endblock %}

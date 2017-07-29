@@ -94,6 +94,8 @@ class Guard:
     def is_supporting(self, init):
         return init.supporting.filter(user_id=self.user.id)
 
+    def has_voted(self, init):
+        return init.votes.filter(user=self.user.id).count()
 
     @_compound_action
     def can_view(self, obj=None):

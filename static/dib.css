@@ -302,7 +302,6 @@ em {
 #filters {
   background-color: rgba(255, 255, 255, 1);
   padding: 0.5rem 1rem;
-  margin-bottom: 1rem;
 }
 
 .card {
@@ -719,17 +718,37 @@ header .alert {
   /*background: transparent;*/
 }
 
+.list-background {
+  background: #E7EBEF;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.filter-phases .check-box, .filter-phases .check-box-outline-blank {
+  font-size: 1.125rem;
+  padding-right: .25rem;
+  line-height: 1.125rem;
+}
+
+.filter-phases {
+  padding-bottom: 1rem;
+}
+
+.filter-list {
+  padding-bottom: 1rem;
+}
+
+.filter-participation .check-box, .filter-participation .check-box-outline-blank {
+  width: 1.5rem;
+  margin-right: .25rem;
+  overflow: hidden;
+}
+
 .typefilter .badge {
   background: transparent;
   background: inherit;
   line-height: 1.125rem;
 }
-
-.typefilter .check-box, .typefilter .check-box-outline-blank {
-  font-size: 1.125rem;
-  padding-right: .25rem;
-  line-height: 1.125rem;
-} 
 
 .typefilter input + .badge {
   background: transparent;
@@ -947,6 +966,23 @@ label.deactivated {
 
 .participation-indicator .thumb-down {
   color: #D9534F;
+}
+
+#init-list.hide-supported .supported {
+  display: none;
+}
+
+#init-list.hide-voted .voted {
+  display: none;
+}
+
+#filter-supported {
+  cursor: pointer;
+  margin-bottom: .25rem;
+}
+
+#filter-voted {
+  cursor: pointer;
 }
 
 .history-title {

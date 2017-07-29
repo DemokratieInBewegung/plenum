@@ -23,10 +23,29 @@
 {% endblock %}
 
 {% block content %}
+<div class="container-fluid">
+	<div class="container filter-list">
+		{% if user.is_authenticated %}
+		<div class="row filter-participation">
+			<div class="col">
+				<div id="filter-supported" class="text-muted">
+		      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Von mir <span class="fg-support">unterstützte</span> Initiativen ausblenden
+				</div>
+			</div>
+		</div>
+		<div class="row filter-participation">
+			<div class="col">
+				<div id="filter-voted" class="text-muted">
+		      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Von mir <span class="fg-vote">abgestimmte</span> Initiativen ausblenden
+				</div>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+</div>
 <div id="init-list" class="container init-index">
 	{% include "fragments/initiative/list.html" %}
 </div>
-
 {% endblock %}
 
 {% block body-javascript %}
@@ -43,6 +62,80 @@
   	// Initialize Tooltips
   	$(function () {
 	  $('[data-toggle="tooltip"]').tooltip();
+	});
+	$(function () {
+		var filterSupported = Cookies.get('filterSupported');
+		function filterSupportedHide () {
+			$('#filter-supported .check-box-outline-blank').hide();
+			$('#filter-supported .check-box').show();
+    		$('#init-list').addClass('hide-supported');
+    		Cookies.set('filterSupported', 'hide');
+		}
+		function filterSupportedShow () {
+			$('#filter-supported .check-box-outline-blank').show();
+			$('#filter-supported .check-box').hide();
+    		$('#init-list').removeClass('hide-supported');
+    		Cookies.set('filterSupported', 'show');
+		}
+		function setSupportedState () {
+			if (filterSupported) {
+				if (filterSupported == 'hide') {
+					filterSupportedHide();
+	    		}
+	    		if (filterSupported == 'show') {
+	    			filterSupportedShow();
+	    		}
+	    	} else {
+	    		Cookies.set('filterSupported', 'show');
+	    	}
+		}
+		setSupportedState();
+		$('#filter-supported').on('click', function () {
+			var filterSupported = Cookies.get('filterSupported');
+			if (filterSupported == 'hide') {
+				filterSupportedShow();
+			}
+			if (filterSupported == 'show') {
+				filterSupportedHide();
+			}
+		});
+	});
+	$(function () {
+		var filterVoted = Cookies.get('filterVoted');
+		function filterVotedHide () {
+			$('#filter-voted .check-box-outline-blank').hide();
+			$('#filter-voted .check-box').show();
+    		$('#init-list').addClass('hide-voted');
+    		Cookies.set('filterVoted', 'hide');
+		}
+		function filterVotedShow () {
+			$('#filter-voted .check-box-outline-blank').show();
+			$('#filter-voted .check-box').hide();
+    		$('#init-list').removeClass('hide-voted');
+    		Cookies.set('filterVoted', 'show');
+		}
+		function setVotedState () {
+			if (filterVoted) {
+				if (filterVoted == 'hide') {
+					filterVotedHide();
+	    		}
+	    		if (filterVoted == 'show') {
+	    			filterVotedShow();
+	    		}
+	    	} else {
+	    		Cookies.set('filterVoted', 'show');
+	    	}
+		}
+		setVotedState();
+		$('#filter-voted').on('click', function () {
+			var filterVoted = Cookies.get('filterVoted');
+			if (filterVoted == 'hide') {
+				filterVotedShow();
+			}
+			if (filterVoted == 'show') {
+				filterVotedHide();
+			}
+		});
 	});
 </script>
 {% comment %}

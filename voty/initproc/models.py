@@ -195,7 +195,6 @@ class Initiative(models.Model):
     def nays(self):
         return self.votes.filter(in_favor=False).count()
       
-      
     def is_accepted(self):
         if self.yays <= self.nays: #always reject if too few yays
             return False

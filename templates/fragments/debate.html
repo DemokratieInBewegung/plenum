@@ -3,7 +3,7 @@
     {% for argument in arguments %}
         {% include "fragments/argument/small.html" %}
     {% empty %}
-        <div class="alert alert-info">Diese Debatte hat {% if initiative.state == 'd' %}bisher{% endif %} keine Argumente.</div>
+        <div class="alert alert-info">Diese Debatte enthält {% if initiative.state == 'd' %}bisher{% endif %} keine Argumente.</div>
     {% endfor %}
 </div>
 {% if initiative.state == 'd' %}

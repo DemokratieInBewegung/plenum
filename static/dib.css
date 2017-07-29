@@ -325,6 +325,14 @@ em {
     border-radius: 0;
 }*/
 
+.card-header {
+  padding: 0.5rem 1rem;
+}
+
+.card-header .flex-item {
+  padding: .25rem .25rem;
+}
+
 .card-header, .card-footer {
   background-color: rgba(255, 255, 255, 1);
 }
@@ -498,6 +506,7 @@ img.avatar {
   background: #ccc;
   border-radius: 0.25rem;
   border: 1px solid #ccc;
+  width: auto;
 }
 
 .show-supporters {
@@ -750,6 +759,10 @@ header .alert {
   color: rgba(255, 255, 255, 1);
   background-color: #F0AD4E;
   border-color: #F0AD4E;
+}
+
+.fg-support, .fg-support:hover, .fg-support:focus, .fg-support:visited{
+  color: #F0AD4E;
 }
 
 .bg-discussion, .bg-discussion:hover, .bg-discussion:focus, .bg-discussion:visited {
@@ -1182,6 +1195,11 @@ Argument base design
 
 #voting .no-feedback {
   margin-top: .75rem;
+}
+
+#voting .progress {
+  margin-bottom: .5rem;
+  margin-top: -.5rem;
 }
 
 #initial_vote {

@@ -10,7 +10,7 @@ function update_notifications(data) {
         // INVITES
         case "inivited":
           message = `<a href="/initiative/${item.target_object_id}">
-              <i class="material-icons">email</i>${item.actor} hat dich zu "${item.target}" eingeladen
+              <i class="material-icons">email</i>${item.actor} hat Dich zu "${item.target}" eingeladen
           </a>`
           break;
         case "invite_accepted":

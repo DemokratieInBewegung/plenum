@@ -1,6 +1,6 @@
 Hallo {{first_name}},
 
-Wir freuen uns Dich als Beweger/in bei uns auf der Abstimmungsplattform begrüßen zu dürfen. Bitte klicke auf folgenden Link um dein Konto anzulegen:
+Wir freuen uns Dich als Beweger/in bei uns auf der Abstimmungsplattform begrüßen zu dürfen. Bitte klicke auf folgenden Link um Dein Konto anzulegen:
 
     https://{{domain}}{% url 'account_signup' %}?code={{code.code}}
 

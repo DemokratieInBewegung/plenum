@@ -86,6 +86,10 @@ def index(request):
 
     inits = request.guard.make_intiatives_query(filters).prefetch_related("supporting")
 
+    bereiche = [f for f in request.GET.getlist('b')]
+    if bereiche:
+        inits = inits.filter(bereich__in=bereiche)
+
     ids = [i for i in request.GET.getlist('id')]
 
     if ids:
@@ -178,6 +182,7 @@ def new(request):
 def item(request, init, slug=None):
 
     ctx = dict(initiative=init,
+               user_count=get_user_model().objects.count(),
                proposals=[x for x in init.proposals.prefetch_related('likes').all()],
                arguments=[x for x in init.pros.prefetch_related('likes').all()] +\
                          [x for x in init.contras.prefetch_related('likes').all()])
@@ -315,7 +320,7 @@ def submit_to_committee(request, initiative):
         initiative.moderations.update(stale=True)
 
         messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
-        initiative.notify_followers(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
+        initiative.notify_initiators(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         initiative.notify(get_user_model().objects.filter(is_staff=True).all(),
                           NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         return redirect('/initiative/{}'.format(initiative.id))
@@ -360,7 +365,7 @@ def invite(request, form, initiative, invite_type):
 
         notify([user], NOTIFICATIONS.INVITE.SEND, {"target": initiative}, sender=request.user)
 
-    messages.success(request, "Initiatoren eingeladen." if invite_type == 'initiators' else 'Unterstützer eingeladen.' )
+    messages.success(request, "Initiator/innen eingeladen." if invite_type == 'initiators' else 'Unterstützer/innen eingeladen.' )
     return redirect("/initiative/{}-{}".format(initiative.id, initiative.slug))
 
 
@@ -383,7 +388,7 @@ def ack_support(request, initiative):
     sup.save()
 
     messages.success(request, "Danke für die Bestätigung")
-    initiative.notify_followers(NOTIFICATIONS.INVITE.ACCEPTED, subject=request.user)
+    initiative.notify_initiators(NOTIFICATIONS.INVITE.ACCEPTED, subject=request.user)
 
     return redirect('/initiative/{}'.format(initiative.id))
 
@@ -396,7 +401,7 @@ def rm_support(request, initiative):
     sup.delete()
 
     messages.success(request, "Deine Unterstützung wurde zurückgezogen")
-    initiative.notify_followers(NOTIFICATIONS.INVITE.REJECTED, subject=request.user)
+    initiative.notify_initiators(NOTIFICATIONS.INVITE.REJECTED, subject=request.user)
 
     if initiative.state == 's':
         return redirect('/initiative/{}'.format(initiative.id))
@@ -422,7 +427,7 @@ def new_argument(request, form, initiative):
     initiative.notify_followers(NOTIFICATIONS.INITIATIVE.NEW_ARGUMENT, dict(argument=arg), subject=request.user)
 
     return {
-        'inner-fragments': {'#new-argument': "<strong>Danke für dein Argument</strong>"},
+        'inner-fragments': {'#new-argument': "<strong>Danke für Dein Argument</strong>"},
         'append-fragments': {'#argument-list': render_to_string("fragments/argument/small.html",
                                                   context=dict(argument=arg),
                                                   request=request)}
@@ -445,7 +450,7 @@ def new_proposal(request, form, initiative):
     proposal.save()
 
     return {
-        'inner-fragments': {'#new-proposal': "<strong>Danke für deinen Vorschlag</strong>"},
+        'inner-fragments': {'#new-proposal': "<strong>Danke für Deinen Vorschlag</strong>"},
         'append-fragments': {'#proposal-list': render_to_string("fragments/argument/small.html",
                                                   context=dict(argument=proposal),
                                                   request=request)}
@@ -471,7 +476,7 @@ def moderate(request, form, initiative):
 
             messages.success(request, "Initiative veröffentlicht")
             initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
-            initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=user)
+            initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=request.user)
             return redirect('/initiative/{}'.format(initiative.id))
 
         elif initiative.state == STATES.MODERATION:
@@ -527,7 +532,7 @@ def comment(request, form, target_type, target_id):
 
     return {
         'inner-fragments': {'#{}-new-comment'.format(model.unique_id):
-                "<strong>Danke für deinen Kommentar</strong>"},
+                "<strong>Danke für Deinen Kommentar</strong>"},
         'append-fragments': {'#{}-comment-list'.format(model.unique_id):
             render_to_string("fragments/comment/item.html",
                              context=dict(comment=cmt),
@@ -605,7 +610,7 @@ def vote(request, init):
 
     return {'fragments': {
         '#voting': render_to_string("fragments/voting.html",
-                                    context=dict(vote=my_vote, initiative=init),
+                                    context=dict(vote=my_vote, initiative=init, user_count=get_user_model().objects.count()),
                                     request=request)
         }}
 
@@ -647,6 +652,6 @@ def reset_vote(request, init):
     Vote.objects.filter(initiative=init, user_id=request.user).delete()
     return {'fragments': {
         '#voting': render_to_string("fragments/voting.html",
-                                    context=dict(vote=None, initiative=init),
+                                    context=dict(vote=None, initiative=init, user_count=get_user_model().objects.count()),
                                     request=request)
         }}

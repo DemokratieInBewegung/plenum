@@ -95,6 +95,9 @@
 							</span>
 						</div>
 						{% endif %}
+
+						{% if user.is_authenticated %}
+
 						{% if initiative.state != 'p' and initiative.state != 'i' %}
 						{% guard is_supporting initiative %}
 						{% if is_supporting %}
@@ -107,7 +110,8 @@
 						</div>
 						{% endif %}
 						{% endif %}
-						{% if initiative.state != 'p' and initiative.state != 'i' and initiative.state != 's' %}
+
+						{% if initiative.state != 'p' and initiative.state != 'i' and initiative.state != 's' and initiative.state != 'd' %}
 						{% guard has_voted initiative %}
 						{% if has_voted %}
 						<div class="flex-item">
@@ -118,6 +122,8 @@
 							<i class="material-icons thumbs-up-down fg-inactive" data-toggle="tooltip" title="Du hast über diese Initiative nicht abgestimmt.">thumbs_up_down</i>
 						</div>
 						{% endif %}
+						{% endif %}
+
 						{% endif %}
 					</div>
 				</div>

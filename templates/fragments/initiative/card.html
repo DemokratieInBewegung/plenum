@@ -117,11 +117,17 @@
 							{% endif %}
 
 							{% if initiative.state != 'p' and initiative.state != 'i' and initiative.state != 's' and initiative.state != 'd' %}
-							{% guard has_voted initiative %}
-							{% if has_voted %}
-							<div class="participation-indicator">
-								<i class="material-icons thumbs-up-down fg-vote" data-toggle="tooltip" title="Du hast über diese Initiative abgestimmt.">thumbs_up_down</i>
-							</div>
+							{% guard my_vote initiative %}
+							{% if my_vote %}
+  								{% if my_vote.in_favor %}
+								<div class="participation-indicator">
+									<i class="material-icons thumbs-up-down fg-vote" data-toggle="tooltip" title="Du hast für diese Initiative gestimmt.">thumbs_up_down</i>
+								</div>
+								{% else %}
+								<div class="participation-indicator">
+									<i class="material-icons thumbs-up-down fg-vote" data-toggle="tooltip" title="Du hast gegen diese Initiative gestimmt.">thumbs_up_down</i>
+								</div>
+								{% endif %}
 							{% else %}
 							<div class="participation-indicator">
 								<i class="material-icons thumbs-up-down fg-inactive" data-toggle="tooltip" title="Du hast über diese Initiative nicht abgestimmt.">thumbs_up_down</i>

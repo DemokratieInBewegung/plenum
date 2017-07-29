@@ -95,11 +95,29 @@
 							</span>
 						</div>
 						{% endif %}
+						{% if initiative.state != 'p' and initiative.state != 'i' %}
 						{% guard is_supporting initiative %}
 						{% if is_supporting %}
-						<div class="flex-item participation">
+						<div class="flex-item">
 							<i class="material-icons check-circle fg-support" data-toggle="tooltip" title="Du hast diese Initiative unterstützt.">check_circle</i>
 						</div>
+						{% else %}
+						<div class="flex-item">
+							<i class="material-icons check-circle fg-inactive" data-toggle="tooltip" title="Du hast diese Initiative nicht unterstützt.">check_circle</i>
+						</div>
+						{% endif %}
+						{% endif %}
+						{% if initiative.state != 'p' and initiative.state != 'i' and initiative.state != 's' %}
+						{% guard has_voted initiative %}
+						{% if has_voted %}
+						<div class="flex-item">
+							<i class="material-icons thumbs-up-down fg-vote" data-toggle="tooltip" title="Du hast über diese Initiative abgestimmt.">thumbs_up_down</i>
+						</div>
+						{% else %}
+						<div class="flex-item">
+							<i class="material-icons thumbs-up-down fg-inactive" data-toggle="tooltip" title="Du hast über diese Initiative nicht abgestimmt.">thumbs_up_down</i>
+						</div>
+						{% endif %}
 						{% endif %}
 					</div>
 				</div>

@@ -97,6 +97,9 @@ class Guard:
     def has_voted(self, init):
         return init.votes.filter(user=self.user.id).count()
 
+    def has_voted_yes(self, init):
+        return init.votes.filter(user=self.user.id, in_favor=True)
+
     @_compound_action
     def can_view(self, obj=None):
         # fallback if compound doesn't match

@@ -17,7 +17,8 @@ class NOTIFICATIONS:
         WENT_TO_DISCUSSION = "init_discussion"
         DISCUSSION_CLOSED = "init_discussion_closed"
         WENT_TO_VOTE = 'init_vote'
-
+        ACCEPTED = 'init_accepted'
+        REJECTED = 'init_rejected'
         NEW_ARGUMENT = 'init_new_arg'
 
 

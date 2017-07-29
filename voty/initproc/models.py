@@ -118,6 +118,10 @@ class Initiative(models.Model):
             # there is nothing we have to accomplish
             return True
 
+        if self.state == Initiative.STATES.VOTING:
+            # there is nothing we have to accomplish
+            return True
+
         return False
 
 
@@ -190,6 +194,30 @@ class Initiative(models.Model):
     @cached_property
     def nays(self):
         return self.votes.filter(in_favor=False).count()
+      
+      
+    def is_accepted(self):
+        if self.yays <= self.nays: #always reject if too few yays
+            return False
+
+        if(self.all_variants):
+            most_votes = 0
+            for ini in self.all_variants: #find the variant that
+                if ini.yays > ini.nays:       # was accepted
+                   if ini.yays > most_votes:   # and has the most yay votes
+                       most_votes = ini.yays
+            # then check if current initiative has more than the highest variant
+            if self.yays > most_votes:
+                return True
+            elif self.yays == most_votes:
+                print("We have a tie. Problem! {}".format(self.title))
+                # self.notify_moderators("???")
+                raise Exception("Wait until one of them wins")
+            else:
+                return False
+
+        # no variants:
+        return self.yays > self.nays
 
     @cached_property
     def all_variants(self):
@@ -250,6 +278,10 @@ class Initiative(models.Model):
     def notify_followers(self, *args, **kwargs):
         query = [s.user for s in self.supporting.filter(ack=True).all()] if self.state == 'p' else self.supporters.all()
 
+        return self.notify(query, *args, **kwargs)
+
+    def notify_initiators(self, *args, **kwargs):
+        query = [s.user for s in self.initiators]
         return self.notify(query, *args, **kwargs)
 
     def notify(self, recipients, notice_type, extra_context=None, subject=None, **kwargs):

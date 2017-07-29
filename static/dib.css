@@ -934,6 +934,11 @@ label.deactivated {
   color: #22b24c;
 }
 
+.participation-indicator {
+  padding: .25rem .25rem;
+  display: inline;
+}
+
 .history-title {
   font-size: 1em;
   color: #999;

@@ -88,42 +88,47 @@
 							</span>
 							{% endifequal %}
 						</div>
-						{% if initiative.state != 'i' and initiative.state != 'a' and initiative.state != 'r' and initiative.state != 'p' %}
+						{% if initiative.state != 'i' and initiative.state != 'a' and initiative.state != 'r' and initiative.state != 'p' and initiative.state != 'm' %}
 						<div class="flex-item mr-auto">
 							<span class="text-muted align-middle">
 								Noch {{initiative.end_of_this_phase | timeuntil}}
 							</span>
 						</div>
+						{% else %}
+						<!-- Dirty Positioning Fix – only temporary, find better solution or resolve with new design -->
+						<div class="flex-item mr-auto">
+						</div>
 						{% endif %}
 
 						{% if user.is_authenticated %}
 
-						{% if initiative.state != 'p' and initiative.state != 'i' %}
-						{% guard is_supporting initiative %}
-						{% if is_supporting %}
 						<div class="flex-item">
-							<i class="material-icons check-circle fg-support" data-toggle="tooltip" title="Du hast diese Initiative unterstützt.">check_circle</i>
-						</div>
-						{% else %}
-						<div class="flex-item">
-							<i class="material-icons check-circle fg-inactive" data-toggle="tooltip" title="Du hast diese Initiative nicht unterstützt.">check_circle</i>
-						</div>
-						{% endif %}
-						{% endif %}
+							{% if initiative.state != 'p' and initiative.state != 'i' %}
+							{% guard is_supporting initiative %}
+							{% if is_supporting %}
+							<div class="participation-indicator">
+								<i class="material-icons check-circle fg-support" data-toggle="tooltip" title="Du hast diese Initiative unterstützt.">check_circle</i>
+							</div>
+							{% else %}
+							<div class="participation-indicator">
+								<i class="material-icons check-circle fg-inactive" data-toggle="tooltip" title="Du hast diese Initiative nicht unterstützt.">check_circle</i>
+							</div>
+							{% endif %}
+							{% endif %}
 
-						{% if initiative.state != 'p' and initiative.state != 'i' and initiative.state != 's' and initiative.state != 'd' %}
-						{% guard has_voted initiative %}
-						{% if has_voted %}
-						<div class="flex-item">
-							<i class="material-icons thumbs-up-down fg-vote" data-toggle="tooltip" title="Du hast über diese Initiative abgestimmt.">thumbs_up_down</i>
+							{% if initiative.state != 'p' and initiative.state != 'i' and initiative.state != 's' and initiative.state != 'd' %}
+							{% guard has_voted initiative %}
+							{% if has_voted %}
+							<div class="participation-indicator">
+								<i class="material-icons thumbs-up-down fg-vote" data-toggle="tooltip" title="Du hast über diese Initiative abgestimmt.">thumbs_up_down</i>
+							</div>
+							{% else %}
+							<div class="participation-indicator">
+								<i class="material-icons thumbs-up-down fg-inactive" data-toggle="tooltip" title="Du hast über diese Initiative nicht abgestimmt.">thumbs_up_down</i>
+							</div>
+							{% endif %}
+							{% endif %}
 						</div>
-						{% else %}
-						<div class="flex-item">
-							<i class="material-icons thumbs-up-down fg-inactive" data-toggle="tooltip" title="Du hast über diese Initiative nicht abgestimmt.">thumbs_up_down</i>
-						</div>
-						{% endif %}
-						{% endif %}
-
 						{% endif %}
 					</div>
 				</div>

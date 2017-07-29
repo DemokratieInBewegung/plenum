@@ -1,4 +1,4 @@
-Die Diskussionphase von "{{sender}}" ist beendet und die Initiative kann jetzt finalisiert
+Die Diskussionsphase von "{{sender}}" ist beendet und die Initiative kann jetzt finalisiert
 und dann zur Abstimmung eingereicht werden. 
 
 Du findest die Initiative unter {{ base_url }}/initiative/{{sender.id}}-{{sender.slug}}s

@@ -937,6 +937,7 @@ label.deactivated {
 .participation-indicator {
   padding: .25rem .25rem;
   display: inline;
+  cursor: help;
 }
 
 .participation-indicator .thumb-up {

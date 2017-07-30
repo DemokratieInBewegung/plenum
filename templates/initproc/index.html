@@ -78,16 +78,12 @@
     		Cookies.set('filterSupported', 'show');
 		}
 		function setSupportedState () {
-			if (filterSupported) {
-				if (filterSupported == 'hide') {
-					filterSupportedHide();
+			if (filterSupported == 'hide') {
+				filterSupportedHide();
 	    		}
-	    		if (filterSupported == 'show') {
+	    		else {
 	    			filterSupportedShow();
 	    		}
-	    	} else {
-	    		Cookies.set('filterSupported', 'show');
-	    	}
 		}
 		setSupportedState();
 		$('#filter-supported').on('click', function () {
@@ -95,7 +91,7 @@
 			if (filterSupported == 'hide') {
 				filterSupportedShow();
 			}
-			if (filterSupported == 'show') {
+			else {
 				filterSupportedHide();
 			}
 		});
@@ -115,16 +111,12 @@
     		Cookies.set('filterVoted', 'show');
 		}
 		function setVotedState () {
-			if (filterVoted) {
-				if (filterVoted == 'hide') {
-					filterVotedHide();
-	    		}
-	    		if (filterVoted == 'show') {
-	    			filterVotedShow();
-	    		}
-	    	} else {
-	    		Cookies.set('filterVoted', 'show');
-	    	}
+            if (filterVoted == 'hide') {
+                filterVotedHide();
+            }
+            else {
+                filterVotedShow();
+		    }
 		}
 		setVotedState();
 		$('#filter-voted').on('click', function () {
@@ -132,7 +124,7 @@
 			if (filterVoted == 'hide') {
 				filterVotedShow();
 			}
-			if (filterVoted == 'show') {
+			else {
 				filterVotedHide();
 			}
 		});

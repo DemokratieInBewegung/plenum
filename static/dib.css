@@ -206,6 +206,9 @@ p.card-text {
   line-height: 1.75rem;
 }
 
+.initiative-text {
+  padding-top: .5rem;
+}
 
 .initiative-text li,
 .initiative-text p {
@@ -983,6 +986,25 @@ label.deactivated {
 
 #filter-voted {
   cursor: pointer;
+}
+
+.classification .change-history {
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.classification .change-history .history {
+  font-size: .875rem;
+  line-height: .875rem;
+  width: .875rem;
+}
+
+.changes-badge {
+  background: #f1f1f1;
+  padding-left: .25rem;
+  padding-right: .25rem;
+  border-radius: 10%;
+  margin-right: .0625rem;
 }
 
 .history-title {

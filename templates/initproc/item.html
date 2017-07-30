@@ -381,12 +381,10 @@
 <div id="initiative-text" class="container-fluid initiative-single">
     <div class="container">
         <div class="row">
-            <h6 class="col-md-6 text-muted classification">Text der Initiative</h6>
-            {% if initiative.versions.count > 1 %}
-                <div class="col-md-6 text-muted text-right">
-                    <a href="/initiative/{{initiative.id}}-{{initiative.slug}}/compare/{{initiative.versions.1.id}}" data-ajax="true"><span class="material-icons history">history</span> {{initiative.versions.count}}</a>
-                </div>
-            {% endif %}
+            <div class="col">
+                <h6 class="text-muted classification">Text der Initiative{% if initiative.versions.count > 1 %}
+                <a href="/initiative/{{initiative.id}}-{{initiative.slug}}/compare/{{initiative.versions.1.id}}" data-ajax="true" class="change-history">(Änderungshistorie einsehen <span class="changes-badge"><span class="material-icons history">history</span> {{initiative.versions.count}}</span></a>{% endif %})</h6>
+            </div>
         </div>
 
         {% include "initproc/blocks/content.html" %}

@@ -11,7 +11,7 @@
                 <div class="progress-bar bg-vote" role="progressbar" style="width: {% widthratio initiative.votes.count user_count 100 %}%;" aria-valuenow="{{initiative.votes.count}}" aria-valuemin="0" aria-valuemax="{{user_count}}">
                 </div>
             </div>
-            <p>Das sind <strong>{% widthratio initiative.votes.count user_count 100 %}</strong> Prozent der <strong>{{user_count}}</strong> Wahlberechtigten.
+            <p>Das sind <strong>{% widthratio initiative.votes.count user_count 100 %}</strong> Prozent aller <strong>{{user_count}}</strong> Abstimmungsberechtigten.
             </p>
      		<p>Du hast mit 
      		</p>

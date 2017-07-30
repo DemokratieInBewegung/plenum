@@ -164,7 +164,8 @@
                         Über diese Initiative <a href="#voting"><strong class="badge-vote">wird gerade abgestimmt</strong></a>.
                     </p>
                 {% endifequal %} {% ifequal initiative.state 'a' %}
-                <p>Diese Initiative <a href="#cta"><strong class="badge-accepted">wurde angenommen</strong></a>.
+                <p>Diese Initiative {% if user.is_authenticated %}
+                <a href="#cta">{% endif %}<strong class="badge-accepted">wurde angenommen</strong>{% if user.is_authenticated %}</a>{% endif %}.
                 {% endifequal %} {% ifequal initiative.state 'r' %} {% if initiative.went_to_discussion_at %}
                 <p>Diese Initiative <a href="#cta"><strong class="badge-rejected">wurde abgelehnt</strong></a>.</p>
                 {% else %}
@@ -335,6 +336,7 @@
 {% endifequal %}
 
 {% if initiative.state == 'a' or initiative.state == 'r' %}
+{% if user.is_authenticated %}
 <div id="cta" class="container-fluid cta">
     <div class="container">
         <div class="row">
@@ -376,6 +378,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 {% endif %}
 
 <div id="initiative-text" class="container-fluid initiative-single">

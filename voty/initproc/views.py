@@ -197,8 +197,8 @@ def item(request, init, slug=None):
                arguments=[x for x in init.pros.prefetch_related('likes').all()] +\
                          [x for x in init.contras.prefetch_related('likes').all()])
 
-    ctx['arguments'].sort(key=lambda x: (x.likes.count(), x.created_at), reverse=True)
-    ctx['proposals'].sort(key=lambda x: (x.likes.count(), x.created_at), reverse=True)
+    ctx['arguments'].sort(key=lambda x: (-x.likes.count(), x.created_at))
+    ctx['proposals'].sort(key=lambda x: (-x.likes.count(), x.created_at))
 
 
     if request.user.is_authenticated:

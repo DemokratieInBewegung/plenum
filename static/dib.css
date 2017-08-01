@@ -1282,7 +1282,7 @@ Argument base design
 }
 
 #voting .feedback {
-  padding-top: 1.5rem;
+  padding-top: 0;
 }
 
 #voting .feedback ul{
@@ -1301,6 +1301,10 @@ Argument base design
 #voting .progress {
   margin-bottom: .5rem;
   margin-top: -.5rem;
+}
+
+#voting .back-to-index {
+  margin-top: 1.5rem;
 }
 
 #initial_vote {

@@ -515,6 +515,22 @@ img.avatar {
   padding-bottom: 2rem;
 }
 
+.btn > .material-icons.thumbs-up-down {
+  width: 2.25rem;
+}
+
+.btn > .material-icons.edit {
+  width: 2rem;
+}
+
+.btn > .material-icons.public {
+  width: 2rem;
+}
+
+.btn > .material-icons.person-add {
+  width: 2rem;
+}
+
 .cta {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;

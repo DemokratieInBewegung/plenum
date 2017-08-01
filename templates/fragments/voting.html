@@ -22,6 +22,9 @@
 	 		</p>
 	 		{% csrf_token %}
      		<button class="btn btn-sm btn-default" type="submit" title="hier klicken um zurück zu nehmen">Stimme zurücknehmen</button>
+     		<div class="back-to-index">
+	 		<a href="/" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Übersicht</a>
+	 		</div>
 	 	</form>
 
  		{% if vote.nay_survey_options and not vote.in_favor and not vote.reason %}

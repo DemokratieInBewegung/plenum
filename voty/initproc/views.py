@@ -437,7 +437,11 @@ def new_argument(request, form, initiative):
     initiative.notify_followers(NOTIFICATIONS.INITIATIVE.NEW_ARGUMENT, dict(argument=arg), subject=request.user)
 
     return {
-        'inner-fragments': {'#new-argument': "<strong>Danke für Dein Argument</strong>"},
+        'fragments': {'#no-arguments': ""},
+        'inner-fragments': {'#new-argument': render_to_string("fragments/argument/thumbs.html",
+                                                  context=dict(initiative=initiative)),
+                            '#debate-thanks': "<strong>Danke für Dein Argument</strong>",
+                            '#debate-count': initiative.pros.count() + initiative.contras.count()},
         'append-fragments': {'#argument-list': render_to_string("fragments/argument/small.html",
                                                   context=dict(argument=arg),
                                                   request=request)}
@@ -460,7 +464,11 @@ def new_proposal(request, form, initiative):
     proposal.save()
 
     return {
-        'inner-fragments': {'#new-proposal': "<strong>Danke für Deinen Vorschlag</strong>"},
+        'fragments': {'#no-proposals': ""},
+        'inner-fragments': {'#new-proposal': render_to_string("fragments/argument/propose.html",
+                                                  context=dict(initiative=initiative)),
+                            '#proposals-thanks': "<strong>Danke für Deinen Vorschlag</strong>",
+                            '#proposals-count': initiative.proposals.count()},
         'append-fragments': {'#proposal-list': render_to_string("fragments/argument/small.html",
                                                   context=dict(argument=proposal),
                                                   request=request)}

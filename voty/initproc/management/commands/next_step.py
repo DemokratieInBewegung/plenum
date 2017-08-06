@@ -3,6 +3,7 @@ from voty.initproc.models import Initiative
 from voty.initproc.globals import STATES, NOTIFICATIONS
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+from django.db.models import Count
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from math import ceil
@@ -52,24 +53,16 @@ class Command(BaseCommand):
                             #i.notify_followers(NOTIFICATIONS.INITIATIVE.REJECTED) todo: define rejected notification
 
                         #send feedback message to all initiators
-                        print("email now!")
-                        msg = render_to_string('initadmin/voting_feedback.txt', context=dict(
-                            target=i,
-                            votecount = i.votes.count,
-                            reasons = i.votes('reason').annotate(count=Count('reason'))
-                        ))
-                        print(msg)
-
-                        # EmailMessage(
-                        #     'Feedback zur Abstimmung',
-                        #     render_to_string('initadmin/voting_feedback.txt', context=dict(
-                        #         target=i,
-                        #         votecount = i.votes.count,
-                        #         reasons = i.votes('reason').annotate(count=Count('reason'))
-                        #     )),
-                        #     settings.DEFAULT_FROM_EMAIL,
-                        #     [u.user.email for u in i.initiators]
-                        # ).send()
+                        EmailMessage(
+                            'Feedback zur Abstimmung',
+                            render_to_string('initadmin/voting_feedback.txt', context=dict(
+                                target=i,
+                                votecount = i.votes.count,
+                                reasons = i.votes.values('reason').annotate(count=Count('reason'))
+                            )),
+                            settings.DEFAULT_FROM_EMAIL,
+                            [u.user.email for u in i.initiators]
+                        ).send()
 
                     except Exception as e:
                         print(e)

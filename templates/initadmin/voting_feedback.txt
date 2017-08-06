@@ -9,11 +9,11 @@ Es haben {{votecount}} Beweger/innen abgestimmt.
 Ja-Stimmen: {{target.yays}}
 Nein-Stimmen: {{target.nays}}
 
+{% if target.nays %}
 Folgende Gründe für Nein-Stimmen wurden angegeben:
-
-{% for reason in reasons %}
- {{reason.count}} {{reason}}
-{% endfor %}
+{% for i in reasons %}{% if i.reason %}
+{{i.count}}x: Die Initiative {{i.reason}}
+{% endif %}{% endfor %}{% endif %}
 
 Viele Grüße,
 DEMOKRATIE IN BEWEGUNG

@@ -1,3 +1,3 @@
                   <li class="nav-item">
-                    <a class="nav-link{% if active %} active{% endif %}" data-toggle="tab" href="#{{me}}" role="tab">{% if me == 'debate' %}Debatte{% else %}Vorschläge{% endif %} (<span id="{{me}}-count">{{count}}</span>)</a>
+                    <a class="nav-link{% if active %} active{% endif %}" data-toggle="tab" href="#{{me}}" role="tab">{% if me == 'debate' %}Debatte{% else %}Vorschläge{% endif %} (<span id="{{me}}-count">{{list|length}}</span>)</a>
                   </li>

@@ -436,8 +436,8 @@
         <div class="row no-gutters">
             <div class="col-12">
                 <ul class="nav nav-tabs nav-fill" role="tablist">
-{% include 'fragments/count.html' with active=True me='debate' count=arguments|length %}
-{% include 'fragments/count.html' with active=False me='proposals' count=proposals|length %}
+{% include 'fragments/count.html' with active=True me='debate' list=arguments %}
+{% include 'fragments/count.html' with active=False me='proposals' list=proposals %}
                 </ul>
             </div>
             <div class="col-12 tab-content">

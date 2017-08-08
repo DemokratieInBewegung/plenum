@@ -172,7 +172,6 @@ def new(request):
             ini = form.save(commit=False)
             with reversion.create_revision():
                 ini.state = STATES.PREPARE
-                ini.eligible_voters = get_user_model().objects.count()
                 ini.save()
 
                 # Store some meta-information.

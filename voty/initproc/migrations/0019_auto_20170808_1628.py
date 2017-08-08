@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='initiative',
             name='eligible_voters',
-            field=models.IntegerField(default=200, null=0),
+            field=models.IntegerField(blank=True, null=True),
             preserve_default=False,
         ),
         migrations.AlterField(

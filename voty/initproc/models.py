@@ -70,7 +70,7 @@ class Initiative(models.Model):
     variant_of = models.ForeignKey('self', blank=True, null=True, default=None, related_name="variants")
 
     supporters = models.ManyToManyField(User, through="Supporter")
-    eligible_voters = models.IntegerField(null=0)
+    eligible_voters = models.IntegerField(blank=True, null=True)
 
     @cached_property
     def slug(self):

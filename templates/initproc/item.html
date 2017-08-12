@@ -374,6 +374,7 @@
                 <span class="text-muted">Abgegebene Stimmen: {{initiative.votes.count}}</span>
                 <p>Das sind <strong>{% widthratio initiative.votes.count user_count 100 %}</strong> Prozent aller <strong>{{user_count}}</strong> Abstimmungsberechtigten.
                 </p>
+                {% if has_voted %}
                 <p>Du hast mit
                 </p>
                 <div class="your-vote">
@@ -381,6 +382,7 @@
                 </div>
                 <p>abgestimmt.
                 </p>
+                {% endif %}
             </div>
         </div>
     </div>

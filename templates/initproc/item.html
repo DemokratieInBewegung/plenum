@@ -372,6 +372,15 @@
         <div class="row" style="padding-top: 1rem">
             <div class="col-12">
                 <span class="text-muted">Abgegebene Stimmen: {{initiative.votes.count}}</span>
+                <p>Das sind <strong>{% widthratio initiative.votes.count user_count 100 %}</strong> Prozent aller <strong>{{user_count}}</strong> Abstimmungsberechtigten.
+                </p>
+                <p>Du hast mit
+                </p>
+                <div class="your-vote">
+                    {% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>{%else%}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>{% endif %}
+                </div>
+                <p>abgestimmt.
+                </p>
             </div>
         </div>
     </div>

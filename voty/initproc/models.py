@@ -2,6 +2,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.utils.functional import cached_property
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils.text import slugify
 from django.conf import settings
@@ -268,6 +269,13 @@ class Initiative(models.Model):
     @property
     def stale_moderations(self):
         return self.moderations.filter(stale=True)
+
+    @cached_property
+    def eligible_voter_count(self):
+        if self.eligible_voters: #is set when initiative is closed
+            return self.eligible_voters
+        else: # while open, number of voters == number of users
+            return get_user_model().objects.count()
 
     def __str__(self):
         return self.title;

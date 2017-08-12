@@ -62,7 +62,7 @@ def non_ajax_redir(*redir_args, **redir_kwargs):
     return decorator
 
 def get_voting_fragments(vote, initiative, request):
-    context = dict(vote=vote, initiative=initiative, user_count=get_user_model().objects.count())
+    context = dict(vote=vote, initiative=initiative, user_count=initiative.eligible_voter_count)
     return {'fragments': {
         '#voting': render_to_string("fragments/voting.html",
                                     context=context,
@@ -192,7 +192,7 @@ def new(request):
 def item(request, init, slug=None):
 
     ctx = dict(initiative=init,
-               user_count=get_user_model().objects.count(),
+               user_count=init.eligible_voter_count,
                proposals=[x for x in init.proposals.prefetch_related('likes').all()],
                arguments=[x for x in init.pros.prefetch_related('likes').all()] +\
                          [x for x in init.contras.prefetch_related('likes').all()])

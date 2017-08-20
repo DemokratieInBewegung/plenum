@@ -3,11 +3,13 @@
     {% for argument in proposals %}
         {% include "fragments/argument/small.html" %}
     {% empty %}
-    <div class="alert alert-info">Es wurden {% if initiative.state == 'd' %}bisher{% endif %} keine Vorschläge eingebracht.</div>
+    <div id="no-proposals" class="alert alert-info">Es wurden {% if initiative.state == 'd' %}bisher{% endif %} keine Vorschläge eingebracht.</div>
     {% endfor %}
+</div>
+<div id="proposals-thanks" class="container-fluid push-alert fixed-top">
+</div>
     {% if initiative.state == 'd' %}
 	    <div id="new-proposal">
-	        <a data-ajax="true" href="/initiative/{{initiative.id}}/new_proposal?fragment=%23new-proposal" class="btn btn-outline-primary">Neuen Vorschlag einbringen</a>
+{% include "fragments/argument/propose.html" %}
 	    </div>
     {% endif %}
-</div>

@@ -436,12 +436,8 @@
         <div class="row no-gutters">
             <div class="col-12">
                 <ul class="nav nav-tabs nav-fill" role="tablist">
-                  <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#debate" role="tab">Debatte ({{arguments|length}})</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#proposals" role="tab">Vorschläge ({{proposals|length}})</a>
-                  </li>
+{% include 'fragments/count.html' with active=True me='debate' list=arguments %}
+{% include 'fragments/count.html' with active=False me='proposals' list=proposals %}
                 </ul>
             </div>
             <div class="col-12 tab-content">

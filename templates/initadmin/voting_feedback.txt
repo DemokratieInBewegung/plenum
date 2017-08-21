@@ -1,6 +1,6 @@
 Hallo,
 
-Die Abstimmung Deiner Initiative {{target.title}} ist beendet.
+die Abstimmung Deiner Initiative {{target.title}} ist beendet.
 
 Du findest die Initiative unter {{ base_url }}/initiative/{{target.id}}-{{target.slug}}
 

@@ -2,13 +2,21 @@
 
 {% load i18n %}
 
-{% block head_title %}{% trans "Sign up" %}{% endblock %}
+{% block head_title %}Plenum: Benutzerkonto anlegen{% endblock %}
 
 {% block body %}
-    <h1>Willkommen beim DiB Initiativ Abstimmungsportal</h1>
-    <p>Bitte den Signup Code angeben:</p>
-    <form method="get" action="">
-        <div><input type="text" name="code" placeholder="{% trans 'Your signup code...' %}" /></div>
-        <div><input type="submit" class="btn btn-primary"></div>
-    </form>
+<div class="container-fluid">
+    <div class="container">
+    	<div class="row">
+            <div class="col">
+			    <h2>Willkommen beim Plenum</h2>
+			    <p>Bitte gib Deinen Anmelde-Code ein:</p>
+			    <form method="get" action="">
+			        <div><input type="text" name="code" placeholder="Dein Anmelde-Code" /></div>
+			        <div class="mt-3"><button type="submit" class="btn btn-primary">Benutzerkonto anlegen</button></div>
+			    </form>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}

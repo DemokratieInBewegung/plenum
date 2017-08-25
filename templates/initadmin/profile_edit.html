@@ -3,8 +3,7 @@
 
 {% block body %}
 
-    <h1>Profileinstellungen</h1>
-    <hr />
+    <h2>Profileinstellungen</h2>
 
     <form method="POST" action="{% url 'profile_edit' %}">
         {% csrf_token %}
@@ -12,11 +11,10 @@
         <button class="btn btn-primary" type="submit">Speichern</button>
     </form>
 
-    <hr />
-    <h4>Weitere Einstellungen</h4>
+    <h3>Weitere Einstellungen</h3>
     <ul>
 		<li><a href="{% url 'avatar_change' %}">Profilbild ändern</a></li>
-		<li><a href="{% url 'notification_notice_settings' %}">Email-Benachrichtigungen ändern</a></li>
+		<li><a href="{% url 'notification_notice_settings' %}">E-Mail-Benachrichtigungen ändern</a></li>
 		<li><a href="{% url 'account_password' %}">Passwort ändern</a></li>
     </ul>
 

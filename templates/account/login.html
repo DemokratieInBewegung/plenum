@@ -1,31 +1,38 @@
-{% extends "in_box.html" %}
+{% extends "site_base.html" %}
 
 {% load account_tags %}
-{% load i18n %}
 {% load bootstrap %}
 
-{% block head_title %}{% trans "Log in" %}{% endblock %}
+{% block head_title %}Plenum: Anmelden{% endblock %}
 
 {% block body %}
-    <div class="row">
-        <div class="col">
-            <form method="POST" action="{% url "account_login" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
-                <legend>{% trans "Log in to an existing account" %}</legend>
-                {% csrf_token %}
-                {{ form |bootstrap }}
-                {% if redirect_field_value %}
-                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                {% endif %}
-                <button type="submit" class="btn btn-primary">{% trans "Log in" %}</button>
-                <a href="{% url "account_password_reset" %}" class="btn btn-link">{% trans "Forgot your password?" %}</a>
-            </form>
-            <p class="login-signup">
-                <small>
-                    Noch kein Konto?  <strong><a href="/registrieren/">Jetzt registrieren</a></strong>
-                </small>
-            </p>
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <form method="POST" action="{% url "account_login" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
+                    <h2>Als Beweger/in anmelden</h2>
+                    {% csrf_token %}
+                    {{ form |bootstrap }}
+                    {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary">Anmelden</button>
+                </form>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col">
+                <a href="{% url "account_password_reset" %}">Passwort vergessen?</a>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col">
+                <p class="login-signup">Noch kein Konto? <strong><a href="/registrieren/">Jetzt registrieren!</a></strong></p>
+            </div>
         </div>
     </div>
+</div>
 {% endblock %}
 
 {% block scripts %}

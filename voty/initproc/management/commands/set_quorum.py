@@ -17,7 +17,7 @@ class Command(BaseCommand):
     help = "Calculate the next quorum and set it"
 
     def handle(self, *args, **options):
-        total = get_user_model().objects.count()
+        total = get_user_model().objects.filter(is_active=True).count()
         quorum = ceil(total / 100.0)
 
         if total < 100:

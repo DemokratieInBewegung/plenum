@@ -275,7 +275,7 @@ class Initiative(models.Model):
         if self.eligible_voters: #is set when initiative is closed
             return self.eligible_voters
         else: # while open, number of voters == number of users
-            return get_user_model().objects.count()
+            return get_user_model().objects.filter(is_active=True).count()
 
     def __str__(self):
         return self.title;

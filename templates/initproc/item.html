@@ -334,8 +334,7 @@
 {% endifequal %}
 
 {% if initiative.state == 'a' or initiative.state == 'r' %}
-{% if user.is_authenticated %}
-<div id="cta" class="container-fluid cta">
+<div id="cta" class="container-fluid cta voted">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -371,23 +370,31 @@
         {% endif %}
         <div class="row" style="padding-top: 1rem">
             <div class="col-12">
-                <span class="text-muted">Abgegebene Stimmen: {{initiative.votes.count}}</span>
-                <p>Das sind <strong>{% widthratio initiative.votes.count user_count 100 %}</strong> Prozent aller <strong>{{user_count}}</strong> Abstimmungsberechtigten.
+                 <p><strong>{{initiative.votes.count}}</strong>{% if initiative.votes.count == 1 %} Person hat{% else %} Personen haben{% endif %} an dieser Abstimmung teilgenommen.
+                </p> 
+                <div class="progress participation">
+                    <div class="progress-bar bg-voted" role="progressbar" style="width: {% widthratio initiative.votes.count user_count 100 %}%;" aria-valuenow="{{initiative.votes.count}}" aria-valuemin="0" aria-valuemax="{{user_count}}">
+                    </div>
+                </div>
+                <p>Das waren <strong>{% widthratio initiative.votes.count user_count 100 %}</strong> Prozent aller <strong>{{user_count}}</strong> Abstimmungsberechtigten.
                 </p>
                 {% if has_voted %}
-                <p>Du hast mit
+                <p>Du hast mit 
                 </p>
                 <div class="your-vote">
-                    {% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>{%else%}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>{% endif %}
+                {% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>{%else%}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>{% endif %}
                 </div>
                 <p>abgestimmt.
                 </p>
+                {% else %}
+                {% if user.is_authenticated %}
+                <p>Du hast an dieser Abstimmung nicht teilgenommen.</p>
+                {% endif %}
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
-{% endif %}
 {% endif %}
 
 <div id="initiative-text" class="container-fluid initiative-single">

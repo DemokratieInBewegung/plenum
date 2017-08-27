@@ -152,7 +152,7 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
         if not self.request.user.is_authenticated():
             return get_user_model().objects.none()
 
-        qs = get_user_model().objects.all()
+        qs = get_user_model().objects.filter(is_active=True).all()
 
         if self.q:
             qs = qs.filter(Q(first_name__icontains=self.q) | Q(last_name__icontains=self.q) | Q(username__icontains=self.q))
@@ -331,7 +331,7 @@ def submit_to_committee(request, initiative):
 
         messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
         initiative.notify_initiators(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
-        initiative.notify(get_user_model().objects.filter(is_staff=True).all(),
+        initiative.notify(get_user_model().objects.filter(is_staff=True, is_active=True).all(),
                           NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         return redirect('/initiative/{}'.format(initiative.id))
     else:

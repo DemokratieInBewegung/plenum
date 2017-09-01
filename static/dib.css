@@ -1428,6 +1428,10 @@ orange: #D2892B;
     padding-top: 0.5rem;
     padding-bottom: 0.75rem;
   }
+  h3 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
   .typefilter .container-fluid {
     padding-left: 0;
     padding-right: 0;

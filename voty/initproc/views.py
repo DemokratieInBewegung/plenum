@@ -62,7 +62,7 @@ def non_ajax_redir(*redir_args, **redir_kwargs):
     return decorator
 
 def get_voting_fragments(vote, initiative, request):
-    context = dict(vote=vote, initiative=initiative, user_count=get_user_model().objects.count())
+    context = dict(vote=vote, initiative=initiative, user_count=initiative.eligible_voter_count)
     return {'fragments': {
         '#voting': render_to_string("fragments/voting.html",
                                     context=context,
@@ -152,7 +152,7 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
         if not self.request.user.is_authenticated():
             return get_user_model().objects.none()
 
-        qs = get_user_model().objects.all()
+        qs = get_user_model().objects.filter(is_active=True).all()
 
         if self.q:
             qs = qs.filter(Q(first_name__icontains=self.q) | Q(last_name__icontains=self.q) | Q(username__icontains=self.q))
@@ -192,7 +192,7 @@ def new(request):
 def item(request, init, slug=None):
 
     ctx = dict(initiative=init,
-               user_count=get_user_model().objects.count(),
+               user_count=init.eligible_voter_count,
                proposals=[x for x in init.proposals.prefetch_related('likes').all()],
                arguments=[x for x in init.pros.prefetch_related('likes').all()] +\
                          [x for x in init.contras.prefetch_related('likes').all()])
@@ -331,7 +331,7 @@ def submit_to_committee(request, initiative):
 
         messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
         initiative.notify_initiators(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
-        initiative.notify(get_user_model().objects.filter(is_staff=True).all(),
+        initiative.notify(get_user_model().objects.filter(is_staff=True, is_active=True).all(),
                           NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         return redirect('/initiative/{}'.format(initiative.id))
     else:

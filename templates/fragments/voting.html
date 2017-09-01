@@ -7,7 +7,7 @@
 
      		<p><strong>{{initiative.votes.count}}</strong>{% if initiative.votes.count == 1 %} Person hat{% else %} Personen haben{% endif %} bisher abgestimmt.
      		</p> 
-            <div class="progress">
+            <div class="progress participation">
                 <div class="progress-bar bg-vote" role="progressbar" style="width: {% widthratio initiative.votes.count user_count 100 %}%;" aria-valuenow="{{initiative.votes.count}}" aria-valuemin="0" aria-valuemax="{{user_count}}">
                 </div>
             </div>

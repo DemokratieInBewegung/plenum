@@ -175,7 +175,7 @@ class NewCommentForm(forms.ModelForm):
         fields = ['text']
 
 
-QUESTIONS_COUNT = 12
+QUESTIONS_COUNT = 11
 class NewModerationForm(forms.ModelForm):
 
 
@@ -193,7 +193,8 @@ class NewModerationForm(forms.ModelForm):
     q8 = forms.BooleanField(required=False, initial=True, label="Gefährdet unser Klima und unseren Planeten")
     q9 = forms.BooleanField(required=False, initial=True, label="Trägt dazu bei, dass Reiche noch reicher werden und/oder Arme noch ärmer")
     q10 = forms.BooleanField(required=False, initial=True, label="Benachteiligt bestimmte Personengruppen, die sowieso schon benachteiligt sind")
-    q11 = forms.BooleanField(required=False, initial=True, label="Erfordert eine Änderung des Grundgesetzes")
+    # this box is not like the others
+    constitution_change = forms.BooleanField(required=False, initial=False, label="Erfordert eine Änderung des Grundgesetzes")
     text = forms.CharField(required=False, label="Kommentar/Hinweis/Anmerkung", widget=forms.Textarea)
     vote = forms.ChoiceField(required=True, label="Deine Beurteilung",
             choices=[('y', 'yay'),('n', 'nope')],
@@ -209,14 +210,16 @@ class NewModerationForm(forms.ModelForm):
         cleaned_data = super().clean()
         if cleaned_data['vote'] == 'y':
             for i in range(QUESTIONS_COUNT):
-                if cleaned_data['q{}'.format(i) ] and not cleaned_data['text']:
-                    self.add_error("vote", "Du hast positiv gewertet, dabei hast Du mindestens ein Problem oben markiert. Bitte begründe Deine Entscheidung.")
+                if cleaned_data['q{}'.format(i) ]:
+                    self.add_error("vote", "Du darfst nicht positiv werten, wenn Du mindestens ein Problem oben markiert hast.")
                     break
+            if cleaned_data['constitution_change'] and not cleaned_data['text']:
+                self.add_error("vote", "Bitte gib einen Kommentar dazu ab, dass die Initiative eine Grundgesetzänderung erfordert.")
         else:
             if not cleaned_data['text']:
                 self.add_error("text", "Kannst Du das bitte begründen?")
 
     class Meta:
         model = Moderation
-        fields = ['q{}'.format(i) for i in range(QUESTIONS_COUNT)] + ['text', 'vote']
+        fields = ['q{}'.format(i) for i in range(QUESTIONS_COUNT)] + ['constitution_change', 'text', 'vote']
 

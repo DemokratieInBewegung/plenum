@@ -175,14 +175,14 @@ class NewCommentForm(forms.ModelForm):
         fields = ['text']
 
 
-QESTIONS_COUNT = 11
+QUESTIONS_COUNT = 12
 class NewModerationForm(forms.ModelForm):
 
 
     TITLE = "Moderation"
     TEXT = "Die Inititiative ... (bitte nicht passendes streichen)"
 
-    q0 = forms.BooleanField(required=False, initial=True, label="Widerspricht in irgendeinem Punkt den Menschenrechten, der Würde des Menschen oder dem Grundgesetz")
+    q0 = forms.BooleanField(required=False, initial=True, label="Widerspricht in irgendeinem Punkt den Menschenrechten oder der Würde des Menschen")
     q1 = forms.BooleanField(required=False, initial=True, label="Enthält abwertende Begriffe gegen Gruppen (zB “Asylanten”)")
     q2 = forms.BooleanField(required=False, initial=True, label="Ist ausgrenzend/rassistisch/homophob/behindertenfeindlich/transphob/sexistisch")
     q3 = forms.BooleanField(required=False, initial=True, label="Ist nationalistisch")
@@ -191,8 +191,9 @@ class NewModerationForm(forms.ModelForm):
     q6 = forms.BooleanField(required=False, initial=True, label="Führt zu weiterer Bevormundung oder Ausschluss von Personen an der Beteiligung")
     q7 = forms.BooleanField(required=False, initial=True, label="Läuft auf Kosten folgender Generationen")
     q8 = forms.BooleanField(required=False, initial=True, label="Gefährdet unser Klima und unseren Planeten")
-    q9 = forms.BooleanField(required=False, initial=True, label="trägt dazu bei, dass Reiche noch reicher werden und/oder Arme noch ärmer")
+    q9 = forms.BooleanField(required=False, initial=True, label="Trägt dazu bei, dass Reiche noch reicher werden und/oder Arme noch ärmer")
     q10 = forms.BooleanField(required=False, initial=True, label="Benachteiligt bestimmte Personengruppen, die sowieso schon benachteiligt sind")
+    q11 = forms.BooleanField(required=False, initial=True, label="Erfordert eine Änderung des Grundgesetzes")
     text = forms.CharField(required=False, label="Kommentar/Hinweis/Anmerkung", widget=forms.Textarea)
     vote = forms.ChoiceField(required=True, label="Deine Beurteilung",
             choices=[('y', 'yay'),('n', 'nope')],
@@ -205,17 +206,17 @@ class NewModerationForm(forms.ModelForm):
             #     }))
 
     def clean(self):
-        cleanded_data = super().clean()
-        if cleanded_data['vote'] == 'y':
-            for i in range(QESTIONS_COUNT):
-                if cleanded_data['q{}'.format(i) ]:
-                    self.add_error("vote", "Du hast positive gewertet, dabei hast Du mindestens ein Problem oben markiert")
+        cleaned_data = super().clean()
+        if cleaned_data['vote'] == 'y':
+            for i in range(QUESTIONS_COUNT):
+                if cleaned_data['q{}'.format(i) ] and not cleaned_data['text']:
+                    self.add_error("vote", "Du hast positiv gewertet, dabei hast Du mindestens ein Problem oben markiert. Bitte begründe Deine Entscheidung.")
                     break
         else:
-            if not cleanded_data['text']:
+            if not cleaned_data['text']:
                 self.add_error("text", "Kannst Du das bitte begründen?")
 
     class Meta:
         model = Moderation
-        fields = ['q{}'.format(i) for i in range(QESTIONS_COUNT)] + ['text', 'vote']
+        fields = ['q{}'.format(i) for i in range(QUESTIONS_COUNT)] + ['text', 'vote']
 

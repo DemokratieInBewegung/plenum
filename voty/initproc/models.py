@@ -451,4 +451,5 @@ class Moderation(Response):
             ('r', 'request'),
             ('n', 'no!')
         ])
+    problems = models.CharField(max_length=800, blank=True)
     text = models.CharField(max_length=500, blank=True)

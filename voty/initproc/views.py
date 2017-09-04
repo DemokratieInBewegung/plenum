@@ -117,7 +117,7 @@ def index(request):
                 inits = inits.filter(Q(title__icontains=searchstr) | Q(subtitle__icontains=searchstr))
 
 
-    inits = sorted(inits, key=lambda x: x.time_ramaining_in_phase or timedelta(days=1000))
+    inits = sorted(inits, key=lambda x: x.sort_index or timedelta(days=1000))
 
     # now we filter for urgency
 

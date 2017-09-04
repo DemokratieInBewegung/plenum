@@ -83,13 +83,17 @@ class Initiative(models.Model):
 
 
     @cached_property
-    def time_ramaining_in_phase(self):
-        end_of_phase = self.end_of_this_phase
+    def sort_index(self):
+        timezone = self.created_at.tzinfo
+        if self.end_of_this_phase:
+            return self.end_of_this_phase - datetime.today().date()
 
-        if end_of_phase:
-            return end_of_phase - datetime.today().date()
+        elif self.was_closed_at:
 
-        return None
+            return datetime.now(timezone) - self.was_closed_at
+
+        else:
+            return datetime.now(timezone) - self.created_at
 
     @cached_property
     def ready_for_next_stage(self):

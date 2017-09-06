@@ -14,8 +14,9 @@ def migrate_eligible_voters_count(apps, schema_editor):
     Initiative = apps.get_model('initproc', 'Initiative')
     User = get_user_model()
     for init in Initiative.objects.filter(state__in=[STATES.ACCEPTED, STATES.REJECTED]):
-        init.eligible_voters = User.objects.filter(date_joined__lte=init.was_closed_at).count()
-        init.save()
+        if init.was_closed_at:
+            init.eligible_voters = User.objects.filter(date_joined__lte=init.was_closed_at).count()
+            init.save()
 
 
 class Migration(migrations.Migration):

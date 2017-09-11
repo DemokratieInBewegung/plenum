@@ -42,12 +42,14 @@ class Command(BaseCommand):
                     try:
                         if i.is_accepted():
                             i.state = STATES.ACCEPTED
+                            i.eligible_voters = get_user_model().objects.filter(is_active=True).count()
                             i.was_closed_at = datetime.now()
                             i.save()
                             #i.notify_followers(NOTIFICATIONS.INITIATIVE.ACCEPTED) todo: define accepted notification
 
                         else:
                             i.state = STATES.REJECTED
+                            i.eligible_voters = get_user_model().objects.filter(is_active=True).count()
                             i.was_closed_at = datetime.now()
                             i.save()
                             #i.notify_followers(NOTIFICATIONS.INITIATIVE.REJECTED) todo: define rejected notification

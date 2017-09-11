@@ -182,7 +182,7 @@ class NewModerationForm(forms.ModelForm):
     TITLE = "Moderation"
     TEXT = "Die Inititiative ... (bitte nicht passendes streichen)"
 
-    q0 = forms.BooleanField(required=False, initial=True, label="Widerspricht in irgendeinem Punkt den Menschenrechten, der Würde des Menschen oder dem Grundgesetz")
+    q0 = forms.BooleanField(required=False, initial=True, label="Widerspricht in irgendeinem Punkt den Menschenrechten oder der Würde des Menschen")
     q1 = forms.BooleanField(required=False, initial=True, label="Enthält abwertende Begriffe gegen Gruppen (zB “Asylanten”)")
     q2 = forms.BooleanField(required=False, initial=True, label="Ist ausgrenzend/rassistisch/homophob/behindertenfeindlich/transphob/sexistisch")
     q3 = forms.BooleanField(required=False, initial=True, label="Ist nationalistisch")

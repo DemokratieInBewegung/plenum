@@ -74,8 +74,7 @@ MIDDLEWARE = [
     'voty.initadmin.notify_backend.mark_as_read',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "account.middleware.LocaleMiddleware",
-    "account.middleware.TimezoneMiddleware"
+    'account.middleware.TimezoneMiddleware'
 ]
 
 
@@ -163,7 +162,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'de-de'
+LOCALE_PATHS = (
+    os.path.join( BASE_DIR, 'locale'),
+)
+
+LANGUAGE_CODE = 'de'
 ACCOUNT_LANGUAGES = [('de', 'Deutsch')]
 
 TIME_ZONE = 'UTC'
@@ -234,6 +237,7 @@ STATICFILES_DIRS = (
 
 STATIC_ROOT = os.path.join( BASE_DIR, 'public', 'static')
 MEDIA_ROOT = os.path.join( BASE_DIR, 'public', 'media')
+
 
 # CORS stuff
 

@@ -827,6 +827,12 @@ header .alert {
   color: #AE2568;
 }
 
+.bg-voted, .bg-voted:hover, .bg-voted:focus, .bg-voted:visited {
+  color: rgba(255, 255, 255, 1);
+  background-color: rgba(100, 100, 100, 1);
+  border-color: rgba(100, 100, 100, 1);
+}
+
 .fg-inactive, .fg-inactive:hover, .fg-inactive:focus, .fg-inactive:visited {
   color: #CFD0D2;
 }
@@ -1298,7 +1304,7 @@ Argument base design
   margin-top: .75rem;
 }
 
-#voting .progress {
+.progress.participation {
   margin-bottom: .5rem;
   margin-top: -.5rem;
 }
@@ -1346,6 +1352,34 @@ Argument base design
 .closed {
   margin-top: 2rem;
   background: rgba(255, 255, 255, 1);
+}
+
+/*
+
+        VOTED 
+
+*/
+
+#cta.voted .in-favor {
+  color: #47AB64;
+  font-size: inherit;
+}
+
+#cta.voted .declined {
+  color: #c9302c;
+  font-size: inherit;
+}
+
+#cta.voted .your-vote strong {
+ display: block;
+ width: 4rem;
+ padding-top: .5rem;
+ padding-bottom: 1rem;
+}
+
+#cta.voted .in-favor .material-icons, #voting .declined .material-icons {
+  font-size: 4rem;
+  line-height: 4rem;
 }
 
 /*
@@ -1427,6 +1461,10 @@ orange: #D2892B;
     margin-bottom: 0;
     padding-top: 0.5rem;
     padding-bottom: 0.75rem;
+  }
+  h3 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
   }
   .typefilter .container-fluid {
     padding-left: 0;

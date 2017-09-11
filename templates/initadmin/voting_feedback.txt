@@ -1,0 +1,21 @@
+Hallo,
+
+die Abstimmung Deiner Initiative {{target.title}} ist beendet.
+
+Du findest die Initiative unter {{ base_url }}/initiative/{{target.id}}-{{target.slug}}
+
+Es haben {{votecount}} Beweger/innen abgestimmt.
+
+Ja-Stimmen: {{target.yays}}
+Nein-Stimmen: {{target.nays}}
+
+{% if target.nays %}
+Folgende Gründe für Nein-Stimmen wurden angegeben:
+{% for i in reasons %}{% if i.reason %}
+{{i.count}}x: Die Initiative {{i.reason}}
+{% endif %}{% endfor %}{% endif %}
+
+Viele Grüße,
+DEMOKRATIE IN BEWEGUNG
+
+

@@ -1,5 +1,7 @@
 # Voty - the Voting Platform of [DEMOKRATIE IN BEWEGUNG](https://bewegung.jetzt)
 
+[![Issues in Preparation](https://badge.waffle.io/DemokratieInBewegung/abstimmungstool.svg?label=In%20Preparation&title=In%20Preparation)](http://waffle.io/DemokratieInBewegung/abstimmungstool)
+
 ## Development 
 
 This runs on Python Django. For Development, you'll need Python 3.0 and a virtual environment.

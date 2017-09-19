@@ -1,13 +1,5 @@
 # Voty - The Voting Platform of [DEMOKRATIE IN BEWEGUNG](https://bewegung.jetzt)
 
-#### Travis Build Status
-[![Build Status](https://travis-ci.org/DemokratieInBewegung/abstimmungstool.svg?branch=develop)](https://travis-ci.org/DemokratieInBewegung/abstimmungstool)
-
-#### Issue Progress
-[![Issues in Preparation](https://badge.waffle.io/DemokratieInBewegung/abstimmungstool.svg?label=In%20Preparation&title=In%20Preparation)](http://waffle.io/DemokratieInBewegung/abstimmungstool)
-[![Issues in Progress](https://badge.waffle.io/DemokratieInBewegung/abstimmungstool.svg?label=In%20Progress&title=In%20Progress)](http://waffle.io/DemokratieInBewegung/abstimmungstool)
-[![Issues on Beta](https://badge.waffle.io/DemokratieInBewegung/abstimmungstool.svg?label=On%20Beta&title=On%20Beta)](http://waffle.io/DemokratieInBewegung/abstimmungstool)
-
 ### Travis build status
 [![Build Status](https://travis-ci.org/DemokratieInBewegung/abstimmungstool.svg?branch=master)](https://travis-ci.org/DemokratieInBewegung/abstimmungstool)
 

@@ -1,4 +1,4 @@
-# Voty - the Voting Platform of [DEMOKRATIE IN BEWEGUNG](https://bewegung.jetzt)
+# Voty - The Voting Platform of [DEMOKRATIE IN BEWEGUNG](https://bewegung.jetzt)
 
 ### Travis build status
 [![Build Status](https://travis-ci.org/DemokratieInBewegung/abstimmungstool.svg?branch=master)](https://travis-ci.org/DemokratieInBewegung/abstimmungstool)

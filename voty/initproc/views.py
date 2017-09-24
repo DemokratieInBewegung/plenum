@@ -628,7 +628,7 @@ def vote(request, init):
     try:
         my_vote = Vote.objects.get(initiative=init, user_id=request.user)
     except Vote.DoesNotExist:
-        my_vote = Vote(initiative=init, user_id=request.user.id, voted = voted)
+        my_vote = Vote(initiative=init, user_id=request.user.id, value=voted)
     else:
         my_vote.voted = voted
         my_vote.reason = reason

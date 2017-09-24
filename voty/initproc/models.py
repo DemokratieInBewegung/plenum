@@ -13,7 +13,7 @@ import reversion
 
 from datetime import datetime, timedelta, date
 
-from .globals import STATES, INITIATORS_COUNT, SPEED_PHASE_END
+from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END
 from django.db import models
 import pytz
 
@@ -195,12 +195,16 @@ class Initiative(models.Model):
 
     @cached_property
     def yays(self):
-        return self.votes.filter(in_favor=True).count()
+        return self.votes.filter(value=VOTED.YES).count()
 
     @cached_property
     def nays(self):
-        return self.votes.filter(in_favor=False).count()
-      
+        return self.votes.filter(value=VOTED.NO).count()
+
+    @cached_property
+    def abstains(self):
+        return self.votes.filter(value=VOTED.ABSTAIN).count()
+
     def is_accepted(self):
         if self.yays <= self.nays: #always reject if too few yays
             return False
@@ -312,7 +316,10 @@ class Vote(models.Model):
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
     initiative = models.ForeignKey(Initiative, related_name="votes")
-    in_favor = models.BooleanField(default=True)
+    value = models.IntegerField(choices=[
+        (VOTED.YES, "Ja"),
+        (VOTED.NO, "Nein"),
+        (VOTED.ABSTAIN, "Enthaltung")])
     reason = models.CharField(max_length=100, blank=True)
 
     class Meta:
@@ -322,7 +329,17 @@ class Vote(models.Model):
     def nay_survey_options(self):
         return settings.OPTIONAL_NOPE_REASONS
 
+    @cached_property
+    def in_favor(self):
+        return self.value == VOTED.YES
 
+    @cached_property
+    def against(self):
+        return self.value == VOTED.NO
+
+    @cached_property
+    def abstained(self):
+        return self.value == VOTED.ABSTAIN
 
 class Quorum(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

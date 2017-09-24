@@ -26,7 +26,7 @@ import reversion
 
 from functools import wraps
 
-from .globals import NOTIFICATIONS, STATES, INITIATORS_COUNT, COMPARING_FIELDS
+from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS
 from .guard import can_access_initiative
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
@@ -615,14 +615,22 @@ def unlike(request, target_type, target_id):
 @require_POST
 @can_access_initiative(STATES.VOTING) # must be in voting
 def vote(request, init):
-    in_favor = request.POST.get('v', 'n') != 'n'
+    voted_value = request.POST.get('voted')
+    if voted_value == 'no':
+        voted = VOTED.NO
+    elif voted_value == "yes":
+        voted = VOTED.YES
+    else:
+        voted = VOTED.ABSTAIN
+
+
     reason = request.POST.get("reason", "")
     try:
         my_vote = Vote.objects.get(initiative=init, user_id=request.user)
     except Vote.DoesNotExist:
-        my_vote = Vote(initiative=init, user_id=request.user.id, in_favor=in_favor)
+        my_vote = Vote(initiative=init, user_id=request.user.id, voted = voted)
     else:
-        my_vote.in_favor = in_favor
+        my_vote.voted = voted
         my_vote.reason = reason
     my_vote.save()
 

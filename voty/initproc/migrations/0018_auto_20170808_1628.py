@@ -32,5 +32,5 @@ class Migration(migrations.Migration):
             field=models.IntegerField(blank=True, null=True),
             preserve_default=False,
         ),
-        migrations.RunPython(migrate_eligible_voters_count),
+        migrations.RunPython(migrate_eligible_voters_count, reverse_code=migrations.RunPython.noop),
     ]

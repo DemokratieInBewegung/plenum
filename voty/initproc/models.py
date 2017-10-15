@@ -13,7 +13,7 @@ import reversion
 
 from datetime import datetime, timedelta, date
 
-from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END
+from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START
 from django.db import models
 import pytz
 
@@ -269,6 +269,13 @@ class Initiative(models.Model):
     def custom_cls(self):
         return 'item-{} state-{} area-{}'.format(slugify(self.title),
                     slugify(self.state), slugify(self.bereich))
+
+    @cached_property
+    def allows_abstention(self):
+        if self.went_to_voting_at:
+            return self.went_to_voting_at > ABSTENTION_START
+        else:
+            return True
 
     @property
     def current_moderations(self):

@@ -65,6 +65,7 @@ COMPARING_FIELDS = [
 ]
 
 
+ABSTENTION_START = date(2017, 11, 1) # Everything published after this has abstentions
 SPEED_PHASE_END = date(2017, 8, 21) # Everything published before this has speed phase
 INITIATORS_COUNT = 3
 

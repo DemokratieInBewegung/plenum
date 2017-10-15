@@ -17,6 +17,9 @@ from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTIO
 from django.db import models
 import pytz
 
+class Tag(models.Model):
+    name = models.CharField(max_length=50)
+
 
 @reversion.register()
 class Initiative(models.Model):
@@ -72,6 +75,7 @@ class Initiative(models.Model):
 
     supporters = models.ManyToManyField(User, through="Supporter")
     eligible_voters = models.IntegerField(blank=True, null=True)
+    tags = models.ManyToManyField(Tag)
 
     @cached_property
     def slug(self):
@@ -265,6 +269,10 @@ class Initiative(models.Model):
         return self.supporting.filter(initiator=True).order_by("created_at")
 
     @cached_property
+    def all_tags(self):
+        return self.tags.all()
+
+    @cached_property
     def custom_cls(self):
         return 'item-{} state-{} area-{}'.format(slugify(self.title),
                     slugify(self.state), slugify(self.bereich))
@@ -368,8 +376,6 @@ class Supporter(models.Model):
 
     class Meta:
         unique_together = (("user", "initiative"),)
-
-
 
 # Debating Models
 

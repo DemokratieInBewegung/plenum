@@ -32,7 +32,8 @@ from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_F
 from .guard import can_access_initiative
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
-                    NewProposalForm, NewModerationForm, InviteUsersForm)
+                    NewProposalForm, NewModerationForm, InviteUsersForm, NewTagForm)
+# Create your views here.
 from .serializers import SimpleInitiativeSerializer
 
 
@@ -682,3 +683,20 @@ def compare(request, initiative, version_id):
 def reset_vote(request, init):
     Vote.objects.filter(initiative=init, user_id=request.user).delete()
     return get_voting_fragments(None, init, request)
+
+@non_ajax_redir('/')
+@ajax
+@login_required
+@can_access_initiative([STATES.INCOMING, STATES.PREPARE, STATES.MODERATION]) # must not be published
+@simple_form_verifier(NewTagForm, template="fragments/tag.html")
+def add_tag(request, form, initiative):
+    data = form.cleaned_data
+    initiative.tags.add(data['tag'])
+    initiative.save()
+
+    return {
+        'inner-fragments': {'#tag-list':
+                                render_to_string("blocks/tags.html",
+                                                 context=dict(tags=initiative.tags),
+                                                 request=request)}
+    }

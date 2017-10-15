@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from dal import autocomplete
 from uuid import uuid4
 
-from .models import Pro, Contra, Like, Comment, Proposal, Moderation, Initiative
+from .models import Pro, Contra, Like, Comment, Proposal, Moderation, Initiative, Tag
 
 
 def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_ajax=True,
@@ -174,6 +174,10 @@ class NewCommentForm(forms.ModelForm):
         model = Comment
         fields = ['text']
 
+
+class NewTagForm(forms.Form):
+    TITLE = "Neues Schlagwort hinzufügen"
+    tag = forms.ModelMultipleChoiceField(Tag.objects.all())
 
 QESTIONS_COUNT = 11
 class NewModerationForm(forms.ModelForm):

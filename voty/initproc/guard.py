@@ -242,6 +242,8 @@ class Guard:
             raise ContinueChecking()
         return False
 
+    def can_add_tags(self, obj=None):
+        return True #self.initiative.is_initiator(self.user)
 
 def add_guard(get_response):
     """

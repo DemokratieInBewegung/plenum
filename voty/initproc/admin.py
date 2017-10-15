@@ -1,7 +1,7 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from .models import Initiative, Quorum, Supporter, Pro, Contra, Proposal, Comment, Vote, Moderation
+from .models import Initiative, Quorum, Supporter, Tag, Pro, Contra, Proposal, Comment, Vote, Moderation
 
 class InitiativeAdmin(VersionAdmin):
     list_display = ['title', 'state', 'created_at', 'changed_at']
@@ -23,10 +23,15 @@ class ModerationAdmin(admin.ModelAdmin):
 
 	search_fields = ['initiative__title', 'user__username', 'user__first_name', 'user__last_name']
 
+class TagAdmin(admin.ModelAdmin):
+	list_display = ['name']
+	ordering = ['name']
+	search_fields = ['name']
 
 admin.site.register(Initiative, InitiativeAdmin)
 admin.site.register(Quorum)
 admin.site.register(Supporter, SupporterAdmin)
+admin.site.register(Tag, TagAdmin)
 admin.site.register(Pro)
 admin.site.register(Contra)
 admin.site.register(Proposal)

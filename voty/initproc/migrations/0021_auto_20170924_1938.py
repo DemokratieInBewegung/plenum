@@ -29,7 +29,7 @@ def reverse_vote_value(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('initproc', '0017_auto_20170710_1738'),
+        ('initproc', '0018_auto_20170808_1628'),
     ]
 
     operations = [

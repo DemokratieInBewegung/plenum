@@ -114,7 +114,7 @@ class InitiativeForm(forms.ModelForm):
         model = Initiative
         fields = ['title', 'subtitle', 'summary', 'problem', 'forderung',
                   'kosten', 'fin_vorschlag', 'arbeitsweise', 'init_argument',
-                  'einordnung', 'ebene', 'bereich']
+                  'einordnung', 'ebene', 'bereich', 'tags']
 
         labels = {
             "title" : "Überschrift",
@@ -126,6 +126,7 @@ class InitiativeForm(forms.ModelForm):
             "fin_vorschlag": "Finanzierungsvorschlag",
             "arbeitsweise": "Arbeitsweise",
             "init_argument": "Argument der Initiator/innen",
+            "tags": "Schlagworte",
         }
         help_texts = {
             "title" : "Die Überschrift sollte kurz und knackig Eure Forderung enthalten.",
@@ -177,7 +178,7 @@ class NewCommentForm(forms.ModelForm):
 
 class NewTagForm(forms.Form):
     TITLE = "Neues Schlagwort hinzufügen"
-    tag = forms.ModelMultipleChoiceField(Tag.objects.all())
+    tag = forms.ModelMultipleChoiceField(Tag.objects.all()) # how to set initial selected values?
 
 QESTIONS_COUNT = 11
 class NewModerationForm(forms.ModelForm):

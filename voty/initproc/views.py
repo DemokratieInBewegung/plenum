@@ -311,6 +311,8 @@ def edit(request, initiative):
     if request.method == 'POST':
         if form.is_valid():
             with reversion.create_revision():
+                data = form.cleaned_data
+                initiative.tags.set(data['tags'])
                 initiative.save()
 
                 # Store some meta-information.
@@ -687,16 +689,16 @@ def reset_vote(request, init):
 @non_ajax_redir('/')
 @ajax
 @login_required
-@can_access_initiative([STATES.INCOMING, STATES.PREPARE, STATES.MODERATION]) # must not be published
+@can_access_initiative() # state check depends on user
 @simple_form_verifier(NewTagForm, template="fragments/tag.html")
 def add_tag(request, form, initiative):
     data = form.cleaned_data
-    initiative.tags.add(data['tag'])
+    initiative.tags.set(data['tag'])
     initiative.save()
 
     return {
         'inner-fragments': {'#tag-list':
-                                render_to_string("blocks/tags.html",
+                                render_to_string("initproc/blocks/tags.html",
                                                  context=dict(tags=initiative.tags),
                                                  request=request)}
     }

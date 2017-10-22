@@ -9,15 +9,13 @@
         <div class="row">
             <div class="tag-list">
                 {% for tag in initiative.all_tags %}
-                <div class="text-center tag">
-                    <div class="name">
-                        {{ tag.name }}
-                    </div>
+                <div class="tag">
+                   {{ tag }}
                 </div>
                 {% endfor %}
-                {% if request.guard.can_add_tags %}
+                {% if request.guard.can_edit_tags %}
                 <div id="add-tag">
-                    <a data-ajax="true" href="/initiative/{{initiative.id}}/add_tag?fragment=%23add-tag" class="btn btn-success">hinzufügen</a>
+                    <a data-ajax="true" href="/initiative/{{initiative.id}}/add_tag?fragment=%23add-tag" class="btn btn-success">Schlagworte ändern</a>
                 </div>
                 {% endif %}
             </div>

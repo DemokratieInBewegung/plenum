@@ -242,8 +242,19 @@ class Guard:
             raise ContinueChecking()
         return False
 
-    def can_add_tags(self, obj=None):
-        return True #self.initiative.is_initiator(self.user)
+    def can_edit_tags(self, init=None):
+        init = init or self.request.initiative
+        # staff can edit tags at any time
+        if self.user.is_staff:
+            return True
+
+        # initiators can edit tags before publication
+        if init.state in [STATES.INCOMING, STATES.PREPARE, STATES.MODERATION] and \
+           init.supporting.filter(user=self.user, initiator=True):
+                return True
+
+        # nobody else
+        return False
 
 def add_guard(get_response):
     """

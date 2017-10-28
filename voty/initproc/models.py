@@ -85,14 +85,13 @@ class Initiative(models.Model):
     @cached_property
     def sort_index(self):
         timezone = self.created_at.tzinfo
-        if self.end_of_this_phase:
+        if self.was_closed_at: #recently closed first
+            return datetime.today().date() - self.was_closed_at
+
+        elif self.end_of_this_phase: #closest to deadline first
             return self.end_of_this_phase - datetime.today().date()
 
-        elif self.was_closed_at:
-
-            return datetime.now(timezone) - self.was_closed_at
-
-        else:
+        else: #newest first
             return datetime.now(timezone) - self.created_at
 
     @cached_property

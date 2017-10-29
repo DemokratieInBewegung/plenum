@@ -17,6 +17,7 @@ from django import forms
 
 from datetime import datetime, timedelta
 
+from rest_framework.renderers import JSONRenderer
 from django_ajax.shortcuts import render_to_json
 from django_ajax.decorators import ajax
 from pinax.notifications.models import send as notify
@@ -25,13 +26,15 @@ from reversion.models import Version
 import reversion
 
 from functools import wraps
+import json
 
 from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS
 from .guard import can_access_initiative
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
                     NewProposalForm, NewModerationForm, InviteUsersForm)
-# Create your views here.
+from .serializers import SimpleInitiativeSerializer
+
 
 DEFAULT_FILTERS = [
     STATES.PREPARE,
@@ -133,7 +136,13 @@ def index(request):
                 '#init-list': render_to_string("fragments/initiative/list.html",
                                                context=dict(initiatives=inits),
                                                request=request)
-             }
+             },
+             # FIXME: ugly work-a-round as long as we use django-ajax
+             #        for rendering - we have to pass it as a dict
+             #        or it chokes on rendering :(
+             'initiatives': json.loads(JSONRenderer().render(
+                                SimpleInitiativeSerializer(inits, many=True).data,
+                            ))
         }
 )
 

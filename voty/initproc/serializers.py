@@ -4,7 +4,7 @@ from .models import Initiative
 class SimpleInitiativeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Initiative
-        fields = ["title", "subtitle", "state", "created_at", 
+        fields = ["id", "title", "subtitle", "state", "created_at",
                   "changed_at","summary", "problem", "forderung",
                   "kosten", "fin_vorschlag", "arbeitsweise", "init_argument" ,
                   "einordnung", "ebene", "bereich", "went_public_at",

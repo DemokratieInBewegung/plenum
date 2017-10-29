@@ -112,7 +112,7 @@ docker compose exec web bash /code/scripts/upgrade.sh
 
 ### Deployment cycle
 
-This project runs on a contionous integration schedule with the premise "master is always live". Meaning that whenever something is pushed to master, this will immediately deployed on [abstimmen.bewegung.jetzt](https://abstimmen.bewegung.jetzt) and will go live. So, whatever you see here, is what is live.
+This project runs on a continuous integration schedule with the premise "master is always live". Meaning that whenever something is pushed to master, this will immediately deployed on [abstimmen.bewegung.jetzt](https://abstimmen.bewegung.jetzt) and will go live. So, whatever you see here, is what is live.
 
 As for that, pushing and commiting to master is restricted. And usual development should go against the `develop` branch where everything ought to be merged before that being merged into `master`. But also here we have a continous integration process: everything on `develop` will immediately deploy on the testing instance at [abstimmen-beta.bewegung.jetzt](https://abstimmen-beta.bewegung.jetzt/).
 

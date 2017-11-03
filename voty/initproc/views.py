@@ -62,7 +62,7 @@ def non_ajax_redir(*redir_args, **redir_kwargs):
     return decorator
 
 def get_voting_fragments(vote, initiative, request):
-    context = dict(vote=vote, initiative=initiative, user_count=get_user_model().objects.count())
+    context = dict(vote=vote, initiative=initiative, user_count=initiative.eligible_voter_count)
     return {'fragments': {
         '#voting': render_to_string("fragments/voting.html",
                                     context=context,
@@ -117,7 +117,7 @@ def index(request):
                 inits = inits.filter(Q(title__icontains=searchstr) | Q(subtitle__icontains=searchstr))
 
 
-    inits = sorted(inits, key=lambda x: x.time_ramaining_in_phase or timedelta(days=1000))
+    inits = sorted(inits, key=lambda x: x.sort_index or timedelta(days=1000))
 
     # now we filter for urgency
 
@@ -152,7 +152,7 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
         if not self.request.user.is_authenticated():
             return get_user_model().objects.none()
 
-        qs = get_user_model().objects.all()
+        qs = get_user_model().objects.filter(is_active=True).all()
 
         if self.q:
             qs = qs.filter(Q(first_name__icontains=self.q) | Q(last_name__icontains=self.q) | Q(username__icontains=self.q))
@@ -192,7 +192,7 @@ def new(request):
 def item(request, init, slug=None):
 
     ctx = dict(initiative=init,
-               user_count=get_user_model().objects.count(),
+               user_count=init.eligible_voter_count,
                proposals=[x for x in init.proposals.prefetch_related('likes').all()],
                arguments=[x for x in init.pros.prefetch_related('likes').all()] +\
                          [x for x in init.contras.prefetch_related('likes').all()])
@@ -331,7 +331,7 @@ def submit_to_committee(request, initiative):
 
         messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
         initiative.notify_initiators(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
-        initiative.notify(get_user_model().objects.filter(is_staff=True).all(),
+        initiative.notify(get_user_model().objects.filter(is_staff=True, is_active=True).all(),
                           NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         return redirect('/initiative/{}'.format(initiative.id))
     else:
@@ -437,7 +437,11 @@ def new_argument(request, form, initiative):
     initiative.notify_followers(NOTIFICATIONS.INITIATIVE.NEW_ARGUMENT, dict(argument=arg), subject=request.user)
 
     return {
-        'inner-fragments': {'#new-argument': "<strong>Danke für Dein Argument</strong>"},
+        'fragments': {'#no-arguments': ""},
+        'inner-fragments': {'#new-argument': render_to_string("fragments/argument/thumbs.html",
+                                                  context=dict(initiative=initiative)),
+                            '#debate-thanks': render_to_string("fragments/argument/argument_thanks.html"),
+                            '#debate-count': initiative.pros.count() + initiative.contras.count()},
         'append-fragments': {'#argument-list': render_to_string("fragments/argument/small.html",
                                                   context=dict(argument=arg),
                                                   request=request)}
@@ -460,7 +464,11 @@ def new_proposal(request, form, initiative):
     proposal.save()
 
     return {
-        'inner-fragments': {'#new-proposal': "<strong>Danke für Deinen Vorschlag</strong>"},
+        'fragments': {'#no-proposals': ""},
+        'inner-fragments': {'#new-proposal': render_to_string("fragments/argument/propose.html",
+                                                  context=dict(initiative=initiative)),
+                            '#proposals-thanks': render_to_string("fragments/argument/proposal_thanks.html"),
+                            '#proposals-count': initiative.proposals.count()},
         'append-fragments': {'#proposal-list': render_to_string("fragments/argument/small.html",
                                                   context=dict(argument=proposal),
                                                   request=request)}

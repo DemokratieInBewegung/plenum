@@ -2,6 +2,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.utils.functional import cached_property
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils.text import slugify
 from django.conf import settings
@@ -70,6 +71,7 @@ class Initiative(models.Model):
     variant_of = models.ForeignKey('self', blank=True, null=True, default=None, related_name="variants")
 
     supporters = models.ManyToManyField(User, through="Supporter")
+    eligible_voters = models.IntegerField(blank=True, null=True)
 
     @cached_property
     def slug(self):
@@ -81,13 +83,16 @@ class Initiative(models.Model):
 
 
     @cached_property
-    def time_ramaining_in_phase(self):
-        end_of_phase = self.end_of_this_phase
+    def sort_index(self):
+        timezone = self.created_at.tzinfo
+        if self.was_closed_at: #recently closed first
+            return datetime.today().date() - self.was_closed_at
 
-        if end_of_phase:
-            return end_of_phase - datetime.today().date()
+        elif self.end_of_this_phase: #closest to deadline first
+            return self.end_of_this_phase - datetime.today().date()
 
-        return None
+        else: #newest first
+            return datetime.now(timezone) - self.created_at
 
     @cached_property
     def ready_for_next_stage(self):
@@ -267,6 +272,13 @@ class Initiative(models.Model):
     @property
     def stale_moderations(self):
         return self.moderations.filter(stale=True)
+
+    @cached_property
+    def eligible_voter_count(self):
+        if self.eligible_voters: #is set when initiative is closed
+            return self.eligible_voters
+        else: # while open, number of voters == number of users
+            return get_user_model().objects.filter(is_active=True).count()
 
     def __str__(self):
         return self.title;

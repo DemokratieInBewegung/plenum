@@ -347,6 +347,7 @@
                 <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
                 <div class="progress">
                   <div class="progress-bar bg-success" role="progressbar" style="width: {{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div class="progress-bar bg-info" role="progressbar" style="width: {{ initiative.abstains|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.abstains|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
                   <div class="progress-bar bg-danger" role="progressbar" style="width: {{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
@@ -355,6 +356,10 @@
             <div class="col-6" style="color: #5cb85c">
                 <span class="in-favor text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_up</i> <br /><strong style="text-transform: uppercase">Ja</strong></span>
                 <span style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.yays}}</span>
+            </div>
+            <div class="col-6 text-right" style="color: #d9534f">
+                <span class="declined text-center" style="float: right; padding-right: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_down</i> <br /><strong style="text-transform: uppercase">Enthaltung</strong></span>
+                <span style="margin-right: .75rem; font-size: 2rem; line-height: 2.625rem">{{initiative.abstains}}</span>
             </div>
             <div class="col-6 text-right" style="color: #d9534f">
                 <span class="declined text-center" style="float: right; padding-right: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_down</i> <br /><strong style="text-transform: uppercase">Nein</strong></span>
@@ -382,7 +387,9 @@
                 <p>Du hast mit 
                 </p>
                 <div class="your-vote">
-                {% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>{%else%}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>{% endif %}
+                {% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>
+                {% elif vote.against %}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>
+                {% else %}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Enthaltung</strong></span>{% endif %}
                 </div>
                 <p>abgestimmt.
                 </p>
@@ -414,7 +421,7 @@
                     <h3 class="history-title">
                     <span class="date">{{initiative.was_closed_at}}</span>
                     {% if initiative.went_to_discussion_at %}
-                      Nach Abstimmung mit {{ initiative.yays|default:0 }} Für- und {{ initiative.nays|default:0 }} Gegenstimmen
+                      Nach Abstimmung mit {{ initiative.yays|default:0 }} Für- und {{ initiative.nays|default:0 }} Gegenstimmen, sowie {{ initiative.abstains|default:0 }} Enthaltungen
                       {% ifequal initiative.state 'a' %}
                         angenommen.
                       {% else %}

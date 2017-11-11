@@ -11,7 +11,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('initproc', '0018_auto_20170808_1628.py'),
+        ('initproc', '0017_auto_20170710_1738'),
     ]
 
     operations = [

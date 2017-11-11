@@ -22,7 +22,7 @@ def migrate_eligible_voters_count(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('initproc', '0018_auto_20170710_1738'),
+        ('initproc', '0018_auto_20170808_1628'),
     ]
 
     operations = [

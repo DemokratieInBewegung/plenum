@@ -24,7 +24,7 @@ class NOTIFICATIONS:
 
 class STATES:
     """
-    The states and initiative can have
+    The states an initiative can have
     """
     PREPARE = 'p'
     INCOMING = 'i'
@@ -49,6 +49,14 @@ STAFF_ONLY_STATES = [STATES.INCOMING,
                      STATES.MODERATION,
                      STATES.HIDDEN]
 
+class VOTED:
+    """
+    The possibilities for casting a vote
+    """
+    NO = 0
+    YES = 1
+    ABSTAIN = 2
+
 
 COMPARING_FIELDS = [
     'title', 'subtitle',  "summary", "problem", "forderung", "kosten",
@@ -57,6 +65,7 @@ COMPARING_FIELDS = [
 ]
 
 
+ABSTENTION_START = date(2017, 11, 1) # Everything published after this has abstentions
 SPEED_PHASE_END = date(2017, 8, 21) # Everything published before this has speed phase
 INITIATORS_COUNT = 3
 

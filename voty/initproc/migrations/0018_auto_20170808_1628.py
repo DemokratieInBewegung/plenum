@@ -7,22 +7,11 @@ from django.db import migrations, models
 from django.contrib.auth import get_user_model
 import django.db.models.deletion
 
-from voty.initproc.globals import STATES
-
-def migrate_eligible_voters_count(apps, schema_editor):
-    # Let's set the eligable voters past initiation
-    Initiative = apps.get_model('initproc', 'Initiative')
-    User = get_user_model()
-    for init in Initiative.objects.filter(state__in=[STATES.ACCEPTED, STATES.REJECTED]):
-        if init.was_closed_at:
-            init.eligible_voters = User.objects.filter(date_joined__lte=init.was_closed_at).count()
-            init.save()
-
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('initproc', '0017_auto_20170710_1738'),
+        ('initproc', '0018_auto_20170808_1628.py'),
     ]
 
     operations = [
@@ -31,6 +20,5 @@ class Migration(migrations.Migration):
             name='eligible_voters',
             field=models.IntegerField(blank=True, null=True),
             preserve_default=False,
-        ),
-        migrations.RunPython(migrate_eligible_voters_count, reverse_code=migrations.RunPython.noop),
+        )
     ]

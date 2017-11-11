@@ -6,30 +6,10 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 
 
-def init_vote_value(apps, schema_editor):
-    # Copy the previous in_favor content to value field
-    Vote = apps.get_model('initproc', 'Vote')
-    Vote.objects.filter(in_favor=False).update(value=0)
-    Vote.objects.filter(in_favor=True).update(value=1)
-
-def reverse_vote_value(apps, schema_editor):
-    migrations.AddField(
-        model_name='vote',
-        name='in_favor',
-        field=models.BooleanField(default=False)
-    ),
-    # Copy the value content back to in_favor
-    Vote = apps.get_model('initproc', 'Vote')
-    Vote.objects.filter(value=1).update(in_favor=True)
-    migrations.RemoveField(
-        model_name='vote',
-        name='value',
-    )
-
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('initproc', '0018_auto_20170808_1628'),
+        ('initproc', '0019_auto_20170808_1628'),
     ]
 
     operations = [
@@ -38,11 +18,5 @@ class Migration(migrations.Migration):
             name='value',
             field=models.IntegerField(choices=[(1, 'Ja'), (0, 'Nein'), (2, 'Enthaltung')], default=0),
             preserve_default=False,
-        ),
-        migrations.RunPython(init_vote_value,
-                             reverse_code=reverse_vote_value),
-        migrations.RemoveField(
-            model_name='vote',
-            name='in_favor',
-        ),
+        )
     ]

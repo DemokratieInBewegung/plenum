@@ -18,7 +18,7 @@
      		<div class="your-vote">
      		{% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>
 				{% elif vote.against %}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>
-				{% else %}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Enthaltung</strong></span>{% endif %}
+				{% else %}<span class="abstention text-center"><i class="material-icons">panorama_fish_eye</i> <br /><strong>Enthaltung</strong></span>{% endif %}
      		</div>
      		<p>abgestimmt.
 	 		</p>
@@ -60,20 +60,23 @@
      	<h3> Stimmst Du dieser Initiative zu?</h3>
 	 	<form id="initial_vote" class="row" data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
 	 		{% csrf_token %}
-	 		<div class="col-12 col-sm-6 text-center">
-		 		<label for="voted_yes"><input type="radio" onchange="javascript:document.getElementById('intial_vote_submit').disabled = false" required="true" id="voted_yes" name="voted" value="yes" />
+	 		<div class="col-12 col-sm-4 text-center">
+		 		<label for="voted_yes">
+		 			<input type="radio" onchange="javascript:document.getElementById('intial_vote_submit').disabled = false" required="true" id="voted_yes" name="voted" value="yes" />
 		    		<i class="material-icons">thumb_up</i>
 		    		<span>Ja</span>
 		    	</label>
 		    </div>
-	 		<div class="col-12 col-sm-6 text-center">
-		 		<label for="voted_abstain"><input onchange="javascript:document.getElementById('intial_vote_submit').disabled = false" type="radio" required="true" id="voted_abstain" name="voted" value="abstain" />
-		    		<i class="material-icons">thumb_down</i>
+	 		<div class="col-12 col-sm-4 text-center">
+		 		<label for="voted_abstain">
+		 			<input onchange="javascript:document.getElementById('intial_vote_submit').disabled = false" type="radio" required="true" id="voted_abstain" name="voted" value="abstain" />
+		    		<i class="material-icons">panorama_fish_eye</i>
 		    		<span>Enthaltung</span>
 	    		</label>
 	    	</div>
-			<div class="col-12 col-sm-6 text-center">
-				<label for="voted_no"><input onchange="javascript:document.getElementById('intial_vote_submit').disabled = false" type="radio" required="true" id="voted_no" name="voted" value="no" />
+			<div class="col-12 col-sm-4 text-center">
+				<label for="voted_no">
+					<input onchange="javascript:document.getElementById('intial_vote_submit').disabled = false" type="radio" required="true" id="voted_no" name="voted" value="no" />
 					<i class="material-icons">thumb_down</i>
 					<span>Nein</span>
 				</label>

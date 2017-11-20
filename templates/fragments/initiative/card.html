@@ -20,7 +20,7 @@
 								{% if user.is_staff %}
 									{% guard should_moderate_initiative initiative %}
 									{% if should_moderate_initiative %}
-									💥💥 Bitte prüfen  💥💥
+									💥💥 Bitte prüfen 💥💥
 									{% else %}
 									In Prüfung
 									{% endif %}
@@ -60,7 +60,7 @@
 								{% if user.is_staff %}
 									{% guard should_moderate_initiative initiative %}
 									{% if should_moderate_initiative %}
-									💥💥 Bitte final prüfen  💥💥
+									💥💥 Bitte final prüfen 💥💥
 									{% else %}
 									Finale Prüfung
 									{% endif %}
@@ -121,15 +121,15 @@
 							{% if my_vote %}
   								{% if my_vote.in_favor %}
 								<div class="participation-indicator">
-									<i class="material-icons thumb-up fg-vote" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du stimmst für diese Initiative{% else %}Du hast für diese Initiative gestimmt{% endif %}">thumb_up</i>
+									<i class="material-icons thumb-up" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du stimmst für diese Initiative{% else %}Du hast für diese Initiative gestimmt{% endif %}">thumb_up</i>
 								</div>
 								{% elif my_vote.against %}
 								<div class="participation-indicator">
-									<i class="material-icons thumb-down fg-vote" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du stimmst gegen diese Initiative{% else %}Du hast gegen diese Initiative gestimmt{% endif %}">thumb_down</i>
+									<i class="material-icons thumb-down" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du stimmst gegen diese Initiative{% else %}Du hast gegen diese Initiative gestimmt{% endif %}">thumb_down</i>
 								</div>
-								{% else %}
+								{% elif my_vote.abstained %}
 								<div class="participation-indicator">
-									<i class="material-icons thumb-down fg-vote" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du enthältst Dich.{% else %}Du hast Dich enthalten{% endif %}">thumb_down</i>
+									<i class="material-icons abstain" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du enthältst Dich.{% else %}Du hast Dich enthalten{% endif %}">panorama_fish_eye</i>
 								</div>
 								{% endif %}
 							{% else %}

@@ -993,6 +993,10 @@ label.deactivated {
   color: #D9534F;
 }
 
+.participation-indicator .abstain {
+  color: rgba(55, 58, 60, 1);
+}
+
 #init-list.hide-supported .supported {
   display: none;
 }

@@ -8,13 +8,6 @@
 ##### Develop
 [![Build Status](https://travis-ci.org/DemokratieInBewegung/abstimmungstool.svg?branch=develop)](https://travis-ci.org/DemokratieInBewegung/abstimmungstool)
 
-#### Issue Progress
-[![Issues in Preparation](https://badge.waffle.io/DemokratieInBewegung/abstimmungstool.svg?label=In%20Preparation&title=In%20Preparation)](http://waffle.io/DemokratieInBewegung/abstimmungstool)
-
-[![Issues in Progress](https://badge.waffle.io/DemokratieInBewegung/abstimmungstool.svg?label=In%20Progress&title=In%20Progress)](http://waffle.io/DemokratieInBewegung/abstimmungstool)
-
-[![Issues on Beta](https://badge.waffle.io/DemokratieInBewegung/abstimmungstool.svg?label=On%20Beta&title=On%20Beta)](http://waffle.io/DemokratieInBewegung/abstimmungstool)
-
 ## Development 
 
 This runs on Python Django. For Development, you'll need Python 3.0 and a virtual environment.

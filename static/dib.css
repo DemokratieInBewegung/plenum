@@ -833,6 +833,16 @@ header .alert {
   border-color: rgba(100, 100, 100, 1);
 }
 
+.bg-abstain, .bg-abstain:hover, .bg-abstain:focus, .bg-abstain:visited {
+  color: rgba(255, 255, 255, 1);
+  background-color: rgba(100, 100, 100, 1);
+  border-color: rgba(100, 100, 100, 1);
+}
+
+.fg-abstain, .fg-abstain:hover, .fg-abstain:focus, .fg-abstain:visited {
+  color: rgba(100, 100, 100, 1);
+}
+
 .fg-inactive, .fg-inactive:hover, .fg-inactive:focus, .fg-inactive:visited {
   color: #CFD0D2;
 }
@@ -1268,7 +1278,7 @@ Argument base design
   font-size: inherit;
 }
 
-#voting .abstention {
+#voting .abstained {
   color: rgba(55, 58, 60, 1);
   font-size: inherit;
 }
@@ -1284,25 +1294,25 @@ Argument base design
 }
 
 
-#voting .your-vote strong {
+.your-vote strong {
  display: block;
  width: 4rem;
  padding-top: .5rem;
  padding-bottom: 1rem;
 }
 
-#voting .in-favor .material-icons, #voting .declined .material-icons {
+.your-vote .in-favor .material-icons, .your-vote .declined .material-icons {
   font-size: 4rem;
   line-height: 4rem;
 }
 
-#voting .abstention .material-icons {
+.your-vote .abstained .material-icons {
   font-size: 4rem;
   line-height: 4rem;
   width: 6rem;
 }
 
-#voting .abstention strong {
+.your-vote .abstained strong {
   width: 6rem;
 }
 
@@ -1396,18 +1406,6 @@ Argument base design
 #cta.voted .abstention {
   color: rgba(55, 58, 60, 1);
   font-size: inherit;
-}
-
-#cta.voted .your-vote strong {
- display: block;
- width: 4rem;
- padding-top: .5rem;
- padding-bottom: 1rem;
-}
-
-#cta.voted .in-favor .material-icons, #voting .declined .material-icons, , #voting .abstention .material-icons {
-  font-size: 4rem;
-  line-height: 4rem;
 }
 
 /*

@@ -18,7 +18,7 @@
      		<div class="your-vote">
      		{% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>
 				{% elif vote.against %}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>
-				{% else %}<span class="abstention text-center"><i class="material-icons">panorama_fish_eye</i> <br /><strong>Enthaltung</strong></span>{% endif %}
+				{% else %}<span class="abstained text-center"><i class="material-icons">panorama_fish_eye</i> <br /><strong>Enthaltung</strong></span>{% endif %}
      		</div>
      		<p>abgestimmt.
 	 		</p>
@@ -29,7 +29,7 @@
 	 		</div>
 	 	</form>
 
- 		{% if vote.nay_survey_options and not vote.in_favor and not vote.reason %}
+ 		{% if vote.nay_survey_options and not vote.in_favor and not vote.abstained and not vote.reason %}
  			<div class="feedback">
  			<hr />
  			<h3>Magst Du den Initiator/innen sagen warum?</h3>
@@ -60,6 +60,7 @@
      	<h3> Stimmst Du dieser Initiative zu?</h3>
 	 	<form id="initial_vote" class="row" data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
 	 		{% csrf_token %}
+	 		{% if initiative.allows_abstention %}
 	 		<div class="col-12 col-sm-4 text-center">
 		 		<label for="voted_yes">
 		 			<input type="radio" onchange="javascript:document.getElementById('intial_vote_submit').disabled = false" required="true" id="voted_yes" name="voted" value="yes" />
@@ -81,7 +82,23 @@
 					<span>Nein</span>
 				</label>
 			</div>
-	 		<div class="col-12 text-center submit-vote">
+	    	{% else %}
+	    	<div class="col-12 col-sm-6 text-center">
+		 		<label for="voted_yes">
+		 			<input type="radio" onchange="javascript:document.getElementById('intial_vote_submit').disabled = false" required="true" id="voted_yes" name="voted" value="yes" />
+		    		<i class="material-icons">thumb_up</i>
+		    		<span>Ja</span>
+		    	</label>
+		    </div>
+		    <div class="col-12 col-sm-6 text-center">
+				<label for="voted_no">
+					<input onchange="javascript:document.getElementById('intial_vote_submit').disabled = false" type="radio" required="true" id="voted_no" name="voted" value="no" />
+					<i class="material-icons">thumb_down</i>
+					<span>Nein</span>
+				</label>
+			</div>
+			{% endif %}
+			<div class="col-12 text-center submit-vote">
 	    		<button id="intial_vote_submit" type="submit" disabled="disabled" class="btn btn-lg btn-primary">Abstimmen</button>
 	    	</div>
 	 	</form>

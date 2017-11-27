@@ -486,7 +486,7 @@
 
 {% if initiative.show_debate %}
 
-<div id="discuss" class="container-fluid cta {% if initiative.state == 'v' or initiative.state == 'e' %}closed{% endif %}">
+<div id="discuss" class="container-fluid cta {% if initiative.state == 'v' or initiative.state == 'e' or initiative.state == 'a' or initiative.state == 'r' %}closed{% endif %}">
     <div class="container">
         <div class="row no-gutters">
             <div class="col-12">

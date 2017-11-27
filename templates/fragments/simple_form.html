@@ -1,11 +1,11 @@
 {% load bootstrap %}
 
-<form id="{{csrf_token}}" method="POST" {%if ajax%}data-ajax-submit="true"{%endif%} action="{{request.path}}{% if fragment %}?fragment={{fragment|urlencode}}{% endif %}">
+<form id="{{csrf_token}}" method="POST" {%if ajax%}data-ajax-submit="true"{%endif%} action="{{request.path}}{% if fragment %}?fragment={{fragment|urlencode}}{% endif %}" onsubmit="submitForm.disabled=true; return true;">
 	{% if form.TITLE %}<h2>{{form.TITLE }}</h2>{% endif %}
 	{% if form.TEXT %}<p>{{form.TEXT }}</p>{% endif %}
     {% csrf_token %}
 	{{form|bootstrap}}
-	{% if submit_title %}<button type="submit" class="btn {{submit_klasses}}">{{submit_title}}</button>{% endif %}
+	{% if submit_title %}<button type="submit" class="btn {{submit_klasses}}" name="submitForm">{{submit_title}}</button>{% endif %}
 </form>
 {{form.media}}
 <script>

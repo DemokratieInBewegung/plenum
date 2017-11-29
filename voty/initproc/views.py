@@ -697,8 +697,8 @@ def add_tag(request, form, initiative):
     initiative.save()
 
     return {
-        'inner-fragments': {'#tag-list':
+        'inner-fragments': {'.tags':
                                 render_to_string("initproc/blocks/tags.html",
-                                                 context=dict(tags=initiative.tags),
+                                                 context=dict(initiative=initiative),
                                                  request=request)}
     }

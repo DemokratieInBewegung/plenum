@@ -8,6 +8,7 @@ Es haben {{votecount}} Beweger/innen abgestimmt.
 
 Ja-Stimmen: {{target.yays}}
 Nein-Stimmen: {{target.nays}}
+Enthaltungen: {{target.abstains}}
 
 {% if target.nays %}
 Folgende Gründe für Nein-Stimmen wurden angegeben:

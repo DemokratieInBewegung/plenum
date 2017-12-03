@@ -13,7 +13,7 @@ import reversion
 
 from datetime import datetime, timedelta, date
 
-from .globals import STATES, INITIATORS_COUNT, SPEED_PHASE_END
+from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START
 from django.db import models
 import pytz
 
@@ -190,16 +190,20 @@ class Initiative(models.Model):
 
     @property
     def show_debate(self):
-        return self.state in [self.STATES.DISCUSSION, self.STATES.FINAL_EDIT, self.STATES.MODERATION, self.STATES.VOTING]
+        return self.state in [self.STATES.DISCUSSION, self.STATES.FINAL_EDIT, self.STATES.MODERATION, self.STATES.VOTING, self.STATES.ACCEPTED, self.STATES.REJECTED]
 
     @cached_property
     def yays(self):
-        return self.votes.filter(in_favor=True).count()
+        return self.votes.filter(value=VOTED.YES).count()
 
     @cached_property
     def nays(self):
-        return self.votes.filter(in_favor=False).count()
-      
+        return self.votes.filter(value=VOTED.NO).count()
+
+    @cached_property
+    def abstains(self):
+        return self.votes.filter(value=VOTED.ABSTAIN).count()
+
     def is_accepted(self):
         if self.yays <= self.nays: #always reject if too few yays
             return False
@@ -265,6 +269,13 @@ class Initiative(models.Model):
         return 'item-{} state-{} area-{}'.format(slugify(self.title),
                     slugify(self.state), slugify(self.bereich))
 
+    @cached_property
+    def allows_abstention(self):
+        if self.went_to_voting_at:
+            return self.went_to_voting_at > ABSTENTION_START
+        else:
+            return True
+
     @property
     def current_moderations(self):
         return self.moderations.filter(stale=False)
@@ -311,7 +322,10 @@ class Vote(models.Model):
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
     initiative = models.ForeignKey(Initiative, related_name="votes")
-    in_favor = models.BooleanField(default=True)
+    value = models.IntegerField(choices=[
+        (VOTED.YES, "Ja"),
+        (VOTED.NO, "Nein"),
+        (VOTED.ABSTAIN, "Enthaltung")])
     reason = models.CharField(max_length=100, blank=True)
 
     class Meta:
@@ -321,7 +335,17 @@ class Vote(models.Model):
     def nay_survey_options(self):
         return settings.OPTIONAL_NOPE_REASONS
 
+    @cached_property
+    def in_favor(self):
+        return self.value == VOTED.YES
 
+    @cached_property
+    def against(self):
+        return self.value == VOTED.NO
+
+    @cached_property
+    def abstained(self):
+        return self.value == VOTED.ABSTAIN
 
 class Quorum(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

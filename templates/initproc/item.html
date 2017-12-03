@@ -342,29 +342,64 @@
             </div>
         </div>
         {% if initiative.votes.count > 0 %}
-        <div class="row">
+        {% if initiative.allows_abstention %}
+        <div class="row" style="padding-top: .25rem; padding-bottom: .5rem">
             <div class="col-12" style="padding-top: 1rem">
                 <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-auto pr-4">
+                <span class="in-favor text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_up</i></span>
+                <span class="in-favor" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.yays}}</span>
+            </div>
+            <div class="col-auto pr-4">
+                <span class="abstained text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">panorama_fish_eye</i></span>
+                <span class="abstained" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.abstains}}</span>
+            </div>
+            <div class="col-auto">
+                <span class=" declined text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_down</i></span>
+                <span class="declined" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.nays}}</span>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+            <div class="col-12">
+                <div class="progress">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: {{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div class="progress-bar bg-abstain" role="progressbar" style="width: {{ initiative.abstains|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.abstains|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div class="progress-bar bg-danger" role="progressbar" style="width: {{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row" style="padding-top: .25rem; padding-bottom: .5rem">
+            <div class="col-12" style="padding-top: 1rem">
+                <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-auto pr-4">
+                <span class="in-favor text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_up</i></span>
+                <span class="in-favor" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.yays}}</span>
+            </div>
+            <div class="col-auto">
+                <span class=" declined text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_down</i></span>
+                <span class="declined" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.nays}}</span>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+            <div class="col-12">
                 <div class="progress">
                   <div class="progress-bar bg-success" role="progressbar" style="width: {{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
                   <div class="progress-bar bg-danger" role="progressbar" style="width: {{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
         </div>
-        <div class="row" style="padding-top: .25rem">
-            <div class="col-6" style="color: #5cb85c">
-                <span class="in-favor text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_up</i> <br /><strong style="text-transform: uppercase">Ja</strong></span>
-                <span style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.yays}}</span>
-            </div>
-            <div class="col-6 text-right" style="color: #d9534f">
-                <span class="declined text-center" style="float: right; padding-right: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_down</i> <br /><strong style="text-transform: uppercase">Nein</strong></span>
-                <span style="margin-right: .75rem; font-size: 2rem; line-height: 2.625rem">{{initiative.nays}}</span>
-            </div>
-        </div>
+        {% endif %}
         {% else %}
         <div class="row" style="padding-top: 1rem">
             <div class="col-12">
-                <span>Bei der Abstimmung zu dieser Initiative wurde keine einzige Stimme abgegeben. Damit gilt die Initiative als abgelehnt.</span>
+                <span>Bei der Abstimmung zu dieser Initiative wurde keine einzige Stimme abgegeben. Damit gilt die Initiative als <strong class="badge-rejected">abgelehnt</strong>.</span>
             </div>
         </div>
         {% endif %}
@@ -382,7 +417,9 @@
                 <p>Du hast mit 
                 </p>
                 <div class="your-vote">
-                {% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>{%else%}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>{% endif %}
+                {% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>
+                {% elif vote.against %}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>
+                {% else %}<span class="abstained text-center"><i class="material-icons">panorama_fish_eye</i> <br /><strong>Enthaltung</strong></span>{% endif %}
                 </div>
                 <p>abgestimmt.
                 </p>
@@ -414,7 +451,7 @@
                     <h3 class="history-title">
                     <span class="date">{{initiative.was_closed_at}}</span>
                     {% if initiative.went_to_discussion_at %}
-                      Nach Abstimmung mit {{ initiative.yays|default:0 }} Für- und {{ initiative.nays|default:0 }} Gegenstimmen
+                      Nach Abstimmung mit {{ initiative.yays|default:0 }} Für- und {{ initiative.nays|default:0 }} Gegenstimmen, sowie {{ initiative.abstains|default:0 }} Enthaltungen
                       {% ifequal initiative.state 'a' %}
                         angenommen.
                       {% else %}
@@ -449,7 +486,7 @@
 
 {% if initiative.show_debate %}
 
-<div id="discuss" class="container-fluid cta {% if initiative.state == 'v' or initiative.state == 'e' %}closed{% endif %}">
+<div id="discuss" class="container-fluid cta {% if initiative.state == 'v' or initiative.state == 'e' or initiative.state == 'a' or initiative.state == 'r' %}closed{% endif %}">
     <div class="container">
         <div class="row no-gutters">
             <div class="col-12">

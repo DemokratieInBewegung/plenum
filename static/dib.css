@@ -833,6 +833,16 @@ header .alert {
   border-color: rgba(100, 100, 100, 1);
 }
 
+.bg-abstain, .bg-abstain:hover, .bg-abstain:focus, .bg-abstain:visited {
+  color: rgba(255, 255, 255, 1);
+  background-color: rgba(100, 100, 100, 1);
+  border-color: rgba(100, 100, 100, 1);
+}
+
+.fg-abstain, .fg-abstain:hover, .fg-abstain:focus, .fg-abstain:visited {
+  color: rgba(100, 100, 100, 1);
+}
+
 .fg-inactive, .fg-inactive:hover, .fg-inactive:focus, .fg-inactive:visited {
   color: #CFD0D2;
 }
@@ -991,6 +1001,10 @@ label.deactivated {
 
 .participation-indicator .thumb-down {
   color: #D9534F;
+}
+
+.participation-indicator .abstain {
+  color: rgba(55, 58, 60, 1);
 }
 
 #init-list.hide-supported .supported {
@@ -1264,6 +1278,11 @@ Argument base design
   font-size: inherit;
 }
 
+#voting .abstained {
+  color: rgba(55, 58, 60, 1);
+  font-size: inherit;
+}
+
 #voting .btn-primary {
   background-color: #AB4778;
   border-color: #AB4778;
@@ -1275,16 +1294,26 @@ Argument base design
 }
 
 
-#voting .your-vote strong {
+.your-vote strong {
  display: block;
  width: 4rem;
  padding-top: .5rem;
  padding-bottom: 1rem;
 }
 
-#voting .in-favor .material-icons, #voting .declined .material-icons {
+.your-vote .in-favor .material-icons, .your-vote .declined .material-icons {
   font-size: 4rem;
   line-height: 4rem;
+}
+
+.your-vote .abstained .material-icons {
+  font-size: 4rem;
+  line-height: 4rem;
+  width: 6rem;
+}
+
+.your-vote .abstained strong {
+  width: 6rem;
 }
 
 #voting .feedback {
@@ -1340,13 +1369,17 @@ Argument base design
   display: none;
 }
 
-#initial_vote input[type=radio][value=y]:checked + .material-icons, #initial_vote input[type=radio][value=y]:checked + .material-icons + span {
+#initial_vote input[type=radio][value=yes]:checked + .material-icons, #initial_vote input[type=radio][value=yes]:checked + .material-icons + span {
   color: #47AB64;
 }
 
 
-#initial_vote input[type=radio][value=n]:checked + .material-icons, #initial_vote input[type=radio][value=n]:checked + .material-icons + span {
+#initial_vote input[type=radio][value=no]:checked + .material-icons, #initial_vote input[type=radio][value=no]:checked + .material-icons + span {
   color: #c9302c;
+}
+
+#initial_vote input[type=radio][value=abstain]:checked + .material-icons, #initial_vote input[type=radio][value=abstain]:checked + .material-icons + span {
+  color: rgba(55, 58, 60, 1);
 }
 
 .closed {
@@ -1370,16 +1403,9 @@ Argument base design
   font-size: inherit;
 }
 
-#cta.voted .your-vote strong {
- display: block;
- width: 4rem;
- padding-top: .5rem;
- padding-bottom: 1rem;
-}
-
-#cta.voted .in-favor .material-icons, #voting .declined .material-icons {
-  font-size: 4rem;
-  line-height: 4rem;
+#cta.voted .abstention {
+  color: rgba(55, 58, 60, 1);
+  font-size: inherit;
 }
 
 /*

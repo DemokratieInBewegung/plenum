@@ -6,6 +6,7 @@ urlpatterns = [
 	# globals
     url('^$', views.index, name='home'),
     url('^user_autocomplete$', views.UserAutocomplete.as_view(), name='user_autocomplete'),
+    url('^tag_autocomplete$', views.TagAutocomplete.as_view(), name='tag_autocomplete'),
 
     # initiative specifics
     url('^ueber/$', views.ueber, name="ueber"),

@@ -30,7 +30,7 @@ import json
 
 from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS
 from .guard import can_access_initiative
-from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
+from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like, Tag)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
                     NewProposalForm, NewModerationForm, InviteUsersForm, NewTagForm)
 # Create your views here.
@@ -172,6 +172,19 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
     def get_result_label(self, item):
         return render_to_string('fragments/autocomplete/user_item.html',
                                 context=dict(user=item))
+
+class TagAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated():
+            return Tag.objects.none()
+
+        # remove tags that are already set?
+        qs = Tag.objects.all()
+
+        if self.q: #q = entered search string
+            qs = qs.filter(name__istartswith=self.q)
+
+        return qs
 
 @login_required
 def new(request):

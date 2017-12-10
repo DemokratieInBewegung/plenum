@@ -177,8 +177,14 @@ class NewCommentForm(forms.ModelForm):
 
 
 class NewTagForm(forms.Form):
-    TITLE = "Neues Schlagwort hinzufügen"
-    tag = forms.ModelMultipleChoiceField(Tag.objects.all()) # how to set initial selected values?
+    tag = forms.ModelMultipleChoiceField(
+        label="Schlagworte ersetzen",
+        queryset=Tag.objects.all(),
+        required=False,
+        widget=autocomplete.ModelSelect2Multiple(
+            url='tag_autocomplete',
+            attrs={"data-placeholder": "Zum Suchen tippen",
+                   'data-html': "True"}))
 
 QESTIONS_COUNT = 11
 class NewModerationForm(forms.ModelForm):

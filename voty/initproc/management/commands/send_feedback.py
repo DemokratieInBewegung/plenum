@@ -14,7 +14,7 @@ class Command(BaseCommand):
     help = "Send feedback to initiators for already closed initiatives"
 
     def handle(self, *args, **options):
-        
+
         for i in Initiative.objects.exclude(was_closed_at__isnull=True):
             #send feedback message to all initiators
             EmailMessage(
@@ -22,7 +22,7 @@ class Command(BaseCommand):
                 render_to_string('initadmin/voting_feedback.txt', context=dict(
                     target=i,
                     votecount = i.votes.count,
-                    reasons = i.votes.values('reason').annotate(count=Count('reason'))
+                    reasons = i.votes.values('reason').annotate(count=Count('reason')),
                 )),
                 settings.DEFAULT_FROM_EMAIL,
                 [u.user.email for u in i.initiators]

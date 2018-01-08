@@ -12,7 +12,7 @@ Enthaltungen: {{target.abstains}}
 
 {% if target.nays %}
 Folgende Gründe für Nein-Stimmen wurden angegeben:
-{% for i in reasons %}{% if i.reason %}{% if i.reason == " " %}{{i.count}}x: Kein Angabe{% else %}
+{% for i in reasons %}{% if i.reason %}{% if i.reason == " " %}{{i.count}}x: Keine Angabe{% else %}
 {{i.count}}x: Die Initiative {{i.reason}}
 {% endif %}{% endif %}{% endfor %}{% endif %}
 

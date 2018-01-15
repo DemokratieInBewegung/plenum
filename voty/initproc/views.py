@@ -182,7 +182,7 @@ class TagAutocomplete(autocomplete.Select2QuerySetView):
         qs = Tag.objects.all()
 
         if self.q: #q = entered search string
-            qs = qs.filter(name__istartswith=self.q)
+            qs = qs.filter(name__icontains=self.q)
 
         return qs
 

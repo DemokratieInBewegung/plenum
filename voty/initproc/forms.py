@@ -97,6 +97,7 @@ class MultipleSubmitButton(forms.Select):
                 return inside_out_choices[value]
         return None
 
+
 class InviteUsersForm(forms.Form):
     user = forms.ModelMultipleChoiceField(
         label="Einladen",
@@ -140,6 +141,13 @@ class InitiativeForm(forms.ModelForm):
             "init_argument": "Hier dürft Ihr emotional werden: Warum ist Euch das wichtig und warum bringt Ihr diese Initiative ein?",
 
         }
+    tags = forms.ModelMultipleChoiceField(
+        label="Tages",
+        queryset=Tag.objects,
+        required=False,
+        widget=autocomplete.ModelSelect2Multiple(
+                    url='tag_autocomplete',
+                    attrs={"data-placeholder": "Zum Suchen tippen"}))
 
 
 class NewArgumentForm(forms.Form):

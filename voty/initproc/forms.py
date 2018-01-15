@@ -142,7 +142,7 @@ class InitiativeForm(forms.ModelForm):
 
         }
     tags = forms.ModelMultipleChoiceField(
-        label="Tages",
+        label="Schlagworte",
         queryset=Tag.objects,
         required=False,
         widget=autocomplete.ModelSelect2Multiple(

@@ -18,7 +18,7 @@ def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_aj
                 if form.is_valid():
                     return fn(request, form, *args, **kwargs)
             else:
-                form = form_cls(initial=request.GET)
+                form = form_cls(initial=dict(request.GET.lists()))
 
             fragment = request.GET.get('fragment')
             rendered = render_to_string(template,

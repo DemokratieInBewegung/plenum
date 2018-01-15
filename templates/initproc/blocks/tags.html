@@ -15,7 +15,7 @@
                 {% endfor %}
                 {% if request.guard.can_edit_tags %}
                 <div id="add-tag">
-                    <a data-ajax="true" href="/initiative/{{initiative.id}}/add_tag?fragment=%23add-tag&{% for tag in initiative.all_tags %}tag={{tag.id}}{% endfor %}" class="btn btn-success">Schlagworte ändern</a>
+                    <a data-ajax="true" href="/initiative/{{initiative.id}}/add_tag?fragment=%23add-tag{% for tag in initiative.all_tags %}&tag={{tag.id}}{% endfor %}" class="btn btn-success">Schlagworte ändern</a>
                 </div>
                 {% endif %}
             </div>

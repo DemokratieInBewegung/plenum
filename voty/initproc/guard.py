@@ -83,9 +83,12 @@ class Guard:
         return True
 
     def can_like(self, obj=None):
-        if hasattr(obj, "initiative"):
-            if obj.initiative and obj.initiative.state in [STATES.ACCEPTED, STATES.REJECTED]: # no liking of closed inis
-                return False
+        obj2 = obj # find initiative in recursive object tree
+        while not hasattr(obj2, "initiative") and hasattr(obj2, "target"):
+            obj2 = obj2.target
+
+        if obj2.initiative and obj2.initiative.state in [STATES.ACCEPTED, STATES.REJECTED]: # no liking of closed inis
+            return False
 
         if obj.user == self.user: # should apply for both arguments and comments
             return False

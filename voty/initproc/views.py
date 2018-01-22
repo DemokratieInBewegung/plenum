@@ -574,6 +574,9 @@ def like(request, target_type, target_id):
     model_cls = apps.get_model('initproc', target_type)
     model = get_object_or_404(model_cls, pk=target_id)
 
+    if not request.guard.is_editable(model):
+        raise PermissionDenied()
+
     if not request.guard.can_like(model):
         raise PermissionDenied()
 
@@ -600,9 +603,8 @@ def unlike(request, target_type, target_id):
     model_cls = apps.get_model('initproc', target_type)
     model = get_object_or_404(model_cls, pk=target_id)
 
-    if not request.guard.can_unlike(model):
+    if not request.guard.is_editable(model):
         raise PermissionDenied()
-
 
     model.likes.filter(user_id=request.user.id).delete()
 

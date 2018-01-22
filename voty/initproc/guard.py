@@ -84,17 +84,12 @@ class Guard:
 
     def can_like(self, obj=None):
 
-        obj2 = self.find_parent_initiative(obj)
-
-        if obj2.initiative and obj2.initiative.state in [STATES.ACCEPTED, STATES.REJECTED]: # no liking of closed inis
-            return False
-
         if obj.user == self.user: # should apply for both arguments and comments
             return False
 
         return True
 
-    def can_unlike(self, obj=None):
+    def is_editable(self, obj=None): #likes
 
         obj2 = self.find_parent_initiative(obj)
 

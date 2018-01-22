@@ -600,6 +600,10 @@ def unlike(request, target_type, target_id):
     model_cls = apps.get_model('initproc', target_type)
     model = get_object_or_404(model_cls, pk=target_id)
 
+    if not request.guard.can_unlike(model):
+        raise PermissionDenied()
+
+
     model.likes.filter(user_id=request.user.id).delete()
 
     ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": False}

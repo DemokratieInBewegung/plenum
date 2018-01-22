@@ -83,9 +83,8 @@ class Guard:
         return True
 
     def can_like(self, obj=None):
-        obj2 = obj # find initiative in recursive object tree
-        while not hasattr(obj2, "initiative") and hasattr(obj2, "target"):
-            obj2 = obj2.target
+
+        obj2 = self.find_parent_initiative(obj)
 
         if obj2.initiative and obj2.initiative.state in [STATES.ACCEPTED, STATES.REJECTED]: # no liking of closed inis
             return False
@@ -94,6 +93,23 @@ class Guard:
             return False
 
         return True
+
+    def can_unlike(self, obj=None):
+
+        obj2 = self.find_parent_initiative(obj)
+
+        if obj2.initiative and obj2.initiative.state in [STATES.ACCEPTED, STATES.REJECTED]: # no liking of closed inis
+            return False
+
+        return True
+
+    def find_parent_initiative(self, obj=None):
+        obj2 = obj # find initiative in recursive object tree
+        while not hasattr(obj2, "initiative") and hasattr(obj2, "target"):
+            obj2 = obj2.target
+
+        return obj2
+
 
     def is_initiator(self, init):
         return init.supporting.filter(initiator=True, user_id=self.user.id)

@@ -5,23 +5,33 @@
 		    <span class="{{target.unique_id}}-like-count">{{target.likes.count}}</span>
 		{% endif %}
 	{% else %}
-		{% if with_link %}
-			{% if has_liked %}
-				<a data-ajax="true"
-					href="/unlike/{{target.type}}/{{target.id}}?show_text={{show_text}}&show_count={{show_count}}" title="Zum Zurücknehmen klicken">
-			{% else %}
-				<a data-ajax="true"
-					href="/like/{{target.type}}/{{target.id}}?show_text={{show_text}}&show_count={{show_count}}">
+		{# if can_like #}
+			{% if with_link %}
+				{% if has_liked %}
+					<a data-ajax="true"
+						href="/unlike/{{target.type}}/{{target.id}}?show_text={{show_text}}&show_count={{show_count}}" title="Zum Zurücknehmen klicken">
+				{% else %}
+					<a data-ajax="true"
+						href="/like/{{target.type}}/{{target.id}}?show_text={{show_text}}&show_count={{show_count}}">
+				{% endif %}
 			{% endif %}
-		{% endif %}
+		{# endif #}
 		{% if has_liked %}
 			<i class="material-icons {{target.unique_id}}-like-icon">favorite</i>{% if show_text %} Dir gefällt das{% endif %}
 		{% else %}
-			<i class="material-icons {{target.unique_id}}-like-icon">favorite_border</i>{% if show_text %} Gefällt mir{% endif %}
+			{% if show_text %}
+				{# if can_like #}
+					<i class="material-icons {{target.unique_id}}-like-icon">favorite_border</i> Gefällt mir
+				{# endif #}
+			{% else %}
+				<i class="material-icons {{target.unique_id}}-like-icon">favorite_border</i>
+			{% endif %}
 		{% endif %}
 		{% if show_count %}
 			<span class="{{target.unique_id}}-like-count">{{target.likes.count}}</span>
 		{% endif %}
-		{% if with_link %}</a>{% endif %}
+		{# if can_like #}
+			{% if with_link %}</a>{% endif %}
+		{# endif #}
 	{% endif %}
 </span>

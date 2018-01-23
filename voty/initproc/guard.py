@@ -8,7 +8,7 @@ from django.db.models import Q
 
 from functools import wraps
 from voty.initadmin.models import UserConfig
-from .globals import STATES, PUBLIC_STATES, STAFF_ONLY_STATES, INITIATORS_COUNT, MINIMUM_MODERATOR_VOTES
+from .globals import STATES, PUBLIC_STATES, STAFF_ONLY_STATES, INITIATORS_COUNT, MINIMUM_MODERATOR_VOTES, MINIMUM_FEMALE_MODERATOR_VOTES, MINIMUM_DIVERSE_MODERATOR_VOTES
 from .models import Initiative, Supporter
 
 
@@ -128,16 +128,23 @@ class Guard:
     #    -----------
     # 
 
-    def _mod_counts_for_i(self, init):
+    # how many (female, diverse, total) moderators are missing?
+    def _mods_missing_for_i(self, init):
+        female  = MINIMUM_FEMALE_MODERATOR_VOTES
+        diverse = MINIMUM_DIVERSE_MODERATOR_VOTES
+        total   = MINIMUM_MODERATOR_VOTES
 
-        has_female = has_diversity = False
-        for config in UserConfig.objects.filter(user_id__in=init.moderations.filter(stale=False).values("user_id")):
+        moderations = init.moderations.filter(stale=False)
+
+        total -= moderations.count()
+
+        for config in UserConfig.objects.filter(user_id__in=moderations.values("user_id")):
             if config.is_female_mod:
-                has_female = True
+                female -= 1
             if config.is_diverse_mod:
-                has_diversity = True
+                diverse -= 1
 
-        return (has_female, has_diversity, init.moderations.filter(stale=False).count() >= MINIMUM_MODERATOR_VOTES )
+        return (female, diverse, total)
 
     def can_inivite_initiators(self, init=None):
         init = init or self.request.initiative
@@ -161,20 +168,21 @@ class Guard:
             # has already voted, thanks, bye
             return False
 
-        (has_female, has_diversity, has_enough) = self._mod_counts_for_i(init)
+        (female,diverse,total) = self._mods_missing_for_i(init)
 
         try:
-            if not has_female:
+            if female > 0:
                 if self.user.config.is_female_mod:
                     return True
 
-            if not has_diversity:
+            if diverse > 0:
                 if self.user.config.is_diverse_mod:
                     return True
         except User.config.RelatedObjectDoesNotExist:
             pass
 
-        return not has_enough
+        # user cannot contribute to fulfilling quota -- should moderate unless we already know it'll be wasted
+        return (total > female) & (total > diverse)
 
     ## compounds
 
@@ -213,7 +221,9 @@ class Guard:
         if init.moderations.filter(stale=False, vote='n'): # We have NAYs
             return False
 
-        return self._mod_counts_for_i(init) == (True, True, True)
+        (female,diverse,total) = self._mods_missing_for_i(init)
+
+        return (female <= 0) & (diverse <= 0) & (total <= 0)
 
     def _can_support_initiative(self, init):
         return init.state == STATES.SEEKING_SUPPORT and self.user.is_authenticated

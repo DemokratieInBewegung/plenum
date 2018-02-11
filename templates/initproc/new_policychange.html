@@ -1,0 +1,40 @@
+{% extends "_base.html" %}
+
+{% load static %}
+{% load bootstrap %}
+
+{% block content %}
+<div class="container new-policychange">
+	<div class="card">
+		{% if policychange.is_editable %}
+		<div class="card-header">
+			<h1>AO-Änderung bearbeiten</h1>
+			<p>Weitere Erklärung der Bestandteile einer AO-Änderung findest Du <a href="https://marktplatz.bewegung.jetzt/">auf dem Marktplatz der Ideen</a>.</p>
+		</div>
+		{% else %}
+		<div class="card-header">
+		  <h1>Neue AO-Änderung einreichen</h1>
+		  <p>Hier kannst Du eine neue AO-Änderung in den Abstimmungsprozess einbringen. <a href="https://marktplatz.bewegung.jetzt/">Weitere Erklärung und Hilfe dazu findest Du auf dem Marktplatz der Ideen</a>.</p>
+		</div>
+		{% endif %}
+		<form method="POST">
+			 {% csrf_token %}
+			<div class="card-body">
+				<div class="container">
+				{{form|bootstrap}}
+				</div>
+			</div>
+			<div class="card-footer">
+				<button type="submit" class="btn btn-primary">Speichern</button>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}
+
+
+{% block body-javascript %}
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+{{ form.media }}
+{% endblock %}

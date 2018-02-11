@@ -27,5 +27,7 @@ urlpatterns = [
     url('^initiative/(?P<init_id>\d+)(?:-(?P<slug>.*))?$', views.item, name="initiative_item"),
     url('^comment/(?P<target_type>.*)/(?P<target_id>\d+)$', views.comment),
     url('^like/(?P<target_type>.*)/(?P<target_id>\d+)$', views.like),
-    url('^unlike/(?P<target_type>.*)/(?P<target_id>\d+)$', views.unlike)
+    url('^unlike/(?P<target_type>.*)/(?P<target_id>\d+)$', views.unlike),
+    url('^policychange/new$', views.new_policychange, name="new_policychange"),
+    url('^policychange/(?P<pc_id>\d+)(?:-(?P<slug>.*))?$', views.policychange, name="policychange_item")
 ]

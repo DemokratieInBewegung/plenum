@@ -9,7 +9,7 @@ from django.db.models import Q
 from functools import wraps
 from voty.initadmin.models import UserConfig
 from .globals import STATES, PUBLIC_STATES, STAFF_ONLY_STATES, INITIATORS_COUNT, MINIMUM_MODERATOR_VOTES, MINIMUM_FEMALE_MODERATOR_VOTES, MINIMUM_DIVERSE_MODERATOR_VOTES
-from .models import Initiative, Supporter
+from .models import Initiative, Supporter, PolicyChange
 
 
 def can_access_initiative(states=None, check=None):
@@ -266,3 +266,16 @@ def add_guard(get_response):
         return response
 
     return middleware
+
+def can_access_policychange(states=None, check=None):
+    def wrap(fn):
+        def view(request, pc_id, slug, *args, **kwargs):
+            pc = get_object_or_404(PolicyChange, pk=pc_id)
+            if states:
+                assert pc.state in states, "{} Not in expected state: {}".format(pc.state, states)
+
+            request.policychange = pc
+
+            return fn(request, pc, *args, **kwargs)
+        return view
+    return wrap

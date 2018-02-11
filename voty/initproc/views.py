@@ -29,10 +29,10 @@ from functools import wraps
 import json
 
 from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS
-from .guard import can_access_initiative
+from .guard import can_access_initiative, can_access_policychange
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
-                    NewProposalForm, NewModerationForm, InviteUsersForm)
+                    NewProposalForm, NewModerationForm, InviteUsersForm, PolicyChangeForm)
 from .serializers import SimpleInitiativeSerializer
 
 
@@ -682,3 +682,35 @@ def compare(request, initiative, version_id):
 def reset_vote(request, init):
     Vote.objects.filter(initiative=init, user_id=request.user).delete()
     return get_voting_fragments(None, init, request)
+
+@login_required
+def new_policychange(request):
+    form = PolicyChangeForm()
+    if request.method == 'POST':
+        form = PolicyChangeForm(request.POST)
+        if form.is_valid():
+            pc = form.save(commit=False)
+            with reversion.create_revision():
+                pc.state = STATES.PREPARE
+                pc.save()
+
+                # Store some meta-information.
+                reversion.set_user(request.user)
+                if request.POST.get('commit_message', None):
+                    reversion.set_comment(request.POST.get('commit_message'))
+
+
+            # todo: also fix/extend Supporter
+            # Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
+            return redirect('/policychange/{}-{}'.format(pc.id, pc.slug))
+        else:
+            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+
+    return render(request, 'initproc/new_policychange.html', context=dict(form=form))
+
+@can_access_policychange()
+def policychange(request, pc, slug=None):
+
+    ctx = dict(policychange=pc)
+    print(ctx)
+    return render(request, 'initproc/policychange.html', context=ctx)

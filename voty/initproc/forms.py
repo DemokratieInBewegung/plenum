@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from dal import autocomplete
 from uuid import uuid4
 
-from .models import Pro, Contra, Like, Comment, Proposal, Moderation, Initiative
+from .models import Pro, Contra, Like, Comment, Proposal, Moderation, Initiative, PolicyChange
 
 
 def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_ajax=True,
@@ -219,3 +219,20 @@ class NewModerationForm(forms.ModelForm):
         model = Moderation
         fields = ['q{}'.format(i) for i in range(QESTIONS_COUNT)] + ['text', 'vote']
 
+
+class PolicyChangeForm(forms.ModelForm):
+
+    class Meta:
+        model = PolicyChange
+        fields = ['title', 'subtitle','summary', 'bereich']
+
+        labels = {
+            "title" : "Überschrift",
+            "subtitle": "Anreißer",
+            "summary" : "Text",
+        }
+        help_texts = {
+            "title" : "Die Überschrift sollte die AO-Änderung kurz zusammenfassen.",
+            "subtitle": "Ein bis zwei Sätze zur AO-Änderung.",
+            "summary" : "Kompletter Text der AO-Änderung, mit Referenzen/Links auf bestehende AO-Artikel.",
+        }

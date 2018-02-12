@@ -1408,6 +1408,10 @@ Argument base design
   font-size: inherit;
 }
 
+#cta.voted .results-display > div {
+  margin-right: 1.5rem;
+}
+
 /*
  
 

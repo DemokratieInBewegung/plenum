@@ -348,16 +348,16 @@
                 <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
             </div>
         </div>
-        <div class="row justify-content-center">
-            <div class="col-auto pr-4">
+        <div class="row justify-content-center results-display">
+            <div class="col-auto" data-toggle="tooltip" title="{{initiative.yays}} {% if initiative.yays != 1 %}Ja-Stimmen{% else %}Ja-Stimme{% endif %}">
                 <span class="in-favor text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_up</i></span>
                 <span class="in-favor" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.yays}}</span>
             </div>
-            <div class="col-auto pr-4">
+            <div class="col-auto" data-toggle="tooltip" title="{{initiative.abstains}} {% if initiative.abstains != 1 %}Enthaltungen{% else %}Enthaltung{% endif %}">
                 <span class="abstained text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">panorama_fish_eye</i></span>
                 <span class="abstained" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.abstains}}</span>
             </div>
-            <div class="col-auto">
+            <div class="col-auto" data-toggle="tooltip" title="{{initiative.nays}} {% if initiative.nays != 1 %}Nein-Stimmen{% else %}Nein-Stimme{% endif %}">
                 <span class=" declined text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_down</i></span>
                 <span class="declined" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.nays}}</span>
             </div>
@@ -668,5 +668,9 @@
 
 {% endblock %} {% block body-javascript %} {{ block.super }}
 <script type="text/javascript">
+// Initialize Tooltips
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+});
 </script>
 {% endblock %}

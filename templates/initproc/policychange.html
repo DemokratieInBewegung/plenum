@@ -10,7 +10,7 @@
 {% block custom_sm_title %}
     <meta property="og:title" content="{{policychange.title}}">
     <meta property="og:description" content="{{policychange.subtitle}}">
-    <meta property="og:url" content="{% fullurl 'policychange' pc_id=policychange.id slug=policychange.slug %}">
+    <meta property="og:url" content="{% fullurl 'policychange_item' pc_id=policychange.id slug=policychange.slug %}">
 {% endblock %}
 
 {% block custom_header %}
@@ -47,7 +47,7 @@
     <div class="container">
         <div class="row policychange-state">
             <div class="col-12">
-                {% if policychange.state == 'p' or policychange.state == 'i' or policychange.state == 'e' %}
+                {% if policychange.state == 'p' or policychange.state == 'e' %}
                     {% if request.guard.can_edit %}
                         {% if not policychange.ready_for_next_stage %}
                         <div class="pre-submit">
@@ -58,14 +58,7 @@
                             <h6>Um Deine AO-Änderung nach der Überarbeitung zur Abstimmung einreichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
                             {% endif %}
                             <ol>
-                                {% if policychange.state != 'e' %}
-                                <li>Alle Textfelder beim Einreichen müssen ausgefüllt sein.</li>
-                                <li>Du musst genau 2 Mitinitiator/innen angeben.</li>
-                                <li>Deine Mitinitiator/innen müssen ihre Mitautorschaft bestätigt haben.</li>
-                                {% else %}
                                 <li>Alle Textfelder müssen ausgefüllt sein.</li>
-                                <li>Deine Mitinitiator/innen müssen ihre Mitautorschaft erneut bestätigt haben.</li>
-                                {% endif %}
                             </ol>
                             </div>
                             {% endif %}
@@ -79,8 +72,8 @@
                             <form action="/policychange/{{policychange.id}}/submit_to_committee" style="display:inline"  method="POST">
                                 {% csrf_token %}
                                 {% if policychange.state != 'e' %}
-                                <button title="Einreichen" class="btn btn-success submit" type="submit">
-                                    <i class="material-icons public">public</i><span>Einreichen</span>
+                                <button title="Zur Diskussion freigeben" class="btn btn-success submit" type="submit">
+                                    <i class="material-icons public">public</i><span>Zur Diskussion freigeben</span>
                                 </button>
                                 {% else %}
                                 <button title="Zur Abstimmung einreichen" class="btn bg-vote submit" type="submit">
@@ -90,8 +83,8 @@
                             </form>
                             {% else %}
                             {% if policychange.state != 'e' %}
-                            <button title="Kann noch nicht eingereicht werden" class="btn btn-success submit" style="display:inline" disabled=True type="submit">
-                                <i class="material-icons public">public</i><span>Einreichen</span>
+                            <button title="Ist noch nicht vollständig" class="btn btn-success submit" style="display:inline" disabled=True type="submit">
+                                <i class="material-icons public">public</i><span>Zur Diskussion freigeben</span>
                             </button>
                             {% else %}
                             <button title="Kann noch nicht zur Abstimmung eingereicht werden" class="btn bg-vote submit" style="display:inline" disabled=True type="submit">
@@ -111,17 +104,6 @@
                     <p>
                     Diese AO-Änderung <strong class="badge-prepare">wird für die Abstimmung finalisiert</strong>.
                     </p>
-                {% elif policychange.state == 'i' or policychange.state == 'm' %}
-                    <p>
-                    Diese AO-Änderung <strong class="badge-prepare">wird gerade geprüft</strong> und {% if policychange.state == 'i' %} wird dann veröffentlicht {% else %} geht dann in <strong  class="badge-prepare">die Abstimmung</strong>{% endif %}.
-                    </p>
-                    {% if request.user.is_staff %}
-                        {% if request.guard.can_moderate %}
-                            {% include 'fragments/moderation/index.html' %}
-                        {% else %}
-                            <div class="alert alert-info">{{request.guard.reason}}</div>
-                        {% endif %}
-                    {% endif %}
                 {% endif %}
 
                 {% ifequal policychange.state 'h' %}
@@ -130,34 +112,11 @@
                 </p>
                 {% endifequal %}
 
-                {% ifequal policychange.state 's' %}
-                {% if policychange.absolute_supporters < policychange.quorum %}
-                <p>
-                    Diese AO-Änderung 
-                    <a href="#cta"><strong class="badge-support">sucht noch mindestens {{policychange.quorum|sub:policychange.absolute_supporters}} {% if policychange.absolute_supporters == 1 %}Unterstützer/in{% else %}Unterstützer/innen{% endif %}</strong></a>. Dafür bleiben ihr <strong>noch {{policychange.end_of_this_phase | timeuntil}}</strong>.
-                </p>
-                {% elif policychange.absolute_supporters == policychange.quorum %}
-                <p>
-                    Diese AO-Änderung hat 
-                    <a href="#cta"><strong class="badge-support">das Quorum an Unterstützer/innen</strong></a> erreicht!
-                    <br />
-                    In <strong>{{policychange.end_of_this_phase | timeuntil}}</strong> geht diese AO-Änderung in Diskussion.
-                </p>
-                {% else %}
-                <p>
-                    Diese AO-Änderung 
-                    <a href="#cta"><strong class="badge-support">hat das Quorum erreicht</strong></a> und darüber hinaus <strong>{{policychange.absolute_supporters|sub:policychange.quorum}}</strong> {% if policychange.absolute_supporters|sub:policychange.quorum == 1 %}Unterstützer/in{% else %}Unterstützer/innen{% endif %}.
-                    <br />
-                    In <strong>{{policychange.end_of_this_phase | timeuntil}}</strong> geht diese AO-Änderung in Diskussion.
-                </p>
-                {% endif %}
-                {% endifequal %}
                 {% ifequal policychange.state 'd' %}
                 <p>
                     Diese AO-Änderung befindet sich <a href="#debate">in Diskussion</a>.
                 </p>
                 {% endifequal %}
-
 
                 {% ifequal policychange.state 'v' %}
                     <p>
@@ -166,11 +125,9 @@
                 {% endifequal %} {% ifequal policychange.state 'a' %}
                 <p>Diese AO-Änderung {% if user.is_authenticated %}
                 <a href="#cta">{% endif %}<strong class="badge-accepted">wurde angenommen</strong>{% if user.is_authenticated %}</a>{% endif %}.
-                {% endifequal %} {% ifequal policychange.state 'r' %} {% if policychange.went_to_discussion_at %}
+                {% endifequal %} {% ifequal policychange.state 'r' %}
                 <p>Diese AO-Änderung <a href="#cta"><strong class="badge-rejected">wurde abgelehnt</strong></a>.</p>
-                {% else %}
-                <p>Diese AO-Änderung <strong class="badge-rejected">wurde abgelehnt</strong>, da sie das Quorum nicht erreicht hat.</p>
-                {% endif %} {% endifequal %}
+                {% endifequal %}
             </div>
         </div>
     </div>
@@ -181,7 +138,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h6 class="text-muted classification">Initiator/innen</h6>
+                <h6 class="text-muted classification">Bundesvorstand</h6>
             </div>
         </div>
         <div class="row no-gutters avatar">
@@ -192,39 +149,8 @@
                     <div class="name">
                         {{ sup.user.get_full_name|default:sup.user.username }}
                     </div>
-                    {% if policychange.state == 'i' or policychange.state == 'p'  or policychange.state == 'e' %}
-                    <div class="approval">
-                        {% if sup.ack %}
-                            <span title="bestätigt" class=""><i class="material-icons done">done</i></span>
-                        {% else %}
-                            {% if sup.user == user %}
-                                <strong style="display:block">Jetzt bestätigen</strong>
-
-                                <form action="/policychange/{{policychange.id}}/ack_support" style="display:inline" method="POST">
-                                    {% csrf_token %}
-                                    <button title="Unterstützen" class="btn btn-success" type="submit">
-                                        <i class="material-icons">done</i>
-                                    </button>
-                                </form>
-                                <form action="/policychange/{{policychange.id}}/rm_support" style="display:inline"  method="POST">
-                                    {% csrf_token %}
-                                    <button title="Nicht unterstützen" class="btn btn-danger" type="submit">
-                                        <i class="material-icons">not_interested</i>
-                                    </button>
-                                </form>
-                            {% else %}
-                            <span title="unbestätigt" class=""><i class="material-icons warning">warning</i></span>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                    {% endif %}
                 </div>
                 {% endfor %}
-                {% if request.guard.can_inivite_initiators %}
-                <div id="invite-initiators">
-                    <a data-ajax="true" href="/policychange/{{policychange.id}}/invite/initiators?fragment=%23invite-initiators" class="btn btn-success">weitere einladen</a>
-                </div>
-                {% endif %}
             </div>
         </div>
     </div>
@@ -232,73 +158,6 @@
 
 
 {% include "initproc/blocks/meta.html" %}
-
-{% ifequal policychange.state 's' %}
-<div id="cta" class="container-fluid cta">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h6 class="text-muted classification">Noch {{policychange.end_of_this_phase | timeuntil}}</h6>
-                <span class="meta-content current-supporters">
-                    <strong>
-                        {{policychange.absolute_supporters|default:0}} 
-                    </strong>
-                    {% if policychange.absolute_supporters == 1 %}
-                    Unterstützer/in
-                    {% else %}
-                    Unterstützer/innen
-                    {% endif %}
-                </span>
-                <div class="progress">
-                    <div class="progress-bar bg-support" role="progressbar" style="width: {% if policychange.relative_support <= 100 %}{{policychange.relative_support|floatformat:"0"}}{% else %}100{% endif %}%;" aria-valuenow="{{policychange.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{policychange.quorum}}">
-                    </div>
-                </div>
-                {% if policychange.absolute_supporters < policychange.quorum %}
-                <span class="meta-content support-needed">
-                    Es fehlen noch 
-                    <strong>
-                        {{policychange.quorum|sub:policychange.absolute_supporters}}
-                    </strong> 
-                    {% if policychange.quorum|sub:policychange.absolute_supporters == 1 %}
-                    Unterstützer/in{% else %}Unterstützer/innen{% endif %} zum Erreichen des Quorums.
-                </span>
-                {% elif policychange.absolute_supporters == policychange.quorum %}
-                 <span class="meta-content support-needed">
-                    Diese AO-Änderung hat das Quorum an Unterstützer/innen erreicht!
-                </span>
-                {% else %}
-                <span class="meta-content support-needed">
-                    Diese AO-Änderung hat das Quorum erreicht und darüber hinaus 
-                    <strong>
-                        {{policychange.absolute_supporters|sub:policychange.quorum}}
-                    </strong> 
-                    {% if policychange.absolute_supporters|sub:policychange.quorum == 1 %}
-                    Unterstützer/in{% else %}Unterstützer/innen{% endif %}.
-                </span>
-                {% endif %}
-                {% if has_supported %}
-                <span class="meta-content support supported-by">
-                    Du unterstützt diese AO-Änderung!
-                </span>
-                {% else %}
-                <form action="/policychange/{{policychange.id}}/support" method="GET">
-                    <button class="btn bg-support" type="submit">
-                        Jetzt Unterstützen
-                    </button>
-                    <div class="form-check">
-                        <label class="form-check-label text-muted">
-                            <input type="checkbox" class="form-check-input" name="public">
-                            Öffentlich anzeigen
-                        </label>
-                    </div>
-                </form>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-{% endifequal %}
-
 
 {% ifequal policychange.state 'd' %}
 <div id="cta" class="container-fluid cta">
@@ -441,31 +300,8 @@
         </div>
 
         {% include "initproc/blocks/content.html" %}
-        
-        {% if policychange.was_closed_at %}
-            <!--<div class="row">
-                <div class="col-12">
-                    <h3 class="history-title">
-                    <span class="date">{{policychange.was_closed_at}}</span>
-                    {% if policychange.went_to_discussion_at %}
-                      Nach Abstimmung mit {{ policychange.yays|default:0 }} Für- und {{ policychange.nays|default:0 }} Gegenstimmen, sowie {{ policychange.abstains|default:0 }} Enthaltungen
-                      {% ifequal policychange.state 'a' %}
-                        angenommen.
-                      {% else %}
-                        abgelehnt.
-                      {% endifequal %}
-                    {% else %}
-                     Mit {{policychange.absolute_supporters|default:0}} Unterstützern wurde das Qurom von {{policychange.quorum}} nicht erreicht. Die AO-Änderung wurde damit abgelehnt.
-                    {% endif %}
-                    </h3>
-                </div>
-            </div>-->
-        {% endif %}
     </div>
 </div>
-
-
-{% include "initproc/blocks/variants.html" %}
 
 {% if policychange.state == 'v' %}
 
@@ -504,163 +340,6 @@
     </div>
 </div>
 
-{% endif %}
-
-
-
-
-
-<!-- SEEEEKING SUPPPORTERS AREA -->
-
-{% ifequal policychange.state 's' %}
-<div class="container-fluid cta">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h6 class="text-muted classification">Noch {{policychange.end_of_this_phase | timeuntil}}</h6>
-                {% ifequal policychange.state 's' %}
-                <span class="meta-content current-supporters">
-                    <strong>
-                        {{policychange.absolute_supporters|default:0}} 
-                    </strong>
-                    {% if policychange.absolute_supporters == 1 %}
-                    Unterstützer/in
-                    {% else %}
-                    Unterstützer/innen
-                    {% endif %}
-                </span>
-                <div class="progress">
-                    <div class="progress-bar bg-support" role="progressbar" style="width: {% if policychange.relative_support <= 100 %}{{policychange.relative_support|floatformat:"0"}}{% else %}100{% endif %}%;" aria-valuenow="{{policychange.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{policychange.quorum}}">
-                    </div>
-                </div>
-                {% if policychange.absolute_supporters < policychange.quorum %}
-                <span class="meta-content support-needed">
-                    Es fehlen noch 
-                    <strong>
-                        {{policychange.quorum|sub:policychange.absolute_supporters}}
-                    </strong> 
-                    {% if policychange.quorum|sub:policychange.absolute_supporters == 1 %}
-                    Unterstützer/in{% else %}Unterstützer/innen{% endif %} zum Erreichen des Quorums.
-                </span>
-                {% elif policychange.absolute_supporters == policychange.quorum %}
-                 <span class="meta-content">
-                    Diese AO-Änderung hat das Quorum an Unterstützer/innen erreicht!
-                </span>
-                {% else %}
-                <span class="meta-content">
-                    Diese AO-Änderung hat das Quorum erreicht und darüber hinaus 
-                    <strong>
-                        {{policychange.absolute_supporters|sub:policychange.quorum}}
-                    </strong> 
-                    {% if policychange.absolute_supporters|sub:policychange.quorum == 1 %}
-                    Unterstützer/in{% else %}Unterstützer/innen{% endif %}.
-                </span>
-                {% endif %}
-                {% if has_supported %}
-                <span class="meta-content support supported-by">
-                    Du unterstützt diese AO-Änderung!
-                </span>
-                {% else %}
-                <form action="/policychange/{{policychange.id}}/support" method="GET">
-                    <button class="btn bg-support" type="submit">
-                        Jetzt Unterstützen
-                    </button>
-                    <div class="form-check">
-                        <label class="form-check-label text-muted">
-                            <input type="checkbox" class="form-check-input" name="public">
-                            Öffentlich anzeigen
-                        </label>
-                    </div>
-                </form>
-                {% endif %}
-                {% endifequal %}
-                <div class="back-to-index">
-                    <a href="/" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Übersicht</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endifequal %}
-
-<!--  IIIIIINNNNBOOOOOOXXXXX  -->
-
-{% if policychange.show_supporters %}
-<div class="container-fluid show-supporters">
-    <div class="container">
-        {% if policychange.first_supporters.count %}
-            <div class="row">
-                <div class="col-12">
-                    <h2>Erstunterstützer/innen</h2>
-                    <div class="d-flex flex-wrap avatar">
-                        {% for sup in policychange.first_supporters.all %} 
-                            <div class="text-center initiator">
-                                {% include "fragments/avatar.html" with user=sup.user %}
-                                <div class="name">
-                                    {{ sup.user.get_full_name|default:sup.user.username }}
-                                </div>
-                                {% if policychange.state == 'i' or policychange.state == 'p' %}
-                                    <div class="approval">
-                                        {% if sup.ack %}
-                                        <span title="bestätigt" class=""><i class="material-icons">done</i></span>
-                                        {% else %}
-                                            {% if sup.user == user %}
-                                                <strong style="display:block">Jetzt bestätigen</strong>
-
-                                                <form action="/policychange/{{policychange.id}}/ack_support"  style="display:inline"  method="POST">
-                                                    {% csrf_token %}
-                                                    <button title="Unterstützen" class="btn btn-success" type="submit">
-                                                        <i class="material-icons">done</i>
-                                                    </button>
-                                                </form>
-                                                <form action="/policychange/{{policychange.id}}/rm_support"  style="display:inline"  method="POST">
-                                                    {% csrf_token %}
-                                                    <button title="Nicht unterstützen" class="btn btn-danger" type="submit">
-                                                        <i class="material-icons">not_interested</i>
-                                                    </button>
-                                                </form>
-                                            {% else %}
-                                                <span title="unbestätigt" class=""><i class="material-icons warning">warning</i></span>
-                                            {% endif %}
-                                        {% endif %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-
-        {% if policychange.public_supporters.count %}
-            <div class="row">
-                <div class="col-12">
-                    <h2>Unterstützer/innen</h2>
-                    <div class="d-flex flex-wrap avatar">
-                        {% for sup in policychange.public_supporters.all %} 
-                            <div class="text-center initiator">
-                                {% include "fragments/avatar.html" with user=sup.user %}
-                                <div class="name">
-                                    {{ sup.user.get_full_name|default:sup.user.username }}<br/>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-
-        {% if request.guard.can_edit %}
-            <div class="row">
-                <div class="col-12">
-                    <div id="invite-supporters">
-                        <a data-ajax="true" href="/policychange/{{policychange.id}}/invite/supporters?fragment=%23invite-supporters" class="btn btn-success"><i class="material-icons person-add">person_add</i><span>weitere Unterstützer/innen einladen</a>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-    </div>
-</div>
 {% endif %}
 
 {% endblock %} {% block body-javascript %} {{ block.super }}

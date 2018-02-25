@@ -699,9 +699,6 @@ def new_policychange(request):
                 if request.POST.get('commit_message', None):
                     reversion.set_comment(request.POST.get('commit_message'))
 
-
-            # todo: also fix/extend Supporter
-            # Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
             return redirect('/policychange/{}-{}'.format(pc.id, pc.slug))
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")

@@ -13,19 +13,94 @@ import reversion
 
 from datetime import datetime, timedelta, date
 
-from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START, POLICY_CHANGE_SUPPORTERS_COUNT
+from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START
 from django.db import models
 import pytz
 
 
+class VotyBase(models.Model):
+
+    class Meta:
+        abstract = True # https://docs.djangoproject.com/en/dev/ref/models/options/#abstract
+
+    # fallback
+    STATES = STATES
+
+    title = models.CharField(max_length=80)
+    subtitle = models.CharField(max_length=1024, blank=True)
+    state = models.CharField(max_length=1)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    changed_at = models.DateTimeField(auto_now=True)
+
+    summary = models.TextField(blank=True)
+
+    bereich = models.CharField(max_length=50)
+
+    went_to_discussion_at = models.DateField(blank=True, null=True)
+    went_to_voting_at = models.DateField(blank=True, null=True)
+    was_closed_at = models.DateField(blank=True, null=True)
+
+    @cached_property
+    def slug(self):
+        return slugify(self.title)
+
+    @cached_property
+    def sort_index(self):
+        timezone = self.created_at.tzinfo
+        if self.was_closed_at: #recently closed first
+            return datetime.today().date() - self.was_closed_at
+
+        elif self.end_of_this_phase: #closest to deadline first
+            return self.end_of_this_phase - datetime.today().date()
+
+        else: #newest first
+            return datetime.now(timezone) - self.created_at
+
+    @property
+    def show_debate(self):
+        return self.state in [self.STATES.DISCUSSION, self.STATES.FINAL_EDIT, self.STATES.VOTING, self.STATES.ACCEPTED, self.STATES.REJECTED]
+
+    @cached_property
+    def yays(self):
+        return self.votes.filter(value=VOTED.YES).count()
+
+    @cached_property
+    def nays(self):
+        return self.votes.filter(value=VOTED.NO).count()
+
+    @cached_property
+    def abstains(self):
+        return self.votes.filter(value=VOTED.ABSTAIN).count()
+
+    @cached_property
+    def custom_cls(self):
+        return 'item-{} state-{} area-{}'.format(slugify(self.title),
+                                                 slugify(self.state), slugify(self.bereich))
+
+    @cached_property
+    def allows_abstention(self):
+        return True
+
+    def __str__(self):
+        return self.title;
+
+    def notify(self, recipients, notice_type, extra_context=None, subject=None, **kwargs):
+        context = extra_context or dict()
+        if subject:
+            kwargs['sender'] = subject
+            context['target'] = self
+        else:
+            kwargs['sender'] = self
+
+        notify(recipients, notice_type, context, **kwargs)
+
 @reversion.register()
-class Initiative(models.Model):
+class Initiative(VotyBase):
 
     # fallback 
     STATES = STATES 
 
-    title = models.CharField(max_length=80)
-    subtitle = models.CharField(max_length=1024, blank=True)
     state = models.CharField(max_length=1, choices=[
             (STATES.PREPARE, "preparation"),
             (STATES.INCOMING, "new arrivals"),
@@ -39,11 +114,6 @@ class Initiative(models.Model):
             (STATES.REJECTED, "was rejected")
         ])
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    changed_at = models.DateTimeField(auto_now=True)
-
-
-    summary = models.TextField(blank=True)
     problem = models.TextField(blank=True)
     forderung = models.TextField(blank=True)
     kosten = models.TextField(blank=True)
@@ -64,35 +134,11 @@ class Initiative(models.Model):
                 ('(andere)', '(andere)')])
 
     went_public_at = models.DateField(blank=True, null=True)
-    went_to_discussion_at = models.DateField(blank=True, null=True)
-    went_to_voting_at = models.DateField(blank=True, null=True)
-    was_closed_at = models.DateField(blank=True, null=True)
 
     variant_of = models.ForeignKey('self', blank=True, null=True, default=None, related_name="variants")
 
     supporters = models.ManyToManyField(User, through="Supporter")
     eligible_voters = models.IntegerField(blank=True, null=True)
-
-    @cached_property
-    def slug(self):
-        return slugify(self.title)
-
-    @cached_property
-    def versions(self):
-        return Version.objects.get_for_object(self)
-
-
-    @cached_property
-    def sort_index(self):
-        timezone = self.created_at.tzinfo
-        if self.was_closed_at: #recently closed first
-            return datetime.today().date() - self.was_closed_at
-
-        elif self.end_of_this_phase: #closest to deadline first
-            return self.end_of_this_phase - datetime.today().date()
-
-        else: #newest first
-            return datetime.now(timezone) - self.created_at
 
     @cached_property
     def ready_for_next_stage(self):
@@ -480,66 +526,28 @@ class Moderation(Response):
         ])
     text = models.CharField(max_length=500, blank=True)
 
-
 @reversion.register()
-class PolicyChange(models.Model):
+class PolicyChange(VotyBase):
 
-    # fallback
-    STATES = STATES
-
-    title = models.CharField(max_length=80)
-    subtitle = models.CharField(max_length=1024, blank=True)
     state = models.CharField(max_length=1, choices=[
         (STATES.PREPARE, "preparation"),
         (STATES.DISCUSSION, "in discussion"),
         (STATES.FINAL_EDIT, "final edits"),
         (STATES.VOTING, "is being voted on"),
         (STATES.ACCEPTED, "was accepted"),
-        (STATES.REJECTED, "was rejected")
+        (STATES.REJECTED, "was rejected"),
+        (STATES.HIDDEN, "hidden"),
     ])
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    changed_at = models.DateTimeField(auto_now=True)
-
-    summary = models.TextField(blank=True)
 
     bereich = models.CharField(max_length=50, choices=[
         ('AO-Änderung', 'AO-Änderung')])
 
-    went_to_discussion_at = models.DateField(blank=True, null=True)
-    went_to_voting_at = models.DateField(blank=True, null=True)
-    was_closed_at = models.DateField(blank=True, null=True)
-
-    @cached_property
-    def slug(self):
-        return slugify(self.title)
-
-    @cached_property
-    def versions(self):
-        return Version.objects.get_for_object(self)
-
-    @cached_property
-    def sort_index(self):
-        timezone = self.created_at.tzinfo
-        if self.was_closed_at: #recently closed first
-            return datetime.today().date() - self.was_closed_at
-
-        elif self.end_of_this_phase: #closest to deadline first
-            return self.end_of_this_phase - datetime.today().date()
-
-        else: #newest first
-            return datetime.now(timezone) - self.created_at
-
     @cached_property
     def ready_for_next_stage(self):
 
-        if self.state in [Initiative.STATES.INCOMING]:
-            return self.supporting.filter(initiator=True, ack=True).count() == POLICY_CHANGE_SUPPORTERS_COUNT
-
         if self.state in [Initiative.STATES.PREPARE, Initiative.STATES.FINAL_EDIT]:
-            #three initiators and no empty text fields
-            return (self.supporting.filter(initiator=True, ack=True).count() == POLICY_CHANGE_SUPPORTERS_COUNT and
-                    self.title and
+            #no empty text fields
+            return (self.title and
                     self.subtitle and
                     self.bereich and
                     self.summary)
@@ -563,7 +571,7 @@ class PolicyChange(models.Model):
         if self.was_closed_at:
             return self.was_closed_at + halfyear # Half year later.
 
-        if self.went_public_at:
+        if self.went_to_discussion_at:
             if self.state == STATES.DISCUSSION:
                 return self.went_to_discussion_at + (3 * week)
 
@@ -575,26 +583,6 @@ class PolicyChange(models.Model):
 
         return None
 
-    @property
-    def show_supporters(self):
-        return self.state in [self.STATES.PREPARE]
-
-    @property
-    def show_debate(self):
-        return self.state in [self.STATES.DISCUSSION, self.STATES.FINAL_EDIT, self.STATES.VOTING, self.STATES.ACCEPTED, self.STATES.REJECTED]
-
-    @cached_property
-    def yays(self):
-        return self.votes.filter(value=VOTED.YES).count()
-
-    @cached_property
-    def nays(self):
-        return self.votes.filter(value=VOTED.NO).count()
-
-    @cached_property
-    def abstains(self):
-        return self.votes.filter(value=VOTED.ABSTAIN).count()
-
     def is_accepted(self):
         if self.yays >= (self.nays * 2): #always reject if too few yays
             return True
@@ -603,36 +591,7 @@ class PolicyChange(models.Model):
 
     @cached_property
     def initiators(self):
-        return self.supporting.filter(initiator=True).order_by("created_at")
+        # initiators of PolicyChange is the Bundesvorstand as a whole
+        return get_user_model().objects.filter(is_active=True) #TODO: ,is_bv=True)
 
-    @cached_property
-    def custom_cls(self):
-        return 'item-{} state-{} area-{}'.format(slugify(self.title),
-                                                 slugify(self.state), slugify(self.bereich))
-
-    @cached_property
-    def allows_abstention(self):
-            return True
-
-    def __str__(self):
-        return self.title;
-
-    def notify_followers(self, *args, **kwargs):
-        query = [s.user for s in self.supporting.filter(ack=True).all()] if self.state == 'p' else self.supporters.all()
-
-        return self.notify(query, *args, **kwargs)
-
-    def notify_initiators(self, *args, **kwargs):
-        query = [s.user for s in self.initiators]
-        return self.notify(query, *args, **kwargs)
-
-    def notify(self, recipients, notice_type, extra_context=None, subject=None, **kwargs):
-        context = extra_context or dict()
-        if subject:
-            kwargs['sender'] = subject
-            context['target'] = self
-        else:
-            kwargs['sender'] = self
-
-        notify(recipients, notice_type, context, **kwargs)
 

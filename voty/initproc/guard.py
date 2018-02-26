@@ -36,8 +36,10 @@ class ContinueChecking(Exception): pass
 def _compound_action(func):
     @wraps(func)
     def wrapped(self, obj=None, *args, **kwargs):
-        if obj is None: # if none given, fall back to the initiative of the request
+        if obj is None and hasattr(self.request, 'initiative'): # if none given, fall back to the initiative of the request
             obj = self.request.initiative
+        if obj is None and hasattr(self.request, 'policychange'): # if none given and it exists, use policy change from request
+            obj = self.request.policychange
         try:
             return getattr(self, "_{}_{}".format(func.__name__, obj._meta.model_name))(obj, *args, **kwargs)
         except (AttributeError, ContinueChecking):
@@ -252,6 +254,31 @@ class Guard:
             raise ContinueChecking()
         return False
 
+    def _can_view_policychange(self, pc):
+        if pc.state == STATES.HIDDEN:
+            return False
+
+        # TODO: implement bv user
+        # if pc.state == STATES.PREPARE && not self.user.is_bv:
+        #     return False
+
+        if not self.user.is_authenticated:
+            return False
+
+        return True
+
+    def _can_edit_policychange(self, pc):
+        if not pc.state in [STATES.PREPARE, STATES.FINAL_EDIT]:
+            return False
+        if not self.user.is_authenticated:
+            return False
+        if self.user.is_superuser:
+            return True
+        # TODO: implement bv user
+        # if self.user.is_bv:
+        #     return True
+        return False
+
 
 def add_guard(get_response):
     """
@@ -273,6 +300,12 @@ def can_access_policychange(states=None, check=None):
             pc = get_object_or_404(PolicyChange, pk=pc_id)
             if states:
                 assert pc.state in states, "{} Not in expected state: {}".format(pc.state, states)
+            if  not request.guard.can_view(pc):
+                raise PermissionDenied()
+
+            if check:
+                if not getattr(request.guard, check)(pc):
+                    raise PermissionDenied()
 
             request.policychange = pc
 

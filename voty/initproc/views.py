@@ -384,7 +384,7 @@ def invite(request, form, initiative, invite_type):
 
         notify([user], NOTIFICATIONS.INVITE.SEND, {"target": initiative}, sender=request.user)
 
-    messages.success(request, "Initiator/innen eingeladen." if invite_type == 'initiators' else 'Unterstützer/innen eingeladen.' )
+    messages.success(request, "Initiator*innen eingeladen." if invite_type == 'initiators' else 'Unterstützer*innen eingeladen.' )
     return redirect("/initiative/{}-{}".format(initiative.id, initiative.slug))
 
 

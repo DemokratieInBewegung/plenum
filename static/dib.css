@@ -236,7 +236,7 @@ p.card-text {
 
 .container-fluid.notice {
   padding-top: 1rem;
-  padding-bottom: 1rem; 
+  padding-bottom: 1rem;
 background: rgba(227,82,66,1);
 background: -moz-radial-gradient(center, ellipse cover, rgba(227,82,66,1) 0%, rgba(201,40,28,1) 100%);
 background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgba(227,82,66,1)), color-stop(100%, rgba(201,40,28,1)));
@@ -705,7 +705,7 @@ header .alert {
 }
 
 .init-index-header .display-4 {
-  padding-top: 1rem; 
+  padding-top: 1rem;
   padding-bottom: 1rem
 }
 
@@ -1104,7 +1104,7 @@ label.deactivated {
 }
 
 .discourse .contra {
-  padding-left: 10px; 
+  padding-left: 10px;
 }
 
 .discourse ul {
@@ -1205,7 +1205,7 @@ Argument base design
 .argument .comment .comment-text {
   margin: 0;
   font-size: 1rem;
-  line-height: 1.625rem; 
+  line-height: 1.625rem;
 }
 
 .argument .comment .comment-text * {
@@ -1260,7 +1260,7 @@ Argument base design
 
 /*
 
-        VOTING 
+        VOTING
 
 */
 
@@ -1291,6 +1291,11 @@ Argument base design
 #voting .btn-primary:hover, #voting .btn-primary:active {
   background-color: #AE2568;
   border-color: #AE2568;
+}
+
+#voting .btn-primary:disabled {
+  background-color: #AAAAAA;
+  border-color: #AAAAAA;
 }
 
 
@@ -1389,7 +1394,7 @@ Argument base design
 
 /*
 
-        VOTED 
+        VOTED
 
 */
 
@@ -1413,7 +1418,7 @@ Argument base design
 }
 
 /*
- 
+
 
       MODERATION
 

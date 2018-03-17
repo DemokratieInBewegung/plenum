@@ -11,7 +11,7 @@
         <div class="row">
             <div class="col">
                 <form method="POST" action="{% url "account_login" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
-                    <h2>Als Beweger/in anmelden</h2>
+                    <h2>Als Beweger*in anmelden</h2>
                     {% csrf_token %}
                     {{ form |bootstrap }}
                     {% if redirect_field_value %}

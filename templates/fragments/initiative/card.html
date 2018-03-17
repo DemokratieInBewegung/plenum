@@ -34,7 +34,7 @@
 							<span class="badge badge-support">
 								Sucht Unterstützung -
 								{% if initiative.absolute_supporters < initiative.quorum %}
-								  {{initiative.quorum|sub:initiative.absolute_supporters}} fehlende {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}Unterstützer/in{% else %}Unterstützer/innen{% endif %}
+								  {{initiative.quorum|sub:initiative.absolute_supporters}} fehlende {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}Unterstützer*in{% else %}Unterstützer*innen{% endif %}
 							    {% else %}
 								  Quorum erreicht
 							    {% endif %}

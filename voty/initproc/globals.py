@@ -69,4 +69,6 @@ ABSTENTION_START = date(2017, 12, 1) # Everything published after this has abste
 SPEED_PHASE_END = date(2017, 8, 21) # Everything published before this has speed phase
 INITIATORS_COUNT = 3
 
-MINIMUM_MODERATOR_VOTES = 3
+MINIMUM_MODERATOR_VOTES = 5
+MINIMUM_FEMALE_MODERATOR_VOTES = 3
+MINIMUM_DIVERSE_MODERATOR_VOTES = 2

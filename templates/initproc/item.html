@@ -4,7 +4,7 @@
 {% load fullurl %}
 
 {% block head_title %}
-{{initiative.title}} – im Plenum der Beweger/innen von DEMOKRATIE IN BEWEGUNG
+{{initiative.title}} – im Plenum der Beweger*innen von DEMOKRATIE IN BEWEGUNG
 {% endblock %}
 
 {% block custom_sm_title %}
@@ -60,11 +60,11 @@
                             <ol>
                                 {% if initiative.state != 'e' %}
                                 <li>Alle Textfelder beim Einreichen müssen ausgefüllt sein.</li>
-                                <li>Du musst genau 2 Mitinitiator/innen angeben.</li>
-                                <li>Deine Mitinitiator/innen müssen ihre Mitautorschaft bestätigt haben.</li>
+                                <li>Du musst genau 2 Mitinitiator*innen angeben.</li>
+                                <li>Deine Mitinitiator*innen müssen ihre Mitautor*innenschaft bestätigt haben.</li>
                                 {% else %}
                                 <li>Alle Textfelder müssen ausgefüllt sein.</li>
-                                <li>Deine Mitinitiator/innen müssen ihre Mitautorschaft erneut bestätigt haben.</li>
+                                <li>Deine Mitinitiator*innen müssen ihre Mitautor*innenschaft erneut bestätigt haben.</li>
                                 {% endif %}
                             </ol>
                             </div>
@@ -134,19 +134,19 @@
                 {% if initiative.absolute_supporters < initiative.quorum %}
                 <p>
                     Diese Initiative 
-                    <a href="#cta"><strong class="badge-support">sucht noch mindestens {{initiative.quorum|sub:initiative.absolute_supporters}} {% if initiative.absolute_supporters == 1 %}Unterstützer/in{% else %}Unterstützer/innen{% endif %}</strong></a>. Dafür bleiben ihr <strong>noch {{initiative.end_of_this_phase | timeuntil}}</strong>.
+                    <a href="#cta"><strong class="badge-support">sucht noch mindestens {{initiative.quorum|sub:initiative.absolute_supporters}} {% if initiative.absolute_supporters == 1 %}Unterstützer*in{% else %}Unterstützer*innen{% endif %}</strong></a>. Dafür bleiben ihr <strong>noch {{initiative.end_of_this_phase | timeuntil}}</strong>.
                 </p>
                 {% elif initiative.absolute_supporters == initiative.quorum %}
                 <p>
                     Diese Initiative hat 
-                    <a href="#cta"><strong class="badge-support">das Quorum an Unterstützer/innen</strong></a> erreicht!
+                    <a href="#cta"><strong class="badge-support">das Quorum an Unterstützer*innen</strong></a> erreicht!
                     <br />
                     In <strong>{{initiative.end_of_this_phase | timeuntil}}</strong> geht diese Initiative in Diskussion.
                 </p>
                 {% else %}
                 <p>
                     Diese Initiative 
-                    <a href="#cta"><strong class="badge-support">hat das Quorum erreicht</strong></a> und darüber hinaus <strong>{{initiative.absolute_supporters|sub:initiative.quorum}}</strong> {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}Unterstützer/in{% else %}Unterstützer/innen{% endif %}.
+                    <a href="#cta"><strong class="badge-support">hat das Quorum erreicht</strong></a> und darüber hinaus <strong>{{initiative.absolute_supporters|sub:initiative.quorum}}</strong> {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}Unterstützer*in{% else %}Unterstützer*innen{% endif %}.
                     <br />
                     In <strong>{{initiative.end_of_this_phase | timeuntil}}</strong> geht diese Initiative in Diskussion.
                 </p>
@@ -181,7 +181,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h6 class="text-muted classification">Initiator/innen</h6>
+                <h6 class="text-muted classification">Initiator*innen</h6>
             </div>
         </div>
         <div class="row no-gutters avatar">
@@ -247,9 +247,9 @@
                         {{initiative.absolute_supporters|default:0}} 
                     </strong>
                     {% if initiative.absolute_supporters == 1 %}
-                    Unterstützer/in
+                    Unterstützer*in
                     {% else %}
-                    Unterstützer/innen
+                    Unterstützer*innen
                     {% endif %}
                 </span>
                 <div class="progress">
@@ -263,11 +263,11 @@
                         {{initiative.quorum|sub:initiative.absolute_supporters}}
                     </strong> 
                     {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}
-                    Unterstützer/in{% else %}Unterstützer/innen{% endif %} zum Erreichen des Quorums.
+                    Unterstützer*in{% else %}Unterstützer*innen{% endif %} zum Erreichen des Quorums.
                 </span>
                 {% elif initiative.absolute_supporters == initiative.quorum %}
                  <span class="meta-content support-needed">
-                    Diese Initiative hat das Quorum an Unterstützer/innen erreicht!
+                    Diese Initiative hat das Quorum an Unterstützer*innen erreicht!
                 </span>
                 {% else %}
                 <span class="meta-content support-needed">
@@ -276,7 +276,7 @@
                         {{initiative.absolute_supporters|sub:initiative.quorum}}
                     </strong> 
                     {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}
-                    Unterstützer/in{% else %}Unterstützer/innen{% endif %}.
+                    Unterstützer*in{% else %}Unterstützer*innen{% endif %}.
                 </span>
                 {% endif %}
                 {% if has_supported %}
@@ -348,16 +348,16 @@
                 <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
             </div>
         </div>
-        <div class="row justify-content-center">
-            <div class="col-auto pr-4">
+        <div class="row justify-content-center results-display">
+            <div class="col-auto" data-toggle="tooltip" title="{{initiative.yays}} {% if initiative.yays != 1 %}Ja-Stimmen{% else %}Ja-Stimme{% endif %}">
                 <span class="in-favor text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_up</i></span>
                 <span class="in-favor" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.yays}}</span>
             </div>
-            <div class="col-auto pr-4">
+            <div class="col-auto" data-toggle="tooltip" title="{{initiative.abstains}} {% if initiative.abstains != 1 %}Enthaltungen{% else %}Enthaltung{% endif %}">
                 <span class="abstained text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">panorama_fish_eye</i></span>
                 <span class="abstained" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.abstains}}</span>
             </div>
-            <div class="col-auto">
+            <div class="col-auto" data-toggle="tooltip" title="{{initiative.nays}} {% if initiative.nays != 1 %}Nein-Stimmen{% else %}Nein-Stimme{% endif %}">
                 <span class=" declined text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_down</i></span>
                 <span class="declined" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.nays}}</span>
             </div>
@@ -527,9 +527,9 @@
                         {{initiative.absolute_supporters|default:0}} 
                     </strong>
                     {% if initiative.absolute_supporters == 1 %}
-                    Unterstützer/in
+                    Unterstützer*in
                     {% else %}
-                    Unterstützer/innen
+                    Unterstützer*innen
                     {% endif %}
                 </span>
                 <div class="progress">
@@ -543,11 +543,11 @@
                         {{initiative.quorum|sub:initiative.absolute_supporters}}
                     </strong> 
                     {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}
-                    Unterstützer/in{% else %}Unterstützer/innen{% endif %} zum Erreichen des Quorums.
+                    Unterstützer*in{% else %}Unterstützer*innen{% endif %} zum Erreichen des Quorums.
                 </span>
                 {% elif initiative.absolute_supporters == initiative.quorum %}
                  <span class="meta-content">
-                    Diese Initiative hat das Quorum an Unterstützer/innen erreicht!
+                    Diese Initiative hat das Quorum an Unterstützer*innen erreicht!
                 </span>
                 {% else %}
                 <span class="meta-content">
@@ -556,7 +556,7 @@
                         {{initiative.absolute_supporters|sub:initiative.quorum}}
                     </strong> 
                     {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}
-                    Unterstützer/in{% else %}Unterstützer/innen{% endif %}.
+                    Unterstützer*in{% else %}Unterstützer*innen{% endif %}.
                 </span>
                 {% endif %}
                 {% if has_supported %}
@@ -594,7 +594,7 @@
         {% if initiative.first_supporters.count %}
             <div class="row">
                 <div class="col-12">
-                    <h2>Erstunterstützer/innen</h2>
+                    <h2>Erstunterstützer*innen</h2>
                     <div class="d-flex flex-wrap avatar">
                         {% for sup in initiative.first_supporters.all %} 
                             <div class="text-center initiator">
@@ -638,7 +638,7 @@
         {% if initiative.public_supporters.count %}
             <div class="row">
                 <div class="col-12">
-                    <h2>Unterstützer/innen</h2>
+                    <h2>Unterstützer*innen</h2>
                     <div class="d-flex flex-wrap avatar">
                         {% for sup in initiative.public_supporters.all %} 
                             <div class="text-center initiator">
@@ -657,7 +657,7 @@
             <div class="row">
                 <div class="col-12">
                     <div id="invite-supporters">
-                        <a data-ajax="true" href="/initiative/{{initiative.id}}/invite/supporters?fragment=%23invite-supporters" class="btn btn-success"><i class="material-icons person-add">person_add</i><span>weitere Unterstützer/innen einladen</a>
+                        <a data-ajax="true" href="/initiative/{{initiative.id}}/invite/supporters?fragment=%23invite-supporters" class="btn btn-success"><i class="material-icons person-add">person_add</i><span>weitere Unterstützer*innen einladen</a>
                     </div>
                 </div>
             </div>
@@ -668,5 +668,9 @@
 
 {% endblock %} {% block body-javascript %} {{ block.super }}
 <script type="text/javascript">
+// Initialize Tooltips
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+});
 </script>
 {% endblock %}

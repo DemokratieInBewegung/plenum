@@ -125,7 +125,7 @@ class InitiativeForm(forms.ModelForm):
             "kosten": "Kosten",
             "fin_vorschlag": "Finanzierungsvorschlag",
             "arbeitsweise": "Arbeitsweise",
-            "init_argument": "Argument der Initiator/innen",
+            "init_argument": "Argument der Initiator*innen",
         }
         help_texts = {
             "title" : "Die Überschrift sollte kurz und knackig Eure Forderung enthalten.",
@@ -135,7 +135,7 @@ class InitiativeForm(forms.ModelForm):
             "forderung" : "Was sind Eure konkreten Forderungen?",
             "kosten": "Entstehen Kosten für Eure Initiative? Versucht bitte, wenn möglich, eine ungefähre Einschätzung über die Höhe der Kosten zu geben.",
             "fin_vorschlag": "Hier solltet Ihr kurz erklären, wie die Kosten gedeckt werden könnten. Hier reicht auch zu schreiben, dass die Initiative über Steuereinnahmen finanziert wird.",
-            "arbeitsweise": "Habt Ihr mit Expert/innen gesprochen? Wo kommen Eure Informationen her? Hier könnt Ihr auch Quellen angeben.",
+            "arbeitsweise": "Habt Ihr mit Expert*innen gesprochen? Wo kommen Eure Informationen her? Hier könnt Ihr auch Quellen angeben.",
             "init_argument": "Hier dürft Ihr emotional werden: Warum ist Euch das wichtig und warum bringt Ihr diese Initiative ein?",
 
         }

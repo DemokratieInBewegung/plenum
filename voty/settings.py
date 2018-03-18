@@ -243,6 +243,7 @@ MEDIA_ROOT = os.path.join( BASE_DIR, 'public', 'media')
 
 CORS_ORIGIN_WHITELIST = (
     'bewegung.jetzt',
+    'portal.bewegung.jetzt'
 )
 
 CORS_ALLOW_CREDENTIALS = True

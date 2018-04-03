@@ -29,5 +29,8 @@ urlpatterns = [
     url('^like/(?P<target_type>.*)/(?P<target_id>\d+)$', views.like),
     url('^unlike/(?P<target_type>.*)/(?P<target_id>\d+)$', views.unlike),
     url('^policychange/new$', views.new_policychange, name="new_policychange"),
-    url('^policychange/(?P<pc_id>\d+)(?:-(?P<slug>.*))?$', views.policychange, name="policychange_item")
+    url('^policychange/(?P<pc_id>\d+)(?:-(?P<slug>.*))?$', views.policychange, name="policychange_item"),
+    url('^policychange/(?P<pc_id>\d+)(?:-(?P<slug>.*))?/edit$', views.edit_policychange),
+    url('^policychange/(?P<pc_id>\d+)(?:-(?P<slug>.*))?/start_discussion_phase$', views.start_discussion_phase)
+
 ]

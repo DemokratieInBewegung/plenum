@@ -31,11 +31,6 @@
                 <p>{{policychange.subtitle}}</p>
             </div>
         </div>
-        <div class="row skip-meta">
-            <div class="col-12">
-                <a href="#policychange-text" class="skip-meta"><i class="material-icons expand-more">expand_more</i>Zum Text der AO-Änderung</a>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -69,7 +64,7 @@
                                 </button>
                             </form>
                             {% if policychange.ready_for_next_stage %}
-                            <form action="/policychange/{{policychange.id}}/submit_to_committee" style="display:inline"  method="POST">
+                            <form action="/policychange/{{policychange.id}}/start_discussion_phase" style="display:inline"  method="POST">
                                 {% csrf_token %}
                                 {% if policychange.state != 'e' %}
                                 <button title="Zur Diskussion freigeben" class="btn btn-success submit" type="submit">
@@ -143,11 +138,11 @@
         </div>
         <div class="row no-gutters avatar">
             <div class="d-flex flex-wrap">
-                {% for sup in policychange.initiators %}
+                {% for usr in policychange.initiators %}
                 <div class="text-center initiator">
-                    {% include "fragments/avatar.html" with user=sup.user %}
+                    {% include "fragments/avatar.html" with user=usr %}
                     <div class="name">
-                        {{ sup.user.get_full_name|default:sup.user.username }}
+                        {{ usr.get_full_name|default:usr.username }}
                     </div>
                 </div>
                 {% endfor %}
@@ -157,7 +152,7 @@
 </div>
 
 
-{% include "initproc/blocks/meta.html" %}
+{% include "initproc/blocks/meta.html" with initiative=policychange %}
 
 {% ifequal policychange.state 'd' %}
 <div id="cta" class="container-fluid cta">
@@ -299,7 +294,11 @@
             </div>
         </div>
 
-        {% include "initproc/blocks/content.html" %}
+        <div class="row policychange-text">
+            <div class="col-12">
+                {{policychange.summary|markdown}}
+            </div>
+        </div>
     </div>
 </div>
 

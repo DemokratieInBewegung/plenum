@@ -711,3 +711,38 @@ def policychange(request, pc, slug=None):
     ctx = dict(policychange=pc)
     print(ctx)
     return render(request, 'initproc/policychange.html', context=ctx)
+
+@login_required
+@can_access_policychange([STATES.PREPARE], 'can_edit')
+def start_discussion_phase(request, pc):
+    if pc.ready_for_next_stage:
+        pc.state = STATES.DISCUSSION
+        pc.save()
+        # TODO fox pc.notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION)
+        return redirect('/policychange/{}'.format(pc.id))
+    else:
+        messages.warning(request, "Die Bedingungen für die Einreichung sind nicht erfüllt.")
+
+    return redirect('/policychange/{}'.format(pc.id))
+
+@login_required
+@can_access_policychange([STATES.PREPARE, STATES.FINAL_EDIT], 'can_edit')
+def edit_policychange(request, pc):
+    form = PolicyChangeForm(request.POST or None, instance=pc)
+    if request.method == 'POST':
+        if form.is_valid():
+            with reversion.create_revision():
+                pc.save()
+
+                # Store some meta-information.
+                reversion.set_user(request.user)
+                if request.POST.get('commit_message', None):
+                    reversion.set_comment(request.POST.get('commit_message'))
+
+            messages.success(request, "AO-Änderung gespeichert.")
+            # TODO fix pc.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
+            return redirect('/policychange/{}'.format(pc.id))
+        else:
+            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+
+    return render(request, 'initproc/new_policychange.html', context=dict(form=form, policychange=pc))

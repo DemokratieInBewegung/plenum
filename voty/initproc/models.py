@@ -95,6 +95,8 @@ class VotyBase(models.Model):
 
         notify(recipients, notice_type, context, **kwargs)
 
+
+
 @reversion.register()
 class Initiative(VotyBase):
 
@@ -352,16 +354,6 @@ class Initiative(VotyBase):
         query = [s.user for s in self.initiators]
         return self.notify(query, *args, **kwargs)
 
-    def notify(self, recipients, notice_type, extra_context=None, subject=None, **kwargs):
-        context = extra_context or dict()
-        if subject:
-            kwargs['sender'] = subject
-            context['target'] = self
-        else:
-            kwargs['sender'] = self
-
-        notify(recipients, notice_type, context, **kwargs)
-
 
 class Vote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -539,6 +531,9 @@ class PolicyChange(VotyBase):
         (STATES.HIDDEN, "hidden"),
     ])
 
+    #users who were in the board (vorstand) at the time this policy change occurred
+    board = models.ManyToManyField(User)
+
     bereich = models.CharField(max_length=50, choices=[
         ('AO-Änderung', 'AO-Änderung')])
 
@@ -591,7 +586,22 @@ class PolicyChange(VotyBase):
 
     @cached_property
     def initiators(self):
-        # initiators of PolicyChange is the Bundesvorstand as a whole
-        return get_user_model().objects.filter(is_active=True) #TODO: ,is_bv=True)
+        # initiators of PolicyChange is the Bundesvorstand as a whole ( = the board )
+        print("users: %s" % get_user_model().objects.filter(is_active=True))
+        print("board: %s" % self.board)
+        print("user[0].email: %s" % get_user_model().objects.filter(is_active=True).get(username="tindib").email)
+
+        if not self.board.exists():
+            print("board is empty")
+            self.board = get_user_model().objects.filter(is_active=True) #TODO: ,is_bv=True)
+
+
+        return self.board.all()
+        # return get_user_model().objects.filter(is_active=True)
+
+    def notify_followers(self, *args, **kwargs):
+        query = [self.initiators.all()]
+        return self.notify(query, *args, **kwargs)
+
 
 

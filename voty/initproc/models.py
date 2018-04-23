@@ -466,7 +466,8 @@ class Response(Likeable, Commentable):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, related_name="%(class)ss")
-    initiative = models.ForeignKey(Initiative, related_name="%(class)ss")
+    # NOTE: dead end! this does not work:
+    votybase = models.ForeignKey(VotyBase, related_name="%(class)ss")
 
     class Meta:
         abstract = True

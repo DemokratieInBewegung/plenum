@@ -1,4 +1,6 @@
 pip-selfcheck.json
+**/*.iml
+.idea/
 
 bin:
 activate

@@ -3,12 +3,12 @@
     {% for argument in proposals %}
         {% include "fragments/argument/small.html" %}
     {% empty %}
-    <div id="no-proposals" class="alert alert-info">Es wurden {% if initiative.state == 'd' %}bisher{% endif %} keine Vorschläge eingebracht.</div>
+    <div id="no-proposals" class="alert alert-info">Es wurden {% if votybase.state == 'd' %}bisher{% endif %} keine Vorschläge eingebracht.</div>
     {% endfor %}
 </div>
 <div id="proposals-thanks" class="container-fluid push-alert fixed-top">
 </div>
-    {% if initiative.state == 'd' %}
+    {% if votybase.state == 'd' %}
 	    <div id="new-proposal">
 {% include "fragments/argument/propose.html" %}
 	    </div>

@@ -312,3 +312,22 @@ def can_access_policychange(states=None, check=None):
             return fn(request, pc, *args, **kwargs)
         return view
     return wrap
+
+def can_access_votybase(states=None, check=None):
+    def wrap(fn):
+        def view(request, votybase_id, slug, *args, **kwargs):
+            votybase = get_object_or_404(PolicyChange, pk=votybase_id)
+            if states:
+                assert votybase.state in states, "{} Not in expected state: {}".format(votybase.state, states)
+            if  not request.guard.can_view(votybase):
+                raise PermissionDenied()
+
+            if check:
+                if not getattr(request.guard, check)(votybase):
+                    raise PermissionDenied()
+
+            request.votybase = votybase
+
+            return fn(request, votybase, *args, **kwargs)
+        return view
+    return wrap

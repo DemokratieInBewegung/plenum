@@ -323,16 +323,16 @@
         <div class="row no-gutters">
             <div class="col-12">
                 <ul class="nav nav-tabs nav-fill" role="tablist">
-{% include 'fragments/count.html' with active=True me='debate' list=arguments %}
-{% include 'fragments/count.html' with active=False me='proposals' list=proposals %}
+{% include 'fragments/count.html' with initiative=policychange active=True me='debate' list=arguments %}
+{% include 'fragments/count.html' with initiative=policychange active=False me='proposals' list=proposals %}
                 </ul>
             </div>
             <div class="col-12 tab-content">
                 <div class="tab-pane active" id="debate" role="tabpanel">
-                    {% include 'fragments/debate.html' %}
+                    {% include 'fragments/debate.html' with votybase=policychange %}
                 </div>
                 <div class="tab-pane" id="proposals" role="tabpanel">
-                    {% include 'fragments/proposals.html' %}
+                    {% include 'fragments/proposals.html' with votybase=policychange %}
                 </div>
             </div>
         </div>

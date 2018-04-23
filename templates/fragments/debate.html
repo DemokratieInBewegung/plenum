@@ -3,12 +3,12 @@
     {% for argument in arguments %}
         {% include "fragments/argument/small.html" %}
     {% empty %}
-        <div id="no-arguments" class="alert alert-info">Diese Debatte enthält {% if initiative.state == 'd' %}bisher{% endif %} keine Argumente.</div>
+        <div id="no-arguments" class="alert alert-info">Diese Debatte enthält {% if votybase.state == 'd' %}bisher{% endif %} keine Argumente.</div>
     {% endfor %}
 </div>
 <div id="debate-thanks" class="container-fluid push-alert fixed-top">
 </div>
-{% if initiative.state == 'd' %}
+{% if votybase.state == 'd' %}
     <div id="new-argument" class="container-fluid">
 {% include "fragments/argument/thumbs.html" %}
     </div>

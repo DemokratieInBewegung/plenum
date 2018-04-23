@@ -29,7 +29,7 @@ from functools import wraps
 import json
 
 from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS
-from .guard import can_access_initiative, can_access_policychange
+from .guard import can_access_initiative, can_access_policychange, can_access_votybase
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
                     NewProposalForm, NewModerationForm, InviteUsersForm, PolicyChangeForm)
@@ -430,27 +430,27 @@ def rm_support(request, initiative):
 @non_ajax_redir('/')
 @ajax
 @login_required
-@can_access_initiative(STATES.DISCUSSION) # must be in discussion
+@can_access_votybase(STATES.DISCUSSION) # must be in discussion
 @simple_form_verifier(NewArgumentForm, template="fragments/argument/new.html")
-def new_argument(request, form, initiative):
+def new_argument(request, form, votybase):
     data = form.cleaned_data
     argCls = Pro if data['type'] == "👍" else Contra
 
-    arg = argCls(initiative=initiative,
+    arg = argCls(initiative=votybase,
                  user_id=request.user.id,
                  title=data['title'],
                  text=data['text'])
 
     arg.save()
 
-    initiative.notify_followers(NOTIFICATIONS.INITIATIVE.NEW_ARGUMENT, dict(argument=arg), subject=request.user)
+    votybase.notify_followers(NOTIFICATIONS.INITIATIVE.NEW_ARGUMENT, dict(argument=arg), subject=request.user)
 
     return {
         'fragments': {'#no-arguments': ""},
         'inner-fragments': {'#new-argument': render_to_string("fragments/argument/thumbs.html",
-                                                  context=dict(initiative=initiative)),
+                                                  context=dict(votybase=votybase)),
                             '#debate-thanks': render_to_string("fragments/argument/argument_thanks.html"),
-                            '#debate-count': initiative.pros.count() + initiative.contras.count()},
+                            '#debate-count': votybase.pros.count() + votybase.contras.count()},
         'append-fragments': {'#argument-list': render_to_string("fragments/argument/small.html",
                                                   context=dict(argument=arg),
                                                   request=request)}

@@ -176,7 +176,7 @@ class Initiative(models.Model):
                     return self.went_to_discussion_at + (5 * week)
 
                 elif self.state == 'v':
-                    return self.went_to_voting_at + (2 * week)
+                    return self.went_to_voting_at + (3 * week)
 
         return None
 

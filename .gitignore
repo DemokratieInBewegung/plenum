@@ -2,6 +2,9 @@ pip-selfcheck.json
 **/*.iml
 .idea/
 
+.project
+.pydevproject
+
 bin:
 activate
 activate.csh

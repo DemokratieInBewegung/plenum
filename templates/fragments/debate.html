@@ -1,7 +1,7 @@
 
 <div id="argument-list">
     {% for argument in arguments %}
-        {% include "fragments/argument/small.html" %}
+        {% include "fragments/argument/item.html" %}
     {% empty %}
         <div id="no-arguments" class="alert alert-info">Diese Debatte enthält {% if initiative.state == 'd' %}bisher{% endif %} keine Argumente.</div>
     {% endfor %}

@@ -243,6 +243,7 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
     ctx = dict(argument=arg,
                has_commented=False,
                can_like=False,
+               full=param_as_bool(request.GET.get('full', 0)),
                comments=arg.comments.order_by('-created_at').prefetch_related('likes').all())
 
     if request.user.is_authenticated:
@@ -257,7 +258,7 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
                 ctx['has_commented'] = True
 
 
-    template = 'fragments/argument/{}.html'.format('full' if param_as_bool(request.GET.get('full', 0)) else 'small')
+    template = 'fragments/argument/item.html'
 
 
     return {'fragments': {
@@ -450,8 +451,8 @@ def new_argument(request, form, initiative):
                                                   context=dict(initiative=initiative)),
                             '#debate-thanks': render_to_string("fragments/argument/argument_thanks.html"),
                             '#debate-count': initiative.pros.count() + initiative.contras.count()},
-        'append-fragments': {'#argument-list': render_to_string("fragments/argument/small.html",
-                                                  context=dict(argument=arg),
+        'append-fragments': {'#argument-list': render_to_string("fragments/argument/item.html",
+                                                  context=dict(argument=arg,full=0),
                                                   request=request)}
     }
 
@@ -477,8 +478,8 @@ def new_proposal(request, form, initiative):
                                                   context=dict(initiative=initiative)),
                             '#proposals-thanks': render_to_string("fragments/argument/proposal_thanks.html"),
                             '#proposals-count': initiative.proposals.count()},
-        'append-fragments': {'#proposal-list': render_to_string("fragments/argument/small.html",
-                                                  context=dict(argument=proposal),
+        'append-fragments': {'#proposal-list': render_to_string("fragments/argument/item.html",
+                                                  context=dict(argument=proposal,full=0),
                                                   request=request)}
     }
 

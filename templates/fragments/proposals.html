@@ -1,7 +1,7 @@
 
 <div id="proposal-list">
     {% for argument in proposals %}
-        {% include "fragments/argument/small.html" %}
+        {% include "fragments/argument/item.html" %}
     {% empty %}
     <div id="no-proposals" class="alert alert-info">Es wurden {% if initiative.state == 'd' %}bisher{% endif %} keine Vorschläge eingebracht.</div>
     {% endfor %}

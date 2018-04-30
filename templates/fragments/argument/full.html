@@ -21,12 +21,10 @@
         {% else %}
     		<div class="col col-md-12">
     	{% endif %}
+        <a data-ajax="true" href="/initiative/{{argument.initiative.id}}/{{argument.type}}/{{argument.id}}?fragment={{argument.unique_id}}&full=0">
             <div class="row argument-meta no-gutters">
                 <div class="col-auto">
-
-					<a data-ajax="true" href="/initiative/{{argument.initiative.id}}/{{argument.type}}/{{argument.id}}?fragment={{argument.unique_id}}&full=0">
 					Weniger anzeigen
-					</a>
 				</div>
                 <div class="col-auto ml-auto stats">
 			    	{% include 'fragments/like.html' with author=argument.user has_liked=has_liked target=argument 	show_text=0 show_count=1 with_link=0 %}
@@ -34,9 +32,9 @@
                     <i class="material-icons">chat_bubble_outline</i> {{argument.comments.count}}
 				</div>
 			</div>
+         </a>
             <div class="row no-gutters argument-head">
                 <div class="col-auto author">
-
                     {% include "fragments/avatar.html" with user=argument.user size=55 %}
 				</div>
 				<div class="col-auto">

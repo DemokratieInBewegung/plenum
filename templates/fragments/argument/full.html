@@ -27,8 +27,7 @@
 					Weniger anzeigen
 				</div>
                 <div class="col-auto ml-auto stats">
-			    	{% include 'fragments/like.html' with author=argument.user has_liked=has_liked target=argument 	show_text=0 show_count=1 with_link=0 %}
-
+                    {% include 'fragments/like.html' with author=argument.user has_liked=argument.has_liked target=argument 	show_text=0 show_count=1 with_link=0 %}
                     <i class="material-icons">chat_bubble_outline</i> {{argument.comments.count}}
 				</div>
 			</div>
@@ -47,7 +46,7 @@
 				{{argument.text|markdown}}
 			</div>
             <div class="row no-gutters argument-actions">
-			    {% include 'fragments/like.html' with author=argument.user has_liked=has_liked target=argument show_text=1 show_count=0 with_link=1 %}
+			    {% include 'fragments/like.html' with author=argument.user has_liked=argument.has_liked target=argument show_text=1 show_count=0 with_link=1 %}
 			</div>
 			{% if comments %}
             	<h6 class="text-muted classification">Kommentare</h6>

@@ -243,11 +243,10 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
     ctx = dict(argument=arg,
                has_commented=False,
                can_like=False,
-               has_liked=False,
                comments=arg.comments.order_by('-created_at').prefetch_related('likes').all())
 
     if request.user.is_authenticated:
-        ctx['has_liked'] = arg.likes.filter(user=request.user).count() > 0
+        arg.has_liked = arg.likes.filter(user=request.user).count() > 0
         if arg.user == request.user:
             ctx['has_commented'] = True
             # users can self-like at the moment...

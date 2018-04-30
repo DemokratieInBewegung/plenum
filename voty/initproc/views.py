@@ -250,7 +250,6 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
         arg.has_liked = arg.likes.filter(user=request.user).count() > 0
         if arg.user == request.user:
             ctx['has_commented'] = True
-            # users can self-like at the moment...
 
         for cmt in ctx['comments']:
             cmt.has_liked = cmt.likes.filter(user=request.user).count() > 0
@@ -284,7 +283,6 @@ def show_moderation(request, initiative, target_id, slug=None):
         ctx['has_liked'] = arg.likes.filter(user=request.user).count() > 0
         if arg.user == request.user:
             ctx['has_commented'] = True
-            # users can self-like at the moment...
 
     return {'fragments': {
         '#{arg.type}-{arg.id}'.format(arg=arg): render_to_string('fragments/moderation/full.html',

@@ -115,7 +115,7 @@
                     <p>
                     Diese Initiative <strong class="badge-prepare">wird gerade geprüft</strong> und {% if initiative.state == 'i' %} wird dann veröffentlicht {% else %} geht dann in <strong  class="badge-prepare">die Abstimmung</strong>{% endif %}.
                     </p>
-                    {% if request.user.is_staff %}
+                    {% if perms.initproc.add_moderation %}
                         {% if request.guard.can_moderate %}
                             {% include 'fragments/moderation/index.html' %}
                         {% else %}

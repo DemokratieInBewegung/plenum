@@ -338,7 +338,7 @@ def submit_to_committee(request, initiative):
 
         messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
         initiative.notify_initiators(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
-        initiative.notify(get_user_model().objects.filter(is_staff=True, is_active=True).all(),
+        initiative.notify(get_user_model().objects.filter(groups__name='Prüfungsteam', is_active=True).all(),
                           NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         return redirect('/initiative/{}'.format(initiative.id))
     else:

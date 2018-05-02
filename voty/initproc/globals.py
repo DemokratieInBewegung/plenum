@@ -45,9 +45,9 @@ PUBLIC_STATES = [STATES.SEEKING_SUPPORT,
                  STATES.ACCEPTED,
                  STATES.REJECTED]
 
-STAFF_ONLY_STATES = [STATES.INCOMING,
-                     STATES.MODERATION,
-                     STATES.HIDDEN]
+TEAM_ONLY_STATES = [STATES.INCOMING,
+                    STATES.MODERATION,
+                    STATES.HIDDEN]
 
 class VOTED:
     """

@@ -1,11 +1,11 @@
 
 {% if target %}
-{% if sender == recipient %}Du hast{% else %}{{sender.get_full_name|default:sender.username}} hat{% endif %} die Initiative "{{target}}" veröffentlicht und sucht jetzt nach Unterstützer*innen.
+{% if sender == recipient %}Du hast{% else %}{{sender.get_full_name|default:sender.username}} hat{% endif %} die Initiative "{{target}}" veröffentlicht und sucht jetzt Unterstützer*innen.
 
 Du findest die Initiative unter {{ base_url }}/initiative/{{target.id}}-{{target.slug}}
 
 {% else %}
-"{{sender}}" wurde veröffentlicht und sucht jetzt nach Unterstützer*innen.
+"{{sender}}" wurde veröffentlicht und sucht jetzt Unterstützer*innen.
 
 Du findest die Initiative unter {{ base_url }}/initiative/{{sender.id}}-{{sender.slug}}
 {% endif %}

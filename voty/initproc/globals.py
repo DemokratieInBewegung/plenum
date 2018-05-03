@@ -64,6 +64,16 @@ COMPARING_FIELDS = [
     "einordnung", "ebene", "bereich",
 ]
 
+SUBJECT_CATEGORIES = [
+    'Mitbestimmung',
+    'Transparenz und Lobbyismus',
+    'Demokratisches und solidarisches Europa',
+    'Gerechtigkeit und Verantwortung füreinander',
+    'Vielfältige, weltoffene und inklusive Gesellschaft',
+    'Nachhaltigkeit',
+    'Zukunft aktiv gestalten',
+    '(andere)'
+]
 
 ABSTENTION_START = date(2017, 11, 1) # Everything published after this has abstentions
 SPEED_PHASE_END = date(2017, 8, 21) # Everything published before this has speed phase

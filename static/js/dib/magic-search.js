@@ -113,14 +113,17 @@ Vue.component('search-bar', {
 });
 
 var SUBJECT_CATEGORIES = [
-    'Mitbestimmung',
-    'Transparenz und Lobbyismus',
-    'Demokratisches und solidarisches Europa',
-    'Gerechtigkeit und Verantwortung füreinander',
-    'Vielfältige, weltoffene und inklusive Gesellschaft',
-    'Nachhaltigkeit',
-    'Zukunft aktiv gestalten',
-    '(andere)'
+    'Globale Politik & internationale Zusammenarbeit',
+    'Bildung, Forschung & Kultur',
+    'Innenpolitik',
+    'Netz- & Medienpolitik',
+    'Geschlechtergerechtigkeit',
+    'Vielfalt & Integration',
+    'Demokratie & Transparenz',
+    'Gesundheit, Ernährung & Verbraucher*innenschutz',
+    'Umwelt, Mobilität, Infrastruktur & Strukturentwicklung',
+    'Soziale Gerechtigkeit, Wirtschaft, Arbeit & Finanzen',
+    'Anderes'
 ];
 
 var magicSearch = new Vue({

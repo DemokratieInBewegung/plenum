@@ -65,14 +65,17 @@ COMPARING_FIELDS = [
 ]
 
 SUBJECT_CATEGORIES = [
-    'Mitbestimmung',
-    'Transparenz und Lobbyismus',
-    'Demokratisches und solidarisches Europa',
-    'Gerechtigkeit und Verantwortung füreinander',
-    'Vielfältige, weltoffene und inklusive Gesellschaft',
-    'Nachhaltigkeit',
-    'Zukunft aktiv gestalten',
-    '(andere)'
+    'Globale Politik & internationale Zusammenarbeit',
+    'Bildung, Forschung & Kultur',
+    'Innenpolitik',
+    'Netz- & Medienpolitik',
+    'Geschlechtergerechtigkeit',
+    'Vielfalt & Integration',
+    'Demokratie & Transparenz',
+    'Gesundheit, Ernährung & Verbraucher*innenschutz',
+    'Umwelt, Mobilität, Infrastruktur & Strukturentwicklung',
+    'Soziale Gerechtigkeit, Wirtschaft, Arbeit & Finanzen',
+    'Anderes'
 ]
 
 ABSTENTION_START = date(2017, 11, 1) # Everything published after this has abstentions

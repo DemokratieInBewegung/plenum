@@ -1,27 +1,10 @@
 
 <div class="col-12" id="voting">
     <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}} in Abstimmung</h6>
-    {% if vote %}
+    {% if has_voted %}
      	<h3>Danke, Deine Stimme wurde gezählt!</h3>
      	<form data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/reset_vote" method="POST">
-
-     		<p><strong>{{initiative.votes.count}}</strong>{% if initiative.votes.count == 1 %} Person hat{% else %} Personen haben{% endif %} bisher abgestimmt.
-     		</p> 
-            <div class="progress participation">
-                <div class="progress-bar bg-vote" role="progressbar" style="width: {% widthratio initiative.votes.count user_count 100 %}%;" aria-valuenow="{{initiative.votes.count}}" aria-valuemin="0" aria-valuemax="{{user_count}}">
-                </div>
-            </div>
-            <p>Das sind <strong>{% widthratio initiative.votes.count user_count 100 %}</strong> Prozent aller <strong>{{user_count}}</strong> Abstimmungsberechtigten.
-            </p>
-     		<p>Du hast mit 
-     		</p>
-     		<div class="your-vote">
-     		{% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>
-				{% elif vote.against %}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>
-				{% else %}<span class="abstained text-center"><i class="material-icons">panorama_fish_eye</i> <br /><strong>Enthaltung</strong></span>{% endif %}
-     		</div>
-     		<p>abgestimmt.
-	 		</p>
+			{% include "fragments/participation.html" with closed=0 %}
 	 		{% csrf_token %}
      		<button class="btn btn-sm btn-default" type="submit" title="hier klicken um zurück zu nehmen">Stimme zurücknehmen</button>
      		<div class="back-to-index">

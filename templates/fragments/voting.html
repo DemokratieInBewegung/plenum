@@ -1,7 +1,7 @@
 
 <div class="col-12" id="voting">
     <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}} in Abstimmung</h6>
-    {% if has_voted %}
+    {% if vote %}
      	<h3>Danke, Deine Stimme wurde gezählt!</h3>
      	<form data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/reset_vote" method="POST">
 			{% include "fragments/participation.html" with closed=0 %}

@@ -8,7 +8,8 @@ from django.db.models import Q
 
 from functools import wraps
 from voty.initadmin.models import UserConfig
-from .globals import STATES, PUBLIC_STATES, STAFF_ONLY_STATES, INITIATORS_COUNT, MINIMUM_MODERATOR_VOTES, MINIMUM_FEMALE_MODERATOR_VOTES, MINIMUM_DIVERSE_MODERATOR_VOTES
+from .globals import STATES, PUBLIC_STATES, STAFF_ONLY_STATES, INITIATORS_COUNT, MINIMUM_MODERATOR_VOTES, \
+    MINIMUM_FEMALE_MODERATOR_VOTES, MINIMUM_DIVERSE_MODERATOR_VOTES, VOTY_TYPES
 from .models import Initiative, Supporter
 
 
@@ -226,9 +227,14 @@ class Guard:
         return (female <= 0) & (diverse <= 0) & (total <= 0)
 
     def _can_support_initiative(self, init):
-        return init.state == STATES.SEEKING_SUPPORT and self.user.is_authenticated
+        return init.type != VOTY_TYPES.PolicyChange and \
+               init.state == STATES.SEEKING_SUPPORT and \
+               self.user.is_authenticated
 
     def _can_moderate_initiative(self, init):
+        if init.type == VOTY_TYPES.PolicyChange:
+            return False
+
         if init.state in [STATES.INCOMING, STATES.MODERATION] and self.user.is_staff:
             if init.supporting.filter(user=self.user, initiator=True):
                 self.reason = "Als Mitinitator*in darfst Du nicht mit moderieren."

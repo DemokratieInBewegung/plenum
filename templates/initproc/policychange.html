@@ -1,0 +1,347 @@
+{% extends "_base.html" %}
+{% load mathfilters %}
+{% load markdown %}
+{% load fullurl %}
+
+{% block head_title %}
+{{initiative.title}} – im Plenum der Beweger/innen von DEMOKRATIE IN BEWEGUNG
+{% endblock %}
+
+{% block custom_sm_title %}
+<meta property="og:title" content="{{initiative.title}}">
+<meta property="og:description" content="{{initiative.subtitle}}">
+<meta property="og:url" content="{% fullurl 'initiative_item' type=initiative.type init_id=initiative.id slug=initiative.slug %}">
+{% endblock %}
+
+{% block custom_header %}
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="/" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Übersicht</a>
+            </div>
+        </div>
+        <div class="row initiative-title">
+            <div class="col-12">
+                <h1 class="display-4">{{initiative.title}}</h1>
+            </div>
+        </div>
+        <div class="row initiative-subtitle">
+            <div class="col-12">
+                <p>{{initiative.subtitle}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="container">
+        <div class="row initiative-state">
+            <div class="col-12">
+                {% if initiative.state == 'p' or initiative.state == 'e' %}
+                {% if request.guard.can_edit %}
+                {% if not initiative.ready_for_next_stage %}
+                <div class="pre-submit">
+                    <div class="alert alert-info" role="alert">
+                        {% if initiative.state != 'e' %}
+                        <h6>Um Deine AO-Änderung einreichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
+                        {% else %}
+                        <h6>Um Deine AO-Änderung nach der Überarbeitung zur Abstimmung einreichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
+                        {% endif %}
+                        <ol>
+                            <li>Alle Textfelder müssen ausgefüllt sein.</li>
+                        </ol>
+                    </div>
+                    {% endif %}
+                    <form action="/{{initiative.type}}/{{initiative.id}}/edit" style="display:inline"  method="GET">
+                        {% csrf_token %}
+                        <button title="Bearbeiten" class="btn btn-success edit" type="submit">
+                            <i class="material-icons edit">edit</i><span>Bearbeiten</span>
+                        </button>
+                    </form>
+                    {% if initiative.ready_for_next_stage %}
+                    <form action="/{{initiative.type}}/{{initiative.id}}/start_discussion_phase" style="display:inline"  method="POST">
+                        {% csrf_token %}
+                        {% if initiative.state != 'e' %}
+                        <button title="Zur Diskussion freigeben" class="btn btn-success submit" type="submit">
+                            <i class="material-icons public">public</i><span>Zur Diskussion freigeben</span>
+                        </button>
+                        {% else %}
+                        <button title="Zur Abstimmung einreichen" class="btn bg-vote submit" type="submit">
+                            <i class="material-icons thumbs-up-down">thumbs_up_down</i><span>Zur Abstimmung einreichen</span>
+                        </button>
+                        {% endif %}
+                    </form>
+                    {% else %}
+                    {% if initiative.state != 'e' %}
+                    <button title="Ist noch nicht vollständig" class="btn btn-success submit" style="display:inline" disabled=True type="submit">
+                        <i class="material-icons public">public</i><span>Zur Diskussion freigeben</span>
+                    </button>
+                    {% else %}
+                    <button title="Kann noch nicht zur Abstimmung eingereicht werden" class="btn bg-vote submit" style="display:inline" disabled=True type="submit">
+                        <i class="material-icons thumbs-up-down">thumbs_up_down</i><span>Zur Abstimmung einreichen</span>
+                    </button>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endif %}
+                {% endif %}
+
+                {% if initiative.state == 'p' %}
+                <p>
+                    An dieser AO-Änderung <strong class="badge-prepare">wird noch gearbeitet</strong>.
+                </p>
+                {% elif initiative.state == 'e' %}
+                <p>
+                    Diese AO-Änderung <strong class="badge-prepare">wird für die Abstimmung finalisiert</strong>.
+                </p>
+                {% endif %}
+
+                {% ifequal initiative.state 'h' %}
+                <p>
+                    Diese AO-Änderung <strong class="badge-arrivals">ist nicht sichtbar</strong>.
+                </p>
+                {% endifequal %}
+
+                {% ifequal initiative.state 'd' %}
+                <p>
+                    Diese AO-Änderung befindet sich <a href="#debate">in Diskussion</a>.
+                </p>
+                {% endifequal %}
+
+                {% ifequal initiative.state 'v' %}
+                <p>
+                    Über diese AO-Änderung <a href="#voting"><strong class="badge-vote">wird gerade abgestimmt</strong></a>.
+                </p>
+                {% endifequal %} {% ifequal initiative.state 'a' %}
+                <p>Diese AO-Änderung {% if user.is_authenticated %}
+                    <a href="#cta">{% endif %}<strong class="badge-accepted">wurde angenommen</strong>{% if user.is_authenticated %}</a>{% endif %}.
+                    {% endifequal %} {% ifequal initiative.state 'r' %}
+                <p>Diese AO-Änderung <a href="#cta"><strong class="badge-rejected">wurde abgelehnt</strong></a>.</p>
+                {% endifequal %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid initiators">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Bundesvorstand</h6>
+            </div>
+        </div>
+        <div class="row no-gutters avatar">
+            <div class="d-flex flex-wrap">
+                {% for usr in initiative.initiators %}
+                <div class="text-center initiator">
+                    {% include "fragments/avatar.html" with user=usr %}
+                    <div class="name">
+                        {{ usr.get_full_name|default:usr.username }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% include "initproc/blocks/meta.html" %}
+
+{% ifequal initiative.state 'd' %}
+<div id="cta" class="container-fluid cta">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
+                <p>Diese AO-Änderung befindet sich in Diskussion.</p>
+                <a href="#discuss" class="btn bg-discussion">
+                    Jetzt diskutieren
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endifequal %}
+
+{% ifequal initiative.state 'v' %}
+<div id="cta" class="container-fluid cta">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
+                <p>Über diese AO-Änderung wird gerade abgestimmt.</p>
+                {% include "fragments/jump_to_vote.html" %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endifequal %}
+
+{% if initiative.state == 'a' or initiative.state == 'r' %}
+<div id="cta" class="container-fluid cta voted">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Ergebnis der Abstimmung</h6>
+            </div>
+        </div>
+        {% if initiative.votes.count > 0 %}
+        {% if initiative.allows_abstention %}
+        <div class="row" style="padding-top: .25rem; padding-bottom: .5rem">
+            <div class="col-12" style="padding-top: 1rem">
+                <p>Diese AO-Änderung {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-auto pr-4">
+                <span class="in-favor text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_up</i></span>
+                <span class="in-favor" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.yays}}</span>
+            </div>
+            <div class="col-auto pr-4">
+                <span class="abstained text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">panorama_fish_eye</i></span>
+                <span class="abstained" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.abstains}}</span>
+            </div>
+            <div class="col-auto">
+                <span class=" declined text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_down</i></span>
+                <span class="declined" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.nays}}</span>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+            <div class="col-12">
+                <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-abstain" role="progressbar" style="width: {{ initiative.abstains|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.abstains|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar bg-danger" role="progressbar" style="width: {{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+</div>
+</div>
+{% else %}
+<div class="row" style="padding-top: .25rem; padding-bottom: .5rem">
+    <div class="col-12" style="padding-top: 1rem">
+        <p>Diese AO-Änderung {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
+    </div>
+</div>
+<div class="row justify-content-center">
+    <div class="col-auto pr-4">
+        <span class="in-favor text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_up</i></span>
+        <span class="in-favor" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.yays}}</span>
+    </div>
+    <div class="col-auto">
+        <span class=" declined text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_down</i></span>
+        <span class="declined" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.nays}}</span>
+    </div>
+</div>
+<div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+    <div class="col-12">
+        <div class="progress">
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="progress-bar bg-danger" role="progressbar" style="width: {{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+</div>
+</div>
+{% endif %}
+{% else %}
+<div class="row" style="padding-top: 1rem">
+    <div class="col-12">
+        <span>Bei der Abstimmung zu dieser AO-Änderung wurde keine einzige Stimme abgegeben. Damit gilt die AO-Änderung als <strong class="badge-rejected">abgelehnt</strong>.</span>
+    </div>
+</div>
+{% endif %}
+<div class="row" style="padding-top: 1rem">
+    <div class="col-12">
+        <p><strong>{{initiative.votes.count}}</strong>{% if initiative.votes.count == 1 %} Person hat{% else %} Personen haben{% endif %} an dieser Abstimmung teilgenommen.
+        </p>
+        <div class="progress participation">
+            <div class="progress-bar bg-voted" role="progressbar" style="width: {% widthratio initiative.votes.count user_count 100 %}%;" aria-valuenow="{{initiative.votes.count}}" aria-valuemin="0" aria-valuemax="{{user_count}}">
+            </div>
+        </div>
+        <p>Das waren <strong>{% widthratio initiative.votes.count user_count 100 %}</strong> Prozent aller <strong>{{user_count}}</strong> Abstimmungsberechtigten.
+        </p>
+        {% if has_voted %}
+        <p>Du hast mit
+        </p>
+        <div class="your-vote">
+            {% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>
+            {% elif vote.against %}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>
+            {% else %}<span class="abstained text-center"><i class="material-icons">panorama_fish_eye</i> <br /><strong>Enthaltung</strong></span>{% endif %}
+        </div>
+        <p>abgestimmt.
+        </p>
+        {% else %}
+        {% if user.is_authenticated %}
+        <p>Du hast an dieser Abstimmung nicht teilgenommen.</p>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
+</div>
+</div>
+{% endif %}
+
+<div id="initiative-text" class="container-fluid initiative-single">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h6 class="text-muted classification">Text der AO-Änderung{% if initiative.versions.count > 1 %}
+                    <a href="/{{initiative.type}}/{{initiative.id}}-{{initiative.slug}}/compare/{{initiative.versions.1.id}}" data-ajax="true" class="change-history">(Änderungshistorie einsehen <span class="changes-badge"><span class="material-icons history">history</span> {{initiative.versions.count}}</span>)</a>{% endif %}</h6>
+            </div>
+        </div>
+
+        <div class="row initiative-text">
+            <div class="col-12">
+                {{initiative.summary|markdown}}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if initiative.state == 'v' %}
+
+<div id="vote" class="container-fluid cta">
+    <div class="container">
+        <div class="row no-gutters">
+            {% include "fragments/voting.html" %}
+
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+
+{% if initiative.show_debate %}
+
+<div id="discuss" class="container-fluid cta {% if initiative.state == 'v' or initiative.state == 'e' or initiative.state == 'a' or initiative.state == 'r' %}closed{% endif %}">
+    <div class="container">
+        <div class="row no-gutters">
+            <div class="col-12">
+                <ul class="nav nav-tabs nav-fill" role="tablist">
+                    {% include 'fragments/count.html' with active=True me='debate' list=arguments %}
+                    {% include 'fragments/count.html' with active=False me='proposals' list=proposals %}
+                </ul>
+            </div>
+            <div class="col-12 tab-content">
+                <div class="tab-pane active" id="debate" role="tabpanel">
+                    {% include 'fragments/debate.html' %}
+                </div>
+                <div class="tab-pane" id="proposals" role="tabpanel">
+                    {% include 'fragments/proposals.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+{% endblock %} {% block body-javascript %} {{ block.super }}
+<script type="text/javascript">
+</script>
+{% endblock %}

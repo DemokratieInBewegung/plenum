@@ -49,6 +49,28 @@ STAFF_ONLY_STATES = [STATES.INCOMING,
                      STATES.MODERATION,
                      STATES.HIDDEN]
 
+class VOTY_TYPES:
+    Initiative = 'ini'
+    PolicyChange = 'pol'
+    BallotVote = 'bal'
+
+class AREAS:
+    """
+    The areas a voty object can have
+    """
+    Mitbestimmung = 'Mitbestimmung'
+    Transparenz = 'Transparenz und Lobbyismus'
+    Europa = 'Demokratisches und solidarisches Europa'
+    Gerechtigkeit = 'Gerechtigkeit und Verantwortung füreinander'
+    Vielfalt = 'Vielfältige, weltoffene und inklusive Gesellschaft'
+    Nachhaltigkeit = 'Nachhaltigkeit'
+    Zukunft = 'Zukunft aktiv gestalten'
+    andere = '(andere)'
+
+INITIATIVE_AREAS = []
+POLICY_CHANGE_AREAS = []
+
+
 class VOTED:
     """
     The possibilities for casting a vote

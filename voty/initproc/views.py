@@ -212,10 +212,12 @@ def item(request, init, slug=None):
 
     if request.user.is_authenticated:
         user_id = request.user.id
-        ctx.update({'has_supported': init.supporting.filter(user=user_id).count(),
-                    'has_voted': init.votes.filter(user=user_id).count()})
-        if ctx['has_voted']:
-            ctx['vote'] = init.votes.filter(user_id=user_id).first()
+
+        ctx.update({'has_supported': init.supporting.filter(user=user_id).count()})
+
+        votes = init.votes.filter(user=user_id)
+        if (votes.count()):
+            ctx['vote'] = votes.first()
 
         for arg in ctx['arguments'] + ctx['proposals']:
             arg.has_liked = arg.likes.filter(user=user_id).count() > 0

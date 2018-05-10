@@ -1,5 +1,3 @@
-/*jshint esversion: 6 */
-
 Vue.component('dropdown', {
   props: ['options', 'selectedIdx'],
   components: {
@@ -132,7 +130,7 @@ var magicSearch = new Vue({
     filters: [],
     searchOptions: [
       {name: 'Bereich', key: 'b', placeholder: 'nach Bereichen filtern', subSelection:
-	    SUBJECT_CATEGORIES.map (item => {name: item, value: item})
+	    SUBJECT_CATEGORIES.map (function (item) {return {name: item, value: item};)
       },
       {name: 'Phase', key: 'f', placeholder: "nach Phase filtern", subSelection: [
         {name: 'In Vorbereitung', value: 'p'},

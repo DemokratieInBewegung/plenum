@@ -212,10 +212,12 @@ def item(request, init, slug=None):
 
     if request.user.is_authenticated:
         user_id = request.user.id
-        ctx.update({'has_supported': init.supporting.filter(user=user_id).count(),
-                    'has_voted': init.votes.filter(user=user_id).count()})
-        if ctx['has_voted']:
-            ctx['vote'] = init.votes.filter(user_id=user_id).first()
+
+        ctx.update({'has_supported': init.supporting.filter(user=user_id).count()})
+
+        votes = init.votes.filter(user=user_id)
+        if (votes.count()):
+            ctx['vote'] = votes.first()
 
         for arg in ctx['arguments'] + ctx['proposals']:
             arg.has_liked = arg.likes.filter(user=user_id).count() > 0
@@ -277,6 +279,7 @@ def show_moderation(request, initiative, target_id, slug=None):
                has_commented=False,
                can_like=False,
                has_liked=False,
+               full=1,
                comments=arg.comments.order_by('-created_at').all())
 
     if request.user:
@@ -285,7 +288,7 @@ def show_moderation(request, initiative, target_id, slug=None):
             ctx['has_commented'] = True
 
     return {'fragments': {
-        '#{arg.type}-{arg.id}'.format(arg=arg): render_to_string('fragments/moderation/full.html',
+        '#{arg.type}-{arg.id}'.format(arg=arg): render_to_string('fragments/moderation/item.html',
                                                                  context=ctx, request=request)
         }}
 
@@ -530,10 +533,10 @@ def moderate(request, form, initiative):
 
     
     return {
-        'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>",
-                            '#moderation-list':
-                                render_to_string("fragments/moderation/list_small.html",
-                                                  context=dict(moderations=initiative.current_moderations),
+        'fragments': {'#no-moderations': ""},
+        'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>"},
+        'append-fragments': {'#moderation-list': render_to_string("fragments/moderation/item.html",
+                                                  context=dict(m=model,initiative=initiative,full=0),
                                                   request=request)}
     }
 

@@ -560,7 +560,9 @@ def comment(request, form, target_type, target_id):
 
     return {
         'inner-fragments': {'#{}-new-comment'.format(model.unique_id):
-                "<strong>Danke für Deinen Kommentar</strong>"},
+                "<strong>Danke für Deinen Kommentar</strong>",
+                '#{}-comment-count'.format(model.unique_id):
+                model.comments.count()},
         'append-fragments': {'#{}-comment-list'.format(model.unique_id):
             render_to_string("fragments/comment/item.html",
                              context=dict(comment=cmt),

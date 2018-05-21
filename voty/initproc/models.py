@@ -17,6 +17,7 @@ from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTIO
 from django.db import models
 import pytz
 
+from voty.initproc.globals import SUBJECT_CATEGORIES
 
 @reversion.register()
 class Initiative(models.Model):
@@ -53,15 +54,7 @@ class Initiative(models.Model):
 
     einordnung = models.CharField(max_length=50, choices=[('Einzelinitiative','Einzelinitiative')])
     ebene = models.CharField(max_length=50, choices=[('Bund', 'Bund')])
-    bereich = models.CharField(max_length=50, choices=[
-                ('Mitbestimmung', 'Mitbestimmung'),
-                ('Transparenz und Lobbyismus', 'Transparenz und Lobbyismus'),
-                ('Demokratisches und solidarisches Europa', 'Demokratisches und solidarisches Europa'),
-                ('Gerechtigkeit und Verantwortung füreinander', 'Gerechtigkeit und Verantwortung füreinander'),
-                ('Vielfältige, weltoffene und inklusive Gesellschaft', 'Vielfältige, weltoffene und inklusive Gesellschaft'),
-                ('Nachhaltigkeit', 'Nachhaltigkeit'),
-                ('Zukunft aktiv gestalten', 'Zukunft aktiv gestalten'),
-                ('(andere)', '(andere)')])
+    bereich = models.CharField(max_length=50, choices=[(item,item) for item in SUBJECT_CATEGORIES])
 
     went_public_at = models.DateField(blank=True, null=True)
     went_to_discussion_at = models.DateField(blank=True, null=True)

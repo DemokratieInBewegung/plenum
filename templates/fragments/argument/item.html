@@ -30,7 +30,7 @@
 				        </div>
                 <div class="col-auto ml-auto stats">
                     {% include 'fragments/like.html' with author=argument.user has_liked=argument.has_liked target=argument 	show_text=0 show_count=1 with_link=0 %}
-                    <i class="material-icons"><span id="{{argument.unique_id}}-chat-icon">chat_bubble{% if not argument.has_commented %}_outline{% endif %}</span></i><span id="{{argument.unique_id}}-comment-count">{{argument.comments.count}}</span>
+                    <i class="material-icons"><span id="{{argument.unique_id}}-chat-icon" class="comment-icon">chat_bubble{% if not argument.has_commented %}_outline{% endif %}</span></i><span id="{{argument.unique_id}}-comment-count">{{argument.comments.count}}</span>
 				        </div>
   			    </div>
          </a>

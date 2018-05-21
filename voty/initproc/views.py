@@ -246,7 +246,7 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
                has_commented=False,
                can_like=False,
                full=param_as_bool(request.GET.get('full', 0)),
-               comments=arg.comments.order_by('-created_at').prefetch_related('likes').all())
+               comments=arg.comments.order_by('created_at').prefetch_related('likes').all())
 
     if request.user.is_authenticated:
         arg.has_liked = arg.likes.filter(user=request.user).count() > 0
@@ -280,7 +280,7 @@ def show_moderation(request, initiative, target_id, slug=None):
                can_like=False,
                has_liked=False,
                full=1,
-               comments=arg.comments.order_by('-created_at').all())
+               comments=arg.comments.order_by('created_at').all())
 
     if request.user:
         ctx['has_liked'] = arg.likes.filter(user=request.user).count() > 0

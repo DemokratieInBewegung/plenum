@@ -34,6 +34,7 @@ from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderatio
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
                     NewProposalForm, NewModerationForm, InviteUsersForm)
 from .serializers import SimpleInitiativeSerializer
+from django.contrib.auth.models import Permission
 
 
 DEFAULT_FILTERS = [
@@ -339,7 +340,10 @@ def submit_to_committee(request, initiative):
 
         messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
         initiative.notify_initiators(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
-        initiative.notify(get_user_model().objects.filter(is_staff=True, is_active=True).all(),
+        # To notify the review team, we notify all members of groups with moderation permission,
+        # which doesn't include superusers, though they individually have moderation permission.
+        moderation_permission = Permission.objects.filter(content_type__app_label='initproc', codename='add_moderation')
+        initiative.notify(get_user_model().objects.filter(groups__permissions=moderation_permission, is_active=True).all(),
                           NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         return redirect('/initiative/{}'.format(initiative.id))
     else:

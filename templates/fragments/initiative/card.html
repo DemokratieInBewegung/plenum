@@ -17,7 +17,7 @@
 							{% ifequal initiative.state 'i' %}
 							<span class="badge badge-arrivals">
 
-								{% if user.is_staff %}
+								{% if perms.initproc.add_moderation %}
 									{% guard should_moderate_initiative initiative %}
 									{% if should_moderate_initiative %}
 									💥💥 Bitte prüfen 💥💥
@@ -57,7 +57,7 @@
 
 							<span class="badge badge-arrivals">
 
-								{% if user.is_staff %}
+								{% if perms.initproc.add_moderation %}
 									{% guard should_moderate_initiative initiative %}
 									{% if should_moderate_initiative %}
 									💥💥 Bitte final prüfen 💥💥

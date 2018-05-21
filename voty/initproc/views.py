@@ -348,7 +348,6 @@ def submit_to_committee(request, initiative):
     return redirect('/initiative/{}'.format(initiative.id))
 
 
-
 @ajax
 @login_required
 @can_access_initiative(STATES.PREPARE, 'can_edit') 
@@ -618,6 +617,18 @@ def unlike(request, target_type, target_id):
         '.{}-like-icon'.format(model.unique_id): 'favorite_border',
         '.{}-like-count'.format(model.unique_id): model.likes.count(),
     }}
+
+
+@ajax
+@login_required
+@can_access_initiative([STATES.PREPARE, STATES.FINAL_EDIT], 'can_edit') 
+@simple_form_verifier(NewAttachment, submit_title="Anhang hinzufügen")
+def add_attachment(request, form, initiative):
+
+    model = form.save(commit=False)
+    model.initiative = initiative
+    model.user = request.user
+    model.save()
 
 
 

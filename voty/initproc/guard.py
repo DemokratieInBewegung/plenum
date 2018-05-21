@@ -8,7 +8,7 @@ from django.db.models import Q
 
 from functools import wraps
 from voty.initadmin.models import UserConfig
-from .globals import STATES, PUBLIC_STATES, STAFF_ONLY_STATES, INITIATORS_COUNT, MINIMUM_MODERATOR_VOTES, MINIMUM_FEMALE_MODERATOR_VOTES, MINIMUM_DIVERSE_MODERATOR_VOTES
+from .globals import STATES, PUBLIC_STATES, TEAM_ONLY_STATES, INITIATORS_COUNT, MINIMUM_MODERATOR_VOTES, MINIMUM_FEMALE_MODERATOR_VOTES, MINIMUM_DIVERSE_MODERATOR_VOTES
 from .models import Initiative, Supporter
 
 
@@ -59,11 +59,11 @@ class Guard:
     def make_intiatives_query(self, filters):
         if not self.user.is_authenticated:
             filters = [f for f in filters if f in PUBLIC_STATES]
-        elif not self.user.is_staff:
-            filters = [f for f in filters if f not in STAFF_ONLY_STATES]
+        elif not self.user.has_perm('initproc.add_moderation'):
+            filters = [f for f in filters if f not in TEAM_ONLY_STATES]
 
-        if self.user.is_authenticated and not self.user.is_staff:
-            return Initiative.objects.filter(Q(state__in=filters) | Q(state__in=STAFF_ONLY_STATES,
+        if self.user.is_authenticated and not self.user.has_perm('initproc.add_moderation'):
+            return Initiative.objects.filter(Q(state__in=filters) | Q(state__in=TEAM_ONLY_STATES,
                     id__in=Supporter.objects.filter(Q(first=True) | Q(initiator=True), user_id=self.user.id).values('initiative_id')))
 
         return Initiative.objects.filter(state__in=filters)
@@ -187,13 +187,13 @@ class Guard:
     ## compounds
 
     def _can_view_initiative(self, init):
-        if init.state not in STAFF_ONLY_STATES:
+        if init.state not in TEAM_ONLY_STATES:
             return True
 
         if not self.user.is_authenticated:
             return False
 
-        if not self.user.is_staff and \
+        if not self.user.has_perm('initproc.add_moderation') and \
            not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=self.request.user.id):
             return False
 
@@ -212,7 +212,7 @@ class Guard:
         return True
 
     def _can_publish_initiative(self, init):
-        if not self.user.is_staff:
+        if not self.user.has_perm('initproc.add_moderation'):
             return False
 
         if init.supporting.filter(ack=True, initiator=True).count() != INITIATORS_COUNT:
@@ -229,7 +229,7 @@ class Guard:
         return init.state == STATES.SEEKING_SUPPORT and self.user.is_authenticated
 
     def _can_moderate_initiative(self, init):
-        if init.state in [STATES.INCOMING, STATES.MODERATION] and self.user.is_staff:
+        if init.state in [STATES.INCOMING, STATES.MODERATION] and self.user.has_perm('initproc.add_moderation'):
             if init.supporting.filter(user=self.user, initiator=True):
                 self.reason = "Als Mitinitator*in darfst Du nicht mit moderieren."
                 return False

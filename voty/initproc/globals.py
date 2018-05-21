@@ -64,6 +64,19 @@ COMPARING_FIELDS = [
     "einordnung", "ebene", "bereich",
 ]
 
+SUBJECT_CATEGORIES = [
+    'Globale Politik & internationale Zusammenarbeit',
+    'Bildung, Forschung & Kultur',
+    'Innenpolitik',
+    'Netz- & Medienpolitik',
+    'Geschlechtergerechtigkeit',
+    'Vielfalt & Integration',
+    'Demokratie & Transparenz',
+    'Gesundheit, Ernährung & Verbraucher*innenschutz',
+    'Umwelt, Mobilität, Infrastruktur & Strukturentwicklung',
+    'Soziale Gerechtigkeit, Wirtschaft, Arbeit & Finanzen',
+    'Anderes'
+]
 
 ABSTENTION_START = date(2017, 12, 1) # Everything published after this has abstentions
 SPEED_PHASE_END = date(2017, 8, 21) # Everything published before this has speed phase

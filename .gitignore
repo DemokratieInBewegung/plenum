@@ -1,4 +1,10 @@
 pip-selfcheck.json
+**/*.iml
+.idea/
+
+.project
+.pydevproject
+.settings/
 
 bin:
 activate

@@ -1,4 +1,3 @@
-
 Vue.component('dropdown', {
   props: ['options', 'selectedIdx'],
   components: {
@@ -111,21 +110,28 @@ Vue.component('search-bar', {
    }
 });
 
+var SUBJECT_CATEGORIES = [
+    'Globale Politik & internationale Zusammenarbeit',
+    'Bildung, Forschung & Kultur',
+    'Innenpolitik',
+    'Netz- & Medienpolitik',
+    'Geschlechtergerechtigkeit',
+    'Vielfalt & Integration',
+    'Demokratie & Transparenz',
+    'Gesundheit, Ernährung & Verbraucher*innenschutz',
+    'Umwelt, Mobilität, Infrastruktur & Strukturentwicklung',
+    'Soziale Gerechtigkeit, Wirtschaft, Arbeit & Finanzen',
+    'Anderes'
+];
+
 var magicSearch = new Vue({
   el: '#magic-search',
   data: {
     filters: [],
     searchOptions: [
-      {name: 'Bereich', key: 'b', placeholder: 'nach Bereichen filtern', subSelection: [
-        {name: 'Mitbestimmung', value: 'Mitbestimmung'},
-        {name: 'Transparenz und Lobbyismus', value: 'Transparenz und Lobbyismus'},
-        {name: 'Demokratisches und solidarisches Europa', value: 'Demokratisches und solidarisches Europa'},
-        {name: 'Gerechtigkeit und Verantwortung füreinander', value: 'Gerechtigkeit und Verantwortung füreinander'},
-        {name: 'Vielfältige, weltoffene und inklusive Gesellschaft', value: 'Vielfältige, weltoffene und inklusive Gesellschaft'},
-        {name: 'Nachhaltigkeit', value: 'Nachhaltigkeit'},
-        {name: 'Zukunft aktiv gestalten', value: 'Zukunft aktiv gestalten'},
-        {name: '(andere)', value: '(andere)'}
-      ]},
+      {name: 'Bereich', key: 'b', placeholder: 'nach Bereichen filtern', subSelection:
+	    SUBJECT_CATEGORIES.map (function (item) {return {name: item, value: item};})
+      },
       {name: 'Phase', key: 'f', placeholder: "nach Phase filtern", subSelection: [
         {name: 'In Vorbereitung', value: 'p'},
         {name: 'In Prüfung', value: 'i'},

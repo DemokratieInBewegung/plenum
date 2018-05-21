@@ -85,6 +85,17 @@ def get_voting_fragments(vote, initiative, request):
 #                                                       
 
 
+def personalize_argument(arg, user_id):
+    arg.has_liked = arg.likes.filter(user=user_id).count() > 0
+    if arg.user.id == user_id:
+        arg.has_commented = True
+    else:
+        arg.has_commented = False
+        for cmt in arg.comments.all():
+            if cmt.user.id == user_id:
+                arg.has_commented = True
+                break
+
 def ueber(request):
     return render(request, 'static/ueber.html',context=dict(
             quorums=Quorum.objects.order_by("-created_at")))
@@ -220,14 +231,7 @@ def item(request, init, slug=None):
             ctx['vote'] = votes.first()
 
         for arg in ctx['arguments'] + ctx['proposals']:
-            arg.has_liked = arg.likes.filter(user=user_id).count() > 0
-            if arg.user.id == user_id:
-                arg.has_commented = True
-            else:
-                for cmt in arg.comments.all():
-                    if cmt.user.id == user_id:
-                        arg.has_commented = True
-                        break
+            personalize_argument(arg, user_id)
 
     print(ctx)
     return render(request, 'initproc/item.html', context=ctx)
@@ -249,15 +253,9 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
                comments=arg.comments.order_by('-created_at').prefetch_related('likes').all())
 
     if request.user.is_authenticated:
-        arg.has_liked = arg.likes.filter(user=request.user).count() > 0
-        if arg.user == request.user:
-            ctx['has_commented'] = True
-
+        personalize_argument(arg, request.user.id)
         for cmt in ctx['comments']:
             cmt.has_liked = cmt.likes.filter(user=request.user).count() > 0
-            if cmt.user == request.user:
-                ctx['has_commented'] = True
-
 
     template = 'fragments/argument/item.html'
 
@@ -561,6 +559,8 @@ def comment(request, form, target_type, target_id):
     return {
         'inner-fragments': {'#{}-new-comment'.format(model.unique_id):
                 "<strong>Danke für Deinen Kommentar</strong>",
+                '#{}-chat-icon'.format(model.unique_id):
+                "chat_bubble", # This user has now commented, so fill in the chat icon
                 '#{}-comment-count'.format(model.unique_id):
                 model.comments.count()},
         'append-fragments': {'#{}-comment-list'.format(model.unique_id):

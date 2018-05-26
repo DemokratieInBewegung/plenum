@@ -8,14 +8,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('initproc', '0023_auto_20180506_1027'),
+        ('initproc', '0022_auto_20170924_1938'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='initiative',
             name='type',
-            field=models.CharField(choices=[('ini', 'initiative'), ('pol', 'policychange'), ('bal', 'ballotvote')], default='initiative', max_length=3),
-            preserve_default=False,
+            field=models.CharField(default='initiative', choices=[('initiative', 'initiative'), ('policychange', 'policychange'), ('ballotvote', 'ballotvote')], max_length=12),
+            preserve_default=False
+        ),
+        migrations.AlterField(
+            model_name='initiative',
+            name='bereich',
+            field=models.CharField(choices=[('Mitbestimmung', 'Mitbestimmung'), ('Transparenz und Lobbyismus', 'Transparenz und Lobbyismus'), ('Demokratisches und solidarisches Europa', 'Demokratisches und solidarisches Europa'), ('Gerechtigkeit und Verantwortung füreinander', 'Gerechtigkeit und Verantwortung füreinander'), ('Vielfältige, weltoffene und inklusive Gesellschaft', 'Vielfältige, weltoffene und inklusive Gesellschaft'), ('Nachhaltigkeit', 'Nachhaltigkeit'), ('Zukunft aktiv gestalten', 'Zukunft aktiv gestalten'), ('AO-Änderung', 'AO-Änderung'), ('(andere)', '(andere)')], max_length=50),
         ),
     ]
+

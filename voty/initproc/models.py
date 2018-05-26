@@ -42,7 +42,7 @@ class Initiative(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
 
-    type = models.CharField(max_length=3, choices=[
+    type = models.CharField(max_length=12, choices=[
         (VOTY_TYPES.Initiative, "initiative"),      #Initiative
         (VOTY_TYPES.PolicyChange, "policychange"),  #AO-Änderung
         (VOTY_TYPES.BallotVote, "ballotvote")       #Urabstimmung
@@ -66,6 +66,7 @@ class Initiative(models.Model):
                 ('Vielfältige, weltoffene und inklusive Gesellschaft', 'Vielfältige, weltoffene und inklusive Gesellschaft'),
                 ('Nachhaltigkeit', 'Nachhaltigkeit'),
                 ('Zukunft aktiv gestalten', 'Zukunft aktiv gestalten'),
+                ('AO-Änderung', 'AO-Änderung'),
                 ('(andere)', '(andere)')])
 
     went_public_at = models.DateField(blank=True, null=True)
@@ -102,10 +103,10 @@ class Initiative(models.Model):
 
     @cached_property
     def ready_for_next_stage(self):
-        if self.type == VOTY_TYPES.Initiative:
+        if self.is_initiative():
             return self.initiative_ready_for_next_stage
 
-        if self.type == VOTY_TYPES.PolicyChange:
+        if self.is_policychange():
             return self.policy_change_ready_for_next_stage
 
     @cached_property
@@ -164,10 +165,10 @@ class Initiative(models.Model):
 
     @cached_property
     def end_of_this_phase(self):
-        if self.type == VOTY_TYPES.Initiative:
+        if self.is_initiative():
             return self.initiative_end_of_this_phase
 
-        if self.type == VOTY_TYPES.PolicyChange:
+        if self.is_policychange():
             return self.policy_change_end_of_this_phase
 
     @cached_property
@@ -265,11 +266,17 @@ class Initiative(models.Model):
         return self.votes.filter(value=VOTED.ABSTAIN).count()
 
     def is_accepted(self):
-        if self.type == VOTY_TYPES.Initiative:
+        if self.is_initiative():
             return self.initiative_is_accepted
 
-        if self.type == VOTY_TYPES.PolicyChange:
+        if self.is_policychange():
             return self.policy_change_is_accepted
+
+    def is_policychange(self):
+        return self.type == VOTY_TYPES.PolicyChange
+
+    def is_initiative(self):
+        return self.type == None or self.type == VOTY_TYPES.Initiative
 
     def initiative_is_accepted(self):
         if self.yays <= self.nays: #always reject if too few yays
@@ -335,10 +342,10 @@ class Initiative(models.Model):
 
     @cached_property
     def initiators(self):
-        if self.type == VOTY_TYPES.Initiative:
+        if self.is_initiative():
             return self.supporting.filter(initiator=True).order_by("created_at")
 
-        if self.type == VOTY_TYPES.PolicyChange:
+        if self.is_policychange():
             if not self.supporting.exists():
                 print("calculate supporters for policychange")
                 self.supporting = get_user_model().objects.filter(is_active=True) #TODO: ,is_bv=True)

@@ -4,13 +4,13 @@
 {% load fullurl %}
 
 {% block head_title %}
-{{initiative.title}} – im Plenum der Beweger/innen von DEMOKRATIE IN BEWEGUNG
+{{initiative.title}} – im Plenum der Beweger*innen von DEMOKRATIE IN BEWEGUNG
 {% endblock %}
 
 {% block custom_sm_title %}
-<meta property="og:title" content="{{initiative.title}}">
-<meta property="og:description" content="{{initiative.subtitle}}">
-<meta property="og:url" content="{% fullurl 'initiative_item' type=initiative.type init_id=initiative.id slug=initiative.slug %}">
+    <meta property="og:title" content="{{initiative.title}}">
+    <meta property="og:description" content="{{initiative.subtitle}}">
+    <meta property="og:url" content="{% fullurl 'initiative_item' init_id=initiative.id slug=initiative.slug %}">
 {% endblock %}
 
 {% block custom_header %}
@@ -52,9 +52,7 @@
                         {% else %}
                         <h6>Um Deine AO-Änderung nach der Überarbeitung zur Abstimmung einreichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
                         {% endif %}
-                        <ol>
-                            <li>Alle Textfelder müssen ausgefüllt sein.</li>
-                        </ol>
+                        Alle Textfelder müssen ausgefüllt sein.
                     </div>
                     {% endif %}
                     <form action="/{{initiative.type}}/{{initiative.id}}/edit" style="display:inline"  method="GET">
@@ -140,9 +138,9 @@
             <div class="d-flex flex-wrap">
                 {% for usr in initiative.initiators %}
                 <div class="text-center initiator">
-                    {% include "fragments/avatar.html" with user=usr %}
+                    {% include "fragments/avatar.html" with user=usr.user %}
                     <div class="name">
-                        {{ usr.get_full_name|default:usr.username }}
+                        {{ usr.user.get_full_name|default:usr.user.username }}
                     </div>
                 </div>
                 {% endfor %}

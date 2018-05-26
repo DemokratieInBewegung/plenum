@@ -27,7 +27,6 @@ def can_access_initiative(states=None, check=None):
                     raise PermissionDenied()
 
             request.initiative = init
-
             return fn(request, init, *args, **kwargs)
         return view
     return wrap
@@ -227,12 +226,12 @@ class Guard:
         return (female <= 0) & (diverse <= 0) & (total <= 0)
 
     def _can_support_initiative(self, init):
-        return init.type != VOTY_TYPES.PolicyChange and \
+        return (not init.is_policychange()) and \
                init.state == STATES.SEEKING_SUPPORT and \
                self.user.is_authenticated
 
     def _can_moderate_initiative(self, init):
-        if init.type == VOTY_TYPES.PolicyChange:
+        if init.is_policychange():
             return False
 
         if init.state in [STATES.INCOMING, STATES.MODERATION] and self.user.is_staff:

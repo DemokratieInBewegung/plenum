@@ -19,6 +19,7 @@
                 </div>
             </div>
         </div>
+        {% if not initiative.is_policychange %}
         <div class="row">
             <div class="col-sm-12 col-md-4">
                 <h6 class="text-muted classification">Einordnung</h6>
@@ -33,5 +34,6 @@
                 </div>
             </div>
         </div>
+        {% endif %}
     </div>
 </div>

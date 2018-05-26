@@ -50,9 +50,9 @@ STAFF_ONLY_STATES = [STATES.INCOMING,
                      STATES.HIDDEN]
 
 class VOTY_TYPES:
-    Initiative = 'ini'
-    PolicyChange = 'pol'
-    BallotVote = 'bal'
+    Initiative = 'initiative'
+    PolicyChange = 'policychange'
+    BallotVote = 'ballotvote'
 
 class AREAS:
     """

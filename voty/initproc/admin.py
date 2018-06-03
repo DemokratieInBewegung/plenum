@@ -4,10 +4,10 @@ from reversion.admin import VersionAdmin
 from .models import Initiative, Quorum, Supporter, Pro, Contra, Proposal, Comment, Vote, Moderation
 
 class InitiativeAdmin(VersionAdmin):
-    list_display = ['title', 'state', 'created_at', 'changed_at']
-    ordering = ['title', 'created_at', 'changed_at']
+    list_display = ['type', 'title', 'state', 'created_at', 'changed_at']
+    ordering = ['type', 'title', 'created_at', 'changed_at']
     # actions = ['move_on', 'send_invite', 'decline']
-    search_fields = ['title', 'summary']
+    search_fields = ['type', 'title', 'summary']
 
 
 class SupporterAdmin(admin.ModelAdmin):

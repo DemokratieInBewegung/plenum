@@ -13,7 +13,7 @@ import reversion
 
 from datetime import datetime, timedelta, date
 
-from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START
+from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START, VOTY_TYPES
 from django.db import models
 import pytz
 
@@ -43,6 +43,11 @@ class Initiative(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
 
+    type = models.CharField(max_length=12, choices=[
+        (VOTY_TYPES.Initiative, "initiative"),      #Initiative
+        (VOTY_TYPES.PolicyChange, "policychange"),  #AO-Änderung
+        (VOTY_TYPES.BallotVote, "ballotvote")       #Urabstimmung
+    ])
 
     summary = models.TextField(blank=True)
     problem = models.TextField(blank=True)
@@ -68,6 +73,7 @@ class Initiative(models.Model):
 
     @cached_property
     def slug(self):
+        print("Initiative type is {}".format(self.type))
         return slugify(self.title)
 
     @cached_property
@@ -89,34 +95,60 @@ class Initiative(models.Model):
 
     @cached_property
     def ready_for_next_stage(self):
+        if self.is_initiative():
+            return self.initiative_ready_for_next_stage
 
-        if self.state in [Initiative.STATES.INCOMING, Initiative.STATES.MODERATION]:
+        if self.is_policychange():
+            return self.policy_change_ready_for_next_stage
+
+    @cached_property
+    def initiative_ready_for_next_stage(self):
+        if self.state in [STATES.INCOMING, STATES.MODERATION]:
             return self.supporting.filter(initiator=True, ack=True).count() == INITIATORS_COUNT
 
-        if self.state in [Initiative.STATES.PREPARE, Initiative.STATES.FINAL_EDIT]:
+        if self.state in [STATES.PREPARE, STATES.FINAL_EDIT]:
             #three initiators and no empty text fields
             return (self.supporting.filter(initiator=True, ack=True).count() == INITIATORS_COUNT and
-                self.title and
-                self.subtitle and
-                self.arbeitsweise and
-                self.bereich and
-                self.ebene and
-                self.einordnung and
-                self.fin_vorschlag and
-                self.forderung and
-                self.init_argument and
-                self.kosten and
-                self.problem and
-                self.summary)
+                    self.title and
+                    self.subtitle and
+                    self.arbeitsweise and
+                    self.bereich and
+                    self.ebene and
+                    self.einordnung and
+                    self.fin_vorschlag and
+                    self.forderung and
+                    self.init_argument and
+                    self.kosten and
+                    self.problem and
+                    self.summary)
 
-        if self.state == Initiative.STATES.SEEKING_SUPPORT:
+        if self.state == STATES.SEEKING_SUPPORT:
             return self.supporting.filter().count() >= self.quorum
 
-        if self.state == Initiative.STATES.DISCUSSION:
+        if self.state == STATES.DISCUSSION:
             # there is nothing we have to accomplish
             return True
 
-        if self.state == Initiative.STATES.VOTING:
+        if self.state == STATES.VOTING:
+            # there is nothing we have to accomplish
+            return True
+
+        return False
+
+    @cached_property
+    def policy_change_ready_for_next_stage(self):
+        if self.state in [STATES.PREPARE, STATES.FINAL_EDIT]:
+            #no empty text fields
+            return (self.title and
+                    self.subtitle and
+                    self.bereich and
+                    self.summary)
+
+        if self.state == STATES.DISCUSSION:
+            # there is nothing we have to accomplish
+            return True
+
+        if self.state == STATES.VOTING:
             # there is nothing we have to accomplish
             return True
 
@@ -125,6 +157,14 @@ class Initiative(models.Model):
 
     @cached_property
     def end_of_this_phase(self):
+        if self.is_initiative():
+            return self.initiative_end_of_this_phase
+
+        if self.is_policychange():
+            return self.policy_change_end_of_this_phase
+
+    @cached_property
+    def initiative_end_of_this_phase(self):
         week = timedelta(days=7)
         halfyear = timedelta(days=183)
 
@@ -174,6 +214,26 @@ class Initiative(models.Model):
         return None
 
     @cached_property
+    def policy_change_end_of_this_phase(self):
+        week = timedelta(days=7)
+        halfyear = timedelta(days=183)
+
+        if self.was_closed_at:
+            return self.was_closed_at + halfyear # Half year later.
+
+        if self.went_to_discussion_at:
+            if self.state == STATES.DISCUSSION:
+                return self.went_to_discussion_at + (3 * week)
+
+            elif self.state == STATES.FINAL_EDIT:
+                return self.went_to_discussion_at + (5 * week)
+
+            elif self.state == STATES.VOTING:
+                return self.went_to_voting_at + (2 * week)
+
+        return None
+
+    @cached_property
     def quorum(self):
         return Quorum.current_quorum()
 
@@ -198,6 +258,19 @@ class Initiative(models.Model):
         return self.votes.filter(value=VOTED.ABSTAIN).count()
 
     def is_accepted(self):
+        if self.is_initiative():
+            return self.initiative_is_accepted
+
+        if self.is_policychange():
+            return self.policy_change_is_accepted
+
+    def is_policychange(self):
+        return self.type == VOTY_TYPES.PolicyChange
+
+    def is_initiative(self):
+        return self.type == None or self.type == VOTY_TYPES.Initiative
+
+    def initiative_is_accepted(self):
         if self.yays <= self.nays: #always reject if too few yays
             return False
 
@@ -219,6 +292,12 @@ class Initiative(models.Model):
 
         # no variants:
         return self.yays > self.nays
+
+    def policy_change_is_accepted(self):
+        if self.yays >= (self.nays * 2): #two third majority
+            return True
+
+        return False
 
     @cached_property
     def all_variants(self):
@@ -255,7 +334,14 @@ class Initiative(models.Model):
 
     @cached_property
     def initiators(self):
-        return self.supporting.filter(initiator=True).order_by("created_at")
+        if self.is_initiative():
+            return self.supporting.filter(initiator=True).order_by("created_at")
+
+        if self.is_policychange():
+            if not self.supporting.exists():
+                print("calculate supporters for policychange")
+                self.supporting = get_user_model().objects.filter(is_active=True) #TODO: ,is_bv=True)
+        return self.supporting.all()
 
     @cached_property
     def custom_cls(self):
@@ -285,7 +371,7 @@ class Initiative(models.Model):
             return get_user_model().objects.filter(is_active=True).count()
 
     def __str__(self):
-        return self.title;
+        return self.title
 
     def notify_moderators(self, *args, **kwargs):
         return self.notify([m.user for m in self.moderations.all()], *args, **kwargs)

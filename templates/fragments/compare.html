@@ -5,7 +5,11 @@
         </div>
     </div>
 	<div class="row">
-		<h2>Änderungshistorie Initiative #{{initiative.id}}</h2>	
+        {% if initiative.is_policychange %}
+		    <h2>Änderungshistorie AO-Änderung #{{initiative.id}}</h2>
+        {% else %}
+            <h2>Änderungshistorie Initiative #{{initiative.id}}</h2>
+        {% endif %}
 	</div>
 
 	<div class="row">

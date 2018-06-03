@@ -28,11 +28,11 @@ import reversion
 from functools import wraps
 import json
 
-from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS
+from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS, VOTY_TYPES
 from .guard import can_access_initiative
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
-                    NewProposalForm, NewModerationForm, InviteUsersForm)
+                    NewProposalForm, NewModerationForm, InviteUsersForm, PolicyChangeForm)
 from .serializers import SimpleInitiativeSerializer
 from django.contrib.auth.models import Permission
 
@@ -192,6 +192,7 @@ def new(request):
         if form.is_valid():
             ini = form.save(commit=False)
             with reversion.create_revision():
+                ini.type = VOTY_TYPES.Initiative
                 ini.state = STATES.PREPARE
                 ini.save()
 
@@ -221,7 +222,6 @@ def item(request, init, slug=None):
     ctx['arguments'].sort(key=lambda x: (-x.likes.count(), x.created_at))
     ctx['proposals'].sort(key=lambda x: (-x.likes.count(), x.created_at))
 
-
     if request.user.is_authenticated:
         user_id = request.user.id
 
@@ -235,7 +235,10 @@ def item(request, init, slug=None):
             personalize_argument(arg, user_id)
 
     print(ctx)
-    return render(request, 'initproc/item.html', context=ctx)
+    if init.is_policychange():
+        return render(request, 'initproc/policychange.html', context=ctx)
+    elif init.is_initiative():
+        return render(request, 'initproc/item.html', context=ctx)
 
 
 @ajax
@@ -306,26 +309,47 @@ def show_moderation(request, initiative, target_id, slug=None):
 @login_required
 @can_access_initiative([STATES.PREPARE, STATES.FINAL_EDIT], 'can_edit')
 def edit(request, initiative):
-    form = InitiativeForm(request.POST or None, instance=initiative)
-    if request.method == 'POST':
-        if form.is_valid():
-            with reversion.create_revision():
-                initiative.save()
+    if initiative.is_initiative():
+        form = InitiativeForm(request.POST or None, instance=initiative)
+        if request.method == 'POST':
+            if form.is_valid():
+                with reversion.create_revision():
+                    initiative.save()
 
-                # Store some meta-information.
-                reversion.set_user(request.user)
-                if request.POST.get('commit_message', None):
-                    reversion.set_comment(request.POST.get('commit_message'))
+                    # Store some meta-information.
+                    reversion.set_user(request.user)
+                    if request.POST.get('commit_message', None):
+                        reversion.set_comment(request.POST.get('commit_message'))
 
-            initiative.supporting.filter(initiator=True).update(ack=False)
+                initiative.supporting.filter(initiator=True).update(ack=False)
 
-            messages.success(request, "Initiative gespeichert.")
-            initiative.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
-            return redirect('/initiative/{}'.format(initiative.id))
-        else:
-            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+                messages.success(request, "Initiative gespeichert.")
+                initiative.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
+                return redirect('/initiative/{}'.format(initiative.id))
+            else:
+                messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new.html', context=dict(form=form, initiative=initiative))
+        return render(request, 'initproc/new.html', context=dict(form=form, initiative=initiative))
+    elif initiative.is_policychange():
+        form = PolicyChangeForm(request.POST or None, instance=initiative)
+        if request.method == 'POST':
+            if form.is_valid():
+                with reversion.create_revision():
+                    initiative.save()
+
+                    # Store some meta-information.
+                    reversion.set_user(request.user)
+                    if request.POST.get('commit_message', None):
+                        reversion.set_comment(request.POST.get('commit_message'))
+
+                messages.success(request, "AO-Änderung gespeichert.")
+                # TODO fix pc.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
+                return redirect('/policychange/{}'.format(initiative.id))
+            else:
+                messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+
+        return render(request, 'initproc/new_policychange.html', context=dict(form=form, policychange=initiative))
+
 
 
 @login_required
@@ -689,3 +713,52 @@ def compare(request, initiative, version_id):
 def reset_vote(request, init):
     Vote.objects.filter(initiative=init, user_id=request.user).delete()
     return get_voting_fragments(None, init, request)
+
+@login_required
+def new_policychange(request):
+    form = PolicyChangeForm()
+    if request.method == 'POST':
+        form = PolicyChangeForm(request.POST)
+        if form.is_valid():
+            pc = form.save(commit=False)
+            with reversion.create_revision():
+                pc.type = VOTY_TYPES.PolicyChange
+                pc.state = STATES.PREPARE
+                pc.bereich = 'AO-Änderung'
+                pc.save()
+
+                # Store some meta-information.
+                reversion.set_user(request.user)
+                if request.POST.get('commit_message', None):
+                    reversion.set_comment(request.POST.get('commit_message'))
+
+                # whole bv is supporter of policychange
+                for initor in get_user_model().objects.filter(is_active=True): #TODO isBv()
+                    Supporter(initiative=pc, user=initor, initiator=True, ack=True, public=True).save()
+
+            return redirect('/policychange/{}-{}'.format(pc.id, pc.slug))
+        else:
+            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+
+    return render(request, 'initproc/new_policychange.html', context=dict(form=form))
+
+# @can_access_initiative()
+# def policychange(request, init, type=None, slug=None):
+#
+#     ctx = dict(initiative=init)
+#     print("here2")
+#     print(ctx)
+#     return render(request, 'initproc/policychange.html', context=ctx)
+
+@login_required
+@can_access_initiative([STATES.PREPARE], 'can_edit')
+def start_discussion_phase(request, init):
+    if init.ready_for_next_stage:
+        init.state = STATES.DISCUSSION
+        init.save()
+        # TODO fix notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION)
+        return redirect('/policychange/{}'.format(init.id))
+    else:
+        messages.warning(request, "Die Bedingungen für die Einreichung sind nicht erfüllt.")
+
+    return redirect('/policychange/{}'.format(init.id))

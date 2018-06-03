@@ -10,7 +10,6 @@ class SimpleInitiativeSerializer(serializers.ModelSerializer):
                   "einordnung", "ebene", "bereich", "went_public_at",
                   "went_to_discussion_at", "went_to_voting_at", "was_closed_at",
                   # and calculated fields also matter:
-                  "slug", "end_of_this_phase",
-                  "type"]
+                  "slug", "end_of_this_phase"]
 
 

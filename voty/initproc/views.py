@@ -192,7 +192,7 @@ def new(request):
         if form.is_valid():
             ini = form.save(commit=False)
             with reversion.create_revision():
-                ini.type = VOTY_TYPES.Initiative
+                ini.einordnung = VOTY_TYPES.Einzelinitiative
                 ini.state = STATES.PREPARE
                 ini.save()
 
@@ -722,9 +722,8 @@ def new_policychange(request):
         if form.is_valid():
             pc = form.save(commit=False)
             with reversion.create_revision():
-                pc.type = VOTY_TYPES.PolicyChange
                 pc.state = STATES.PREPARE
-                pc.bereich = 'AO-Änderung'
+                pc.einordnung = VOTY_TYPES.PolicyChange
                 pc.save()
 
                 # Store some meta-information.
@@ -741,14 +740,6 @@ def new_policychange(request):
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
     return render(request, 'initproc/new_policychange.html', context=dict(form=form))
-
-# @can_access_initiative()
-# def policychange(request, init, type=None, slug=None):
-#
-#     ctx = dict(initiative=init)
-#     print("here2")
-#     print(ctx)
-#     return render(request, 'initproc/policychange.html', context=ctx)
 
 @login_required
 @can_access_initiative([STATES.PREPARE], 'can_edit')

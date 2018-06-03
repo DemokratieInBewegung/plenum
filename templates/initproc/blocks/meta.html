@@ -12,14 +12,15 @@
                 {% endif %}
                 </div>
             </div>
+            {% if not initiative.is_policychange %}
             <div class="col-sm-12 col-md-8">
                 <h6 class="text-muted classification">Bereich</h6>
                 <div>
                     {{initiative.bereich}}
                 </div>
             </div>
+            {% endif %}
         </div>
-        {% if not initiative.is_policychange %}
         <div class="row">
             <div class="col-sm-12 col-md-4">
                 <h6 class="text-muted classification">Einordnung</h6>
@@ -27,13 +28,14 @@
                     {{initiative.einordnung}}
                 </div>
             </div>
+            {% if not initiative.is_policychange %}
             <div class="col-sm-12 col-md-8">
                 <h6 class="text-muted classification">Ebene</h6>
                 <div>
                     {{initiative.ebene}}
                 </div>
             </div>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
 </div>

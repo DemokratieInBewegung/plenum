@@ -43,12 +43,6 @@ class Initiative(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
 
-    type = models.CharField(max_length=12, choices=[
-        (VOTY_TYPES.Initiative, "initiative"),      #Initiative
-        (VOTY_TYPES.PolicyChange, "policychange"),  #AO-Änderung
-        (VOTY_TYPES.BallotVote, "ballotvote")       #Urabstimmung
-    ])
-
     summary = models.TextField(blank=True)
     problem = models.TextField(blank=True)
     forderung = models.TextField(blank=True)
@@ -57,7 +51,10 @@ class Initiative(models.Model):
     arbeitsweise = models.TextField(blank=True)
     init_argument = models.TextField(blank=True)
 
-    einordnung = models.CharField(max_length=50, choices=[('Einzelinitiative','Einzelinitiative')])
+    einordnung = models.CharField(max_length=50, choices=[
+        (VOTY_TYPES.Einzelinitiative,'Einzelinitiative'),
+        (VOTY_TYPES.PolicyChange,'AO-Änderung'),
+        (VOTY_TYPES.BallotVote,'Urabstimmung')])
     ebene = models.CharField(max_length=50, choices=[('Bund', 'Bund')])
     bereich = models.CharField(max_length=50, choices=[(item,item) for item in SUBJECT_CATEGORIES])
 
@@ -73,7 +70,7 @@ class Initiative(models.Model):
 
     @cached_property
     def slug(self):
-        print("Initiative type is {}".format(self.type))
+        print("Initiative type is {}".format(self.einordnung))
         return slugify(self.title)
 
     @cached_property
@@ -141,7 +138,6 @@ class Initiative(models.Model):
             #no empty text fields
             return (self.title and
                     self.subtitle and
-                    self.bereich and
                     self.summary)
 
         if self.state == STATES.DISCUSSION:
@@ -265,10 +261,10 @@ class Initiative(models.Model):
             return self.policy_change_is_accepted
 
     def is_policychange(self):
-        return self.type == VOTY_TYPES.PolicyChange
+        return self.einordnung == VOTY_TYPES.PolicyChange
 
     def is_initiative(self):
-        return self.type == None or self.type == VOTY_TYPES.Initiative
+        return self.einordnung == None or self.einordnung == VOTY_TYPES.Einzelinitiative
 
     def initiative_is_accepted(self):
         if self.yays <= self.nays: #always reject if too few yays

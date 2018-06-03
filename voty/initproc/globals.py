@@ -50,9 +50,9 @@ TEAM_ONLY_STATES = [STATES.INCOMING,
                     STATES.HIDDEN]
 
 class VOTY_TYPES:
-    Initiative = 'initiative'
-    PolicyChange = 'policychange'
-    BallotVote = 'ballotvote'
+    Einzelinitiative = 'initiative'
+    PolicyChange = 'ao-aenderung'
+    BallotVote = 'urabstimmung'
 
 class AREAS:
     """

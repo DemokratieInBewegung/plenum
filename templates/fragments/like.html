@@ -1,4 +1,6 @@
+{% load guard %}
 <span {% if with_link or show_text %} class="{{target.unique_id}}-like" {% endif %}>
+    {% guard can_like target %}
 	{% if can_like %}
 		{% if is_editable %}
 			{% if with_link %}

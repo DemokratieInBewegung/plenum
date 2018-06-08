@@ -91,19 +91,19 @@ class Guard:
 
     def is_editable(self, obj=None): #likes
 
-        obj2 = self.find_parent_initiative(obj)
+        initiative = self.find_parent_initiative(obj)
 
-        if obj2.initiative and obj2.initiative.state in [STATES.ACCEPTED, STATES.REJECTED]: # no liking of closed inis
+        if initiative and initiative.state in [STATES.ACCEPTED, STATES.REJECTED]: # no liking of closed inis
             return False
 
         return True
 
     def find_parent_initiative(self, obj=None):
-        obj2 = obj # find initiative in recursive object tree
-        while not hasattr(obj2, "initiative") and hasattr(obj2, "target"):
-            obj2 = obj2.target
+        # find initiative in object tree
+        while not hasattr(obj, "initiative") and hasattr(obj, "target"):
+            obj = obj.target
 
-        return obj2
+        return obj.initiative if hasattr(obj, "initiative") else obj
 
 
     def is_initiator(self, init):

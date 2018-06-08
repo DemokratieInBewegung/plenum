@@ -209,6 +209,7 @@ def item(request, init, slug=None):
     ctx['arguments'].sort(key=lambda x: (-x.likes.count(), x.created_at))
     ctx['proposals'].sort(key=lambda x: (-x.likes.count(), x.created_at))
 
+    ctx['is_editable'] = request.guard.is_editable (init)
 
     if request.user.is_authenticated:
         user_id = request.user.id
@@ -242,8 +243,8 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
 
     ctx = dict(argument=arg,
                has_commented=False,
-               can_like=False,
                has_liked=False,
+               is_editable=request.guard.is_editable(arg),
                comments=arg.comments.order_by('-created_at').prefetch_related('likes').all())
 
     if request.user.is_authenticated:
@@ -276,8 +277,8 @@ def show_moderation(request, initiative, target_id, slug=None):
 
     ctx = dict(m=arg,
                has_commented=False,
-               can_like=False,
                has_liked=False,
+               is_editable=True,
                comments=arg.comments.order_by('-created_at').all())
 
     if request.user:
@@ -580,7 +581,7 @@ def like(request, target_type, target_id):
     if not request.guard.can_like(model):
         raise PermissionDenied()
 
-    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": True}
+    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": True, "is_editable": True}
     for key in ['show_text', 'show_count']:
         if key in request.GET:
             ctx[key] = param_as_bool(request.GET[key])
@@ -608,7 +609,7 @@ def unlike(request, target_type, target_id):
 
     model.likes.filter(user_id=request.user.id).delete()
 
-    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": False}
+    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": False, "is_editable": True}
     for key in ['show_text', 'show_count']:
         if key in request.GET:
             ctx[key] = param_as_bool(request.GET[key])

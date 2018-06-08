@@ -88,14 +88,11 @@ def get_voting_fragments(vote, initiative, request):
 
 def personalize_argument(arg, user_id):
     arg.has_liked = arg.likes.filter(user=user_id).count() > 0
-    if arg.user.id == user_id:
-        arg.has_commented = True
-    else:
-        arg.has_commented = False
-        for cmt in arg.comments.all():
-            if cmt.user.id == user_id:
-                arg.has_commented = True
-                break
+    arg.has_commented = False
+    for cmt in arg.comments.all():
+        if cmt.user.id == user_id:
+            arg.has_commented = True
+            break
 
 def ueber(request):
     return render(request, 'static/ueber.html',context=dict(

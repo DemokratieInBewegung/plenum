@@ -8,8 +8,12 @@ from django.db import migrations
 
 def create_group(name):
     group, created = Group.objects.get_or_create(name=name);
-    print (('... created group "{}"' if created else '!!! group "{}" already exists').format(name));
-    return group;
+    if created:
+        print ('... created group "{}"'.format (name))
+        return group
+    else:
+        print ('!!! group "{}" already exists'.format(name))
+        return False
 
 def delete_group(name):
     try:
@@ -24,13 +28,14 @@ def init_teams_and_permissions(apps, schema_editor):
     board = create_group('Bundesvorstand');
     team  = create_group('Prüfungsteam');
 
-    for user in User.objects.filter(is_staff=True, is_active=True):
-        user.groups.add (team);
-    print ('... added all staff members to group "Prüfungsteam"');
+    if team:
+        for user in User.objects.filter(is_staff=True, is_active=True):
+            user.groups.add (team);
+            print ('... added all staff members to group "Prüfungsteam"');
 
-    permission = Permission.objects.get(name='Can add moderation')
-    team.permissions.add (permission);
-    print ('... added permission for group "Prüfungsteam" to add moderations'); 
+        permission = Permission.objects.get(name='Can add moderation')
+        team.permissions.add (permission);
+        print ('... added permission for group "Prüfungsteam" to add moderations');
 
 def reverse_teams_and_permissions(apps, schema_editor):
     print ();

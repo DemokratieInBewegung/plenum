@@ -114,7 +114,7 @@ class InitiativeForm(forms.ModelForm):
         model = Initiative
         fields = ['title', 'subtitle', 'summary', 'problem', 'forderung',
                   'kosten', 'fin_vorschlag', 'arbeitsweise', 'init_argument',
-                  'einordnung', 'ebene', 'bereich']
+                  'ebene', 'bereich']
 
         labels = {
             "title" : "Überschrift",

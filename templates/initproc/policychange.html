@@ -55,14 +55,14 @@
                         Alle Textfelder müssen ausgefüllt sein.
                     </div>
                     {% endif %}
-                    <form action="/{{initiative.type}}/{{initiative.id}}/edit" style="display:inline"  method="GET">
+                    <form action="/{{initiative.einordnung}}/{{initiative.id}}/edit" style="display:inline"  method="GET">
                         {% csrf_token %}
                         <button title="Bearbeiten" class="btn btn-success edit" type="submit">
                             <i class="material-icons edit">edit</i><span>Bearbeiten</span>
                         </button>
                     </form>
                     {% if initiative.ready_for_next_stage %}
-                    <form action="/{{initiative.type}}/{{initiative.id}}/start_discussion_phase" style="display:inline"  method="POST">
+                    <form action="/{{initiative.einordnung}}/{{initiative.id}}/start_discussion_phase" style="display:inline"  method="POST">
                         {% csrf_token %}
                         {% if initiative.state != 'e' %}
                         <button title="Zur Diskussion freigeben" class="btn btn-success submit" type="submit">
@@ -288,7 +288,7 @@
         <div class="row">
             <div class="col">
                 <h6 class="text-muted classification">Text der AO-Änderung{% if initiative.versions.count > 1 %}
-                    <a href="/{{initiative.type}}/{{initiative.id}}-{{initiative.slug}}/compare/{{initiative.versions.1.id}}" data-ajax="true" class="change-history">(Änderungshistorie einsehen <span class="changes-badge"><span class="material-icons history">history</span> {{initiative.versions.count}}</span>)</a>{% endif %}</h6>
+                    <a href="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/compare/{{initiative.versions.1.id}}" data-ajax="true" class="change-history">(Änderungshistorie einsehen <span class="changes-badge"><span class="material-icons history">history</span> {{initiative.versions.count}}</span>)</a>{% endif %}</h6>
             </div>
         </div>
 

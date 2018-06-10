@@ -25,7 +25,7 @@
             <div class="col-sm-12 col-md-4">
                 <h6 class="text-muted classification">Einordnung</h6>
                 <div>
-                    {{initiative.einordnung}}
+                    {{initiative.get_einordnung_display}}
                 </div>
             </div>
             {% if not initiative.is_policychange %}

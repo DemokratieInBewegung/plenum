@@ -344,7 +344,7 @@ def edit(request, initiative):
 
                 messages.success(request, "AO-Änderung gespeichert.")
                 # TODO fix pc.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
-                return redirect('/policychange/{}'.format(initiative.id))
+                return redirect('/{}/{}'.format(initiative.einordnung, initiative.id))
             else:
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
@@ -735,7 +735,7 @@ def new_policychange(request):
                 for initor in get_user_model().objects.filter(is_active=True): #TODO isBv()
                     Supporter(initiative=pc, user=initor, initiator=True, ack=True, public=True).save()
 
-            return redirect('/policychange/{}-{}'.format(pc.id, pc.slug))
+            return redirect('/{}/{}-{}'.format(pc.einordnung, pc.id, pc.slug))
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
@@ -748,8 +748,8 @@ def start_discussion_phase(request, init):
         init.state = STATES.DISCUSSION
         init.save()
         # TODO fix notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION)
-        return redirect('/policychange/{}'.format(init.id))
+        return redirect('/{}/{}'.format(init.einordnung, init.id))
     else:
         messages.warning(request, "Die Bedingungen für die Einreichung sind nicht erfüllt.")
 
-    return redirect('/policychange/{}'.format(init.id))
+    return redirect('/{}/{}'.format(init.einordnung, init.id))

@@ -211,7 +211,7 @@ def new(request):
 
 
 @can_access_initiative()
-def item(request, init, slug=None):
+def item(request, init, slug=None, type=None):
 
     ctx = dict(initiative=init,
                user_count=init.eligible_voter_count,
@@ -243,7 +243,7 @@ def item(request, init, slug=None):
 
 @ajax
 @can_access_initiative()
-def show_resp(request, initiative, target_type, target_id, slug=None):
+def show_resp(request, initiative, target_type, target_id, slug=None, type=None):
 
     model_cls = apps.get_model('initproc', target_type)
     arg = get_object_or_404(model_cls, pk=target_id)
@@ -272,7 +272,7 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
 @ajax
 @login_required
 @can_access_initiative(None, 'can_moderate')
-def show_moderation(request, initiative, target_id, slug=None):
+def show_moderation(request, initiative, target_id, slug=None, type=None):
     arg = get_object_or_404(Moderation, pk=target_id)
 
     assert arg.initiative == initiative, "How can this be?"

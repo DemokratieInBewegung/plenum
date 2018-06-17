@@ -69,12 +69,6 @@ class Initiative(models.Model):
     eligible_voters = models.IntegerField(blank=True, null=True)
 
     @cached_property
-    def type(self):
-        if self.is_policychange():
-            return "ao-aenderung"
-        return "initiative"
-
-    @cached_property
     def slug(self):
         print("Initiative type is {}".format(self.einordnung))
         return slugify(self.title)

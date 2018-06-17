@@ -8,11 +8,16 @@ def init_einordnung(apps, schema_editor):
     # Update German einordnung value to new technical value
     ini = apps.get_model('initproc', 'Initiative')
     ini.objects.all().update(einordnung='initiative')
+    migrations.RunSQL("""
+    'ALTER TABLE Initiative ADD CONSTRAINT einordnung_values CHECK (
+    einordnung in ('initiative', 'ao-aenderung', 'urabstimmung'));'
+    """)
 
 def reverse_einordnung(apps, schema_editor):
     # Delete technical value and use German einordnung value
     ini = apps.get_model('initproc', 'Initiative')
     ini.objects.filter(einordnung='initiative').update(einordnung='Einzelinitiative')
+    migrations.RunSQL('ALTER TABLE Initiative DROP CONSTRAINT einordnung_values;')
 
 class Migration(migrations.Migration):
 

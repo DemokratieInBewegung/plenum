@@ -54,7 +54,7 @@ class Initiative(models.Model):
 
     einordnung = models.CharField(max_length=50, choices=[('Einzelinitiative','Einzelinitiative')])
     ebene = models.CharField(max_length=50, choices=[('Bund', 'Bund')])
-    bereich = models.CharField(max_length=50, choices=[(item,item) for item in SUBJECT_CATEGORIES])
+    bereich = models.CharField(max_length=60, choices=[(item,item) for item in SUBJECT_CATEGORIES])
 
     went_public_at = models.DateField(blank=True, null=True)
     went_to_discussion_at = models.DateField(blank=True, null=True)

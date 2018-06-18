@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import migrations
 
 def create_group(name):
-    group, created = Group.objects.get_or_create(name=name);
+    group, created = Group.objects.get_or_create(name=name)
     if created:
         print ('... created group "{}"'.format (name))
         return group
@@ -17,36 +17,36 @@ def create_group(name):
 
 def delete_group(name):
     try:
-        Group.objects.get(name=name).delete ();
-        print ('... deleted group "{}"'.format(name));
+        Group.objects.get(name=name).delete ()
+        print ('... deleted group "{}"'.format(name))
     except ObjectDoesNotExist:
-        print ('!!! group "{}" doesn\'t exist'.format(name));
+        print ('!!! group "{}" doesn\'t exist'.format(name))
 
 def init_teams_and_permissions(apps, schema_editor):
-    print ();
+    print ()
 
-    board = create_group('Bundesvorstand');
-    team  = create_group('Prüfungsteam');
+    board = create_group('Bundesvorstand')
+    team  = create_group('Prüfungsteam')
 
     if team:
         for user in User.objects.filter(is_staff=True, is_active=True):
-            user.groups.add (team);
-            print ('... added all staff members to group "Prüfungsteam"');
+            user.groups.add (team)
+            print ('... added all staff members to group "Prüfungsteam"')
 
         permission = Permission.objects.get(content_type__app_label='initproc', codename='add_moderation')
-        team.permissions.add (permission);
-        print ('... added permission for group "Prüfungsteam" to add moderations');
+        team.permissions.add (permission)
+        print ('... added permission for group "Prüfungsteam" to add moderations')
 
 def reverse_teams_and_permissions(apps, schema_editor):
-    print ();
+    print ()
 
     for user in User.objects.filter(groups__name='Prüfungsteam', is_active=True):
-        user.is_staff = True;
-        user.save();
-    print ('... made all members of group "Prüfungsteam" staff members');
+        user.is_staff = True
+        user.save()
+    print ('... made all members of group "Prüfungsteam" staff members')
 
-    delete_group('Prüfungsteam');
-    delete_group('Bundesvorstand');
+    delete_group('Prüfungsteam')
+    delete_group('Bundesvorstand')
 
 class Migration(migrations.Migration):
 

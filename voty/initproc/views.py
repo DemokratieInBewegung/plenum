@@ -87,15 +87,8 @@ def get_voting_fragments(vote, initiative, request):
 
 
 def personalize_argument(arg, user_id):
-    arg.has_liked = arg.likes.filter(user=user_id).count() > 0
-    if arg.user.id == user_id:
-        arg.has_commented = True
-    else:
-        arg.has_commented = False
-        for cmt in arg.comments.all():
-            if cmt.user.id == user_id:
-                arg.has_commented = True
-                break
+    arg.has_liked = arg.likes.filter(user=user_id).exists()
+    arg.has_commented = arg.comments.filter(user__id=user_id).exists()
 
 def ueber(request):
     return render(request, 'static/ueber.html',context=dict(
@@ -229,7 +222,7 @@ def item(request, init, slug=None):
         ctx.update({'has_supported': init.supporting.filter(user=user_id).count()})
 
         votes = init.votes.filter(user=user_id)
-        if (votes.count()):
+        if (votes.exists()):
             ctx['vote'] = votes.first()
 
         for arg in ctx['arguments'] + ctx['proposals']:
@@ -257,7 +250,7 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
     if request.user.is_authenticated:
         personalize_argument(arg, request.user.id)
         for cmt in ctx['comments']:
-            cmt.has_liked = cmt.likes.filter(user=request.user).count() > 0
+            cmt.has_liked = cmt.likes.filter(user=request.user).exists()
 
     template = 'fragments/argument/item.html'
 
@@ -283,7 +276,7 @@ def show_moderation(request, initiative, target_id, slug=None):
                comments=arg.comments.order_by('created_at').all())
 
     if request.user:
-        ctx['has_liked'] = arg.likes.filter(user=request.user).count() > 0
+        ctx['has_liked'] = arg.likes.filter(user=request.user).exists()
         if arg.user == request.user:
             ctx['has_commented'] = True
 

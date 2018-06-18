@@ -221,6 +221,7 @@ def item(request, init, slug=None):
     ctx['arguments'].sort(key=lambda x: (-x.likes.count(), x.created_at))
     ctx['proposals'].sort(key=lambda x: (-x.likes.count(), x.created_at))
 
+    ctx['is_editable'] = request.guard.is_editable (init)
 
     if request.user.is_authenticated:
         user_id = request.user.id
@@ -249,7 +250,7 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
 
     ctx = dict(argument=arg,
                has_commented=False,
-               can_like=False,
+               is_editable=request.guard.is_editable(arg),
                full=param_as_bool(request.GET.get('full', 0)),
                comments=arg.comments.order_by('created_at').prefetch_related('likes').all())
 
@@ -276,8 +277,8 @@ def show_moderation(request, initiative, target_id, slug=None):
 
     ctx = dict(m=arg,
                has_commented=False,
-               can_like=False,
                has_liked=False,
+               is_editable=True,
                full=1,
                comments=arg.comments.order_by('created_at').all())
 
@@ -584,7 +585,10 @@ def like(request, target_type, target_id):
     if not request.guard.can_like(model):
         raise PermissionDenied()
 
-    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": True}
+    if not request.guard.is_editable(model):
+        raise PermissionDenied()
+
+    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": True, "is_editable": True}
     for key in ['show_text', 'show_count']:
         if key in request.GET:
             ctx[key] = param_as_bool(request.GET[key])
@@ -607,9 +611,12 @@ def unlike(request, target_type, target_id):
     model_cls = apps.get_model('initproc', target_type)
     model = get_object_or_404(model_cls, pk=target_id)
 
+    if not request.guard.is_editable(model):
+        raise PermissionDenied()
+
     model.likes.filter(user_id=request.user.id).delete()
 
-    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": False}
+    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": False, "is_editable": True}
     for key in ['show_text', 'show_count']:
         if key in request.GET:
             ctx[key] = param_as_bool(request.GET[key])

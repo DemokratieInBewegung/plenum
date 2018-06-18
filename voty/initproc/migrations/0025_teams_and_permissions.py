@@ -33,7 +33,7 @@ def init_teams_and_permissions(apps, schema_editor):
             user.groups.add (team);
             print ('... added all staff members to group "Prüfungsteam"');
 
-        permission = Permission.objects.get(name='Can add moderation')
+        permission = Permission.objects.get(content_type__app_label='initproc', codename='add_moderation')
         team.permissions.add (permission);
         print ('... added permission for group "Prüfungsteam" to add moderations');
 

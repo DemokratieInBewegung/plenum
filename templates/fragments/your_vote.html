@@ -1,0 +1,15 @@
+<div class="row justify-content-center">
+  <div class="col-auto text-center">
+    {% if vote %}
+    <p style="margin-bottom: .5rem;">Du hast mit
+    </p>
+    <div class="your-vote" style="border: 2px solid #E0E0E0; border-radius: 5px; padding: .5rem; margin-bottom: .5rem; width: 7.25rem;height: 7.25rem;">
+      {% if vote.in_favor %}<span class="in-favor text-center" style="display: inline-block;"><i class="material-icons" style="width: 4rem;">thumb_up</i> <br /><strong>Ja</strong></span> {% elif vote.against %}<span class="declined text-center" style="display: inline-block;""><i class="material-icons" style="width: 4rem;">thumb_down</i> <br /><strong>Nein</strong></span>      {% else %}<span class="abstained text-center" style="display: inline-block;"><i class="material-icons" style="width: 4rem;">panorama_fish_eye</i> <br /><strong>Enthaltung</strong></span>{% endif %}
+    </div>
+    <p>abgestimmt.
+    </p>
+    {% else %} {% if user.is_authenticated %}
+    <p>Du hast an dieser Abstimmung nicht teilgenommen.</p>
+    {% endif %} {% endif %}
+  </div>
+</div>

@@ -133,19 +133,19 @@
                 {% ifequal initiative.state 's' %}
                 {% if initiative.absolute_supporters < initiative.quorum %}
                 <p>
-                    Diese Initiative 
+                    Diese Initiative
                     <a href="#cta"><strong class="badge-support">sucht noch mindestens {{initiative.quorum|sub:initiative.absolute_supporters}} {% if initiative.absolute_supporters == 1 %}Unterstützer*in{% else %}Unterstützer*innen{% endif %}</strong></a>. Dafür bleiben ihr <strong>noch {{initiative.end_of_this_phase | timeuntil}}</strong>.
                 </p>
                 {% elif initiative.absolute_supporters == initiative.quorum %}
                 <p>
-                    Diese Initiative hat 
+                    Diese Initiative hat
                     <a href="#cta"><strong class="badge-support">das Quorum an Unterstützer*innen</strong></a> erreicht!
                     <br />
                     In <strong>{{initiative.end_of_this_phase | timeuntil}}</strong> geht diese Initiative in Diskussion.
                 </p>
                 {% else %}
                 <p>
-                    Diese Initiative 
+                    Diese Initiative
                     <a href="#cta"><strong class="badge-support">hat das Quorum erreicht</strong></a> und darüber hinaus <strong>{{initiative.absolute_supporters|sub:initiative.quorum}}</strong> {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}Unterstützer*in{% else %}Unterstützer*innen{% endif %}.
                     <br />
                     In <strong>{{initiative.end_of_this_phase | timeuntil}}</strong> geht diese Initiative in Diskussion.
@@ -244,7 +244,7 @@
                 <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
                 <span class="meta-content current-supporters">
                     <strong>
-                        {{initiative.absolute_supporters|default:0}} 
+                        {{initiative.absolute_supporters|default:0}}
                     </strong>
                     {% if initiative.absolute_supporters == 1 %}
                     Unterstützer*in
@@ -258,10 +258,10 @@
                 </div>
                 {% if initiative.absolute_supporters < initiative.quorum %}
                 <span class="meta-content support-needed">
-                    Es fehlen noch 
+                    Es fehlen noch
                     <strong>
                         {{initiative.quorum|sub:initiative.absolute_supporters}}
-                    </strong> 
+                    </strong>
                     {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}
                     Unterstützer*in{% else %}Unterstützer*innen{% endif %} zum Erreichen des Quorums.
                 </span>
@@ -271,10 +271,10 @@
                 </span>
                 {% else %}
                 <span class="meta-content support-needed">
-                    Diese Initiative hat das Quorum erreicht und darüber hinaus 
+                    Diese Initiative hat das Quorum erreicht und darüber hinaus
                     <strong>
                         {{initiative.absolute_supporters|sub:initiative.quorum}}
-                    </strong> 
+                    </strong>
                     {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}
                     Unterstützer*in{% else %}Unterstützer*innen{% endif %}.
                 </span>
@@ -362,7 +362,7 @@
                 <span class="declined" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.nays}}</span>
             </div>
         </div>
-        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.5rem">
             <div class="col-12">
                 <div class="progress">
                   <div class="progress-bar bg-success" role="progressbar" style="width: {{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
@@ -387,7 +387,7 @@
                 <span class="declined" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.nays}}</span>
             </div>
         </div>
-        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.5rem">
             <div class="col-12">
                 <div class="progress">
                   <div class="progress-bar bg-success" role="progressbar" style="width: {{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
@@ -403,12 +403,18 @@
             </div>
         </div>
         {% endif %}
-        <div class="row" style="padding-top: 1rem">
-            <div class="col-12">
-			{% include "fragments/participation.html" with closed=1 %}
-            </div>
+        {% include "fragments/your_vote.html" with closed=1 %}
+    </div>
+</div>
+<div class="container-fluid cta stats">
+  <div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h6 class="text-muted classification">Abstimmungsbeteiligung</h6>
         </div>
     </div>
+    {% include "fragments/participation.html" with closed=1 %}
+  </div>
 </div>
 {% endif %}
 
@@ -422,7 +428,7 @@
         </div>
 
         {% include "initproc/blocks/content.html" %}
-        
+
         {% if initiative.was_closed_at %}
             <!--<div class="row">
                 <div class="col-12">
@@ -502,7 +508,7 @@
                 {% ifequal initiative.state 's' %}
                 <span class="meta-content current-supporters">
                     <strong>
-                        {{initiative.absolute_supporters|default:0}} 
+                        {{initiative.absolute_supporters|default:0}}
                     </strong>
                     {% if initiative.absolute_supporters == 1 %}
                     Unterstützer*in
@@ -516,10 +522,10 @@
                 </div>
                 {% if initiative.absolute_supporters < initiative.quorum %}
                 <span class="meta-content support-needed">
-                    Es fehlen noch 
+                    Es fehlen noch
                     <strong>
                         {{initiative.quorum|sub:initiative.absolute_supporters}}
-                    </strong> 
+                    </strong>
                     {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}
                     Unterstützer*in{% else %}Unterstützer*innen{% endif %} zum Erreichen des Quorums.
                 </span>
@@ -529,10 +535,10 @@
                 </span>
                 {% else %}
                 <span class="meta-content">
-                    Diese Initiative hat das Quorum erreicht und darüber hinaus 
+                    Diese Initiative hat das Quorum erreicht und darüber hinaus
                     <strong>
                         {{initiative.absolute_supporters|sub:initiative.quorum}}
-                    </strong> 
+                    </strong>
                     {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}
                     Unterstützer*in{% else %}Unterstützer*innen{% endif %}.
                 </span>
@@ -574,7 +580,7 @@
                 <div class="col-12">
                     <h2>Erstunterstützer*innen</h2>
                     <div class="d-flex flex-wrap avatar">
-                        {% for sup in initiative.first_supporters.all %} 
+                        {% for sup in initiative.first_supporters.all %}
                             <div class="text-center initiator">
                                 {% include "fragments/avatar.html" with user=sup.user %}
                                 <div class="name">
@@ -618,7 +624,7 @@
                 <div class="col-12">
                     <h2>Unterstützer*innen</h2>
                     <div class="d-flex flex-wrap avatar">
-                        {% for sup in initiative.public_supporters.all %} 
+                        {% for sup in initiative.public_supporters.all %}
                             <div class="text-center initiator">
                                 {% include "fragments/avatar.html" with user=sup.user %}
                                 <div class="name">

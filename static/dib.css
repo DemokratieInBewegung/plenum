@@ -478,7 +478,9 @@ img.avatar {
   margin-top: 1rem;
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: rgba(140, 140, 140, 0.03);
+  border-top: 2px solid rgba(224, 224, 224, 1);
+  border-bottom: 2px solid rgba(224, 224, 224, 1);
 }
 
 .initiator {
@@ -534,7 +536,22 @@ img.avatar {
 .cta {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: rgba(140, 140, 140, 0.03);
+  border-top: 2px solid rgba(224, 224, 224, 1);
+  border-bottom: 2px solid rgba(224, 224, 224, 1);
+}
+
+.cta.voted {
+  border-bottom-color: rgba(255, 255, 255, 1);
+}
+
+.cta.closed {
+  border-top: 0;
+  border-bottom: 0;
+}
+
+.cta.stats {
+  border-top: 0;
 }
 
 .cta .meta-content {
@@ -1304,7 +1321,6 @@ Argument base design
  display: block;
  width: 4rem;
  padding-top: .5rem;
- padding-bottom: 1rem;
 }
 
 .your-vote .in-favor .material-icons, .your-vote .declined .material-icons {

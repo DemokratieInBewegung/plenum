@@ -272,7 +272,7 @@ def show_resp(request, initiative, target_type, target_id, slug=None, type=None)
 @ajax
 @login_required
 @can_access_initiative(None, 'can_moderate')
-def show_moderation(request, initiative, target_id, slug=None, type=None):
+def show_moderation(request, initiative, target_id, slug=None, initype=None):
     arg = get_object_or_404(Moderation, pk=target_id)
 
     assert arg.initiative == initiative, "How can this be?"

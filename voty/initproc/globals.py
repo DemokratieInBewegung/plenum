@@ -67,10 +67,6 @@ class AREAS:
     Zukunft = 'Zukunft aktiv gestalten'
     andere = '(andere)'
 
-INITIATIVE_AREAS = []
-POLICY_CHANGE_AREAS = []
-
-
 class VOTED:
     """
     The possibilities for casting a vote

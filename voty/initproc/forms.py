@@ -186,7 +186,7 @@ class NewCommentForm(forms.ModelForm):
 
 class NewTagForm(forms.Form):
     tag = forms.ModelMultipleChoiceField(
-        label="Schlagworte ersetzen",
+        label="Schlagworte ändern",
         queryset=Tag.objects.all(),
         required=False,
         widget=autocomplete.ModelSelect2Multiple(

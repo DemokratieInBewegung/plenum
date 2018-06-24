@@ -1,0 +1,37 @@
+{% extends 'site_base.html' %}
+{% load i18n %}
+{% load site_defaults %}
+
+{% block body %}
+<div class="container-fluid">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+				<h2>{% trans "About this Voting Platform" %}</h2>
+
+				<h3>{% trans "Quorum" %}</h3>
+				<p>{% blocktrans %}According to the Voting regulations for Initiatives, the Quorum is determined on each 1st of the month on the Basis of registered participants. The latest Quorum is the binding one. {% endblocktrans %}</p>
+        <ul>
+				  {% for q in quorums %}
+					  <li>ab {{q.created_at|date}}: {{q.quorum}}</li>
+					{% endfor %}
+				</ul>
+
+				<h3>{% trans "Legal Notice" %}</h3>
+				<p>{% trans "This tool is run by " %}{{ 'PLATFORM_TITLE'|get_setting }}.
+				<a href="{{ 'PLATFORM_LEGAL_URL'|get_setting }}">{% trans "The corresponding legal notice can be found here" %}</a>.</p>
+
+				<!-- <h2>{% trans "Licence" %}</h2>
+
+				<p>{% trans "Initiators have full copyright for their Initiatives." %}</p> -->
+
+				<h3>{% trans "Software" %}</h3>
+
+				<p>{% trans "This software is written with Python/Django and Postgres. It is Open Source and licenced under AGPL 3.0" %}
+				<a href="{{ 'PLATFORM_TECH_SOURCE_CODE_URL'|get_setting }}">{% trans "The source code has been published on Github" %}</a>. 
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

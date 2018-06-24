@@ -1,0 +1,4 @@
+{% load i18n %}
+{% blocktrans with site_name=current_site.name %}You have been invited to join {{ site_name }}{% endblocktrans %}. 
+
+{% trans "Please follow this link to register:" %}{{ signup_url }}

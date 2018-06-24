@@ -1,12 +1,11 @@
 {% extends "site_base.html" %}
-
 {% load i18n %}
-
-{% block head_title %}{% trans "Confirm your email address" %}{% endblock %}
+{% load site_defaults %}
+{% block head_title %}{% trans "Email confirmation sent" %}{% endblock %}
 
 {% block body %}
-    <h2>{% trans "Confirm your email address" %}</h2>
+  <h2>{% trans "Email confirmation sent" %}</h2>
     
-    <p>{% blocktrans %}We have sent you an email to <b>{{ email }}</b> for verification. Follow the link provided to finalize the signup process. If you do not receive it within a few minutes, contact us at <a href="mailto:{{ THEME_CONTACT_EMAIL }}">{{ THEME_CONTACT_EMAIL }}</a>.{% endblocktrans %}</p>
+  <p>{% blocktrans with email=confirmation.email_address.email %}A message was sent to <b>{{ email }}</b>. Please follow the link contained in the message to complete the registration process. In case you did not receive the email (please verify it is not in your spam folder), please contact us at the following email adress: {% endblocktrans %}<a href="mailto:{{ 'THEME_CONTACT_EMAIL'|get_setting }}">{{ 'THEME_CONTACT_EMAIL'|get_setting }}</a>.</p>
     <p><a href="{{ success_url }}">{% trans "Go back" %}</a></p>
 {% endblock %}

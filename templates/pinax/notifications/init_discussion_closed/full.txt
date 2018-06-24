@@ -1,4 +1,4 @@
-Die Diskussionsphase von "{{sender}}" ist beendet und die Initiative kann jetzt finalisiert
-und dann zur Abstimmung eingereicht werden. 
-
-Du findest die Initiative unter {{ base_url }}/initiative/{{sender.id}}-{{sender.slug}}s
+{% load i18n %}
+{% blocktrans %}The Discussion phase of "{{sender}}" has ended and the Initiative can now be finalized
+and put up for a Vote.{% endblocktrans %}
+{% trans "The Initiative can be found at " %}{{ base_url }}/initiative/{{sender.id}}-{{sender.slug}}

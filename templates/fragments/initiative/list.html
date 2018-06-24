@@ -1,15 +1,19 @@
+{% load i18n %}
 {% for initiative in initiatives %}
 	{% include "fragments/initiative/card.html" %}
-{% empty %}
-<div class="card">
-	<div class="card-block">
-		<em>Keine Initiativen gefunden, die Deiner Suche entsprechen.</em>
-	</div>
-</div>
+  {% empty %}
+  <div class="card">
+  	<div class="card-block">
+  		<em>{% trans "No Initiatives found matching your search criteria." %}</em>
+  	</div>
+  </div>
 {% endfor %}
 <script>
 // Initialize Tooltips
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip();
-});
+// XXX really necessary?
+(function (window)  {
+  if (window.$) {
+    $('[data-toggle="tooltip"]').tooltip();
+  }
+}(window));
 </script>

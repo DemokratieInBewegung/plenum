@@ -2,9 +2,10 @@
 {% load mathfilters %}
 {% load markdown %}
 {% load fullurl %}
+{% load i18n %}
 
 {% block head_title %}
-{{initiative.title}} – im Plenum der Beweger*innen von DEMOKRATIE IN BEWEGUNG
+  {{initiative.title}} - {% blocktrans %}in the Plenum of {{ PLATFORM_TITLE }}{% endblocktrans %}
 {% endblock %}
 
 {% block custom_sm_title %}
@@ -14,641 +15,622 @@
 {% endblock %}
 
 {% block custom_header %}
-<div class="container-fluid">
+  <div class="container-fluid">
     <div class="container">
-        <div class="row">
-            <div class="col">
-                <a href="/" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Übersicht</a>
-            </div>
+      <div class="row">
+        <div class="col">
+          <a href="/" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>{% trans "Return to Overview" %}</a>
         </div>
-        <div class="row initiative-title">
-            <div class="col-12">
-                <h1 class="display-4">{{initiative.title}}</h1>
-            </div>
+      </div>
+      <div class="row initiative-title">
+        <div class="col-12">
+            <h1 class="display-4">{{initiative.title}}</h1>
         </div>
-        <div class="row initiative-subtitle">
-            <div class="col-12">
-                <p>{{initiative.subtitle}}</p>
-            </div>
+      </div>
+      <div class="row initiative-subtitle">
+        <div class="col-12">
+          <p>{{initiative.subtitle}}</p>
         </div>
-        <div class="row skip-meta">
-            <div class="col-12">
-                <a href="#initiative-text" class="skip-meta"><i class="material-icons expand-more">expand_more</i>Zum Text der Initiative</a>
-            </div>
+      </div>
+      <div class="row skip-meta">
+        <div class="col-12">
+            <a href="#initiative-text" class="skip-meta"><i class="material-icons expand-more">expand_more</i>{% trans "Browse Initiative" %}</a>
         </div>
+      </div>
     </div>
-</div>
-
-
+  </div>
 {% endblock %}
-{% block content %}
 
-<div class="container-fluid">
+{% block content %}
+  <div class="container-fluid">
     <div class="container">
-        <div class="row initiative-state">
-            <div class="col-12">
-                {% if initiative.state == 'p' or initiative.state == 'i' or initiative.state == 'e' %}
-                    {% if request.guard.can_edit %}
-                        {% if not initiative.ready_for_next_stage %}
-                        <div class="pre-submit">
-                            <div class="alert alert-info" role="alert">
-                            {% if initiative.state != 'e' %}
-                            <h6>Um Deine Initiative einreichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
-                            {% else %}
-                            <h6>Um Deine Initiative nach der Überarbeitung zur Abstimmung einreichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
-                            {% endif %}
-                            <ol>
-                                {% if initiative.state != 'e' %}
-                                <li>Alle Textfelder beim Einreichen müssen ausgefüllt sein.</li>
-                                <li>Du musst genau 2 Mitinitiator*innen angeben.</li>
-                                <li>Deine Mitinitiator*innen müssen ihre Mitautor*innenschaft bestätigt haben.</li>
-                                {% else %}
-                                <li>Alle Textfelder müssen ausgefüllt sein.</li>
-                                <li>Deine Mitinitiator*innen müssen ihre Mitautor*innenschaft erneut bestätigt haben.</li>
-                                {% endif %}
-                            </ol>
-                            </div>
-                            {% endif %}
-                            <form action="/initiative/{{initiative.id}}/edit" style="display:inline"  method="GET">
-                                {% csrf_token %}
-                                <button title="Bearbeiten" class="btn btn-success edit" type="submit">
-                                    <i class="material-icons edit">edit</i><span>Bearbeiten</span>
-                                </button>
-                            </form>
-                            {% if initiative.ready_for_next_stage %}
-                            <form action="/initiative/{{initiative.id}}/submit_to_committee" style="display:inline"  method="POST">
-                                {% csrf_token %}
-                                {% if initiative.state != 'e' %}
-                                <button title="Einreichen" class="btn btn-success submit" type="submit">
-                                    <i class="material-icons public">public</i><span>Einreichen</span>
-                                </button>
-                                {% else %}
-                                <button title="Zur Abstimmung einreichen" class="btn bg-vote submit" type="submit">
-                                    <i class="material-icons thumbs-up-down">thumbs_up_down</i><span>Zur Abstimmung einreichen</span>
-                                </button>
-                                {% endif %}
-                            </form>
-                            {% else %}
-                            {% if initiative.state != 'e' %}
-                            <button title="Kann noch nicht eingereicht werden" class="btn btn-success submit" style="display:inline" disabled=True type="submit">
-                                <i class="material-icons public">public</i><span>Einreichen</span>
-                            </button>
-                            {% else %}
-                            <button title="Kann noch nicht zur Abstimmung eingereicht werden" class="btn bg-vote submit" style="display:inline" disabled=True type="submit">
-                                <i class="material-icons thumbs-up-down">thumbs_up_down</i><span>Zur Abstimmung einreichen</span>
-                            </button>
-                            {% endif %}
-                        </div>
-                        {% endif %}
+      <div class="row initiative-state">
+        <div class="col-12">
+          {% if initiative.state == 'p' or initiative.state == 'i' or initiative.state == 'e' %}
+            {% if request.guard.can_edit %}
+              {% if not initiative.ready_for_next_stage %}
+                <div class="pre-submit">
+                  <div class="alert alert-info" role="alert">
+                    {% if initiative.state != 'e' %}
+                      <h6>{% trans "In order to submit an Initiative for voting, the following conditions have to be met:" %}</h6>
+                    {% else %}
+                      <h6>{% trans "To submit your modified Initiative for voting, the following conditions have to be met:" %}</h6>
                     {% endif %}
-                {% endif %}
+                    <ol>
+                      {% if initiative.state != 'e' %}
+                      <li>{% trans "All text fields need to be filled when submitting." %}</li>
+                      <li>{% trans "Two co-Initiators have to be named." %}</li>
+                      <li>{% trans "The co-Initiators have to confirm their support and authorship of the Initiative." %}</li>
+                      {% else %}
+                      <li>{% trans "All text fields need to be filled when submitting." %}</li>
+                      <li>{% trans "The co-Initiators have to re-confirm their support and authorship." %}</li>
+                      {% endif %}
+                    </ol>
+                  </div>
 
                 {% if initiative.state == 'p' %}
-                    <p>
-                    An dieser Initiative <strong class="badge-prepare">wird noch gearbeitet</strong>.
-                    </p>
+                  <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being edited" %}</strong>.</p>
                 {% elif initiative.state == 'e' %}
-                    <p>
-                    Diese Initiative <strong class="badge-prepare">wird für die Abstimmung finalisiert</strong>.
-                    </p>
+                  <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being finalized for a Vote" %}</strong>.</p>
                 {% elif initiative.state == 'i' or initiative.state == 'm' %}
-                    <p>
-                    Diese Initiative <strong class="badge-prepare">wird gerade geprüft</strong> und {% if initiative.state == 'i' %} wird dann veröffentlicht {% else %} geht dann in <strong  class="badge-prepare">die Abstimmung</strong>{% endif %}.
-                    </p>
-                    {% if perms.initproc.add_moderation %}
-                        {% if request.guard.can_moderate %}
-                            {% include 'fragments/moderation/index.html' %}
-                        {% else %}
-                            <div class="alert alert-info">{{request.guard.reason}}</div>
-                        {% endif %}
-                    {% endif %}
-                {% endif %}
-
-                {% ifequal initiative.state 'h' %}
-                <p>
-                    Diese Initiative <strong class="badge-arrivals">ist nicht sichtbar</strong>.
-                </p>
-                {% endifequal %}
-
-                {% ifequal initiative.state 's' %}
-                {% if initiative.absolute_supporters < initiative.quorum %}
-                <p>
-                    Diese Initiative 
-                    <a href="#cta"><strong class="badge-support">sucht noch mindestens {{initiative.quorum|sub:initiative.absolute_supporters}} {% if initiative.absolute_supporters == 1 %}Unterstützer*in{% else %}Unterstützer*innen{% endif %}</strong></a>. Dafür bleiben ihr <strong>noch {{initiative.end_of_this_phase | timeuntil}}</strong>.
-                </p>
-                {% elif initiative.absolute_supporters == initiative.quorum %}
-                <p>
-                    Diese Initiative hat 
-                    <a href="#cta"><strong class="badge-support">das Quorum an Unterstützer*innen</strong></a> erreicht!
-                    <br />
-                    In <strong>{{initiative.end_of_this_phase | timeuntil}}</strong> geht diese Initiative in Diskussion.
-                </p>
-                {% else %}
-                <p>
-                    Diese Initiative 
-                    <a href="#cta"><strong class="badge-support">hat das Quorum erreicht</strong></a> und darüber hinaus <strong>{{initiative.absolute_supporters|sub:initiative.quorum}}</strong> {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}Unterstützer*in{% else %}Unterstützer*innen{% endif %}.
-                    <br />
-                    In <strong>{{initiative.end_of_this_phase | timeuntil}}</strong> geht diese Initiative in Diskussion.
-                </p>
-                {% endif %}
-                {% endifequal %}
-                {% ifequal initiative.state 'd' %}
-                <p>
-                    Diese Initiative befindet sich <a href="#debate">in Diskussion</a>.
-                </p>
-                {% endifequal %}
-
-
-                {% ifequal initiative.state 'v' %}
-                    <p>
-                        Über diese Initiative <a href="#voting"><strong class="badge-vote">wird gerade abgestimmt</strong></a>.
-                    </p>
-                {% endifequal %} {% ifequal initiative.state 'a' %}
-                <p>Diese Initiative {% if user.is_authenticated %}
-                <a href="#cta">{% endif %}<strong class="badge-accepted">wurde angenommen</strong>{% if user.is_authenticated %}</a>{% endif %}.
-                {% endifequal %} {% ifequal initiative.state 'r' %} {% if initiative.went_to_discussion_at %}
-                <p>Diese Initiative <a href="#cta"><strong class="badge-rejected">wurde abgelehnt</strong></a>.</p>
-                {% else %}
-                <p>Diese Initiative <strong class="badge-rejected">wurde abgelehnt</strong>, da sie das Quorum nicht erreicht hat.</p>
-                {% endif %} {% endifequal %}
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="container-fluid initiators">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h6 class="text-muted classification">Initiator*innen</h6>
-            </div>
-        </div>
-        <div class="row no-gutters avatar">
-            <div class="d-flex flex-wrap">
-                {% for sup in initiative.initiators %}
-                <div class="text-center initiator">
-                    {% include "fragments/avatar.html" with user=sup.user %}
-                    <div class="name">
-                        {{ sup.user.get_full_name|default:sup.user.username }}
-                    </div>
-                    {% if initiative.state == 'i' or initiative.state == 'p'  or initiative.state == 'e' %}
-                    <div class="approval">
-                        {% if sup.ack %}
-                            <span title="bestätigt" class=""><i class="material-icons done">done</i></span>
-                        {% else %}
-                            {% if sup.user == user %}
-                                <strong style="display:block">Jetzt bestätigen</strong>
-
-                                <form action="/initiative/{{initiative.id}}/ack_support" style="display:inline" method="POST">
-                                    {% csrf_token %}
-                                    <button title="Unterstützen" class="btn btn-success" type="submit">
-                                        <i class="material-icons">done</i>
-                                    </button>
-                                </form>
-                                <form action="/initiative/{{initiative.id}}/rm_support" style="display:inline"  method="POST">
-                                    {% csrf_token %}
-                                    <button title="Nicht unterstützen" class="btn btn-danger" type="submit">
-                                        <i class="material-icons">not_interested</i>
-                                    </button>
-                                </form>
-                            {% else %}
-                            <span title="unbestätigt" class=""><i class="material-icons warning">warning</i></span>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                    {% endif %}
-                </div>
-                {% endfor %}
-                {% if request.guard.can_inivite_initiators %}
-                <div id="invite-initiators">
-                    <a data-ajax="true" href="/initiative/{{initiative.id}}/invite/initiators?fragment=%23invite-initiators" class="btn btn-success">weitere einladen</a>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-
-
-{% include "initproc/blocks/meta.html" %}
-
-{% include "initproc/blocks/variants.html" %}
-
-
-{% ifequal initiative.state 's' %}
-<div id="cta" class="container-fluid cta">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
-                <span class="meta-content current-supporters">
-                    <strong>
-                        {{initiative.absolute_supporters|default:0}} 
-                    </strong>
-                    {% if initiative.absolute_supporters == 1 %}
-                    Unterstützer*in
+                  <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being reviewed" %}</strong> {% trans "and" %} {% if initiative.state == 'i' %} {% trans "will then be published" %} {% else %} {% trans "will then be posted " %}<strong class="badge-prepare">{% trans "for a Vote" %}</strong>{% endif %}.</p>
+                  {% if perms.initproc.add_moderation %}
+                    {% if request.guard.can_moderate %}
+                      {% include 'fragments/moderation/index.html' %}
                     {% else %}
-                    Unterstützer*innen
+                      <div class="alert alert-info">{{request.guard.reason}}</div>
                     {% endif %}
-                </span>
-                <div class="progress">
-                    <div class="progress-bar bg-support" role="progressbar" style="width: {% if initiative.relative_support <= 100 %}{{initiative.relative_support|floatformat:"0"}}{% else %}100{% endif %}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
-                    </div>
-                </div>
-                {% if initiative.absolute_supporters < initiative.quorum %}
-                <span class="meta-content support-needed">
-                    Es fehlen noch 
-                    <strong>
-                        {{initiative.quorum|sub:initiative.absolute_supporters}}
-                    </strong> 
-                    {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}
-                    Unterstützer*in{% else %}Unterstützer*innen{% endif %} zum Erreichen des Quorums.
-                </span>
-                {% elif initiative.absolute_supporters == initiative.quorum %}
-                 <span class="meta-content support-needed">
-                    Diese Initiative hat das Quorum an Unterstützer*innen erreicht!
-                </span>
-                {% else %}
-                <span class="meta-content support-needed">
-                    Diese Initiative hat das Quorum erreicht und darüber hinaus 
-                    <strong>
-                        {{initiative.absolute_supporters|sub:initiative.quorum}}
-                    </strong> 
-                    {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}
-                    Unterstützer*in{% else %}Unterstützer*innen{% endif %}.
-                </span>
+                  {% endif %}
+
                 {% endif %}
-                {% if has_supported %}
-                <span class="meta-content support supported-by">
-                    Du unterstützt diese Initiative!
-                </span>
-                {% else %}
-                <form action="/initiative/{{initiative.id}}/support" method="GET">
-                    <button class="btn bg-support" type="submit">
-                        Jetzt Unterstützen
-                    </button>
-                    <div class="form-check">
-                        <label class="form-check-label text-muted">
-                            <input type="checkbox" class="form-check-input" name="public">
-                            Öffentlich anzeigen
-                        </label>
-                    </div>
+                <form action="/initiative/{{initiative.id}}/edit" style="display:inline"  method="GET">
+                  {% csrf_token %}
+                  <button title="{% trans 'Edit' %}" class="btn btn-success edit" type="submit">
+                    <i class="material-icons edit">edit</i><span>{% trans "Edit" %}</span>
+                  </button>
                 </form>
-                {% endif %}
-            </div>
-        </div>
+
+                {% if initiative.ready_for_next_stage %}
+                  <form action="/initiative/{{initiative.id}}/submit_to_committee" style="display:inline"  method="POST">
+                    {% csrf_token %}
+                    {% if initiative.state != 'e' %}
+                      <button title="{% trans 'Submit' %}" class="btn btn-success submit" type="submit">
+                        <i class="material-icons public">public</i><span>{% trans "Submit" %}</span>
+                      </button>
+                    {% else %}
+                      <button title="{% trans 'Submit for Vote' %}" class="btn bg-vote submit" type="submit">
+                        <i class="material-icons thumbs-up-down">thumbs_up_down</i><span>{% trans "Submit for Vote" %}</span>
+                      </button>
+                    {% endif %}
+                  </form>
+                {% else %}
+                  {% if initiative.state != 'e' %}
+                    <button title="{% trans 'Not possible to submit in current state' %}" class="btn btn-success submit" style="display:inline" disabled=True type="submit">
+                      <i class="material-icons public">public</i><span>{% trans "Submit" %}</span>
+                    </button>
+                  {% else %}
+                    <button title="{% trans 'Not possible to submit for vote in current state' %}" class="btn bg-vote submit" style="display:inline" disabled=True type="submit">
+                      <i class="material-icons thumbs-up-down">thumbs_up_down</i><span>{% trans "Submit for Vote" %}</span>
+                    </button>
+                  {% endif %}
+    
+              </div>
+            {% endif %}
+          {% endif %}
+        {% endif %}
+
+        {% if initiative.state == 'p' %}
+          <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being edited" %}</strong>.</p>
+        {% elif initiative.state == 'e' %}
+          <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being finalized for a Vote" %}</strong>.</p>
+        {% elif initiative.state == 'i' or initiative.state == 'm' %}
+          <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being reviewed" %}</strong> {% trans "and" %} {% if initiative.state == 'i' %} {% trans "will then be published" %} {% else %} {% trans "will then be posted " %}<strong class="badge-prepare">{% trans "for a Vote" %}</strong>{% endif %}.</p>
+          {% if request.user.is_staff %}
+            {% if request.guard.can_moderate %}
+                {% include 'fragments/moderation/index.html' %}
+            {% else %}
+                <div class="alert alert-info">{{request.guard.reason}}</div>
+            {% endif %}
+          {% endif %}
+        {% endif %}
+
+        {% ifequal initiative.state 'h' %}
+          <p>{% trans "This Initiative " %} <strong class="badge-arrivals">{% trans "is not visible" %}</strong>.</p>
+        {% endifequal %}
+        {% ifequal initiative.state 's' %}
+          {% if initiative.absolute_supporters < initiative.quorum %}
+            <p>{% trans "This Initiative " %}<a href="#cta"><strong class="badge-support">{% trans "requires at least" %} {{initiative.quorum|sub:initiative.absolute_supporters}} {% if initiative.absolute_supporters == 1 %}{% trans "supporter" %}{% else %}{% trans "supporters" %}{% endif %}</strong></a>. {% trans "Remaining time available for this Initiative" %} <strong>{{initiative.end_of_this_phase | timeuntil}}</strong>.</p>
+          {% elif initiative.absolute_supporters == initiative.quorum %}
+            <p>
+              {% trans "This Initiative " %}
+              <a href="#cta"><strong class="badge-support">{% trans "has reached the Quorum" %}</strong></a>!
+              <br />
+              {% trans "It will go into discussion in" %} <strong>{{initiative.end_of_this_phase | timeuntil}}</strong>.
+            </p>
+          {% else %}
+              <p>
+              {% trans "This Initiative " %}
+              <a href="#cta"><strong class="badge-support">{% trans "has reached the Quorum" %}</strong></a>{% trans "and in addition " %} <strong>{{initiative.absolute_supporters|sub:initiative.quorum}}</strong> {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}{% trans "supporter" %}{% else %}{% trans "supporters" %}{% endif %}.
+              <br />
+              {% trans "It will go into discussion in" %} <strong>{{initiative.end_of_this_phase | timeuntil}}</strong>.
+            </p>
+          {% endif %}
+        {% endifequal %}
+        {% ifequal initiative.state 'd' %}
+          <p>{% blocktrans %}This initiative is currently being <a href="#debate">discussed</a>{% endblocktrans %}.</p>
+        {% endifequal %}
+        {% ifequal initiative.state 'v' %}
+          <p>{% blocktrans %}This initiative is currently being <a href="#voting"><strong class="badge-vote">voted on</strong></a>{% endblocktrans %}.</p>
+        {% endifequal %}
+        {% ifequal initiative.state 'a' %}
+          <p>{% trans "This Initiative " %}{% if user.is_authenticated %}<a href="#cta">{% endif %}<strong class="badge-accepted">{% trans "was accepted" %}</strong>{% if user.is_authenticated %}</a>{% endif %}.</p>
+        {% endifequal %} 
+        {% ifequal initiative.state 'r' %}
+          {% if initiative.went_to_discussion_at %}
+            <p>{% trans "This Initiative " %} <a href="#cta"><strong class="badge-rejected">{>% trans "was rejected" %}</strong></a>.</p>
+          {% else %}
+            <p>{% trans "This Initiative " %} <strong class="badge-rejected">{% trans "was rejected" %}</strong>, {% trans "because it did not reach the Quorum" %}.</p>
+          {% endif %}
+        {% endifequal %}
+      </div>
     </div>
-</div>
-{% endifequal %}
+  </div>
+  </div>
 
 
-{% ifequal initiative.state 'd' %}
-<div id="cta" class="container-fluid cta">
+  <div class="container-fluid initiators">
     <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
-                <p>Diese Initiative befindet sich in Diskussion.</p>
-                <a href="#discuss" class="btn bg-discussion">
-                    Jetzt diskutieren
-                </a>
-            </div>
+      <div class="row">
+        <div class="col-12">
+          <h6 class="text-muted classification">{% trans "Initiators" %}</h6>
         </div>
-    </div>
-</div>
-{% endifequal %}
-
-{% ifequal initiative.state 'v' %}
-<div id="cta" class="container-fluid cta">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
-                <p>Über diese Initiative wird gerade abgestimmt.</p>
-                {% include "fragments/jump_to_vote.html" %}
-            </div>
-        </div>
-    </div>
-</div>
-{% endifequal %}
-
-{% if initiative.state == 'a' or initiative.state == 'r' %}
-<div id="cta" class="container-fluid cta voted">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h6 class="text-muted classification">Ergebnis der Abstimmung</h6>
-            </div>
-        </div>
-        {% if initiative.votes.count > 0 %}
-        {% if initiative.allows_abstention %}
-        <div class="row" style="padding-top: .25rem; padding-bottom: .5rem">
-            <div class="col-12" style="padding-top: 1rem">
-                <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
-            </div>
-        </div>
-        <div class="row justify-content-center results-display">
-            <div class="col-auto" data-toggle="tooltip" title="{{initiative.yays}} {% if initiative.yays != 1 %}Ja-Stimmen{% else %}Ja-Stimme{% endif %}">
-                <span class="in-favor text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_up</i></span>
-                <span class="in-favor" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.yays}}</span>
-            </div>
-            <div class="col-auto" data-toggle="tooltip" title="{{initiative.abstains}} {% if initiative.abstains != 1 %}Enthaltungen{% else %}Enthaltung{% endif %}">
-                <span class="abstained text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">panorama_fish_eye</i></span>
-                <span class="abstained" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.abstains}}</span>
-            </div>
-            <div class="col-auto" data-toggle="tooltip" title="{{initiative.nays}} {% if initiative.nays != 1 %}Nein-Stimmen{% else %}Nein-Stimme{% endif %}">
-                <span class=" declined text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_down</i></span>
-                <span class="declined" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.nays}}</span>
-            </div>
-        </div>
-        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
-            <div class="col-12">
-                <div class="progress">
-                  <div class="progress-bar bg-success" role="progressbar" style="width: {{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
-                  <div class="progress-bar bg-abstain" role="progressbar" style="width: {{ initiative.abstains|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.abstains|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
-                  <div class="progress-bar bg-danger" role="progressbar" style="width: {{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      <div class="row no-gutters avatar">
+        <div class="d-flex flex-wrap">
+          {% for sup in initiative.initiators %}
+            <div class="text-center initiator">
+              {% include "fragments/avatar.html" with user=sup.user %}
+                <div class="name">
+                  {{ sup.user.get_full_name|default:sup.user.username }}
                 </div>
+                {% if initiative.state == 'i' or initiative.state == 'p'  or initiative.state == 'e' %}
+                <div class="approval">
+                  {% if sup.ack %}
+                    <span title="{% trans 'confirmed' %}" class=""><i class="material-icons done">done</i></span>
+                  {% else %}
+                    {% if sup.user == user %}
+                      <strong style="display:block">{% trans "Confirm now" %}</strong>
+
+                      <form action="/initiative/{{initiative.id}}/ack_support" style="display:inline" method="POST">
+                        {% csrf_token %}
+                        <button title="{% trans 'Support' %}" class="btn btn-success" type="submit">
+                          <i class="material-icons">done</i>
+                        </button>
+                      </form>
+                      <form action="/initiative/{{initiative.id}}/rm_support" style="display:inline"  method="POST">
+                        {% csrf_token %}
+                        <button title="{% trans 'No Support' %}" class="btn btn-danger" type="submit">
+                          <i class="material-icons">not_interested</i>
+                        </button>
+                      </form>
+                    {% else %}
+                      <span title="{% trans 'unconfirmed' %}" class=""><i class="material-icons warning">warning</i></span>
+                    {% endif %}
+                  {% endif %}
+                </div>
+              {% endif %}
             </div>
+          {% endfor %}
+  
+          {% if request.guard.can_inivite_initiators %}
+            <div id="invite-initiators">
+              <a data-ajax="true" href="/initiative/{{initiative.id}}/invite/initiators?fragment=%23invite-initiators" class="btn btn-success">{% trans "Invite additional Initiators" %}</a>
+            </div>
+          {% endif %}
         </div>
-        {% else %}
-        <div class="row" style="padding-top: .25rem; padding-bottom: .5rem">
+      </div>
+    </div>
+  </div>
+
+  {% include "initproc/blocks/meta.html" %}
+
+  {% include "initproc/blocks/variants.html" %}
+
+
+  {% ifequal initiative.state 's' %}
+    <div id="cta" class="container-fluid cta">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <h6 class="text-muted classification">{% trans "Time remaining" %} {{initiative.end_of_this_phase | timeuntil}}</h6>
+            <span class="meta-content current-supporters">
+              <strong>{{initiative.absolute_supporters|default:0}}</strong>
+                {% if initiative.absolute_supporters == 1 %}
+                  {% trans "Supporter" %}
+                {% else %}  
+                  {% trans "Supporters" %}
+                {% endif %}
+            </span>
+            <div class="progress">
+              <div class="progress-bar bg-support" role="progressbar" style="width: {% if initiative.relative_support <= 100 %}{{initiative.relative_support|floatformat:"0"}}{% else %}100{% endif %}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
+            </div>
+          </div>
+
+          {% if initiative.absolute_supporters < initiative.quorum %}
+            <span class="meta-content support-needed">
+              {% trans "Initiative is missing" %} 
+              <strong>{{initiative.quorum|sub:initiative.absolute_supporters}}</strong> 
+                {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}
+                  {% trans "Supporter" %}
+                {% else %}
+                  {% trans "Supporters" %}
+                {% endif %}
+                {% trans "to reach the Quorum" %}.
+            </span>
+          {% elif initiative.absolute_supporters == initiative.quorum %}
+            <span class="meta-content support-needed">
+              {% trans "This Initiative has reached the Quorum" %}!
+            </span>
+          {% else %}
+            <span class="meta-content support-needed">
+              {% trans "This Initiative has reached the Quorum" %} {% trans "and in addition " %} 
+                <strong>{{initiative.absolute_supporters|sub:initiative.quorum}}</strong> 
+                {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}
+                {% trans "Supporter" %}{% else %}{% trans "Supporters" %}{% endif %}.
+            </span>
+          {% endif %}
+            {% if has_supported %}
+              <span class="meta-content support supported-by">
+                {% trans "You are supporting this Initiative!" %}
+              </span>
+            {% else %}
+              <form action="/initiative/{{initiative.id}}/support" method="GET">
+                <button class="btn bg-support" type="submit">
+                  {% trans "Support this Initiative" %}
+                </button>
+                <div class="form-check">
+                  <label class="form-check-label text-muted">
+                    <input type="checkbox" class="form-check-input" name="public">
+                    {% trans "Show support publicly" %}
+                  </label>
+                </div>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endifequal %}
+
+  {% ifequal initiative.state 'd' %}
+  <div id="cta" class="container-fluid cta">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h6 class="text-muted classification">{% trans "Time remaining" %} {{initiative.end_of_this_phase | timeuntil}}</h6>
+          <p>{% trans "This Initiative is in discussion" %}.</p>
+          <a href="#discuss" class="btn bg-discussion">{% trans "Join discussion" %}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endifequal %}
+
+  {% ifequal initiative.state 'v' %}
+  <div id="cta" class="container-fluid cta">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h6 class="text-muted classification">{% trans "Time remaining" %} {{initiative.end_of_this_phase | timeuntil}}</h6>
+          <p>{% trans "This initiative is being voted on" %}.</p>
+          {% include "fragments/jump_to_vote.html" %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endifequal %}
+
+  {% if initiative.state == 'a' or initiative.state == 'r' %}
+  <div id="cta" class="container-fluid cta voted">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h6 class="text-muted classification">{% trans "Vote Result" %}</h6>
+        </div>
+      </div>
+      {% if initiative.votes.count > 0 %}
+        {% if initiative.allows_abstention %}
+          <div class="row" style="padding-top: .25rem; padding-bottom: .5rem">
             <div class="col-12" style="padding-top: 1rem">
-                <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
+              <p>{% trans "This Initiative" %}{% if initiative.state == 'a' %}<strong class="badge-accepted">{% trans "was accepted" %}</strong>{% else %}<strong class="badge-rejected">{% trans "was rejected" %}</strong>{% endif %}.</p>
             </div>
-        </div>
-        <div class="row justify-content-center">
+          </div>
+          <div class="row justify-content-center results-display">
+            <div class="col-auto" data-toggle="tooltip" title="{{initiative.yays}} {% if initiative.yays != 1 %}{% trans 'Yes-Votes' %}{% else %}{% trans 'Yes-Vote' %}{% endif %}">
+              <span class="in-favor text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_up</i></span>
+              <span class="in-favor" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.yays}}</span>
+            </div>
+            <div class="col-auto" data-toggle="tooltip" title="{{initiative.abstains}} {% if initiative.abstains != 1 %}{% trans 'Abstentions' %}{% else %}{% trans 'Abstention' %}{% endif %}">
+              <span class="abstained text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">panorama_fish_eye</i></span>
+              <span class="abstained" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.abstains}}</span>
+            </div>
+            <div class="col-auto" data-toggle="tooltip" title="{{initiative.nays}} {% if initiative.nays != 1 %}{% trans 'No-Votes' %}{% else %}{% trans 'No-Vote' %}{% endif %}">
+              <span class=" declined text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_down</i></span>
+              <span class="declined" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.nays}}</span>
+            </div>
+          </div>
+          <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+            <div class="col-12">
+              <div class="progress">
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-abstain" role="progressbar" style="width: {{ initiative.abstains|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.abstains|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <div class="row" style="padding-top: .25rem; padding-bottom: .5rem">
+            <div class="col-12" style="padding-top: 1rem">
+              <p>{% trans "This Initiative" %} {% if initiative.state == 'a' %}<strong class="badge-accepted">{% trans "was accepted" %}</strong>{% else %}<strong class="badge-rejected">{% trans "was rejected" %}</strong>{% endif %}.</p>
+            </div>
+          </div>
+          <div class="row justify-content-center">
             <div class="col-auto pr-4">
-                <span class="in-favor text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_up</i></span>
-                <span class="in-favor" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.yays}}</span>
+              <span class="in-favor text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_up</i></span>
+              <span class="in-favor" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.yays}}</span>
             </div>
             <div class="col-auto">
-                <span class=" declined text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_down</i></span>
-                <span class="declined" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.nays}}</span>
+              <span class=" declined text-center" style="float: left; padding-left: .25rem"><i class="material-icons" style="width: 2rem; font-size: 2rem; line-height: 2.5rem">thumb_down</i></span>
+              <span class="declined" style="margin-left: .5rem; font-size: 2rem; line-height: 2.625rem">{{initiative.nays}}</span>
             </div>
-        </div>
-        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+          </div>
+          <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
             <div class="col-12">
-                <div class="progress">
-                  <div class="progress-bar bg-success" role="progressbar" style="width: {{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
-                  <div class="progress-bar bg-danger" role="progressbar" style="width: {{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
+              <div class="progress">
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.yays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ initiative.nays|div:initiative.votes.count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
             </div>
-        </div>
+          </div>
         {% endif %}
-        {% else %}
+      {% else %}
         <div class="row" style="padding-top: 1rem">
-            <div class="col-12">
-                <span>Bei der Abstimmung zu dieser Initiative wurde keine einzige Stimme abgegeben. Damit gilt die Initiative als <strong class="badge-rejected">abgelehnt</strong>.</span>
-            </div>
+          <div class="col-12">
+            <span>{% trans "Nobody casted their vote for this Initiative. This means the Initiative is " %}<strong class="badge-rejected">{% trans "rejected" %}</strong>.</span>
+          </div>
         </div>
-        {% endif %}
-        <div class="row" style="padding-top: 1rem">
-            <div class="col-12">
-			{% include "fragments/participation.html" with closed=1 %}
-            </div>
+      {% endif %}
+      <div class="row" style="padding-top: 1rem">
+        <div class="col-12">
+                            {% include "fragments/participation.html" with closed=1 %}
         </div>
+      </div>
     </div>
-</div>
-{% endif %}
+  </div>
+  {% endif %}
 
-<div id="initiative-text" class="container-fluid initiative-single">
+  <div id="initiative-text" class="container-fluid initiative-single">
     <div class="container">
-        <div class="row">
-            <div class="col">
-                <h6 class="text-muted classification">Text der Initiative{% if initiative.versions.count > 1 %}
-                <a href="/initiative/{{initiative.id}}-{{initiative.slug}}/compare/{{initiative.versions.1.id}}" data-ajax="true" class="change-history">(Änderungshistorie einsehen <span class="changes-badge"><span class="material-icons history">history</span> {{initiative.versions.count}}</span>)</a>{% endif %}</h6>
-            </div>
+      <div class="row">
+        <div class="col">
+          <h6 class="text-muted classification">Text der Initiative{% if initiative.versions.count > 1 %}
+          <a href="/initiative/{{initiative.id}}-{{initiative.slug}}/compare/{{initiative.versions.1.id}}" data-ajax="true" class="change-history">({% trans "View modification history" %} <span class="changes-badge"><span class="material-icons history">history</span> {{initiative.versions.count}}</span>)</a>{% endif %}</h6>
         </div>
+      </div>
 
-        {% include "initproc/blocks/content.html" %}
+      {% include "initproc/blocks/content.html" %}
         
-        {% if initiative.was_closed_at %}
-            <!--<div class="row">
-                <div class="col-12">
-                    <h3 class="history-title">
-                    <span class="date">{{initiative.was_closed_at}}</span>
-                    {% if initiative.went_to_discussion_at %}
-                      Nach Abstimmung mit {{ initiative.yays|default:0 }} Für- und {{ initiative.nays|default:0 }} Gegenstimmen, sowie {{ initiative.abstains|default:0 }} Enthaltungen
-                      {% ifequal initiative.state 'a' %}
-                        angenommen.
+      {% if initiative.was_closed_at %}
+        <!--<div class="row">
+          <div class="col-12">
+            <h3 class="history-title">
+            <span class="date">{{initiative.was_closed_at}}</span>
+            {% if initiative.went_to_discussion_at %}
+              {% trans "After a Vote with "%} {{ initiative.yays|default:0 }} {% trans "votes in favor" %}{% trans "and" %} {{ initiative.nays|default:0 }} {% trans "votes against" %}, {% trans "as well as" %} {{ initiative.abstains|default:0 }} {% trans "abstentions" %}
+              {% ifequal initiative.state 'a' %}
+                {% trans "accepted" %}.
+              {% else %}
+                {% trans "rejected" %}.
+              {% endifequal %}
+            {% else %}
+              {% trans "With" %} {{initiative.absolute_supporters|default:0}} {% trans "supporters, the Quorum was not reached. This means the Initiative was rejected" %}.
+            {% endif %}
+            </h3>
+          </div>
+        </div>-->
+      {% endif %}
+    </div>
+  </div>
+
+
+  {% include "initproc/blocks/variants.html" %}
+
+  {% if initiative.state == 'v' %}
+  <div id="vote" class="container-fluid cta">
+    <div class="container">
+      <div class="row no-gutters">
+        {% include "fragments/voting.html" %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if initiative.show_debate %}
+  <div id="discuss" class="container-fluid cta {% if initiative.state == 'v' or initiative.state == 'e' or initiative.state == 'a' or initiative.state == 'r' %}closed{% endif %}">
+    <div class="container">
+      <div class="row no-gutters">
+        <div class="col-12">
+          <ul class="nav nav-tabs nav-fill" role="tablist">
+            {% include 'fragments/count.html' with active=True me='debate' list=arguments %}
+            {% include 'fragments/count.html' with active=False me='proposals' list=proposals %}
+          </ul>
+        </div>
+        <div class="col-12 tab-content">
+          <div class="tab-pane active" id="debate" role="tabpanel">
+            {% include 'fragments/debate.html' %}
+          </div>
+          <div class="tab-pane" id="proposals" role="tabpanel">
+            {% include 'fragments/proposals.html' %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- SEEEEKING SUPPPORTERS AREA -->
+
+  {% ifequal initiative.state 's' %}
+  <div class="container-fluid cta">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h6 class="text-muted classification">{% trans "Time remaining" %} {{initiative.end_of_this_phase | timeuntil}}</h6>
+          {% ifequal initiative.state 's' %}
+            <span class="meta-content current-supporters">
+              <strong>{{initiative.absolute_supporters|default:0}}</strong>
+              {% if initiative.absolute_supporters == 1 %}
+                {% trans "Supporter" %}
+              {% else %}
+                {% trans "Supporters" %}
+              {% endif %}
+            </span>
+            <div class="progress">
+              <div class="progress-bar bg-support" role="progressbar" style="width: {% if initiative.relative_support <= 100 %}{{initiative.relative_support|floatformat:"0"}}{% else %}100{% endif %}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}"></div>
+            </div>
+            {% if initiative.absolute_supporters < initiative.quorum %}
+              <span class="meta-content support-needed">
+                {% trans "Initiative is missing" %}  
+                <strong>{{initiative.quorum|sub:initiative.absolute_supporters}}</strong> 
+                {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}
+                {% trans "Supporter" %}{% else %}{% trans "Supporters" %}{% endif %} {% trans "to reach the Quorum" %}.
+              </span>
+            {% elif initiative.absolute_supporters == initiative.quorum %}
+              <span class="meta-content">
+                {% trans "This Initiative has reached the Quorum" %}!
+              </span>
+            {% else %}
+              <span class="meta-content">
+              {% trans "This Initiative has reached the Quorum" %} {% trans "and in addition " %}
+                <strong>{{initiative.absolute_supporters|sub:initiative.quorum}}</strong> 
+                {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}
+                {% trans "Supporter" %}{% else %}{% trans "Supporters" %}{% endif %}.
+              </span>
+            {% endif %}
+            {% if has_supported %}
+              <span class="meta-content support supported-by">
+                {% trans "You are supporting this Initiative!" %}
+              </span>
+            {% else %}
+              <form action="/initiative/{{initiative.id}}/support" method="GET">
+                <button class="btn bg-support" type="submit">
+                  {% trans "Support this Initiative" %}
+                </button>
+                <div class="form-check">
+                  <label class="form-check-label text-muted">
+                    <input type="checkbox" class="form-check-input" name="public">
+                    {% trans "Show support publicly" %}
+                  </label>
+                </div>
+              </form>
+            {% endif %}
+          {% endifequal %}
+          <div class="back-to-index">
+            <a href="/" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>{% trans "Return to Overview" %}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endifequal %}
+
+  <!--  IIIIIINNNNBOOOOOOXXXXX  -->
+
+  {% if initiative.show_supporters %}
+  <div class="container-fluid show-supporters">
+    <div class="container">
+    {% if initiative.first_supporters.count %}
+      <div class="row">
+        <div class="col-12">
+          <h2>{% trans "Initial Supporters" %}</h2>
+          <div class="d-flex flex-wrap avatar">
+            {% for sup in initiative.first_supporters.all %} 
+              <div class="text-center initiator">
+                {% include "fragments/avatar.html" with user=sup.user %}
+                <div class="name">
+                  {{ sup.user.get_full_name|default:sup.user.username }}
+                </div>
+                {% if initiative.state == 'i' or initiative.state == 'p' %}
+                  <div class="approval">
+                    {% if sup.ack %}
+                      <span title="{% trans 'confirmed' %}" class=""><i class="material-icons">done</i></span>
+                    {% else %}
+                      {% if sup.user == user %}
+                        <strong style="display:block">{% trans "Confirm now" %}</strong>
+  
+                        <form action="/initiative/{{initiative.id}}/ack_support"  style="display:inline"  method="POST">
+                          {% csrf_token %}
+                          <button title="{% trans 'Support' %}" class="btn btn-success" type="submit">
+                            <i class="material-icons">done</i>
+                          </button>
+                        </form>
+                        <form action="/initiative/{{initiative.id}}/rm_support"  style="display:inline"  method="POST">
+                          {% csrf_token %}
+                          <button title="{% trans 'No Support' %}" class="btn btn-danger" type="submit">
+                              <i class="material-icons">not_interested</i>
+                          </button>
+                        </form>
                       {% else %}
-                        abgelehnt.
-                      {% endifequal %}
-                    {% else %}
-                     Mit {{initiative.absolute_supporters|default:0}} Unterstützern wurde das Qurom von {{initiative.quorum}} nicht erreicht. Die Initiative wurde damit abgelehnt.
+                        <span title="{% trans 'unconfirmed' %}" class=""><i class="material-icons warning">warning</i></span>
+                      {% endif %}
                     {% endif %}
-                    </h3>
-                </div>
-            </div>-->
-        {% endif %}
-    </div>
-</div>
-
-
-{% include "initproc/blocks/variants.html" %}
-
-{% if initiative.state == 'v' %}
-
-<div id="vote" class="container-fluid cta">
-    <div class="container">
-        <div class="row no-gutters">
-            {% include "fragments/voting.html" %}
-
-        </div>
-    </div>
-</div>
-
-{% endif %}
-
-
-{% if initiative.show_debate %}
-
-<div id="discuss" class="container-fluid cta {% if initiative.state == 'v' or initiative.state == 'e' or initiative.state == 'a' or initiative.state == 'r' %}closed{% endif %}">
-    <div class="container">
-        <div class="row no-gutters">
-            <div class="col-12">
-                <ul class="nav nav-tabs nav-fill" role="tablist">
-{% include 'fragments/count.html' with active=True me='debate' list=arguments %}
-{% include 'fragments/count.html' with active=False me='proposals' list=proposals %}
-                </ul>
-            </div>
-            <div class="col-12 tab-content">
-                <div class="tab-pane active" id="debate" role="tabpanel">
-                    {% include 'fragments/debate.html' %}
-                </div>
-                <div class="tab-pane" id="proposals" role="tabpanel">
-                    {% include 'fragments/proposals.html' %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-{% endif %}
-
-
-
-
-
-<!-- SEEEEKING SUPPPORTERS AREA -->
-
-{% ifequal initiative.state 's' %}
-<div class="container-fluid cta">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
-                {% ifequal initiative.state 's' %}
-                <span class="meta-content current-supporters">
-                    <strong>
-                        {{initiative.absolute_supporters|default:0}} 
-                    </strong>
-                    {% if initiative.absolute_supporters == 1 %}
-                    Unterstützer*in
-                    {% else %}
-                    Unterstützer*innen
-                    {% endif %}
-                </span>
-                <div class="progress">
-                    <div class="progress-bar bg-support" role="progressbar" style="width: {% if initiative.relative_support <= 100 %}{{initiative.relative_support|floatformat:"0"}}{% else %}100{% endif %}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
-                    </div>
-                </div>
-                {% if initiative.absolute_supporters < initiative.quorum %}
-                <span class="meta-content support-needed">
-                    Es fehlen noch 
-                    <strong>
-                        {{initiative.quorum|sub:initiative.absolute_supporters}}
-                    </strong> 
-                    {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}
-                    Unterstützer*in{% else %}Unterstützer*innen{% endif %} zum Erreichen des Quorums.
-                </span>
-                {% elif initiative.absolute_supporters == initiative.quorum %}
-                 <span class="meta-content">
-                    Diese Initiative hat das Quorum an Unterstützer*innen erreicht!
-                </span>
-                {% else %}
-                <span class="meta-content">
-                    Diese Initiative hat das Quorum erreicht und darüber hinaus 
-                    <strong>
-                        {{initiative.absolute_supporters|sub:initiative.quorum}}
-                    </strong> 
-                    {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}
-                    Unterstützer*in{% else %}Unterstützer*innen{% endif %}.
-                </span>
+                  </div>
                 {% endif %}
-                {% if has_supported %}
-                <span class="meta-content support supported-by">
-                    Du unterstützt diese Initiative!
-                </span>
-                {% else %}
-                <form action="/initiative/{{initiative.id}}/support" method="GET">
-                    <button class="btn bg-support" type="submit">
-                        Jetzt Unterstützen
-                    </button>
-                    <div class="form-check">
-                        <label class="form-check-label text-muted">
-                            <input type="checkbox" class="form-check-input" name="public">
-                            Öffentlich anzeigen
-                        </label>
-                    </div>
-                </form>
-                {% endif %}
-                {% endifequal %}
-                <div class="back-to-index">
-                    <a href="/" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Übersicht</a>
-                </div>
-            </div>
+              </div>
+            {% endfor %}
+          </div>
         </div>
-    </div>
-</div>
-{% endifequal %}
+      </div>
+    {% endif %}
 
-<!--  IIIIIINNNNBOOOOOOXXXXX  -->
-
-{% if initiative.show_supporters %}
-<div class="container-fluid show-supporters">
-    <div class="container">
-        {% if initiative.first_supporters.count %}
-            <div class="row">
-                <div class="col-12">
-                    <h2>Erstunterstützer*innen</h2>
-                    <div class="d-flex flex-wrap avatar">
-                        {% for sup in initiative.first_supporters.all %} 
-                            <div class="text-center initiator">
-                                {% include "fragments/avatar.html" with user=sup.user %}
-                                <div class="name">
-                                    {{ sup.user.get_full_name|default:sup.user.username }}
-                                </div>
-                                {% if initiative.state == 'i' or initiative.state == 'p' %}
-                                    <div class="approval">
-                                        {% if sup.ack %}
-                                        <span title="bestätigt" class=""><i class="material-icons">done</i></span>
-                                        {% else %}
-                                            {% if sup.user == user %}
-                                                <strong style="display:block">Jetzt bestätigen</strong>
-
-                                                <form action="/initiative/{{initiative.id}}/ack_support"  style="display:inline"  method="POST">
-                                                    {% csrf_token %}
-                                                    <button title="Unterstützen" class="btn btn-success" type="submit">
-                                                        <i class="material-icons">done</i>
-                                                    </button>
-                                                </form>
-                                                <form action="/initiative/{{initiative.id}}/rm_support"  style="display:inline"  method="POST">
-                                                    {% csrf_token %}
-                                                    <button title="Nicht unterstützen" class="btn btn-danger" type="submit">
-                                                        <i class="material-icons">not_interested</i>
-                                                    </button>
-                                                </form>
-                                            {% else %}
-                                                <span title="unbestätigt" class=""><i class="material-icons warning">warning</i></span>
-                                            {% endif %}
-                                        {% endif %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                    </div>
+    {% if initiative.public_supporters.count %}
+      <div class="row">
+        <div class="col-12">
+          <h2>{% trans "Supporters" %}</h2>
+          <div class="d-flex flex-wrap avatar">
+            {% for sup in initiative.public_supporters.all %} 
+              <div class="text-center initiator">
+                {% include "fragments/avatar.html" with user=sup.user %}
+                <div class="name">
+                  {{ sup.user.get_full_name|default:sup.user.username }}<br/>
                 </div>
-            </div>
-        {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
 
-        {% if initiative.public_supporters.count %}
-            <div class="row">
-                <div class="col-12">
-                    <h2>Unterstützer*innen</h2>
-                    <div class="d-flex flex-wrap avatar">
-                        {% for sup in initiative.public_supporters.all %} 
-                            <div class="text-center initiator">
-                                {% include "fragments/avatar.html" with user=sup.user %}
-                                <div class="name">
-                                    {{ sup.user.get_full_name|default:sup.user.username }}<br/>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-
-        {% if request.guard.can_edit %}
-            <div class="row">
-                <div class="col-12">
-                    <div id="invite-supporters">
-                        <a data-ajax="true" href="/initiative/{{initiative.id}}/invite/supporters?fragment=%23invite-supporters" class="btn btn-success"><i class="material-icons person-add">person_add</i><span>weitere Unterstützer*innen einladen</a>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-    </div>
+    {% if request.guard.can_edit %}
+      <div class="row">
+        <div class="col-12">
+          <div id="invite-supporters">
+            <a data-ajax="true" href="/initiative/{{initiative.id}}/invite/supporters?fragment=%23invite-supporters" class="btn btn-success"><i class="material-icons person-add">person_add</i><span>{% trans "Invite additional Initiators" %}</a>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
 </div>
 {% endif %}
 
 {% endblock %} {% block body-javascript %} {{ block.super }}
 <script type="text/javascript">
 // Initialize Tooltips
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip();
+$(document).ready(function () {
+  //$(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  //});
 });
 </script>
 {% endblock %}

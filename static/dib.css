@@ -1560,3 +1560,10 @@ textarea#id_title:-ms-input-placeholder, textarea#id_text:-ms-input-placeholder 
 textarea#id_title:-moz-placeholder, textarea#id_text:-moz-placeholder { /* Firefox 18- */
   opacity: .7;
 }
+
+/* Fixes - prevent navbar icons leaking into page width */
+.navbar .navbar-nav li a i {
+  overflow-x: hidden;
+  max-width: 1.625rem;
+}
+

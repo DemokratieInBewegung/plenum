@@ -1,20 +1,36 @@
+{% load i18n %}
 <div class="container">
+<<<<<<< HEAD
     <div class="row">
         <div class="col">
             <a href="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zurück zur {{initiative.get_einordnung_display}}</a>
         </div>
+=======
+  <div class="row">
+    <div class="col">
+      <a href="/initiative/{{ initiative.id }}-{{ initiative.slug }}" class="go-to-index">
+        <i class="material-icons chevron-left">chevron_left</i>{% trans "Back to the Initiative" %}
+      </a>
+>>>>>>> i18n: make site multi-language and themeable
     </div>
+  </div>
+
 	<div class="row">
+<<<<<<< HEAD
         <h2>Änderungshistorie {{initiative.get_einordnung_display}} #{{initiative.id}}</h2>
+=======
+		<h2>{% trans "Modification history of Initiative" %} #{{initiative.id}}</h2>	
+>>>>>>> i18n: make site multi-language and themeable
 	</div>
 
 	<div class="row">
 		<div class="col-md-4 text-right">
-	        <h6 class="text-muted classification">Vergleiche Version</h6>
-	        <div class="dropdown">
-	        	<a id="versionSelectDropdown" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-has-popup="true" aria-expanded="false"><strong>{{selected.revision.date_created}}</strong> {% if selected.revision.user %} —  {% include "fragments/avatar.html" with size=25 user=selected.revision.user %}{% endif %}</a>
-	        	<br />{% if selected.revision.comment %}<em>{{selected.revision.comment}}</em>{% endif %}
+      <h6 class="text-muted classification">{% trans "Compare version" %}</h6>
+        <div class="dropdown">
+        	<a id="versionSelectDropdown" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-has-popup="true" aria-expanded="false"><strong>{{ selected.revision.date_created }}</strong> {% if selected.revision.user %} - {% include "fragments/avatar.html" with size=25 user=selected.revision.user %}{% endif %}</a>
+        	<br />{% if selected.revision.comment %}<em>{{selected.revision.comment}}</em>{% endif %}
 
+<<<<<<< HEAD
 	        	<div class="dropdown-menu dropdown-menu-right " aria-labelledby="versionSelectDropdown">
 	        		{% for v in initiative.versions %}
 	        			{% if v == latest %}
@@ -23,44 +39,55 @@
 	        					class="dropdown-item"
 	        					data-ajax="true">
 	        					{% if v == selected %}<strong>{%endif%}
+=======
+        	<div class="dropdown-menu dropdown-menu-right " aria-labelledby="versionSelectDropdown">
+        		{% for v in initiative.versions %}
+        			{% if v == latest %}
+        			{% else %}
+        				<a href="/initiative/{{ initiative.id }}-{{ initiative.slug }}/compare/{{ v.id }}"
+        					class="dropdown-item"
+        					data-ajax="true">
+        					{% if v == selected %}<strong>{%endif%}
+>>>>>>> i18n: make site multi-language and themeable
 
-	        					{{v.revision.date_created}} {% if v.revision.user %} — {% include "fragments/avatar.html" with size=25 user=v.revision.user %}{% endif %}
+        					{{v.revision.date_created}} {% if v.revision.user %} - {% include "fragments/avatar.html" with size=25 user=v.revision.user %}{% endif %}
 
-	        					{% if v == selected %}</strong>{%endif%}
-	        				</a>
-	        			{% endif %}
-	        		{% endfor %}
-                </div>
-	        </div> 
+        					{% if v == selected %}</strong>{%endif%}
+        				</a>
+        			{% endif %}
+        		{% endfor %}
+          </div>
+        </div> 
 	    </div>
 		<div class="col-md-8">
-	        <h6 class="text-muted classification">mit Aktueller Version</h6>
-	        <div>
-	        	<strong>{{latest.revision.date_created}}</strong> {% if latest.revision.user %} — {% include "fragments/avatar.html" with size=25 user=latest.revision.user %}{% endif %}
-	        	<br />{% if latest.revision.comment %}<em>{{latest.revision.comment}}</em>{% endif %}
-	        </div>
-	</div>
-</div>
+      <h6 class="text-muted classification">{% trans "with current version" %}</h6>
+      <div>
+      	<strong>{{latest.revision.date_created}}</strong> {% if latest.revision.user %} - {% include "fragments/avatar.html" with size=25 user=latest.revision.user %}{% endif %}
+      	<br />{% if latest.revision.comment %}<em>{{latest.revision.comment}}</em>{% endif %}
+      </div>
+	  </div>
+  </div>
 
-<hr />
+  <hr/>
 
-<div class="container-fluid">
-    <div class="container">
-        <div class="row initiative-title">
-            <div class="col-12">
-                <h1 class="display-4">{{compare.title}}</h1>
-            </div>
-        </div>
-        <div class="row initiative-subtitle">
-            <div class="col-12">
-                <p>{{compare.subtitle}}</p>
-            </div>
-        </div>
-    </div>
-</div>
+  <div class="container-fluid">
+      <div class="container">
+          <div class="row initiative-title">
+              <div class="col-12">
+                  <h1 class="display-4">{{compare.title}}</h1>
+              </div>
+          </div>
+          <div class="row initiative-subtitle">
+              <div class="col-12">
+                  <p>{{compare.subtitle}}</p>
+              </div>
+          </div>
+      </div>
+  </div>
 
-{% include "initproc/blocks/meta.html" with initiative=compare %}
+  {% include "initproc/blocks/meta.html" with initiative=compare %}
 
+<<<<<<< HEAD
 <div class="container">
 <div class="row initiative-text">
     <div class="col-12">
@@ -83,5 +110,27 @@
         </blockquote>
         {% endif %}
     </div>
-</div>
+=======
+  <div class="container">
+    <div class="row initiative-text">
+      <div class="col-12">
+      	<h3>{% trans "Summary" %}</h3>
+          {{compare.summary}}
+          <h2>{% trans "Situation Assessment" %}</h2>
+          {{compare.problem}}
+          <h2>{% trans "Proposal" %}</h2>
+          {{compare.forderung}}
+          <h2>{% trans "Cost Estimation" %}</h2>
+          {{compare.kosten}}
+          <h2>{% trans "Financing Proposal" %}</h2>
+          {{compare.fin_vorschlag}}
+          <h2>{% trans "Operation Workflow" %}</h2>
+          {{compare.arbeitsweise}}
+          <h2>{% trans "Initiator Argument" %}</h2>
+          <blockquote class="blockquote">
+              {{compare.init_argument}}
+          </blockquote>
+      </div>
+  </div>
+>>>>>>> i18n: make site multi-language and themeable
 </div>

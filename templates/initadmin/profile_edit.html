@@ -1,21 +1,21 @@
 {% extends "in_box.html" %}
 {% load bootstrap %}
+{% load i18n %}
 
 {% block body %}
+  <h2>{% trans "Settings" %}</h2>
 
-    <h2>Profileinstellungen</h2>
+  <form method="POST" action="{% url 'profile_edit' %}">
+    {% csrf_token %}
+    {{ form|bootstrap }}
+    <button class="btn btn-primary" type="submit">{% trans "Save" %}</button>
+  </form>
 
-    <form method="POST" action="{% url 'profile_edit' %}">
-        {% csrf_token %}
-        {{ form|bootstrap }}
-        <button class="btn btn-primary" type="submit">Speichern</button>
-    </form>
-
-    <h3>Weitere Einstellungen</h3>
-    <ul>
-		<li><a href="{% url 'avatar_change' %}">Profilbild ändern</a></li>
-		<li><a href="{% url 'notification_notice_settings' %}">E-Mail-Benachrichtigungen ändern</a></li>
-		<li><a href="{% url 'account_password' %}">Passwort ändern</a></li>
-    </ul>
-
+  <h3>{% trans "Additional Settings" %}</h3>
+  <ul>
+		<li><a href="{% url 'avatar_change' %}">{% trans "Change Profile Picture" %}</a></li>
+		<li><a href="{% url 'notification_notice_settings' %}">{% trans "Change Email Notifications" %}</a></li>
+		<li><a href="{% url 'account_password' %}">{% trans "Change Password" %}</a></li>
+		<li><a href="{% url 'account_language' %}">{% trans "Set Language" %}</a></li>
+  </ul>
 {% endblock %}

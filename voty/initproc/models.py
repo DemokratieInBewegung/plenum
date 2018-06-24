@@ -18,6 +18,7 @@ from django.db import models
 import pytz
 
 from voty.initproc.globals import SUBJECT_CATEGORIES
+from django.utils.translation import ugettext_lazy as _
 
 @reversion.register()
 class Initiative(models.Model):
@@ -51,9 +52,10 @@ class Initiative(models.Model):
     arbeitsweise = models.TextField(blank=True)
     init_argument = models.TextField(blank=True)
 
+
     einordnung = models.CharField(max_length=50, choices=[
         (VOTY_TYPES.Einzelinitiative,'Einzelinitiative'),
-        (VOTY_TYPES.PolicyChange,'AO-Änderung'),
+        (VOTY_TYPES.PolicyChange,'AO-Ãnderung'),
         (VOTY_TYPES.BallotVote,'Urabstimmung')])
     ebene = models.CharField(max_length=50, choices=[('Bund', 'Bund')])
     bereich = models.CharField(max_length=60, choices=[(item,item) for item in SUBJECT_CATEGORIES])
@@ -406,7 +408,16 @@ class Vote(models.Model):
 
     @property
     def nay_survey_options(self):
-        return settings.OPTIONAL_NOPE_REASONS
+        return [
+          _("Does not conform to my convictions."), 
+          _("Is not important enough."),
+          _("Is not specific enough."),
+          _("Is not mature enough (in terms of contents.)"),
+          _("Contains a detail, I do not agree with."),
+          _("Does not fit to {{ PLATFORM_TITLE_ACRONYM }}"),
+          _("Is difficult to stand in for."),
+          _("Is no longer relevant."),
+        ]
 
     @cached_property
     def in_favor(self):
@@ -426,8 +437,10 @@ class Quorum(models.Model):
 
     @classmethod
     def current_quorum(cls):
-        return cls.objects.order_by("-created_at").values("quorum").first()["quorum"]
-
+        quorum_list = cls.objects.order_by("-created_at").values("quorum")
+        if len(quorum_list) > 0:
+          return quorum_list.first()["quorum"]
+        return 0
 
 class Supporter(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -532,7 +545,7 @@ class Pro(Argument):
     icon = "thumb_up"
 
     def __str__(self):
-        return "Pro: {}".format(self.title)
+        return "".join([_("In Favor"), ": {}".format(self.title)])
 
 class Contra(Argument):
     type = "contra"
@@ -540,7 +553,7 @@ class Contra(Argument):
     icon = "thumb_down"
 
     def __str__(self):
-        return "Kontra: {}".format(self.title)
+        return "".join([_("Against"), ": {}".format(self.title)])
 
 class Moderation(Response):
     type = "moderation"

@@ -1,19 +1,17 @@
 {% extends "site_base.html" %}
-
 {% load i18n %}
-
-{% block head_title %}Plenum: Benutzerkonto anlegen{% endblock %}
+{% block head_title %}{% trans "Plenum: Create Account" %}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
     <div class="container">
     	<div class="row">
             <div class="col">
-			    <h2>Willkommen beim Plenum</h2>
-			    <p>Bitte gib Deinen Anmelde-Code ein:</p>
+			    <h2>{% trans "Welcome to the Plenum" %}</h2>
+			    <p>{% trans "Please enter your registration code:" %}</p>
 			    <form method="get" action="">
-			        <div><input type="text" name="code" placeholder="Dein Anmelde-Code" /></div>
-			        <div class="mt-3"><button type="submit" class="btn btn-primary">Benutzerkonto anlegen</button></div>
+			        <div><input type="text" name="code" placeholder="{% trans 'Registration Code' %}" /></div>
+			        <div class="mt-3"><button type="submit" class="btn btn-primary">{% trans "Create Account" %}</button></div>
 			    </form>
 			</div>
 		</div>

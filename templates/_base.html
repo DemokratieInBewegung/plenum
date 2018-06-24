@@ -1,12 +1,14 @@
 {% load notifications_tags %}
 {% load static %}
 {% load fullurl %}
+{% load i18n %}
+{% load site_defaults %}
 <!DOCTYPE html>
-<html lang="de">
+<html lang="{{ 'DEFAULT_LANGUAGE'|get_setting }}">
 
 <head>
     <meta charset="utf-8">
-    <title>{% block head_title%}Plenum der Beweger*innen von DEMOKRATIE IN BEWEGUNG{% endblock%}</title>
+    <title>{% block head_title%}{% trans "Plenum of participants of "%}{{ 'PLATFORM_TITLE'|get_setting }}{% endblock%}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{% block metadescription%}{% endblock %}">
     <meta name="keywords" content="{% block metakeywords%}{% endblock %}">
@@ -16,22 +18,22 @@
         <!-- https://css-tricks.com/essential-meta-tags-social-media/ -->
 
         {% block custom_sm_title %}
-            <meta property="og:title" content="DEMOKRATIE IN BEWEGUNG - Abstimmungsplattform der Beweger*innen">
-            <meta property="og:description" content="Hier stimmen die Beweger*innen über Initiativen ab, die die Partei DiB vertreten wird">
+            <meta property="og:title" content="{{ 'PLATFORM_TITLE'|get_setting }} - {% trans 'Voting platform for Participants' %}">
+            <meta property="og:description" content="{% trans 'Here participants and supporters vote on Initiatives to form the program of' %} {{ 'PLATFORM_TITLE_ACRONYM'|get_setting }}.">
             <meta property="og:url" content="{% fullurl 'home' %}">
         {% endblock %}
-        <meta property="og:image" content="{% fullstatic '/img/dib-logo-social.jpg' %}">
+        <meta property="og:image" content="{% fullstatic 'PLATFORM_SOCIAL_MEDIA_LOGO_URL'|get_setting %}">
         <meta name="twitter:card" content="summary_large_image">
 
         <!--  Non-Essential, But Recommended -->
 
-        <meta property="og:site_name" content="DEMOKRATIE IN BEWEGUNG">
-        <meta name="twitter:image:alt" content="DiB Abstimmungsplattform">
+        <meta property="og:site_name" content="{{ 'PLATFORM_TITLE'|get_setting }}">
+        <meta name="twitter:image:alt" content="{{ 'PLATFORM_TITLE_ACRONYM'|get_setting }} {{ 'PLATFORM_SUB_TITLE|get_setting' }}">
 
     {% endblock %}
-    <link href="https://fonts.googleapis.com/css?family=Merriweather:300,400,400i,700|Rubik:400,400i,500,500i,700" rel="stylesheet">
+    <link href="{{ 'SITE_FONT_CSS_URL'|get_setting }}" rel="stylesheet">
     <link href="/static/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="/static/dib.css" rel="stylesheet" type="text/css">
+    <link href="{{ 'SITE_THEME_CSS_URL'|get_setting }}" rel="stylesheet" type="text/css">
     <!-- Font Awesome icon font -->
     <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -49,26 +51,26 @@
             </button>
             <!-- IE 10 Fix: have the logo twice, show this on collapsed #navbarNav -->
             <a class="navbar-brand hidden-md-up" href="{% fullurl 'home' %}">
-                <img src="{% static '/img/dib_logo.svg' %}" height="40" width="144" class="d-inline-block align-middle" alt="Demokratie in Bewegung">
+                <img src="{% static 'PLATFORM_LOGO_URL'|get_setting %}" height="40" width="144" class="d-inline-block align-middle" alt="{{ 'PLATFORM_TITLE'|get_setting }}">
             </a>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <!-- IE 10 Fix: have the logo twice, hide this on collapsed #navbarNav -->
                 <a class="navbar-brand hidden-sm-down" href="{% fullurl 'home' %}">
-                <img src="{% static '/img/dib_logo.svg' %}" height="40" width="144" class="d-inline-block align-middle" alt="Demokratie in Bewegung">
+                <img src="{% static 'PLATFORM_LOGO_URL'|get_setting %}" height="40" width="144" class="d-inline-block align-middle" alt="{{ 'PLATFORM_TITLE'|get_setting }}">
                 </a>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/hilfe">Hilfe</a>
+                        <a class="nav-link" href="/help">{% trans "Help" %}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href='https://bewegung.jetzt/datenschutz/'>Datenschutz</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href='/ueber/'>Impressum</a>
+                        <a class="nav-link" href='/about'>{% trans "Legal Notice" %}</a>
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                         <a class="nav-link" href="{% url 'new_initiative' %}"><i class="material-icons add-circle-outline">add_circle_outline</i>Neue Initiative</a>
+                      <a class="nav-link" href="{% url 'new_initiative' %}"><i class="material-icons add-circle-outline">add_circle_outline</i>{% trans "New Initiative" %}</a>
                     </li>
                     <li class="nav-item"> <!-- TODO: only bv can start policychanges -->
                         <a class="nav-link" href="{% url 'new_policychange' %}"><i class="material-icons add-circle-outline">add_circle_outline</i>AO-Änderung</a>
@@ -85,24 +87,32 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle avatar" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {% include "fragments/avatar.html" with size=40 %}
-						</a>
+						            </a>
                         <div class="dropdown-menu dropdown-menu-right profile" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="{% url 'profile_edit' %}">Profileinstellungen</a>
+                            <a class="dropdown-item" href="{% url 'profile_edit' %}">{% trans "Settings" %}</a>
                             {% if user.is_superuser %}
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{% url 'mass_invite' %}">Importer</a>
-                                <a class="dropdown-item" href="/admin/">Admin</a>
+                                <a class="dropdown-item" href="{% url 'invite_users' %}">{% trans "Invite Users" %}</a>
+                                <a class="dropdown-item" href="{% url 'active_users' %}">{% trans "Activity" %}</a>
+                                <a class="dropdown-item" href="/admin/">{% trans "Admin" %}</a>
                             {% endif %}
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/account/logout/">Abmelden</a>
+                            <a class="dropdown-item" href="/account/logout/">{% trans "Logout" %}</a>
                         </div>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/registrieren/"><i class="material-icons chevron-right">chevron_right</i>Registrieren</a>
+                        <a class="nav-link" href="/register/"><i class="material-icons chevron-right">chevron_right</i>{% trans "Register" %}</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/account/login/"><i class="material-icons person">person</i>Anmelden</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <i class="material-icons person">person</i>{% trans "Menu" %}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right profile" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="/account/login/">{% trans "Login" %}</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'account_language' %}">{% trans "Language" %}</a>
+                        </div>
                     </li>
                     {% endif %}
                 </ul>
@@ -129,14 +139,118 @@
     </div>
     <!-- Needed by Bootstrap 4.0 -->
     <script src="{% static 'js/vendor/jquery-3.2.1.min.js' %}"></script>
-    <script src="{% static 'js/dib/utils.js' %}"" type="text/javascript"></script>
+    <script src="{% static 'SITE_JS_URL'|get_setting %}" type="text/javascript"></script>
     <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
-    {% register_notify_callbacks callbacks='update_notifications,fill_notification_badge' %}
     <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'bootstrap-4.0.0-alpha.6-dist/js/tether.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/vendor/js-cookie.js' %}"></script>
-    <script src="{% static 'js/vendor/hyphenator-loader.js' %}"" type="text/javascript"></script>
-    {% block body-javascript %}{% endblock %}
+    <script src="{% static 'js/vendor/hyphenator-loader.js' %}" type="text/javascript"></script>
+    <script type="text/javascript">
+      // show remaining input fields (moved from utils.js)
+      function setup_char_counter (prefix) {
+        $((prefix || '') + "[maxlength]").keyup(function (evt) {
+          var t = $(evt.currentTarget);
+          $('[for=' + t.attr('id') + ']').attr("data-text-after", (parseInt(t.attr('maxlength')) - t.val().replace(/\n/g,"\n\n").length) + "{% trans ' characters left ' %}");
+        }).keyup();
+      }
+
+      // for the django notifications top right.
+      // https://github.com/django-notifications/django-notifications#how-to-use
+      // notify_menu_id is set by the notification plugin
+      // XXX not sure this works
+      function update_notifications(data) {
+        var menu = document.getElementById(notify_menu_id);
+        if (menu) {
+          menu.innerHTML = data.unread_list.map(function (item) {
+            var message = "";
+            switch (item.verb) {
+              // INVITES
+              case "inivited":
+                message = `<a href="/initiative/${item.target_object_id}">
+                    <i class="material-icons">email</i>{% trans "You have been inivited to " %}"${item.target}"{% trans " by " %}${item.actor}.
+                </a>`
+                break;
+              case "invite_accepted":
+                message = `<a href="/initiative/${item.target_object_id}">
+                    <i class="material-icons">check</i>${item.actor}{% trans "has accepted the invitation to Initiative: "%}"${item.target}".
+                </a>`
+                break;
+      
+              case "invite_rejected":
+                message = `<a href="/initiative/${item.target_object_id}">
+                    <i class="material-icons">block</i>${item.actor}{% trans "has rejected the invitation to Initiative: " %}"${item.target}".
+                </a>`
+                break;
+      
+              // INITIATIVES
+      
+              case "init_edited":
+                message = `<a href="/initiative/${item.target_object_id}">
+                    <i class="material-icons">mode_edit</i>"${item.target}" {% trans "has been changed by" %} ${item.actor}.
+                </a>`
+                break;
+      
+              case "init_submitted":
+                  message = `<a href="/initiative/${item.target_object_id}">
+                      <i class="material-icons">publish</i>"${item.target}" {% trans "has been submitted by" %} ${item.actor}.
+                  </a>`
+                break;
+      
+              case "init_published":
+                if (item.target){
+                  message = `<a href="/initiative/${item.target_object_id}">
+                      <i class="material-icons">public</i>"${item.target}" {% trans "has been published by" %} ${item.actor}.
+                  </a>`
+                } else {
+                  message = `<a href="/initiative/${item.actor_object_id}">
+                      <i class="material-icons">public</i>${item.actor} {% trans "has been published" %}.
+                  </a>`
+                }
+                break;
+      
+              case "init_discussion":
+                  message = `<a href="/initiative/${item.actor_object_id}">
+                      <i class="material-icons">forum</i>${item.actor} {% trans "can now be discussed" %}.
+                  </a>`
+                break;
+      
+              case "init_discussion_closed":
+                  message = `<a href="/initiative/${item.actor_object_id}">
+                      <i class="material-icons">create</i>${item.actor} {% trans "can now go into final edit" %}.
+                  </a>`
+                break;
+      
+      
+              case "init_vote":
+                if (item.target){
+                  message = `<a href="/initiative/${item.target_object_id}">
+                      <i class="material-icons">thumbs_up_down</i>${item.actor} {% trans "has opened the following Initiative for voting:" %} "${item.target}".
+                  </a>`
+                } else {
+                  message = `<a href="/initiative/${item.actor_object_id}">
+                      <i class="material-icons">thumbs_up_down</i>${item.actor} {% trans "can now be voted on" %}.
+                  </a>`
+                }
+                break;
+      
+              case "init_new_arg":
+                  message = `<a href="/initiative/${item.target_object_id}">
+                      <i class="material-icons">comment</i>${item.actor} {% trans "has published a new Argument on:" %} "${item.target}".
+                  </a>`
+                break;
+      
+              default:
+                message = [item.actor, item.verb, item.target, item.timestamp].filter(Boolean).join(" ");
+            }
+            return '<li>' + message + '</li>';
+          }).join('')
+        } 
+      }
+  </script>
+  {% register_notify_callbacks callbacks='update_notifications,fill_notification_badge' %}
+  {% block body-javascript %}{% endblock %}
 </body>
+</html>
+

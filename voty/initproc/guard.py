@@ -11,7 +11,7 @@ from voty.initadmin.models import UserConfig
 from .globals import STATES, PUBLIC_STATES, TEAM_ONLY_STATES, INITIATORS_COUNT, MINIMUM_MODERATOR_VOTES, \
     MINIMUM_FEMALE_MODERATOR_VOTES, MINIMUM_DIVERSE_MODERATOR_VOTES, VOTY_TYPES
 from .models import Initiative, Supporter
-
+from django.utils.translation import ugettext as _
 
 def can_access_initiative(states=None, check=None):
     def wrap(fn):
@@ -77,10 +77,10 @@ class Guard:
         latest_comment = obj.comments.order_by("-created_at").first()
 
         if not latest_comment and obj.user == self.user:
-            self.reason = "Erst wenn eine Person Dein Argument kommentiert hat, kannst Du dieses ebenfalls kommentieren."
+            self.reason = _("You can comment on your Argument only after another person has added a comment.")
             return False
         elif latest_comment and latest_comment.user == self.user:
-            self.reason = "Im Sinne einer abwechslungsreichen Diskussion kannst Du dieses Argument erst nach einer anderen Person wieder kommentieren."
+            self.reason = _("To foster the discussion you can comment on your Argument only after another person has added a comment.")
             return False
 
         return True
@@ -251,7 +251,7 @@ class Guard:
 
         if init.state in [STATES.INCOMING, STATES.MODERATION] and self.user.has_perm('initproc.add_moderation'):
             if init.supporting.filter(user=self.user, initiator=True):
-                self.reason = "Als Mitinitator*in darfst Du nicht mit moderieren."
+                self.reason = _("As Co-Initiator you are not authorized to moderate.")
                 return False
             return True
         return False

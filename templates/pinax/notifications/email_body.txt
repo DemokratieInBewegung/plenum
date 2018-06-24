@@ -1,11 +1,11 @@
+{% load i18n %}
 {% url "notification_notice_settings" as notices_url %}
 
-Hallo {{recipient.first_name|default:recipient.username}},
+{% trans "Hello" %} {{recipient.first_name|default:recipient.username}},
 
-{{ current_site }} freut sich Dir mitzuteilen:
+{{ current_site }} {% trans "is announcing: " %}
 
 {{message}}
 
 
-
-Übrigens kannst Du in Deinem Profil unter {{ base_url }}{{ notices_url }} einstellen, welche Benachrichtigungen Du erhalten möchtest.
+{% blocktrans %}You can configure which notifications you want to receive on your Account page at {{ base_url }}{{ notices_url }}{% endblocktrans %}.

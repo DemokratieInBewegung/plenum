@@ -1,9 +1,10 @@
+{% load i18n %}
 {% if initiative.all_variants %}
     <div class="container-fluid">
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <h3>Es wurde{% if initiative.all_variants|length > 1 %}n{% endif %} auch folgende Variante{% if initiative.all_variants|length > 1 %}n{% endif %} eingebracht</h3>
+                    <h3>{% trans "The following " %}{% if initiative.all_variants|length > 1 %}{% trans "variants" %}{% else %}{% trans "variant" %}{% endif %}{% trans "were also submitted" %}</h3>
                 </div>
             </div>
             <div>

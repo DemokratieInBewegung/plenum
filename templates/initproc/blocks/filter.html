@@ -1,94 +1,95 @@
+{% load i18n %}
+
 <form id="filters" data-ajax-submit="true" method="GET">
 	<div class="typefilter">
 		<div class="container">
 			<div class="row no-gutters">
 				<div class="col-auto">
-			      <h6>
-			      	<i class="material-icons filter-list">filter_list</i> Zeige nur:
-			      </h6>
-	    		</div>
-	    		<div class="col-sm-8">
-				  	<div class="row no-gutters filter-phases">
-						{% if user.is_authenticated %}
+		      <h6><i class="material-icons filter-list">filter_list</i> {% trans "Show:" %}</h6>
+    		</div>
+    		<div class="col-sm-8">
+			  	<div class="row no-gutters filter-phases">
+					{% if user.is_authenticated %}
 						<div class="col-auto">
 							<label>
 								<input name="f" value="p" type="checkbox" {% if 'p' in filters %} checked{% endif %}>
 								<span class="badge badge-prepare">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>In Vorbereitung
-						      	</span>
+				      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>{% trans "In Preparation" %}
+				      	</span>
 							</label>
 						</div>
-							{% if inbox_count %}
-						    <div class="col-auto">
-							    <label>
-							      	<input name="f" value="i" type="checkbox" {% if 'i' in filters %} checked{% endif %}>
-							      	<span class="badge badge-arrivals">
-							      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>In Prüfung ({{inbox_count}})
-							      	</span>
-							    </label>
+						{% if inbox_count %}
+					    <div class="col-auto">
+						    <label>
+					      	<input name="f" value="i" type="checkbox" {% if 'i' in filters %} checked{% endif %}>
+					      	<span class="badge badge-arrivals">
+					      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>{% trans "In Review" %} ({{inbox_count}})
+					      	</span>
+					      </label>
 							</div>
-					      	{% endif %}
-						{% endif %}
-				      	<div class="col-auto">
-						    <label>
-						      	<input name="f" value="s" type="checkbox" {% if 's' in filters %} checked{% endif %}>
-						      	<span class="badge badge-support">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Sucht Unterstützung
-						      	</span>
-						    </label>
+		      	{% endif %}
+					{% endif %}
+	      	<div class="col-auto">
+				    <label>
+			      	<input name="f" value="s" type="checkbox" {% if 's' in filters %} checked{% endif %}>
+			      	<span class="badge badge-support">
+			      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>{% trans "Seeking Supporters" %}
+			      	</span>
+			      </label>
+					</div>
+					<div class="col-auto">
+				    <label>
+			      	<input name="f" value="d" type="checkbox" {% if 'd' in filters %} checked{% endif %}>
+			      	<span class="badge badge-discussion">
+			      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>{% trans "In discussion" %}
+			      	</span>
+				    </label>
+					</div>
+					<div class="col-auto">
+			      <label>
+			      	<input name="f" value="e" type="checkbox" {% if 'e' in filters %} checked{% endif %}>
+			      	<span class="badge badge-edits">
+			      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>{% trans "Final Modifications" %}
+			      	</span>
+		  	    </label>
+    			</div>
+  				<div class="col-auto">
+				    <label>
+			      	<input name="f" value="m" type="checkbox" {% if 'm' in filters %} checked{% endif %}>
+            	<span class="badge badge-arrivals">
+			      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>{% trans "Final Review" %}
+			      	</span>
+				    </label>
 						</div>
 						<div class="col-auto">
-						    <label>
-						      	<input name="f" value="d" type="checkbox" {% if 'd' in filters %} checked{% endif %}>
-						      	<span class="badge badge-discussion">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>In Diskussion
-						      	</span>
-						    </label>
+					    <label>
+				      	<input name="f" value="v" type="checkbox" {% if 'v' in filters %} checked{% endif %}>
+				      	<span class="badge badge-vote">
+				      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>{% trans "On Vote" %}
+				      	</span>
+					    </label>
 						</div>
 						<div class="col-auto">
-						    <label>
-						      	<input name="f" value="e" type="checkbox" {% if 'e' in filters %} checked{% endif %}>
-						      	<span class="badge badge-edits">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Finale Überarbeitung
-						      	</span>
-						    </label>
+					    <label>
+				      	<input name="f" value="a" type="checkbox" {% if 'a' in filters %} checked{% endif %}>
+				      	<span class="badge badge-accepted">
+				      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>{% trans "Accepted" %}
+				      	</span>
+					    </label>
 						</div>
 						<div class="col-auto">
-						    <label>
-						      	<input name="f" value="m" type="checkbox" {% if 'm' in filters %} checked{% endif %}>
-						      	<span class="badge badge-arrivals">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Finale Prüfung
-						      	</span>
-						    </label>
-						</div>
-						<div class="col-auto">
-						    <label>
-						      	<input name="f" value="v" type="checkbox" {% if 'v' in filters %} checked{% endif %}>
-						      	<span class="badge badge-vote">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Abstimmung
-						      	</span>
-						    </label>
-						</div>
-						<div class="col-auto">
-						    <label>
-						      	<input name="f" value="a" type="checkbox" {% if 'a' in filters %} checked{% endif %}>
-						      	<span class="badge badge-accepted">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Angenommen
-						      	</span>
-						    </label>
-						</div>
-						<div class="col-auto">
-						    <label>
-						      	<input name="f" value="r" type="checkbox" {% if 'r' in filters %} checked{% endif %}>
-						      	<span class="badge badge-rejected">
-						      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Abgelehnt
-						      	</span>
-						    </label>
+					    <label>
+  			      	<input name="f" value="r" type="checkbox" {% if 'r' in filters %} checked{% endif %}>
+				      	<span class="badge badge-rejected">
+				      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>{% trans "Rejected" %}
+				      	</span>
+					    </label>
 						</div>
 						<input name="f" value="x" type="checkbox" checked hidden="true">
 					</div>
 				</div>
 			</div>
 		</div>
-    </div>
- </form>
+  </div>
+</form>
+ 

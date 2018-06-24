@@ -1,0 +1,18 @@
+{% extends 'site_base.html' %}
+{% load i18n %}
+{% load site_defaults %}
+
+{% block body %}
+<div class="container-fluid">
+	<div class="container">
+    <div class="row">
+      <div class="col">
+			  <h2>{% trans "Time to Participate" %}</h2>
+			  <h3>{% trans "Submit Initiatives for discussion and voting" %}!</h3>
+			  <p><a href="{{ 'PLATFORM_DEFAULT_URL'|get_setting }}">{{ 'PLATFORM_TITLE'|get_setting }}</a> {% blocktrans %}is a political movement like no other. It is a place where everyone can Initiatives, discuss them collaboratively and cast votes. As a participant you can influence and contribute to our political programm and its direction within the boundaries of our values - even if you are not a member of our movement. Submitting and voting on Initiatives is done online through our Voting platform.{% endblocktrans %}</p>
+  			<a class="btn btn-outline-primary" href="{{ 'PLATFORM_REGISTRATION_URL'|get_setting }}">{% trans "Register Now!" %}</a>
+ 		  </div>
+ 		</div>
+ 	</div>
+</div>
+{% endblock %}

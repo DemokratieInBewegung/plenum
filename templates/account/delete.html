@@ -1,19 +1,17 @@
 {% extends "account/base.html" %}
-
 {% load i18n %}
+{% load site_defaults %}
 
 {% block body_class %}account account-delete{% endblock %}
-
 {% block head_title %}{% trans "Delete Account" %}{% endblock %}
 
 {% block body %}
-    <h1>{% trans "Delete Account" %}</h1>
-    
-    <p>{% blocktrans %}If you go ahead and delete your account, your information will be <b>expunged within {{ ACCOUNT_DELETION_EXPUNGE_HOURS }} hours</b>.{% endblocktrans %}</p>
-    
-    <form method="post" action="{% url "account_delete" %}" autocapitalize="off">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">{% trans "Delete My Account" %}</button>
-    </form>
-    
+  <h1>{% trans "Delete Account" %}</h1>
+  
+  <p>{% blocktrans %}Please note, once you delete your account, all account related data will be permanently and irrevocably deleted after a {{ 'ACCOUNT_DELETION_EXPUNGE_HOURS'|get_setting }} hours.{% endblocktrans %}</p>
+  
+  <form method="post" action="{% url "account_delete" %}" autocapitalize="off">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">{% trans "Delete my account" %}</button>
+  </form>
 {% endblock %}

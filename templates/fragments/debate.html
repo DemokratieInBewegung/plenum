@@ -1,9 +1,10 @@
+{% load i18n %}
 
 <div id="argument-list">
     {% for argument in arguments %}
         {% include "fragments/argument/item.html" %}
     {% empty %}
-        <div id="no-arguments" class="alert alert-info">Diese Debatte enthält {% if initiative.state == 'd' %}bisher{% endif %} keine Argumente.</div>
+        <div id="no-arguments" class="alert alert-info">{% trans "This debate contains no Arguments" %}{% if initiative.state == 'd' %}{% trans "up until now" %}{% endif %}.</div>
     {% endfor %}
 </div>
 <div id="debate-thanks" class="container-fluid push-alert fixed-top">

@@ -1,9 +1,9 @@
 {% extends "site_base.html" %}
-
+{% load i18n %}
 {% load account_tags %}
 {% load bootstrap %}
 
-{% block head_title %}Plenum: Benutzerkonto anlegen{% endblock %}
+{% block head_title %}{% trans "Plenum: Create Account" %}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
@@ -11,16 +11,16 @@
         <div class="row">
             <div class="col">
                 <form id="signup_form" method="post" action="{% url "account_signup" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
-                    <h2>Benutzerkonto anlegen</h2>
+                    <h2>{% trans "Create Account" %}</h2>
                     {% csrf_token %}
                     {{ form | bootstrap }}
                     {% if redirect_field_value %}
                         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                     {% endif %}
-                    <button type="submit" class="btn btn-primary">Benutzerkonto anlegen</button>
+                    <button type="submit" class="btn btn-primary">{% trans "Create Account" %}</button>
                 </form>
                 <p class="mt-3">
-                Du hast bereits ein Benutzerkonto für das Plenum? <strong><a href="{% urlnext 'account_login' %}">Dann melde dich hier an.</a></strong>
+                {% trans "Already have a registered account?" %}<strong><a href="{% urlnext 'account_login' %}">{% trans "Please login here." %}</a></strong>
                 </p>
             </div>
         </div>

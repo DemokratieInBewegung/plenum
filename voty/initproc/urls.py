@@ -3,9 +3,7 @@ from django.views import generic
 from . import views
 
 urlpatterns = [
-	# globals
-    url('^$', views.index, name='home'),
-    url('^user_autocomplete$', views.UserAutocomplete.as_view(), name='user_autocomplete'),
+  url(r'^(?P<filename>(robots.txt)|(humans.txt))$', views.crawler, name='crawler'),
 
     # initiative specifics
     url('^ueber/$', views.ueber, name="ueber"),

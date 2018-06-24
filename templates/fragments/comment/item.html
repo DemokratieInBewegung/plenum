@@ -1,20 +1,16 @@
 <div id="comment-{{comment.id}}" class="comment container">
-
 	<div class="row no-gutters comment-head">
 		<div class="col-auto author">
-            {% include "fragments/avatar.html" with user=comment.user size=55 %}
+      {% include "fragments/avatar.html" with user=comment.user size=55 %}
 		</div>
 		<div class="col-auto">
 			<span class="author-name">{{comment.user.get_full_name|default:comment.user.username}}</span>
 			<span class="arg-meta">{{comment.created_at}}</span>
 		</div>
-
 		<div class="col-auto ml-auto comment-likes">
 			{% include 'fragments/like.html' with author=comment.user has_liked=comment.has_liked target=comment show_text=0 show_count=1 with_link=0 %}
-			
 		</div>
 	</div>
-
 	<div class="row no-gutters comment-text">
 		{{comment.text|urlize|linebreaks}}
 	</div>

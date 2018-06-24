@@ -1,39 +1,42 @@
 {% load guard %}
+{% load i18n %}
+
 <span {% if with_link or show_text %} class="{{target.unique_id}}-like" {% endif %}>
-    {% guard can_like target %}
-	{% if can_like %}
-        {% if is_editable %}
-            {% if with_link %}
-                {% if has_liked %}
-                    <a data-ajax="true"
-                        href="/unlike/{{target.type}}/{{target.id}}?show_text={{show_text}}&show_count={{show_count}}" title="Zum Zurücknehmen klicken">
-                {% else %}
-                    <a data-ajax="true"
-                        href="/like/{{target.type}}/{{target.id}}?show_text={{show_text}}&show_count={{show_count}}">
-                {% endif %}
-            {% endif %}
-        {% endif %}
+  {% guard can_like target %}
+  {% if can_like %}
+    {% if is_editable %}
+      {% if with_link %}
         {% if has_liked %}
-            <i class="material-icons {{target.unique_id}}-like-icon">favorite</i>{% if show_text %} Dir gefällt das{% endif %}
-        {% else %}
-            {% if show_text %}
-                {% if is_editable %}
-                    <i class="material-icons {{target.unique_id}}-like-icon">favorite_border</i> Gefällt mir
-                {% endif %}
-            {% else %}
-                <i class="material-icons {{target.unique_id}}-like-icon">favorite_border</i>
-            {% endif %}
-        {% endif %}
-        {% if show_count %}
-            <span class="{{target.unique_id}}-like-count">{{target.likes.count}}</span>
-        {% endif %}
+          <a data-ajax="true" href="/unlike/{{target.type}}/{{target.id}}?show_text={{show_text}}&amp;show_count={{show_count}}" title="{% trans 'Click to revoke' %}">
+		    {% else %}
+		      <a data-ajax="true" href="/like/{{target.type}}/{{target.id}}?show_text={{show_text}}&amp;show_count={{show_count}}">
+		    {% endif %}
+      {% endif %}
+    {% endif %}
+
+    {% if has_liked %}
+			<i class="material-icons {{target.unique_id}}-like-icon">favorite</i> {% if show_text %}{% trans "You like this" %}{% endif %}	
+		{% else %}		
+		  {% if show_text %}
         {% if is_editable %}
-            {% if with_link %}</a>{% endif %}
-        {% endif %}
-	{% else %}
-        {% if show_count %}
-            <i class="material-icons {{target.unique_id}}-like-icon">favorite_border</i>
-            <span class="{{target.unique_id}}-like-count">{{target.likes.count}}</span>
-        {% endif %}
-	{% endif %}
+          <i class="material-icons {{target.unique_id}}-like-icon">favorite_border</i> {% trans "I like this" %}
+			  {% endif %}
+      {% else %}
+        <i class="material-icons {{target.unique_id}}-like-icon">favorite_border</i>
+      {% endif %}
+    {% endif %}
+	
+		{% if show_count %}
+			<span class="{{target.unique_id}}-like-count">{{target.likes.count}}</span>
+		{% endif %}
+
+    {% if is_editable %}
+        {% if with_link %}</a>{% endif %}
+    {% endif %}
+  {% else %}
+    {% if show_count %}
+        <i class="material-icons {{target.unique_id}}-like-icon">favorite_border</i>
+        <span class="{{target.unique_id}}-like-count">{{target.likes.count}}</span>
+    {% endif %}
+  {% endif %}
 </span>

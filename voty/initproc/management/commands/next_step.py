@@ -56,8 +56,8 @@ class Command(BaseCommand):
 
                         #send feedback message to all initiators
                         EmailMessage(
-                            'Feedback zur Abstimmung',
-                            render_to_string('initadmin/voting_feedback.txt', context=dict(
+                            render_to_string('initadmin/voting_feedback_subject.txt'),
+                            render_to_string('initadmin/voting_feedback_message.txt', context=dict(
                                 target=i,
                                 votecount = i.votes.count,
                                 reasons = i.votes.values('reason').annotate(count=Count('reason'))

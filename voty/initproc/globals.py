@@ -1,5 +1,5 @@
 from datetime import date
-
+from django.utils.translation import ugettext_lazy as _
 
 class NOTIFICATIONS:
     """
@@ -70,17 +70,17 @@ COMPARING_FIELDS = [
 ]
 
 SUBJECT_CATEGORIES = [
-    'Globale Politik & internationale Zusammenarbeit',
-    'Bildung, Forschung & Kultur',
-    'Innenpolitik',
-    'Netz- & Medienpolitik',
-    'Geschlechtergerechtigkeit',
-    'Vielfalt & Integration',
-    'Demokratie & Transparenz',
-    'Gesundheit, Ernährung & Verbraucher*innenschutz',
-    'Umwelt, Mobilität, Infrastruktur & Strukturentwicklung',
-    'Soziale Gerechtigkeit, Wirtschaft, Arbeit & Finanzen',
-    'Anderes'
+    _("Global Politics & International Cooperation"),
+    _("Education, Research & Culture"),
+    _("Interior Politics"),
+    _("Net- & Media Politics"),
+    _("Gender Equality"),
+    _("Diversity & Integration"),
+    _("Democracy & Transparency"),
+    _("Health, Nutrition, Consumer Protection"),
+    _("Environment, Mobility, Infrastructural Development"),
+    _("Social Justice, Economy, Work & Finance"),
+    _("Other")
 ]
 
 ABSTENTION_START = date(2017, 12, 1) # Everything published after this has abstentions

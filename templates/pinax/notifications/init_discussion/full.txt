@@ -1,3 +1,4 @@
-"{{sender}}" ist jetzt in der Diskussionsphase.
+{% load i18n %}
+"{{sender}}" {% trans "is now in Discussion" %}.
 
-Du findest die Initiative unter {{ base_url }}/initiative/{{sender.id}}-{{sender.slug}}s
+{% trans "You can find the Initiative at:" %}{{ base_url }}/initiative/{{sender.id}}-{{sender.slug}}

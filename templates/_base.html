@@ -63,7 +63,7 @@
                         <a class="nav-link" href="/help">{% trans "Help" %}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href='https://bewegung.jetzt/datenschutz/'>Datenschutz</a>
+                        <a class="nav-link" href="{{ 'PLATFORM_DATA_PROTECTION_URL'|get_setting }}">{% trans "Data Protection" %}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href='/about'>{% trans "Legal Notice" %}</a>
@@ -253,4 +253,3 @@
   {% block body-javascript %}{% endblock %}
 </body>
 </html>
-

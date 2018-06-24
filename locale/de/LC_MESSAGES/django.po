@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Abstimmungstool\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-24 14:24+0200\n"
-"PO-Revision-Date: 2018-06-24 12:33+0000\n"
+"POT-Creation-Date: 2018-06-24 15:18+0200\n"
+"PO-Revision-Date: 2018-06-24 13:19+0000\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -46,107 +46,111 @@ msgstr ""
 msgid "Help"
 msgstr "Hilfe"
 
-#: templates/_base.html:66 templates/static/about.html:20
+#: templates/_base.html:66
+msgid "Data Protection"
+msgstr "Datenschutz"
+
+#: templates/_base.html:69 templates/static/about.html:20
 msgid "Legal Notice"
 msgstr "Impressum"
 
-#: templates/_base.html:70
+#: templates/_base.html:73
 msgid "New Initiative"
 msgstr "Neue Initiative"
 
-#: templates/_base.html:86 templates/account/base.html:4 
+#: templates/_base.html:89 templates/account/base.html:4 
 #: templates/account/base.html:8 templates/account/settings.html:7 
 #: templates/account/settings.html:13 templates/initadmin/profile_edit.html:6
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: templates/_base.html:89
+#: templates/_base.html:92
 msgid "Invite Users"
 msgstr "Beweger*innen einladen"
 
-#: templates/_base.html:90
+#: templates/_base.html:93
 msgid "Activity"
 msgstr "Aktivitäten"
 
-#: templates/_base.html:91
+#: templates/_base.html:94
 msgid "Admin"
 msgstr "Aministration"
 
-#: templates/_base.html:94 templates/account/logout.html:11 
+#: templates/_base.html:97 templates/account/logout.html:11 
 #: templates/account/logout.html:15
 msgid "Logout"
 msgstr "Abmelden"
 
-#: templates/_base.html:99
+#: templates/_base.html:102
 msgid "Register"
 msgstr "Registrieren"
 
-#: templates/_base.html:103
+#: templates/_base.html:106
 msgid "Menu"
 msgstr "Menu"
 
-#: templates/_base.html:106 templates/account/login.html:14 
+#: templates/_base.html:109 templates/account/login.html:14 
 #: templates/account/login.html:20
 msgid "Login"
 msgstr "Anmelden"
 
-#: templates/_base.html:108
+#: templates/_base.html:111
 msgid "Language"
 msgstr "Sprache"
 
-#: templates/_base.html:149
+#: templates/_base.html:152
 msgid " characters left "
 msgstr "Zeichen verfügbar"
 
-#: templates/_base.html:166
+#: templates/_base.html:169
 msgid "You have been inivited to "
 msgstr "Du wurdest eingeladen zu"
 
-#: templates/_base.html:166
+#: templates/_base.html:169
 msgid " by "
 msgstr "von"
 
-#: templates/_base.html:171
+#: templates/_base.html:174
 msgid "has accepted the invitation to Initiative: "
 msgstr "akzeptierte die Einladung zur Initiative:"
 
-#: templates/_base.html:177
+#: templates/_base.html:180
 msgid "has rejected the invitation to Initiative: "
 msgstr "hat die Einladung zu folgender Initiative abgelehnt:"
 
-#: templates/_base.html:185
+#: templates/_base.html:188
 msgid "has been changed by"
 msgstr "wurde verändert von"
 
-#: templates/_base.html:191
+#: templates/_base.html:194
 msgid "has been submitted by"
 msgstr "wurde eingereicht von"
 
-#: templates/_base.html:198
+#: templates/_base.html:201
 msgid "has been published by"
 msgstr "wurde veröffentlicht von"
 
-#: templates/_base.html:202
+#: templates/_base.html:205
 msgid "has been published"
 msgstr "wurde veröffentlicht"
 
-#: templates/_base.html:209
+#: templates/_base.html:212
 msgid "can now be discussed"
 msgstr "kann jetzt diskutiert werden"
 
-#: templates/_base.html:215
+#: templates/_base.html:218
 msgid "can now go into final edit"
 msgstr "kann jetzt in die finale Überarbeitung gehen"
 
-#: templates/_base.html:223
+#: templates/_base.html:226
 msgid "has opened the following Initiative for voting:"
 msgstr "hat die folgende Initiative zur Abstimmung freigegeben:"
 
-#: templates/_base.html:227
+#: templates/_base.html:230
 msgid "can now be voted on"
 msgstr "ist zur Abstimmung freigegeben"
 
-#: templates/_base.html:234
+#: templates/_base.html:237
 msgid "has published a new Argument on:"
 msgstr "hat ein neues Argument zur folgenden Diskussion veröffentlicht:"
 
@@ -1453,13 +1457,13 @@ msgstr "Du findest diese Initiative hier:"
 msgid ""
 "The Discussion phase of \"%(sender)s\" has ended and the Initiative can now "
 "be finalized\n"
-"and put up for a Vote.\n"
+"and put up for a Vote."
 msgstr ""
 "Die Diskussionsphase von \"%(sender)s\" ist beendet und die Initiative kann "
 "jetzt finalisiert \n"
-"und zur Abstimmung gestellt werden.\n"
+"und zur Abstimmung gestellt werden."
 
-#: templates/pinax/notifications/init_discussion_closed/full.txt:5 
+#: templates/pinax/notifications/init_discussion_closed/full.txt:4 
 #: templates/pinax/notifications/init_edited/full.txt:4 
 #: templates/pinax/notifications/init_new_arg/full.txt:4 
 #: templates/pinax/notifications/init_published/full.txt:5 

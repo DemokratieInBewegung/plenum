@@ -211,7 +211,7 @@ def new(request):
 
 
 @can_access_initiative()
-def item(request, init, slug=None, type=None):
+def item(request, init, slug=None, initype=None):
 
     ctx = dict(initiative=init,
                user_count=init.eligible_voter_count,
@@ -243,7 +243,7 @@ def item(request, init, slug=None, type=None):
 
 @ajax
 @can_access_initiative()
-def show_resp(request, initiative, target_type, target_id, slug=None, type=None):
+def show_resp(request, initiative, target_type, target_id, slug=None, initype=None):
 
     model_cls = apps.get_model('initproc', target_type)
     arg = get_object_or_404(model_cls, pk=target_id)

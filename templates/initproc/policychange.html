@@ -48,9 +48,9 @@
                 <div class="pre-submit">
                     <div class="alert alert-info" role="alert">
                         {% if initiative.state != 'e' %}
-                        <h6>Um Deine AO-Änderung einreichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
+                        <h6>Um Deine Änderung der Abstimmungsordnung veröffentlichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
                         {% else %}
-                        <h6>Um Deine AO-Änderung nach der Überarbeitung zur Abstimmung einreichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
+                        <h6>Um Deine Änderung der Abstimmungsordnung nach der Überarbeitung zur Abstimmung einreichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
                         {% endif %}
                         Alle Textfelder müssen ausgefüllt sein.
                     </div>
@@ -91,35 +91,35 @@
 
                 {% if initiative.state == 'p' %}
                 <p>
-                    An dieser AO-Änderung <strong class="badge-prepare">wird noch gearbeitet</strong>.
+                    An dieser Änderung der Abstimmungsordnung <strong class="badge-prepare">wird noch gearbeitet</strong>.
                 </p>
                 {% elif initiative.state == 'e' %}
                 <p>
-                    Diese AO-Änderung <strong class="badge-prepare">wird für die Abstimmung finalisiert</strong>.
+                    Diese Änderung der Abstimmungsordnung <strong class="badge-prepare">wird für die Abstimmung finalisiert</strong>.
                 </p>
                 {% endif %}
 
                 {% ifequal initiative.state 'h' %}
                 <p>
-                    Diese AO-Änderung <strong class="badge-arrivals">ist nicht sichtbar</strong>.
+                    Diese Änderung der Abstimmungsordnung <strong class="badge-arrivals">ist nicht sichtbar</strong>.
                 </p>
                 {% endifequal %}
 
                 {% ifequal initiative.state 'd' %}
                 <p>
-                    Diese AO-Änderung befindet sich <a href="#debate">in Diskussion</a>.
+                    Diese Änderung der Abstimmungsordnung befindet sich <a href="#debate">in Diskussion</a>.
                 </p>
                 {% endifequal %}
 
                 {% ifequal initiative.state 'v' %}
                 <p>
-                    Über diese AO-Änderung <a href="#voting"><strong class="badge-vote">wird gerade abgestimmt</strong></a>.
+                    Über diese Änderung der Abstimmungsordnung <a href="#voting"><strong class="badge-vote">wird gerade abgestimmt</strong></a>.
                 </p>
                 {% endifequal %} {% ifequal initiative.state 'a' %}
-                <p>Diese AO-Änderung {% if user.is_authenticated %}
+                <p>Diese Änderung der Abstimmungsordnung {% if user.is_authenticated %}
                     <a href="#cta">{% endif %}<strong class="badge-accepted">wurde angenommen</strong>{% if user.is_authenticated %}</a>{% endif %}.
                     {% endifequal %} {% ifequal initiative.state 'r' %}
-                <p>Diese AO-Änderung <a href="#cta"><strong class="badge-rejected">wurde abgelehnt</strong></a>.</p>
+                <p>Diese Änderung der Abstimmungsordnung <a href="#cta"><strong class="badge-rejected">wurde abgelehnt</strong></a>.</p>
                 {% endifequal %}
             </div>
         </div>
@@ -158,7 +158,7 @@
         <div class="row">
             <div class="col-12">
                 <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
-                <p>Diese AO-Änderung befindet sich in Diskussion.</p>
+                <p>Diese Änderung der Abstimmungsordnung befindet sich in Diskussion.</p>
                 <a href="#discuss" class="btn bg-discussion">
                     Jetzt diskutieren
                 </a>
@@ -174,7 +174,7 @@
         <div class="row">
             <div class="col-12">
                 <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
-                <p>Über diese AO-Änderung wird gerade abgestimmt.</p>
+                <p>Über diese Änderung der Abstimmungsordnung wird gerade abgestimmt.</p>
                 {% include "fragments/jump_to_vote.html" %}
             </div>
         </div>
@@ -194,7 +194,7 @@
         {% if initiative.allows_abstention %}
         <div class="row" style="padding-top: .25rem; padding-bottom: .5rem">
             <div class="col-12" style="padding-top: 1rem">
-                <p>Diese AO-Änderung {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
+                <p>Diese Änderung der Abstimmungsordnung {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
             </div>
         </div>
         <div class="row justify-content-center">
@@ -223,7 +223,7 @@
 {% else %}
 <div class="row" style="padding-top: .25rem; padding-bottom: .5rem">
     <div class="col-12" style="padding-top: 1rem">
-        <p>Diese AO-Änderung {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
+        <p>Diese Änderung der Abstimmungsordnung {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
     </div>
 </div>
 <div class="row justify-content-center">
@@ -248,7 +248,7 @@
 {% else %}
 <div class="row" style="padding-top: 1rem">
     <div class="col-12">
-        <span>Bei der Abstimmung zu dieser AO-Änderung wurde keine einzige Stimme abgegeben. Damit gilt die AO-Änderung als <strong class="badge-rejected">abgelehnt</strong>.</span>
+        <span>Bei der Abstimmung zu dieser Änderung der Abstimmungsordnung wurde keine einzige Stimme abgegeben. Damit gilt die Änderung der Abstimmungsordnung als <strong class="badge-rejected">abgelehnt</strong>.</span>
     </div>
 </div>
 {% endif %}
@@ -287,7 +287,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <h6 class="text-muted classification">Text der AO-Änderung{% if initiative.versions.count > 1 %}
+                <h6 class="text-muted classification">Text der Änderung der Abstimmungsordnung{% if initiative.versions.count > 1 %}
                     <a href="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/compare/{{initiative.versions.1.id}}" data-ajax="true" class="change-history">(Änderungshistorie einsehen <span class="changes-badge"><span class="material-icons history">history</span> {{initiative.versions.count}}</span>)</a>{% endif %}</h6>
             </div>
         </div>

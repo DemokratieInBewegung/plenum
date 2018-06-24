@@ -7,10 +7,10 @@ from dal import autocomplete
 from uuid import uuid4
 
 from .models import Pro, Contra, Like, Comment, Proposal, Moderation, Initiative
-
+from django.utils.translation import ugettext_lazy as _
 
 def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_ajax=True,
-                         submit_klasses="btn-outline-primary", submit_title="Abschicken"):
+                         submit_klasses="btn-outline-primary", submit_title=_("Send")):
     def wrap(fn):
         def view(request, *args, **kwargs):
             if request.method == "POST":
@@ -99,12 +99,12 @@ class MultipleSubmitButton(forms.Select):
 
 class InviteUsersForm(forms.Form):
     user = forms.ModelMultipleChoiceField(
-        label="Einladen",
+        label=_("Invite"),
         queryset=get_user_model().objects,
         required=False,
         widget=autocomplete.ModelSelect2Multiple(
                     url='user_autocomplete',
-                    attrs={"data-placeholder": "Zum Suchen tippen",
+                    attrs={"data-placeholder": _("Type to search"),
                            'data-html': "True"}))
 
 
@@ -117,58 +117,60 @@ class InitiativeForm(forms.ModelForm):
                   'einordnung', 'ebene', 'bereich']
 
         labels = {
-            "title" : "Überschrift",
-            "subtitle": "Anreißer",
-            "summary" : "Zusammenfassung",
-            "problem": "Problembeschreibung",
-            "forderung" : "Forderung",
-            "kosten": "Kosten",
-            "fin_vorschlag": "Finanzierungsvorschlag",
-            "arbeitsweise": "Arbeitsweise",
-            "init_argument": "Argument der Initiator*innen",
+            "title" : _("Headline"),
+            "subtitle": _("Teaser"),
+            "summary" : _("Summary"),
+            "problem": _("Problem Assessment"),
+            "forderung" : _("Proposal"),
+            "kosten": _("Cost Estimation"),
+            "fin_vorschlag": _("Finance Proposition"),
+            "arbeitsweise": _("Methodology"),
+            "init_argument": _("Initiators' Argument"),
+            "einordnung": _("Context"),
+            "ebene": _("Scope"),
+            "bereich": _("Topic"),
         }
         help_texts = {
-            "title" : "Die Überschrift sollte kurz und knackig Eure Forderung enthalten.",
-            "subtitle": "Hier reißt Ihr kurz das Problem an, welches Eure Initiative lösen soll. Versucht es auf 1-2 Sätze zu beschränken.",
-            "summary" : "Hier schreibt bitte 3-4 Sätze, die zusammenfassen, worum es in dieser Initiative geht.",
-            "problem": "Hier bitte in 3-4 Sätzen das Problem beschreiben, das Ihr mit Eurer Initiative lösen wollt.",
-            "forderung" : "Was sind Eure konkreten Forderungen?",
-            "kosten": "Entstehen Kosten für Eure Initiative? Versucht bitte, wenn möglich, eine ungefähre Einschätzung über die Höhe der Kosten zu geben.",
-            "fin_vorschlag": "Hier solltet Ihr kurz erklären, wie die Kosten gedeckt werden könnten. Hier reicht auch zu schreiben, dass die Initiative über Steuereinnahmen finanziert wird.",
-            "arbeitsweise": "Habt Ihr mit Expert*innen gesprochen? Wo kommen Eure Informationen her? Hier könnt Ihr auch Quellen angeben.",
-            "init_argument": "Hier dürft Ihr emotional werden: Warum ist Euch das wichtig und warum bringt Ihr diese Initiative ein?",
-
+            "title" : _("The headline should state the proposal in a short and precise way."),
+            "subtitle": _("Briefly describe the problem or situation, the Initiative should adress. Try limiting yourself to 1-2 sentences."),
+            "summary" : _("Summarize the Initiative in 3-4 sentences."),
+            "problem": _("State and assess the situation or problem, the Initiative should solve in 3-4 sentences."),
+            "forderung": _("What are the concreted demands or proposals?"),
+            "kosten": _("Will the Initiative cause costs? Try to give an estimation of the cost associated with the Initiative."),
+            "fin_vorschlag": _("Briefly describe your ideas of how costs associated with the Initiative could be covered. It would be sufficient to write that the Initiative will be financed via tax income."),
+            "arbeitsweise": _("Have you consulted experts? What information is your assessment based on? Is it possible to sources of information?"),
+            "init_argument": _("Please state why this Initiative is important for you and why you are submitting it."),
         }
 
 
 class NewArgumentForm(forms.Form):
-    TITLE = "Neues Argument hinzufügen"
+    TITLE = _("Add New Argument")
     type = forms.ChoiceField(choices=[('👍', '👍'), ('👎', '👎')], widget=forms.HiddenInput())
     title = forms.CharField(required=True,
-                            label="Zusammenfassung",
+                            label=_("Summary"),
                             max_length=140,
-                            widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Wir wollen die Argumente so übersichtlich wie möglich halten. Bitte achte darauf, dass Dein Argument wirklich neu ist.'}))
+                            widget=forms.Textarea(attrs={'rows':3, 'placeholder':_("Arguments should be kept as clear as possible. Please ensure your argument is new and unique.")}))
     text = forms.CharField(required=True,
-                           label="Ausführliche Darstellung",
+                           label=_("Complete Description"),
                            max_length=500,
-                           widget=forms.Textarea(attrs={'rows':10, 'placeholder':'Wenn es bereits ein ähnliches Argument gibt, dann äußere Dich bitte in den Kommentaren zu diesem.'}))
+                           widget=forms.Textarea(attrs={'rows':10, 'placeholder': _("If a similar Argument already exits, please add a comment to this Argument.")}))
 
 
 class NewProposalForm(forms.Form):
     title = forms.CharField(required=True,
-                            label="Zusammenfassung",
+                            label=_("Summary"),
                             max_length=140,
-                            widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Wir wollen die Vorschläge so übersichtlich wie möglich halten. Bitte achte darauf, dass Dein Vorschlag wirklich neu ist.'}))
+                            widget=forms.Textarea(attrs={'rows':3, 'placeholder': _("Proposals should be kept as clear as possible. Please ensure your proposal is new and unique.")}))
     text = forms.CharField(required=True,
-                           label="Ausführliche Darstellung",
+                           label=_("Detailed Overview"),
                            max_length=1000,
-                           widget=forms.Textarea(attrs={'rows':10, 'placeholder':'Wenn es bereits einen ähnlichen Vorschlag gibt, dann äußere Dich bitte in den Kommentaren zu diesem.'}))
+                           widget=forms.Textarea(attrs={'rows':10, 'placeholder': _("If a similar Proposal already exits, please add a comment to this Proposal.")}))
 
 
 class NewCommentForm(forms.ModelForm):
-    text = forms.CharField(required=True, label="Dein Kommentar",
-                           help_text="Absätze sowie URLs werden passend formatiert",
-                           max_length=500, widget=forms.Textarea(attrs={'rows':10, 'placeholder':'Bitte beziehe Dich in Deinem Kommentar auf das obige Argument.'}))
+    text = forms.CharField(required=True, label=_("Your comment"),
+                           help_text=_("Paragraphs and urls will be formatted"),
+                           max_length=500, widget=forms.Textarea(attrs={'rows':10, 'placeholder': _("Please refer to the above Argument in your comment.")}))
 
     class Meta:
         model = Comment
@@ -179,22 +181,22 @@ QESTIONS_COUNT = 11
 class NewModerationForm(forms.ModelForm):
 
 
-    TITLE = "Moderation"
-    TEXT = "Die Inititiative ... (bitte nicht passendes streichen)"
+    TITLE = _("Moderation")
+    TEXT = _("The Initiative ... (please remove non-fitting characteristics")
 
-    q0 = forms.BooleanField(required=False, initial=True, label="Widerspricht in irgendeinem Punkt den Menschenrechten oder der Würde des Menschen")
-    q1 = forms.BooleanField(required=False, initial=True, label="Enthält abwertende Begriffe gegen Gruppen (zB “Asylanten”)")
-    q2 = forms.BooleanField(required=False, initial=True, label="Ist ausgrenzend/rassistisch/homophob/behindertenfeindlich/transphob/sexistisch")
-    q3 = forms.BooleanField(required=False, initial=True, label="Ist nationalistisch")
-    q4 = forms.BooleanField(required=False, initial=True, label="Ist un-demokratisch?")
-    q5 = forms.BooleanField(required=False, initial=True, label="Führt zu weniger Transparenz")
-    q6 = forms.BooleanField(required=False, initial=True, label="Führt zu weiterer Bevormundung oder Ausschluss von Personen an der Beteiligung")
-    q7 = forms.BooleanField(required=False, initial=True, label="Läuft auf Kosten folgender Generationen")
-    q8 = forms.BooleanField(required=False, initial=True, label="Gefährdet unser Klima und unseren Planeten")
-    q9 = forms.BooleanField(required=False, initial=True, label="trägt dazu bei, dass Reiche noch reicher werden und/oder Arme noch ärmer")
-    q10 = forms.BooleanField(required=False, initial=True, label="Benachteiligt bestimmte Personengruppen, die sowieso schon benachteiligt sind")
-    text = forms.CharField(required=False, label="Kommentar/Hinweis/Anmerkung", widget=forms.Textarea)
-    vote = forms.ChoiceField(required=True, label="Deine Beurteilung",
+    q0 = forms.BooleanField(required=False, initial=True, label=_("Contradicts in some point with human rights or human dignity"))
+    q1 = forms.BooleanField(required=False, initial=True, label=_("Contains pejorative terms against certain groups (eg Immigrants"))
+    q2 = forms.BooleanField(required=False, initial=True, label=_("Is excluding/rasict/homophobe/discriminatory/transphobe/sexist"))
+    q3 = forms.BooleanField(required=False, initial=True, label=_("Is nationalistic"))
+    q4 = forms.BooleanField(required=False, initial=True, label=_("Is un-democratic?"))
+    q5 = forms.BooleanField(required=False, initial=True, label=_("Leads to less transparency"))
+    q6 = forms.BooleanField(required=False, initial=True, label=_("Leads to more patronizing or exclusion of persons in participating"))
+    q7 = forms.BooleanField(required=False, initial=True, label=_("Is putting a burden on future generations"))
+    q8 = forms.BooleanField(required=False, initial=True, label=_("Endangers the climate and our planet"))
+    q9 = forms.BooleanField(required=False, initial=True, label=_("Leads to a widening of the prospertiy divide (rich get richer, poor get poorer"))
+    q10 = forms.BooleanField(required=False, initial=True, label=_("Puts groups of disadvantaged persons at even more disadvantages."))
+    text = forms.CharField(required=False, label=_("Comment/Hint/Remark"), widget=forms.Textarea)
+    vote = forms.ChoiceField(required=True, label=_("Your Assessment"),
             choices=[('y', 'yay'),('n', 'nope')],
             widget=forms.RadioSelect())
             # widget=MultipleSubmitButton(btn_attrs={
@@ -209,11 +211,11 @@ class NewModerationForm(forms.ModelForm):
         if cleanded_data['vote'] == 'y':
             for i in range(QESTIONS_COUNT):
                 if cleanded_data['q{}'.format(i) ]:
-                    self.add_error("vote", "Du hast positive gewertet, dabei hast Du mindestens ein Problem oben markiert")
+                    self.add_error("vote", _("You voted postively, although you marked at least one of the above issues."))
                     break
         else:
             if not cleanded_data['text']:
-                self.add_error("text", "Kannst Du das bitte begründen?")
+                self.add_error("text", _("Can you justifiy your decision?"))
 
     class Meta:
         model = Moderation

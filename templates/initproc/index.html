@@ -3,66 +3,67 @@
 {% load static %}
 {% load fullurl %}
 {% load guard %}
+{% load i18n %}
+{% load site_defaults %}
 
 {% block custom_header %}
-<div class="container-fluid init-index-header">
+  <div class="container-fluid init-index-header">
     <div class="container">
-        <div class="row title">
-            <div class="col-12 text-center" style="padding-top: 4rem; padding-bottom: 3rem">
-                <h1 class="display-3">Plenum</h1>
-            </div>
+      <div class="row title">
+        <div class="col-12 text-center" style="padding-top: 4rem; padding-bottom: 3rem">
+          <h1 class="display-3">{% trans "Plenum" %}</h1>
         </div>
+      </div>
     </div>
-</div>
-
-{% include "initproc/blocks/filter.html" %}
-{% comment %}
-{% include "initproc/blocks/magic_search.html" %}
-{% endcomment %}
+  </div>
+  
+  {% include "initproc/blocks/filter.html" %}
 
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-	<div class="container filter-list">
-		{% if user.is_authenticated %}
-		<div class="row filter-participation">
-			<div class="col">
-				<div id="filter-supported" class="text-muted">
-		      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Von mir <span class="fg-support">unterstützte</span> Initiativen ausblenden
-				</div>
-			</div>
-		</div>
-		<div class="row filter-participation">
-			<div class="col">
-				<div id="filter-voted" class="text-muted">
-		      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Von mir <span class="fg-vote">abgestimmte</span> Initiativen ausblenden
-				</div>
-			</div>
-		</div>
-		{% endif %}
-	</div>
-</div>
-<div id="init-list" class="container init-index">
-	{% include "fragments/initiative/list.html" %}
-</div>
+  <div class="container-fluid">
+  	<div class="container filter-list">
+  		{% if user.is_authenticated %}
+    		<div class="row filter-participation">
+    			<div class="col">
+    				<div id="filter-supported" class="text-muted">
+    		      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>{% trans "Hide Initiatives I have " %}<span class="fg-support">{% trans "expressed my support" %}.</span>
+    				</div>
+    			</div>
+    		</div>
+    		<div class="row filter-participation">
+    			<div class="col">
+    				<div id="filter-voted" class="text-muted">
+    		      		<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>{% trans "Hide Initiatives I have " %} <span class="fg-vote">{% trans "voted on" %}.</span>
+    				</div>
+    			</div>
+    		</div>
+  		{% endif %}
+  	</div>
+  </div>
+  <div id="init-list" class="container init-index">
+  	{% include "fragments/initiative/list.html" %}
+  </div>
 {% endblock %}
 
 {% block body-javascript %}
 
 {{ block.super }}
-<script type="text/javascript">
-  	$(function(){
-  		var submitTimeout = null;
-	    $('.typefilter input').change(function(item) {
-	    	$("#init-list").html("Loading ...");
-	    	$("#filters").submit();
-	    });	
-  	});
-  	// Initialize Tooltips
-  	$(function () {
-	  $('[data-toggle="tooltip"]').tooltip();
+  <script type="text/javascript">
+  $(function(){
+		var submitTimeout = null;
+    $('.typefilter input').change(function(item) {
+      $("#init-list").html("Loading ...");
+	    $("#filters").submit();
+    });
 	});
+
+	// Initialize Tooltips
+	$(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+
 	$(function () {
 		var filterSupported = Cookies.get('filterSupported');
 		function filterSupportedHide () {
@@ -96,6 +97,7 @@
 			}
 		});
 	});
+
 	$(function () {
 		var filterVoted = Cookies.get('filterVoted');
 		function filterVotedHide () {
@@ -128,10 +130,7 @@
 				filterVotedHide();
 			}
 		});
-	});
-</script>
-{% comment %}
-<script type="text/javascript" src="{% static 'js/vendor/vue.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/dib/magic-search.js' %}"></script>
-{% endcomment %}
+  });
+  </script>
+
 {% endblock %}

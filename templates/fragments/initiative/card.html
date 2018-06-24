@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load guard %}
 {% load mathfilters %}
 {% load fullurl %}
@@ -10,7 +11,7 @@
 				 		<div class="flex-item">
 							{% ifequal initiative.state 'p' %}
 							<span class="badge badge-prepare">
-								In Vorbereitung
+								{% trans "In Preparation" %}
 							</span>
 							{% endifequal %}
 
@@ -20,36 +21,36 @@
 								{% if user.is_staff %}
 									{% guard should_moderate_initiative initiative %}
 									{% if should_moderate_initiative %}
-									💥💥 Bitte prüfen 💥💥
+									💥💥 {% trans "Please validate" %} 💥💥
 									{% else %}
-									In Prüfung
+									{% trans "Validation pending" %}
 									{% endif %}
 								{% else %}
-								In Prüfung
+								{% trans "Validation pending" %}
 								{% endif %}
 							</span>
 							{% endifequal %}
 
 							{% ifequal initiative.state 's' %}
 							<span class="badge badge-support">
-								Sucht Unterstützung -
+								{% trans "Needs Supporters" %} -
 								{% if initiative.absolute_supporters < initiative.quorum %}
-								  {{initiative.quorum|sub:initiative.absolute_supporters}} fehlende {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}Unterstützer*in{% else %}Unterstützer*innen{% endif %}
+								  {{initiative.quorum|sub:initiative.absolute_supporters}} {% trans "missing" %} {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}{% trans "supporter" %}{% else %}{% trans "Supporters" %}{% endif %}
 							    {% else %}
-								  Quorum erreicht
+								  {% trans "Reached Quorum" %}
 							    {% endif %}
 							</span>
 							{% endifequal %}
 
 							{% ifequal initiative.state 'd' %}
 							<span class="badge badge-discussion">
-								In Diskussion
+								{% trans "In Discussion" %}
 							</span>
 							{% endifequal %}
 
 							{% ifequal initiative.state 'e' %}
 							<span class="badge badge-edits">
-								Finale Überarbeitung
+								{% trans "Final Review" %}
 							</span>
 							{% endifequal %}
 
@@ -60,42 +61,42 @@
 								{% if user.is_staff %}
 									{% guard should_moderate_initiative initiative %}
 									{% if should_moderate_initiative %}
-									💥💥 Bitte final prüfen 💥💥
+									💥💥 {% trans "Final Review required" %} 💥💥
 									{% else %}
-									Finale Prüfung
+									{% trans "Final Review pending" %}
 									{% endif %}
 								{% else %}
-								Finale Prüfung
+								{% trans "Final Review pending" %}
 								{% endif %}
 					      	</span>
 							{% endifequal %}
 
 							{% ifequal initiative.state 'v' %}
 							<span class="badge badge-vote">
-								Abstimmung
+								{% trans "Up for Vote" %}
 							</span>
 							{% endifequal %}
 
 							{% ifequal initiative.state 'a' %}
 							<span class="badge badge-accepted">
-								Angenommen
+								{% trans "Accepted" %}
 							</span>
 							{% endifequal %}
 
 							{% ifequal initiative.state 'r' %}
 							<span class="badge badge-rejected">
-								Abgelehnt
+								{% trans "Rejected" %}
 							</span>
 							{% endifequal %}
 						</div>
 						{% if initiative.state != 'i' and initiative.state != 'a' and initiative.state != 'r' and initiative.state != 'p' and initiative.state != 'm' %}
 						<div class="flex-item mr-auto">
 							<span class="text-muted align-middle">
-								Noch {{initiative.end_of_this_phase | timeuntil}}
+								{% trans "Time remaining:" %} {{initiative.end_of_this_phase | timeuntil}}
 							</span>
 						</div>
 						{% else %}
-						<!-- Dirty Positioning Fix – only temporary, find better solution or resolve with new design -->
+						<!-- Dirty Positioning Fix â only temporary, find better solution or resolve with new design -->
 						<div class="flex-item mr-auto">
 						</div>
 						{% endif %}
@@ -107,11 +108,11 @@
 							{% guard is_supporting initiative %}
 							{% if is_supporting %}
 							<div class="participation-indicator">
-								<i class="material-icons check-circle fg-support" data-toggle="tooltip" title="{% if initiative.state == 's' %}Du unterstützt diese Initiative{% else %}Du hast diese Initiative unterstützt{% endif %}">check_circle</i>
+								<i class="material-icons check-circle fg-support" data-toggle="tooltip" title="{% if initiative.state == 's' %}{% trans 'You support this Initiative' %}{% else %}{% trans 'You supported this Initiative' %}{% endif %}">check_circle</i>
 							</div>
 							{% else %}
 							<div class="participation-indicator">
-								<i class="material-icons check-circle fg-inactive" data-toggle="tooltip" title="{% if initiative.state == 's' %}Du unterstützt diese Initiative noch nicht{% else %}Du hast diese Initiative nicht unterstützt{% endif %}">check_circle</i>
+								<i class="material-icons check-circle fg-inactive" data-toggle="tooltip" title="{% if initiative.state == 's' %}{% trans 'You are not supporting this Initiative yet' %}{% else %}{% trans 'You did not support this Initiative' %}{% endif %}">check_circle</i>
 							</div>
 							{% endif %}
 							{% endif %}
@@ -121,20 +122,20 @@
 							{% if my_vote %}
   								{% if my_vote.in_favor %}
 								<div class="participation-indicator">
-									<i class="material-icons thumb-up" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du stimmst für diese Initiative{% else %}Du hast für diese Initiative gestimmt{% endif %}">thumb_up</i>
+									<i class="material-icons thumb-up" data-toggle="tooltip" title="{% if initiative.state == 'v' %}{% trans 'You are voting for this Initiative' %}{% else %}{% trans 'You voted for this Initiative' %}{% endif %}">thumb_up</i>
 								</div>
 								{% elif my_vote.against %}
 								<div class="participation-indicator">
-									<i class="material-icons thumb-down" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du stimmst gegen diese Initiative{% else %}Du hast gegen diese Initiative gestimmt{% endif %}">thumb_down</i>
+									<i class="material-icons thumb-down" data-toggle="tooltip" title="{% if initiative.state == 'v' %}{% trans 'You are voting against this Initiative' %}{% else %}{% trans 'You voted against this Initiative' %}{% endif %}">thumb_down</i>
 								</div>
 								{% elif my_vote.abstained %}
 								<div class="participation-indicator">
-									<i class="material-icons abstain" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du enthältst Dich{% else %}Du hast Dich enthalten{% endif %}">panorama_fish_eye</i>
+									<i class="material-icons abstain" data-toggle="tooltip" title="{% if initiative.state == 'v' %}{% trans 'You abstain from this Initiative' %}{% else %}{% trans 'You abstained from this Initiative' %}{% endif %}">panorama_fish_eye</i>
 								</div>
 								{% endif %}
 							{% else %}
 							<div class="participation-indicator">
-								<i class="material-icons thumbs-up-down fg-inactive" data-toggle="tooltip" title="Du hast über diese Initiative {% if initiative.state == 'v' %}noch {% endif %}nicht abgestimmt">thumbs_up_down</i>
+								<i class="material-icons thumbs-up-down fg-inactive" data-toggle="tooltip" title="{% if initiative.state == 'v' %}{% trans 'You have not yet' %} {% else %}{% trans 'You have not' %} {% endif %}{% trans 'voted for this Initiative' %}">thumbs_up_down</i>
 							</div>
 							{% endif %}
 							{% endif %}
@@ -154,18 +155,18 @@
     	<p class="card-text">
     		{{initiative.subtitle}}
     	</p>
-    	<a href="{% fullurl 'initiative_item' init_id=initiative.id slug=initiative.slug %}" class="go-to-intiative"><i class="material-icons chevron-right">chevron_right</i>zur Initiative</a>
+    	<a href="{% fullurl 'initiative_item' init_id=initiative.id slug=initiative.slug %}" class="go-to-intiative"><i class="material-icons chevron-right">chevron_right</i>{% trans "Go to the Iniative" %}</a>
   	</div>
   	<div class="card-footer">
   		<div class="container-fluid">
 			 <div class="row no-gutters">
 			 	{% if initiative.state != 'i' and initiative.state != 'p' %}
 			 	<div class="col text-muted align-self-center">
-			 		Veröffentlicht am {{initiative.went_public_at}}
+			 		{% trans "Published on" %} {{initiative.went_public_at}}
 			 	</div>
 			 	{% else %}
 			 	<div class="col text-muted align-self-center">
-			 		Noch nicht veröffentlicht
+			 		{% trans "Not published yet" %}
 			 	</div>
 			 	{% endif %}
 			 	<div class="col text-right avatar align-self-center">

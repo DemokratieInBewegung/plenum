@@ -1,23 +1,22 @@
+{% load i18n %}
 <span {% if with_link or show_text %} class="{{target.unique_id}}-like" {% endif %}>
 	{% if author == user %}
 		{% if show_count %}
 			<i class="material-icons {{target.unique_id}}-like-icon">favorite_border</i>
-		    <span class="{{target.unique_id}}-like-count">{{target.likes.count}}</span>
+	    <span class="{{target.unique_id}}-like-count">{{target.likes.count}}</span>
 		{% endif %}
 	{% else %}
 		{% if with_link %}
 			{% if has_liked %}
-				<a data-ajax="true"
-					href="/unlike/{{target.type}}/{{target.id}}?show_text={{show_text}}&show_count={{show_count}}" title="Zum Zurücknehmen klicken">
+				<a data-ajax="true" href="/unlike/{{target.type}}/{{target.id}}?show_text={{show_text}}&amp;show_count={{show_count}}" title="{% trans 'Click to revoke' %}">
 			{% else %}
-				<a data-ajax="true"
-					href="/like/{{target.type}}/{{target.id}}?show_text={{show_text}}&show_count={{show_count}}">
+				<a data-ajax="true" href="/like/{{target.type}}/{{target.id}}?show_text={{show_text}}&amp;show_count={{show_count}}">
 			{% endif %}
 		{% endif %}
 		{% if has_liked %}
-			<i class="material-icons {{target.unique_id}}-like-icon">favorite</i>{% if show_text %} Dir gefällt das{% endif %}
+			<i class="material-icons {{target.unique_id}}-like-icon">favorite</i>{% if show_text %} {% trans "You like this" %}{% endif %}
 		{% else %}
-			<i class="material-icons {{target.unique_id}}-like-icon">favorite_border</i>{% if show_text %} Gefällt mir{% endif %}
+			<i class="material-icons {{target.unique_id}}-like-icon">favorite_border</i>{% if show_text %} {% trans "I like this" %}{% endif %}
 		{% endif %}
 		{% if show_count %}
 			<span class="{{target.unique_id}}-like-count">{{target.likes.count}}</span>

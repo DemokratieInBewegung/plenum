@@ -1,5 +1,6 @@
+{% load i18n %}
 {% for m in moderations %}
 	{% include "fragments/moderation/item.html" with full=0 %}
 {% empty %}
-	<i id="no-moderations">Es hat noch kein*e Moderator*in bewertet.</i>
+	<i id="no-moderations">{% trans "Not reviewded by Moderator yet." %}</i>
 {% endfor %}

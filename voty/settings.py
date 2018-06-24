@@ -12,10 +12,15 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 import dj_database_url
+from six.moves import configparser
+from django.utils.translation import ugettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Retrieve initialization configuration
+init_parser = configparser.ConfigParser()
+init_parser.read(os.path.join(BASE_DIR, 'init.ini'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -23,14 +28,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET', '&v--b40hjwtfre(o^(4=-s!g7!x&za1u_=v#140ex+_%iek(c#');
 
-
 DEBUG = not os.environ.get('VIRTUAL_HOST', False)
 
-ALLOWED_HOSTS = os.environ.get('VIRTUAL_HOST', 'localhost,screwdriver.fritz.box').split(',')
-
+ALLOWED_HOSTS = os.environ.get('VIRTUAL_HOST', init_parser.get('settings', 'VIRTUAL_HOST_LIST')).split(',')
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.sites',
@@ -60,13 +62,15 @@ INSTALLED_APPS = [
 
     # locally
     'voty.initadmin',
-    'voty.initproc'
+    'voty.initproc',
+
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -76,7 +80,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'account.middleware.TimezoneMiddleware'
 ]
-
 
 PINAX_NOTIFICATIONS_BACKENDS = [
     ("site", "voty.initadmin.notify_backend.SiteBackend"),
@@ -99,7 +102,6 @@ LOGGING = {
     },
 }
 
-
 AUTHENTICATION_BACKENDS = (
     "account.auth_backends.EmailAuthenticationBackend",
     'django.contrib.auth.backends.ModelBackend',
@@ -120,6 +122,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'account.context_processors.account',
@@ -158,24 +161,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/1.10/topics/i18n/
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
 
 LOCALE_PATHS = (
-    os.path.join( BASE_DIR, 'locale'),
+  os.path.join( BASE_DIR, 'locale'),
 )
-
-LANGUAGE_CODE = 'de'
-ACCOUNT_LANGUAGES = [('de', 'Deutsch')]
-
-TIME_ZONE = 'Europe/Berlin'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
+LANGUAGE_CODE = init_parser.get('settings', 'DEFAULT_LANGUAGE')
+ACCOUNT_LANGUAGES = init_parser.items('ALTERNATIVE_LANGUAGE_LIST')
+TIME_ZONE = init_parser.get('settings', 'DEFAULT_TIMEZONE')
+LANGUAGES = (
+  ('en', _("English")),
+  ('de', _("German")),
+)
 
 NOTIFICATIONS_USE_JSONFIELD=True
 
@@ -183,8 +183,7 @@ ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_OPEN_SIGNUP = False
 AVATAR_GRAVATAR_DEFAULT = 'retro'
 
-
-DEFAULT_FROM_EMAIL = 'keine-antwort@bewegung.jetzt'
+DEFAULT_FROM_EMAIL = init_parser.get('settings', 'DEFAULT_FROM_EMAIL')
 EMAIL_BACKEND = "mailer.backend.DbBackend"
 
 if DEBUG:
@@ -234,33 +233,12 @@ STATICFILES_DIRS = (
     os.path.join( BASE_DIR, 'static'),
 )
 
-
 STATIC_ROOT = os.path.join( BASE_DIR, 'public', 'static')
 MEDIA_ROOT = os.path.join( BASE_DIR, 'public', 'media')
 
-
-# CORS stuff
-
-CORS_ORIGIN_WHITELIST = (
-    'bewegung.jetzt',
-    'portal.bewegung.jetzt'
-)
-
+# CORS
+CORS_ORIGIN_WHITELIST = tuple(init_parser.get('settings', 'CORS_ORIGIN_WHITELIST').split(","))
 CORS_ALLOW_CREDENTIALS = True
 
-
-
-#  AND OUR OWN STUFF
-
-MIN_SEARCH_LENGTH = 3
-
-OPTIONAL_NOPE_REASONS = [
-    'entspricht nicht meiner Überzeugung.',
-    'ist nicht wichtig genug.',
-    'ist nicht konkret genug.',
-    'ist inhaltlich noch nicht ausgereift.',
-    'enthält ein Detail, mit dem ich nicht einverstanden bin.',
-    'passt nicht zu DiB.',
-    'lässt sich nicht vertreten.',
-    'ist nicht mehr relevant.'
-]
+#  CUSTOM (GLOBALS)
+MIN_SEARCH_LENGTH = init_parser.getint('settings', 'MIN_SEARCH_LENGTH')

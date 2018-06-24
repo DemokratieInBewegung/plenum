@@ -1,8 +1,7 @@
 {% extends "in_box.html" %}
-
 {% load i18n %}
-
 {% block body_class %}account{% endblock %}
+{% block head_title %}{% trans "Settings" %}{% endblock %}
 
 {% block subnav %}
 <div class="panel panel-default">
@@ -12,11 +11,15 @@
             {% trans "Account" %}
         </a>
         <a class="list-group-item account-password" href="{% url "account_password" %}">
-            {% trans "Change password" %}
+            {% trans "Change Password" %}
+        </a>
+        <a class="list-group-item account-language" href="{% url "account_language" %}">
+            {% trans "Set Language" %}
         </a>
         <a class="list-group-item account-delete" href="{% url "account_delete" %}">
-            {% trans "Delete account" %}
+            {% trans "Delete Account" %}
         </a>
     </div>
 </div>
 {% endblock %}
+

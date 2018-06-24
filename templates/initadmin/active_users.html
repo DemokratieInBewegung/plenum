@@ -1,0 +1,11 @@
+{% extends "_base.html" %}
+
+{% load static %}
+{% load bootstrap %}
+{% load i18n %}
+
+{% block content %}
+  {% for user in users %}
+  	{% include "fragments/avatar.html" %}
+  {% endfor %}
+{% endblock %}

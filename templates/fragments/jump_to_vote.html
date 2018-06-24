@@ -1,3 +1,4 @@
+{% load i18n %}
 <a href="#vote" class="btn bg-vote" id="jump-to-vote">
-    {% if vote %}Deine Stimme{% else %}Jetzt abstimmen{% endif %}
+  {% if vote %}{% trans "Your Vote" %}{% else %}{% trans "Vote now" %}{% endif %}
 </a>

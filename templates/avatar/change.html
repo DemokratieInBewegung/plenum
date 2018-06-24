@@ -1,46 +1,47 @@
 {% extends "in_box.html" %}
-{% load i18n bootstrap %}
+{% load i18n %}
+{% load bootstrap %}
 
 {% block body %}
 <div class="row">
     <div class="col">
-        <h2>Avatar einstellen</h2>
+        <h2>{% trans "Avatar Settings" %}</h2>
     </div>
 </div>
 <div class="row">
     <div class="col">
         <div>
-            <h4>{% trans "Your current avatar: " %}</h4>
+            <h4>{% trans "Your current avatar:" %}</h4>
             <p class="mt-3">{% include "fragments/avatar.html" %}</p>
         </div>
     </div>
 </div>
 <div class="row mt-2">
     <div class="col">
-        <h4>Hochgeladenen Avatar wählen</h4>
+        <h4>{% trans "Select Avatar" %}</h4>
         {% if not avatars %}
             <p>{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
         {% else %}
             <form method="POST" action="{% url 'avatar_change' %}">
                 {% csrf_token %}
                 {{ primary_avatar_form|bootstrap }}
-                <button class="btn btn-primary" type="submit">Auswählen</button>
+                <button class="btn btn-primary" type="submit">{% trans "Select" %}</button>
             </form>
         {% endif %}
     </div>
 </div>
 <div class="row">
     <div class="col">
-        <h3>Neuen Avatar hochladen</h3>
+        <h3>{% trans "Upload Avatar" %}</h3>
         <form enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
             {{ upload_avatar_form|bootstrap }}
-            <p>{% csrf_token %}<input type="submit" value="{% trans "Upload New Image" %}" /></p>
+            <p>{% csrf_token %}<input type="submit" value="{% trans "Upload Image" %}" /></p>
         </form>
     </div>
 </div>
 <div class="row mt-2 mb-4">
     <div class="col">
-        <a href="{% url "profile_edit" %}"><i class="material-icons chevron-left">chevron_left</i>zurück zu den Profileinstellungen</a>
+        <a href="{% url "profile_edit" %}"><i class="material-icons chevron-left">chevron_left</i>{% trans "Back to Settings" %}</a>
     </div>
 </div>
 {% endblock %}

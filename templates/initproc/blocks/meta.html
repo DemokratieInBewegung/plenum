@@ -1,19 +1,19 @@
-
+{% load i18n %}
 <div class="container-fluid meta">
     <div class="container">
         <div class="row">
             <div class="col-sm-12 col-md-4">
-                <h6 class="text-muted classification">Veröffentlicht am</h6>
+                <h6 class="text-muted classification">{% trans "Published on" %}</h6>
                 <div>
                 {% if initiative.went_public_at %}
                     {{initiative.went_public_at}}
                 {% else %}
-                    Noch nicht veröffentlicht
+                    {% trans "Not published yet" %}
                 {% endif %}
                 </div>
             </div>
             <div class="col-sm-12 col-md-8">
-                <h6 class="text-muted classification">Bereich</h6>
+                <h6 class="text-muted classification">{% trans "Context" %}</h6>
                 <div>
                     {{initiative.bereich}}
                 </div>
@@ -21,13 +21,13 @@
         </div>
         <div class="row">
             <div class="col-sm-12 col-md-4">
-                <h6 class="text-muted classification">Einordnung</h6>
+                <h6 class="text-muted classification">{% trans "Scope" %}</h6>
                 <div>
                     {{initiative.einordnung}}
                 </div>
             </div>
             <div class="col-sm-12 col-md-8">
-                <h6 class="text-muted classification">Ebene</h6>
+                <h6 class="text-muted classification">{% trans "Topic" %}</h6>
                 <div>
                     {{initiative.ebene}}
                 </div>

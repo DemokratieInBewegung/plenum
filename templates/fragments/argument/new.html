@@ -1,5 +1,5 @@
 {% load bootstrap %}
-
+{% load i18n %}
 <div>
 <form id="js-new-argument" method="POST" {%if ajax%}data-ajax-submit="true"{%endif%} action="{{request.path}}{% if fragment %}?fragment={{fragment|urlencode}}{% endif %}" onsubmit="submitForm.disabled=true; return true;">
 
@@ -7,9 +7,9 @@
 <div class="row no-gutters">
 	<div class="offset-md-2 col-10 col-sm-12">
 		{% if request.GET.type == "👍"%}
-			<h4>Neues Pro-Argument hinzufügen</h4>
+			<h4>{% trans "Add Argument in Favor" %}</h4>
 		{% else %}
-			<h4>Neues Kontra-Argument hinzufügen</h4>
+			<h4>{% trans "Add Argument Against" %}</h4>
 		{% endif %}
 	</div>
 </div>
@@ -27,7 +27,7 @@
 	    {% csrf_token %}
 		{{form|bootstrap}}
 		<div class="text-right">
-			<button type="submit" class="btn {{submit_klasses}}" name="submitForm">Veröffentlichen</button>
+			<button type="submit" class="btn {{submit_klasses}}" name="submitForm">{% trans "Publish" %}</button>
 		</div>
 	</div>
 </div>

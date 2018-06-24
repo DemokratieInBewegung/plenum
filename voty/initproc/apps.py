@@ -2,63 +2,52 @@ from django.apps import AppConfig
 from django.db.models.signals import post_migrate
 
 from .globals import NOTIFICATIONS
+from django.utils.translation import ugettext as _
 
 def create_notice_types(sender, **kwargs):
 
     from pinax.notifications.models import NoticeType
     print("Creating notices for Initproc")
 
-
     # Invitations
     NoticeType.create(NOTIFICATIONS.INVITE.SEND,
-                      'Einladung zu Initiative',
-                      'Du wurdest zu einer neuen Initiative eingeladen')
-
+                      _("Invitation to Initiative"),
+                      _("You have been invitied to a new Initiative"))
     NoticeType.create(NOTIFICATIONS.INVITE.ACCEPTED,
-                      'Einladung angenommen',
-                      'Die Einladung wurde angenommen')
-
+                      _("Invitation accepted"),
+                      _("The Invitation was accepted"))
     NoticeType.create(NOTIFICATIONS.INVITE.REJECTED,
-                      'Einladung abgelehnt',
-                      'Die Einladung wurde abgelehnt')
-
+                      _("Invitation declined"),
+                      _("The Invitation was declined"))
 
     # Initiative
     NoticeType.create(NOTIFICATIONS.INITIATIVE.EDITED,
-                      'Initiative überarbeitet',
-                      'Die Initiative wurde überarbeitet')
-
+                      _("Initiative modified"),
+                      _("The Initiative was modified"))
     NoticeType.create(NOTIFICATIONS.INITIATIVE.SUBMITTED,
-                      'Initiative eingereicht',
-                      'Die Initiative wurde eingereicht')
-
+                      _("Initiative submitted"),
+                      _("The Initiative was submitted"))
     NoticeType.create(NOTIFICATIONS.INITIATIVE.PUBLISHED,
-                      'Initiative veröffentlicht',
-                      'Die Initiative wurde veröffentlicht')
-
+                      _("Initiative published"),
+                      _("The Initiative was published"))
     NoticeType.create(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION,
-                      'Initiative in Diskussion',
-                      'Die Initiative ist in die Diskussionphase eingetreten')
-
+                      _("Initiative in discussion"),
+                      _("The Initiative has been moved to the discussion phase"))
     NoticeType.create(NOTIFICATIONS.INITIATIVE.DISCUSSION_CLOSED,
-                      'Diskussion zu Initiative beendet',
-                      'Die Initiative kann jetzt final überarbeitet werden')
-
-
+                      _("Discussion for Initiative ended"),
+                      _("The Initiative can now be finally modified"))
     NoticeType.create(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE,
-                      'Initiative in Abstimmung',
-                      'Die Initiative ist in die Abstimmung gegangen')
+                      _("Initiative in Vote"),
+                      _("The Initiative has been put to Vote"))
 
-    # DISCUSSION
-
+    # Discussion
     NoticeType.create(NOTIFICATIONS.INITIATIVE.NEW_ARGUMENT,
-                      'Neues Argument in Diskussion zu Initiative',
-                      'Es wurde ein neues Argument in der Diskussion zur Initiative gepostet')
-
+                      _("New Argument in Discussion for Initiative"),
+                      _("A new Argument was postet in the Discussion for the Initiative"))
 
 class InitprocConfig(AppConfig):
-    name = 'voty.initproc'
-    verbose_name ="Initiative Process"
+    name = "voty.initproc"
+    verbose_name = "Initiative Process"
 
     def ready(self):
         post_migrate.connect(create_notice_types, sender=self)

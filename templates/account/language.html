@@ -1,0 +1,38 @@
+{% extends "account/base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+{% load site_defaults %}
+
+{% block body_class %}account account-language{% endblock %}
+{% block head_title %}{% trans "Set Account Language" %}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+              <form method="POST" action="{% url 'set_language' %}">
+                <h2>{% trans "Set Account Language" %}</h2>
+                {% csrf_token %}
+                <div class="form-group">
+                <select class="form-control" name="language">
+                  {% get_current_language as LANGUAGE_CODE %}
+                  {% get_available_languages as LANGUAGES %}
+                  {% get_language_info_list for LANGUAGES as languages %}
+                  {% for language in languages %}
+                      <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
+                          {{ language.name_local }} ({{ language.code }})
+                      </option>
+                  {% endfor %}
+                </select>
+                </div>
+                {% if redirect_field_value %}
+                  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+                <button type="submit" class="btn btn-primary">{% trans "Change" %}</button>
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

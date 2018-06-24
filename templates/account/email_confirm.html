@@ -1,8 +1,6 @@
 {% extends "site_base.html" %}
-
 {% load i18n %}
-
-{% block head_title %}{% trans "Confirm Email" %}{% endblock %}
+{% block head_title %}{% trans "Confirm Email address" %}{% endblock %}
 
 {% block body %}
     <div class="row">
@@ -11,7 +9,7 @@
                 <legend>{% trans "Confirm Email" %}</legend>
                 <fieldset>
                     {% csrf_token %}
-                    <p>{% blocktrans with email=confirmation.email_address.email %}Confirm email address <b>{{ email }}</b>?{% endblocktrans %}</p>
+                    <p>{% blocktrans with email=confirmation.email_address.email %}Confirm Email address <b>{{ email }}</b>?{% endblocktrans %}</p>
                     <button type="submit" class="btn btn-primary">{% trans "Confirm" %}</button>
                 </fieldset>
             </form>

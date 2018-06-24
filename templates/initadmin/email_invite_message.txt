@@ -1,0 +1,9 @@
+{% load i18n %}
+{% trans "Hallo" %} {{first_name}},
+
+{% trans "We are happy to welcome you on our Voting platform. Please click the following link to create your account: %}
+
+    https://{{ domain }}{% url 'account_signup' %}?code={{code.code}}
+
+{% trans "Welcome!" %}
+{{ PLATFORM_TITLE }}

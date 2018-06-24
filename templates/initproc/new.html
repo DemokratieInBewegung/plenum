@@ -1,40 +1,41 @@
 {% extends "_base.html" %}
-
 {% load static %}
 {% load bootstrap %}
+{% load i18n %}
+{% load site_defaults %}
 
 {% block content %}
-<div class="container new-initiative">
-	<div class="card">
-		{% if initiative.is_editable %}
-		<div class="card-header">
-			<h1>Initiative bearbeiten</h1>
-			<p>Weitere Erklärung der Bestandteile einer Initiative findest Du <a href="https://marktplatz.bewegung.jetzt/t/eine-initiative-starten-und-mitinitiatoren-einladen/2593">auf dem Marktplatz der Ideen</a>.</p>
-		</div>
-		{% else %}
-		<div class="card-header">
-		  <h1>Neue Initiative einreichen</h1>
-		  <p>Hier kannst Du eine neue Initiative in den Abstimmungsprozess einbringen. <a href="https://marktplatz.bewegung.jetzt/t/eine-initiative-starten-und-mitinitiatoren-einladen/2593">Weitere Erklärung und Hilfe dazu findest Du auf dem Marktplatz der Ideen</a>.</p>
-		</div>
-		{% endif %}
-		<form method="POST">
-			 {% csrf_token %}
-			<div class="card-body">
-				<div class="container">
-				{{form|bootstrap}}
-				</div>
-			</div>
-			<div class="card-footer">
-				<button type="submit" class="btn btn-primary">Speichern</button>
-			</div>
-		</form>
-	</div>
-</div>
+  <div class="container new-initiative">
+  	<div class="card">
+  		{% if initiative.is_editable %}
+    		<div class="card-header">
+    			<h1>{% trans "Edit Initiative" %}</h1>
+    			<p>{% trans "More information on the required parts of an Initiative can be found:" %}<a href="{{ 'URL_HOWTO_INITIATIVE'|get_setting }}">{% trans "here" %}</a>.</p>
+    		</div>
+  		{% else %}
+    		<div class="card-header">
+    		  <h1>{% trans "Propose Initiative" %}</h1>
+    		  <p>{% trans "Create a new Initative to be voted on." %}<a href="{{ 'URL_HOWTO_INITIATIVE'|get_setting }}">{% trans "More information on how to create an Initiative" %}</a>.</p>
+    		</div>
+  		{% endif %}
+  		<form method="POST">
+  			 {% csrf_token %}
+  			<div class="card-body">
+  				<div class="container">
+  				{{form|bootstrap}}
+  				</div>
+  			</div>
+  			<div class="card-footer">
+  				<button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+  			</div>
+  		</form>
+  	</div>
+  </div>
 {% endblock %}
 
 
 {% block body-javascript %}
-<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script src="{% static 'js/vendor/jquery-3.2.1.min.js' %}"></script>
 
 {{ form.media }}
 {% endblock %}

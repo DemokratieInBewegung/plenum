@@ -1,0 +1,21 @@
+{% load i18n %}
+{% trans "Hello" %},
+
+{% blocktrans %}the Vote for your Initiative {{target.title}} has ended.{% endblocktrans %}
+
+{% blocktrans %}The Initiative is accessible at this link:{% endblocktrans %} {{ base_url }}/initiative/{{target.id}}-{{target.slug}}
+
+{% blocktrans %}Overall, {{votecount}} participants have voted.{% endblocktrans %}
+
+{% trans "Voted Yes" %}: {{target.yays}}
+{% trans "Voted No" %}: {{target.nays}}
+{% trans "Abstained" %}: {{target.abstains}}
+
+{% if target.nays %}
+{% trans "The following reasons were given from participants voting with against the Initiative:" %}
+{% for i in reasons %}{% if i.reason %}
+{{i.count}}x: {% trans "The Initiative" %} {{i.reason}}
+{% endif %}{% endfor %}{% endif %}
+
+{% trans "Best regards," %}
+{{ PLATFORM_TITLE }}

@@ -1,20 +1,21 @@
+{% load i18n %}
 {% load markdown %}
 <div class="row initiative-text">
-    <div class="col-12">
-        {{initiative.summary|markdown}}
-        <h2>Problembeschreibung</h2>
-        {{initiative.problem|markdown}}
-        <h2>Forderung</h2>
-        {{initiative.forderung|markdown}}
-        <h2>Kosten</h2>
-        {{initiative.kosten|markdown}}
-        <h2>Finanzierungsvorschlag</h2>
-        {{initiative.fin_vorschlag|markdown}}
-        <h2>Arbeitsweise</h2>
-        {{initiative.arbeitsweise|markdown}}
-        <h2>Argument der Initiator*innen</h2>
-        <blockquote class="blockquote">
-            {{initiative.init_argument|markdown}}
-        </blockquote>
-    </div>
+  <div class="col-12">
+    {{initiative.summary|markdown}}
+    <h2>{% trans "Situation Assessment" %}</h2>
+    {{initiative.problem|markdown}}
+    <h2>{% trans "Proposal" %}</h2>
+    {{initiative.forderung|markdown}}
+    <h2>{% trans "Cost Estimation" %}</h2>
+    {{initiative.kosten|markdown}}
+    <h2>{% trans "Financing Proposal" %}</h2>
+    {{initiative.fin_vorschlag|markdown}}
+    <h2>{% trans "Operation Workflow" %}</h2>
+    {{initiative.arbeitsweise|markdown}}
+    <h2>{% trans "Initiators' Argument" %}</h2>
+    <blockquote class="blockquote">
+        {{initiative.init_argument|markdown}}
+    </blockquote>
+  </div>
 </div>

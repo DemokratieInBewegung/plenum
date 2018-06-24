@@ -1,0 +1,2292 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-06-24 14:24+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/403.html:5
+msgid "You are not authorized to view this page."
+msgstr ""
+
+#: templates/403.html:5
+msgid "Please login first."
+msgstr ""
+
+#: templates/404.html:5
+msgid "Sorry, nothing to see here."
+msgstr ""
+
+#: templates/_base.html:11
+msgid "Plenum of participants of "
+msgstr ""
+
+#: templates/_base.html:21
+msgid "Voting platform for Participants"
+msgstr ""
+
+#: templates/_base.html:22
+msgid ""
+"Here participants and supporters vote on Initiatives to form the program of"
+msgstr ""
+
+#: templates/_base.html:63
+msgid "Help"
+msgstr ""
+
+#: templates/_base.html:66 templates/static/about.html:20
+msgid "Legal Notice"
+msgstr ""
+
+#: templates/_base.html:70
+msgid "New Initiative"
+msgstr ""
+
+#: templates/_base.html:86 templates/account/base.html:4
+#: templates/account/base.html:8 templates/account/settings.html:7
+#: templates/account/settings.html:13 templates/initadmin/profile_edit.html:6
+msgid "Settings"
+msgstr ""
+
+#: templates/_base.html:89
+msgid "Invite Users"
+msgstr ""
+
+#: templates/_base.html:90
+msgid "Activity"
+msgstr ""
+
+#: templates/_base.html:91
+msgid "Admin"
+msgstr ""
+
+#: templates/_base.html:94 templates/account/logout.html:11
+#: templates/account/logout.html:15
+msgid "Logout"
+msgstr ""
+
+#: templates/_base.html:99
+msgid "Register"
+msgstr ""
+
+#: templates/_base.html:103
+msgid "Menu"
+msgstr ""
+
+#: templates/_base.html:106 templates/account/login.html:14
+#: templates/account/login.html:20
+msgid "Login"
+msgstr ""
+
+#: templates/_base.html:108
+msgid "Language"
+msgstr ""
+
+#: templates/_base.html:149
+msgid " characters left "
+msgstr ""
+
+#: templates/_base.html:166
+msgid "You have been inivited to "
+msgstr ""
+
+#: templates/_base.html:166
+msgid " by "
+msgstr ""
+
+#: templates/_base.html:171
+msgid "has accepted the invitation to Initiative: "
+msgstr ""
+
+#: templates/_base.html:177
+msgid "has rejected the invitation to Initiative: "
+msgstr ""
+
+#: templates/_base.html:185
+msgid "has been changed by"
+msgstr ""
+
+#: templates/_base.html:191
+msgid "has been submitted by"
+msgstr ""
+
+#: templates/_base.html:198
+msgid "has been published by"
+msgstr ""
+
+#: templates/_base.html:202
+msgid "has been published"
+msgstr ""
+
+#: templates/_base.html:209
+msgid "can now be discussed"
+msgstr ""
+
+#: templates/_base.html:215
+msgid "can now go into final edit"
+msgstr ""
+
+#: templates/_base.html:223
+msgid "has opened the following Initiative for voting:"
+msgstr ""
+
+#: templates/_base.html:227
+msgid "can now be voted on"
+msgstr ""
+
+#: templates/_base.html:234
+msgid "has published a new Argument on:"
+msgstr ""
+
+#: templates/account/base.html:11
+msgid "Account"
+msgstr ""
+
+#: templates/account/base.html:14 templates/initadmin/profile_edit.html:18
+msgid "Change Password"
+msgstr ""
+
+#: templates/account/base.html:17 templates/initadmin/profile_edit.html:19
+msgid "Set Language"
+msgstr ""
+
+#: templates/account/base.html:20 templates/account/delete.html:6
+#: templates/account/delete.html:9
+msgid "Delete Account"
+msgstr ""
+
+#: templates/account/delete.html:11
+#, python-format
+msgid ""
+"Please note, once you delete your account, all account related data will be "
+"permanently and irrevocably deleted after a "
+"%('ACCOUNT_DELETION_EXPUNGE_HOURS'|get_setting)s hours."
+msgstr ""
+
+#: templates/account/delete.html:15
+msgid "Delete my account"
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.txt:3
+#, python-format
+msgid ""
+" A user account has just been created on %(site_name)s using this Email "
+"address."
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.txt:5
+msgid "To confirm this Email address, please follow the activation link:"
+msgstr ""
+
+#: templates/account/email/email_confirmation_message.txt:7
+msgid "If you did not register on this site, please ignore this message."
+msgstr ""
+
+#: templates/account/email/email_confirmation_subject.txt:2
+#, python-format
+msgid "[%(site_name)s] Confirm Email address"
+msgstr ""
+
+#: templates/account/email/invite_user_message.txt:2
+#, python-format
+msgid "You have been invited to join %(site_name)s"
+msgstr ""
+
+#: templates/account/email/invite_user_message.txt:4
+msgid "Please follow this link to register:"
+msgstr ""
+
+#: templates/account/email/invite_user_subject.txt:2
+#, python-format
+msgid "[%(site_name)s] Invitiation to register "
+msgstr ""
+
+#: templates/account/email/password_change_message.txt:2
+#, python-format
+msgid ""
+"This is a confirmation, that your password on %(site_name)s has been updated."
+msgstr ""
+
+#: templates/account/email/password_change_subject.txt:2
+#, python-format
+msgid "[%(site_name)s] Password Updated "
+msgstr ""
+
+#: templates/account/email/password_reset_message.txt:2
+#, python-format
+msgid ""
+"You are receiving this Email, because you or another person have requested "
+"to update your password on %(site_name)s."
+msgstr ""
+
+#: templates/account/email/password_reset_message.txt:4
+msgid "To change your password, please follow this link:"
+msgstr ""
+
+#: templates/account/email/password_reset_message.txt:6
+msgid ""
+"If you did not request your password to be changed, please ignore this Email."
+msgstr ""
+
+#: templates/account/email/password_reset_subject.txt:2
+#, python-format
+msgid "[%(site_name)s] Reset Password"
+msgstr ""
+
+#: templates/account/email_confirm.html:3
+msgid "Confirm Email address"
+msgstr ""
+
+#: templates/account/email_confirm.html:9
+msgid "Confirm Email"
+msgstr ""
+
+#: templates/account/email_confirm.html:12
+#, python-format
+msgid "Confirm Email address <b>%(email)s</b>?"
+msgstr ""
+
+#: templates/account/email_confirm.html:13
+msgid "Confirm"
+msgstr ""
+
+#: templates/account/email_confirmation_sent.html:4
+#: templates/account/email_confirmation_sent.html:7
+msgid "Email confirmation sent"
+msgstr ""
+
+#: templates/account/email_confirmation_sent.html:9
+#, python-format
+msgid ""
+"A message was sent to <b>%(email)s</b>. Please follow the link contained in "
+"the message to complete the registration process. In case you did not "
+"receive the email (please verify it is not in your spam folder), please "
+"contact us at the following email adress: "
+msgstr ""
+
+#: templates/account/email_confirmation_sent.html:10
+msgid "Go back"
+msgstr ""
+
+#: templates/account/email_confirmed.html:3
+#: templates/account/email_confirmed.html:6
+msgid "Email address confirmed"
+msgstr ""
+
+#: templates/account/email_confirmed.html:7
+#, python-format
+msgid "The following Email was confirmed: <b>%(email)s</b>"
+msgstr ""
+
+#: templates/account/language.html:7 templates/account/language.html:15
+msgid "Set Account Language"
+msgstr ""
+
+#: templates/account/language.html:32
+#: templates/pinax/notifications/notice_settings.html:49
+msgid "Change"
+msgstr ""
+
+#: templates/account/login.html:6
+msgid "Plenum: Login"
+msgstr ""
+
+#: templates/account/login.html:26
+msgid "Lost password"
+msgstr ""
+
+#: templates/account/login.html:31
+msgid "You don't have an account?"
+msgstr ""
+
+#: templates/account/login.html:31
+msgid "Register here!"
+msgstr ""
+
+#: templates/account/logout.html:3
+msgid "Plenum: Logout"
+msgstr ""
+
+#: templates/account/logout.html:14
+msgid "Please confirm you want to logout?"
+msgstr ""
+
+#: templates/account/password_change.html:5
+msgid "Plenum: Password Change"
+msgstr ""
+
+#: templates/account/password_change.html:11
+msgid "Password Change"
+msgstr ""
+
+#: templates/account/password_change.html:15 templates/account/settings.html:16
+#: templates/initadmin/profile_edit.html:11 templates/initproc/new.html:29
+msgid "Save"
+msgstr ""
+
+#: templates/account/password_change.html:22
+msgid "Return to settings"
+msgstr ""
+
+#: templates/account/password_reset.html:7
+#: templates/account/password_reset_token.html:4
+msgid "Plenum: Password Reset"
+msgstr ""
+
+#: templates/account/password_reset.html:17
+msgid "Password Reset"
+msgstr ""
+
+#: templates/account/password_reset.html:18
+msgid ""
+"You forgot your password? Please enter the Email address you used to "
+"register below. You will receive a message with a link to reset your "
+"password."
+msgstr ""
+
+#: templates/account/password_reset.html:24
+msgid "Send recovery link"
+msgstr ""
+
+#: templates/account/password_reset.html:29
+#, python-format
+msgid ""
+"In case resetting your password does not work, please contact us at  <a href="
+"\"mailto:%(email)s\">%(email)s</a>."
+msgstr ""
+
+#: templates/account/password_reset_sent.html:6
+msgid "Plenum: Email sent"
+msgstr ""
+
+#: templates/account/password_reset_sent.html:14
+msgid "Email sent."
+msgstr ""
+
+#: templates/account/password_reset_sent.html:15
+#, python-format
+msgid ""
+"A message to reset your password has been sent. If you do not receive it "
+"within the next couple of minutes (also check your spam folder), please "
+"click \"Resend Link\" below or contact us at <a href=\"%(email)s\">"
+"%(email)s</a>."
+msgstr ""
+
+#: templates/account/password_reset_sent.html:22
+msgid "Resend Link"
+msgstr ""
+
+#: templates/account/password_reset_sent.html:25
+msgid "Email resent."
+msgstr ""
+
+#: templates/account/password_reset_sent.html:26
+#, python-format
+msgid ""
+"Another message to reset your password has been sent. If you still do not "
+"receive either message, please contact us at <a href=\"mailto:%(email)s\">"
+"%(email)s</a>."
+msgstr ""
+
+#: templates/account/password_reset_token.html:12
+msgid "Please choose a new password"
+msgstr ""
+
+#: templates/account/password_reset_token.html:16
+msgid "Save Password"
+msgstr ""
+
+#: templates/account/password_reset_token_fail.html:3
+msgid "Plenum: Invalid Link"
+msgstr ""
+
+#: templates/account/password_reset_token_fail.html:10
+msgid "Invalid Link"
+msgstr ""
+
+#: templates/account/password_reset_token_fail.html:12
+#, python-format
+msgid ""
+"This link is no longer valid. It has been already used or expired. If you "
+"want to reset your password, please <a href=\"%(url)s\">request a new link</"
+"a>."
+msgstr ""
+
+#: templates/account/signup.html:6 templates/account/signup_closed.html:3
+msgid "Plenum: Create Account"
+msgstr ""
+
+#: templates/account/signup.html:14 templates/account/signup.html:20
+#: templates/account/signup_closed.html:14 templates/static/help.html:17
+msgid "Create Account"
+msgstr ""
+
+#: templates/account/signup.html:23
+msgid "Already have a registered account?"
+msgstr ""
+
+#: templates/account/signup.html:23
+msgid "Please login here."
+msgstr ""
+
+#: templates/account/signup_closed.html:10
+msgid "Welcome to the Plenum"
+msgstr ""
+
+#: templates/account/signup_closed.html:11
+msgid "Please enter your registration code:"
+msgstr ""
+
+#: templates/account/signup_closed.html:13
+msgid "Registration Code"
+msgstr ""
+
+#: templates/avatar/change.html:8
+msgid "Avatar Settings"
+msgstr ""
+
+#: templates/avatar/change.html:14
+msgid "Your current avatar:"
+msgstr ""
+
+#: templates/avatar/change.html:21
+msgid "Select Avatar"
+msgstr ""
+
+#: templates/avatar/change.html:23
+msgid "You haven't uploaded an avatar yet. Please upload one now."
+msgstr ""
+
+#: templates/avatar/change.html:28
+msgid "Select"
+msgstr ""
+
+#: templates/avatar/change.html:35
+msgid "Upload Avatar"
+msgstr ""
+
+#: templates/avatar/change.html:38
+msgid "Upload Image"
+msgstr ""
+
+#: templates/avatar/change.html:44
+#: templates/pinax/notifications/notice_settings.html:56
+msgid "Back to Settings"
+msgstr ""
+
+#: templates/fragments/argument/argument_thanks.html:3
+msgid "Thank you for your Argument"
+msgstr ""
+
+#: templates/fragments/argument/item.html:11
+msgid "AGAINST"
+msgstr ""
+
+#: templates/fragments/argument/item.html:11
+msgid "IN FAVOR"
+msgstr ""
+
+#: templates/fragments/argument/item.html:30
+#: templates/fragments/argument/item.html:70
+msgid "Show less"
+msgstr ""
+
+#: templates/fragments/argument/item.html:30
+msgid "Show more"
+msgstr ""
+
+#: templates/fragments/argument/item.html:60
+msgid "Comments"
+msgstr ""
+
+#: templates/fragments/argument/item.html:77
+#: templates/fragments/argument/item.html:80
+#: templates/fragments/moderation/item.html:30
+msgid "Add Comment"
+msgstr ""
+
+#: templates/fragments/argument/new.html:10
+#: templates/fragments/argument/thumbs.html:6
+msgid "Add Argument in Favor"
+msgstr ""
+
+#: templates/fragments/argument/new.html:12
+#: templates/fragments/argument/thumbs.html:11
+msgid "Add Argument Against"
+msgstr ""
+
+#: templates/fragments/argument/new.html:30
+msgid "Publish"
+msgstr ""
+
+#: templates/fragments/argument/proposal_thanks.html:3
+msgid "Thank you for your Proposal"
+msgstr ""
+
+#: templates/fragments/argument/propose.html:2
+msgid "Make a new Proposal"
+msgstr ""
+
+#: templates/fragments/compare.html:6
+msgid "Back to the Initiative"
+msgstr ""
+
+#: templates/fragments/compare.html:12
+msgid "Modification history of Initiative"
+msgstr ""
+
+#: templates/fragments/compare.html:17
+msgid "Compare version"
+msgstr ""
+
+#: templates/fragments/compare.html:41
+msgid "with current version"
+msgstr ""
+
+#: templates/fragments/compare.html:71 voty/initproc/forms.py:122
+#: voty/initproc/forms.py:150 voty/initproc/forms.py:161
+msgid "Summary"
+msgstr ""
+
+#: templates/fragments/compare.html:73 templates/initproc/blocks/content.html:6
+msgid "Situation Assessment"
+msgstr ""
+
+#: templates/fragments/compare.html:75 templates/initproc/blocks/content.html:8
+#: voty/initproc/forms.py:124
+msgid "Proposal"
+msgstr ""
+
+#: templates/fragments/compare.html:77
+#: templates/initproc/blocks/content.html:10 voty/initproc/forms.py:125
+msgid "Cost Estimation"
+msgstr ""
+
+#: templates/fragments/compare.html:79
+#: templates/initproc/blocks/content.html:12
+msgid "Financing Proposal"
+msgstr ""
+
+#: templates/fragments/compare.html:81
+#: templates/initproc/blocks/content.html:14
+msgid "Operation Workflow"
+msgstr ""
+
+#: templates/fragments/compare.html:83
+msgid "Initiator Argument"
+msgstr ""
+
+#: templates/fragments/count.html:3
+msgid "Debate"
+msgstr ""
+
+#: templates/fragments/count.html:3
+msgid "Proposals"
+msgstr ""
+
+#: templates/fragments/debate.html:7
+msgid "This debate contains no Arguments"
+msgstr ""
+
+#: templates/fragments/debate.html:7
+msgid "up until now"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:14
+#: templates/initproc/blocks/filter.html:17
+msgid "In Preparation"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:24
+msgid "Please validate"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:26
+#: templates/fragments/initiative/card.html:29
+msgid "Validation pending"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:36
+msgid "Needs Supporters"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:38
+msgid "missing"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:38 templates/initproc/item.html:128
+#: templates/initproc/item.html:139
+msgid "supporter"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:38 templates/initproc/item.html:237
+#: templates/initproc/item.html:252 templates/initproc/item.html:265
+#: templates/initproc/item.html:481 templates/initproc/item.html:492
+#: templates/initproc/item.html:503 templates/initproc/item.html:585
+msgid "Supporters"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:40
+msgid "Reached Quorum"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:47
+msgid "In Discussion"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:53
+#: templates/initproc/blocks/filter.html:60 templates/static/help.html:47
+msgid "Final Review"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:64
+msgid "Final Review required"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:66
+#: templates/fragments/initiative/card.html:69
+msgid "Final Review pending"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:76
+msgid "Up for Vote"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:82
+#: templates/initproc/blocks/filter.html:76
+msgid "Accepted"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:88
+#: templates/initproc/blocks/filter.html:84
+msgid "Rejected"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:95
+msgid "Time remaining:"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:111
+msgid "You support this Initiative"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:111
+msgid "You supported this Initiative"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:115
+msgid "You are not supporting this Initiative yet"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:115
+msgid "You did not support this Initiative"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:125
+msgid "You are voting for this Initiative"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:125
+msgid "You voted for this Initiative"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:129
+msgid "You are voting against this Initiative"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:129
+msgid "You voted against this Initiative"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:133
+msgid "You abstain from this Initiative"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:133
+msgid "You abstained from this Initiative"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:138
+msgid "You have not yet"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:138
+msgid "You have not"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:138
+msgid "voted for this Initiative"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:158
+msgid "Go to the Iniative"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:165
+#: templates/initproc/blocks/meta.html:6
+msgid "Published on"
+msgstr ""
+
+#: templates/fragments/initiative/card.html:169
+#: templates/initproc/blocks/meta.html:11
+msgid "Not published yet"
+msgstr ""
+
+#: templates/fragments/initiative/list.html:7
+msgid "No Initiatives found matching your search criteria."
+msgstr ""
+
+#: templates/fragments/jump_to_vote.html:3
+msgid "Your Vote"
+msgstr ""
+
+#: templates/fragments/jump_to_vote.html:3
+msgid "Vote now"
+msgstr ""
+
+#: templates/fragments/like.html:11
+msgid "Click to revoke"
+msgstr ""
+
+#: templates/fragments/like.html:17
+msgid "You like this"
+msgstr ""
+
+#: templates/fragments/like.html:19
+msgid "I like this"
+msgstr ""
+
+#: templates/fragments/moderation/index.html:3
+msgid "Moderation Reviews"
+msgstr ""
+
+#: templates/fragments/moderation/index.html:11
+msgid "Add Moderation Review"
+msgstr ""
+
+#: templates/fragments/moderation/index.html:19
+msgid "Moderation of previous Versions"
+msgstr ""
+
+#: templates/fragments/moderation/list_small.html:5
+msgid "Not reviewded by Moderator yet."
+msgstr ""
+
+#: templates/fragments/participation.html:4
+msgid "Participant"
+msgstr ""
+
+#: templates/fragments/participation.html:4
+msgid "Participants"
+msgstr ""
+
+#: templates/fragments/participation.html:4
+msgid "have voted for this proposal"
+msgstr ""
+
+#: templates/fragments/participation.html:4
+msgid "have voted for this proposal so far"
+msgstr ""
+
+#: templates/fragments/participation.html:10
+msgid "This represented"
+msgstr ""
+
+#: templates/fragments/participation.html:10
+msgid "This represents"
+msgstr ""
+
+#: templates/fragments/participation.html:10
+msgid "percent of"
+msgstr ""
+
+#: templates/fragments/participation.html:10
+msgid "eligible partipants"
+msgstr ""
+
+#: templates/fragments/participation.html:13
+msgid "You have voted with:"
+msgstr ""
+
+#: templates/fragments/participation.html:16 voty/initproc/models.py:467
+msgid "In Favor"
+msgstr ""
+
+#: templates/fragments/participation.html:18 voty/initproc/models.py:475
+msgid "Against"
+msgstr ""
+
+#: templates/fragments/participation.html:25
+msgid "You have not participated in this vote."
+msgstr ""
+
+#: templates/fragments/proposals.html:8
+msgid "Up to this point "
+msgstr ""
+
+#: templates/fragments/proposals.html:8
+msgid "no Proposals have been made"
+msgstr ""
+
+#: templates/fragments/voting.html:4
+#, python-format
+msgid "Vote %(initiative.end_of_this_phase | timeuntil)s Pending "
+msgstr ""
+
+#: templates/fragments/voting.html:6
+msgid "Thank you, your Vote was registered!"
+msgstr ""
+
+#: templates/fragments/voting.html:10
+msgid "click here to withdraw vote"
+msgstr ""
+
+#: templates/fragments/voting.html:10
+msgid "Withdraw Vote"
+msgstr ""
+
+#: templates/fragments/voting.html:19
+msgid ""
+"Would you like to inform the Initiator(s) about your reason for voting "
+"against?"
+msgstr ""
+
+#: templates/fragments/voting.html:23
+msgid "The Initiative... "
+msgstr ""
+
+#: templates/fragments/voting.html:29 voty/initproc/forms.py:13
+msgid "Send"
+msgstr ""
+
+#: templates/fragments/voting.html:36
+msgid "Do not provide a comment"
+msgstr ""
+
+#: templates/fragments/voting.html:42
+msgid "Do you want to vote for this Initiative?"
+msgstr ""
+
+#: templates/fragments/voting.html:51 templates/fragments/voting.html:73
+msgid "Yes"
+msgstr ""
+
+#: templates/fragments/voting.html:58 templates/initproc/item.html:339
+msgid "Abstention"
+msgstr ""
+
+#: templates/fragments/voting.html:65 templates/fragments/voting.html:80
+msgid "No"
+msgstr ""
+
+#: templates/fragments/voting.html:85
+msgid "Cast your Vote"
+msgstr ""
+
+#: templates/initadmin/email_invite_message.txt:2
+msgid "Hallo"
+msgstr ""
+
+#: templates/initadmin/email_invite_message.txt:8
+msgid "Welcome!"
+msgstr ""
+
+#: templates/initadmin/invite_users.html:11
+msgid "Upload Invitations"
+msgstr ""
+
+#: templates/initadmin/invite_users.html:19 voty/initproc/forms.py:102
+msgid "Invite"
+msgstr ""
+
+#: templates/initadmin/invite_users.html:25
+msgid "Previous Invitations"
+msgstr ""
+
+#: templates/initadmin/invite_users.html:33
+msgid "No invitiations uploaded"
+msgstr ""
+
+#: templates/initadmin/profile_edit.html:14
+msgid "Additional Settings"
+msgstr ""
+
+#: templates/initadmin/profile_edit.html:16
+msgid "Change Profile Picture"
+msgstr ""
+
+#: templates/initadmin/profile_edit.html:17
+msgid "Change Email Notifications"
+msgstr ""
+
+#: templates/initadmin/voting_feedback_message.txt:2
+#: templates/pinax/notifications/email_body.txt:4
+msgid "Hello"
+msgstr ""
+
+#: templates/initadmin/voting_feedback_message.txt:4
+#, python-format
+msgid "the Vote for your Initiative %(target.title)s has ended."
+msgstr ""
+
+#: templates/initadmin/voting_feedback_message.txt:6
+msgid "The Initiative is accessible at this link:"
+msgstr ""
+
+#: templates/initadmin/voting_feedback_message.txt:8
+#, python-format
+msgid "Overall, %(votecount)s participants have voted."
+msgstr ""
+
+#: templates/initadmin/voting_feedback_message.txt:10
+msgid "Voted Yes"
+msgstr ""
+
+#: templates/initadmin/voting_feedback_message.txt:11
+msgid "Voted No"
+msgstr ""
+
+#: templates/initadmin/voting_feedback_message.txt:12
+msgid "Abstained"
+msgstr ""
+
+#: templates/initadmin/voting_feedback_message.txt:15
+msgid ""
+"The following reasons were given from participants voting with against the "
+"Initiative:"
+msgstr ""
+
+#: templates/initadmin/voting_feedback_message.txt:17
+msgid "The Initiative"
+msgstr ""
+
+#: templates/initadmin/voting_feedback_message.txt:20
+msgid "Best regards,"
+msgstr ""
+
+#: templates/initproc/blocks/content.html:16 voty/initproc/forms.py:128
+msgid "Initiators' Argument"
+msgstr ""
+
+#: templates/initproc/blocks/filter.html:8
+msgid "Show:"
+msgstr ""
+
+#: templates/initproc/blocks/filter.html:26
+msgid "In Review"
+msgstr ""
+
+#: templates/initproc/blocks/filter.html:36 templates/static/help.html:36
+msgid "Seeking Supporters"
+msgstr ""
+
+#: templates/initproc/blocks/filter.html:44
+msgid "In discussion"
+msgstr ""
+
+#: templates/initproc/blocks/filter.html:52
+msgid "Final Modifications"
+msgstr ""
+
+#: templates/initproc/blocks/filter.html:68
+msgid "On Vote"
+msgstr ""
+
+#: templates/initproc/blocks/meta.html:16 voty/initproc/forms.py:129
+msgid "Context"
+msgstr ""
+
+#: templates/initproc/blocks/meta.html:24 voty/initproc/forms.py:130
+msgid "Scope"
+msgstr ""
+
+#: templates/initproc/blocks/meta.html:30 voty/initproc/forms.py:131
+msgid "Topic"
+msgstr ""
+
+#: templates/initproc/blocks/variants.html:7
+msgid "The following "
+msgstr ""
+
+#: templates/initproc/blocks/variants.html:7
+msgid "variants"
+msgstr ""
+
+#: templates/initproc/blocks/variants.html:7
+msgid "variant"
+msgstr ""
+
+#: templates/initproc/blocks/variants.html:7
+msgid "were also submitted"
+msgstr ""
+
+#: templates/initproc/index.html:14
+msgid "Plenum"
+msgstr ""
+
+#: templates/initproc/index.html:31 templates/initproc/index.html:38
+msgid "Hide Initiatives I have "
+msgstr ""
+
+#: templates/initproc/index.html:31
+msgid "expressed my support"
+msgstr ""
+
+#: templates/initproc/index.html:38
+msgid "voted on"
+msgstr ""
+
+#: templates/initproc/item.html:8
+#, python-format
+msgid "in the Plenum of %(PLATFORM_TITLE)s"
+msgstr ""
+
+#: templates/initproc/item.html:22 templates/initproc/item.html:525
+msgid "Return to Overview"
+msgstr ""
+
+#: templates/initproc/item.html:37
+msgid "Browse Initiative"
+msgstr ""
+
+#: templates/initproc/item.html:55
+msgid ""
+"In order to submit an Initiative for voting, the following conditions have "
+"to be met:"
+msgstr ""
+
+#: templates/initproc/item.html:57
+msgid ""
+"To submit your modified Initiative for voting, the following conditions have "
+"to be met:"
+msgstr ""
+
+#: templates/initproc/item.html:61 templates/initproc/item.html:65
+msgid "All text fields need to be filled when submitting."
+msgstr ""
+
+#: templates/initproc/item.html:62
+msgid "Two co-Initiators have to be named."
+msgstr ""
+
+#: templates/initproc/item.html:63
+msgid ""
+"The co-Initiators have to confirm their support and authorship of the "
+"Initiative."
+msgstr ""
+
+#: templates/initproc/item.html:66
+msgid "The co-Initiators have to re-confirm their support and authorship."
+msgstr ""
+
+#: templates/initproc/item.html:74 templates/initproc/item.html:75
+msgid "Edit"
+msgstr ""
+
+#: templates/initproc/item.html:83 templates/initproc/item.html:84
+#: templates/initproc/item.html:95
+msgid "Submit"
+msgstr ""
+
+#: templates/initproc/item.html:87 templates/initproc/item.html:88
+#: templates/initproc/item.html:99
+msgid "Submit for Vote"
+msgstr ""
+
+#: templates/initproc/item.html:94
+msgid "Not possible to submit in current state"
+msgstr ""
+
+#: templates/initproc/item.html:98
+msgid "Not possible to submit for vote in current state"
+msgstr ""
+
+#: templates/initproc/item.html:109 templates/initproc/item.html:111
+#: templates/initproc/item.html:113 templates/initproc/item.html:124
+#: templates/initproc/item.html:128 templates/initproc/item.html:131
+#: templates/initproc/item.html:138 templates/initproc/item.html:152
+#: templates/initproc/item.html:156 templates/initproc/item.html:158
+msgid "This Initiative "
+msgstr ""
+
+#: templates/initproc/item.html:109
+msgid "is being edited"
+msgstr ""
+
+#: templates/initproc/item.html:111
+msgid "is being finalized for a Vote"
+msgstr ""
+
+#: templates/initproc/item.html:113
+msgid "is being reviewed"
+msgstr ""
+
+#: templates/initproc/item.html:113 templates/initproc/item.html:415
+msgid "and"
+msgstr ""
+
+#: templates/initproc/item.html:113
+msgid "will then be published"
+msgstr ""
+
+#: templates/initproc/item.html:113
+msgid "will then be posted "
+msgstr ""
+
+#: templates/initproc/item.html:113
+msgid "for a Vote"
+msgstr ""
+
+#: templates/initproc/item.html:124
+msgid "is not visible"
+msgstr ""
+
+#: templates/initproc/item.html:128
+msgid "requires at least"
+msgstr ""
+
+#: templates/initproc/item.html:128 templates/initproc/item.html:139
+msgid "supporters"
+msgstr ""
+
+#: templates/initproc/item.html:128
+msgid "Remaining time available for this Initiative"
+msgstr ""
+
+#: templates/initproc/item.html:132 templates/initproc/item.html:139
+msgid "has reached the Quorum"
+msgstr ""
+
+#: templates/initproc/item.html:134 templates/initproc/item.html:141
+msgid "It will go into discussion in"
+msgstr ""
+
+#: templates/initproc/item.html:139 templates/initproc/item.html:262
+#: templates/initproc/item.html:500
+msgid "and in addition "
+msgstr ""
+
+#: templates/initproc/item.html:146
+msgid "This initiative is currently being <a href=\"#debate\">discussed</a>"
+msgstr ""
+
+#: templates/initproc/item.html:149
+msgid ""
+"This initiative is currently being <a href=\"#voting\"><strong class=\"badge-"
+"vote\">voted on</strong></a>"
+msgstr ""
+
+#: templates/initproc/item.html:152 templates/initproc/item.html:331
+#: templates/initproc/item.html:360
+msgid "was accepted"
+msgstr ""
+
+#: templates/initproc/item.html:158 templates/initproc/item.html:331
+#: templates/initproc/item.html:360
+msgid "was rejected"
+msgstr ""
+
+#: templates/initproc/item.html:158
+msgid "because it did not reach the Quorum"
+msgstr ""
+
+#: templates/initproc/item.html:171
+msgid "Initiators"
+msgstr ""
+
+#: templates/initproc/item.html:185 templates/initproc/item.html:552
+msgid "confirmed"
+msgstr ""
+
+#: templates/initproc/item.html:188 templates/initproc/item.html:555
+msgid "Confirm now"
+msgstr ""
+
+#: templates/initproc/item.html:192 templates/initproc/item.html:559
+msgid "Support"
+msgstr ""
+
+#: templates/initproc/item.html:198 templates/initproc/item.html:565
+msgid "No Support"
+msgstr ""
+
+#: templates/initproc/item.html:203 templates/initproc/item.html:570
+msgid "unconfirmed"
+msgstr ""
+
+#: templates/initproc/item.html:213 templates/initproc/item.html:604
+msgid "Invite additional Initiators"
+msgstr ""
+
+#: templates/initproc/item.html:231 templates/initproc/item.html:296
+#: templates/initproc/item.html:310 templates/initproc/item.html:474
+msgid "Time remaining"
+msgstr ""
+
+#: templates/initproc/item.html:235 templates/initproc/item.html:250
+#: templates/initproc/item.html:265 templates/initproc/item.html:479
+#: templates/initproc/item.html:492 templates/initproc/item.html:503
+msgid "Supporter"
+msgstr ""
+
+#: templates/initproc/item.html:247 templates/initproc/item.html:489
+msgid "Initiative is missing"
+msgstr ""
+
+#: templates/initproc/item.html:254 templates/initproc/item.html:492
+msgid "to reach the Quorum"
+msgstr ""
+
+#: templates/initproc/item.html:258 templates/initproc/item.html:262
+#: templates/initproc/item.html:496 templates/initproc/item.html:500
+msgid "This Initiative has reached the Quorum"
+msgstr ""
+
+#: templates/initproc/item.html:270 templates/initproc/item.html:508
+msgid "You are supporting this Initiative!"
+msgstr ""
+
+#: templates/initproc/item.html:275 templates/initproc/item.html:513
+msgid "Support this Initiative"
+msgstr ""
+
+#: templates/initproc/item.html:280 templates/initproc/item.html:518
+msgid "Show support publicly"
+msgstr ""
+
+#: templates/initproc/item.html:297
+msgid "This Initiative is in discussion"
+msgstr ""
+
+#: templates/initproc/item.html:298
+msgid "Join discussion"
+msgstr ""
+
+#: templates/initproc/item.html:311
+msgid "This initiative is being voted on"
+msgstr ""
+
+#: templates/initproc/item.html:324
+msgid "Vote Result"
+msgstr ""
+
+#: templates/initproc/item.html:331 templates/initproc/item.html:360
+msgid "This Initiative"
+msgstr ""
+
+#: templates/initproc/item.html:335
+msgid "Yes-Votes"
+msgstr ""
+
+#: templates/initproc/item.html:335
+msgid "Yes-Vote"
+msgstr ""
+
+#: templates/initproc/item.html:339
+msgid "Abstentions"
+msgstr ""
+
+#: templates/initproc/item.html:343
+msgid "No-Votes"
+msgstr ""
+
+#: templates/initproc/item.html:343
+msgid "No-Vote"
+msgstr ""
+
+#: templates/initproc/item.html:385
+msgid ""
+"Nobody casted their vote for this Initiative. This means the Initiative is "
+msgstr ""
+
+#: templates/initproc/item.html:385 templates/initproc/item.html:419
+msgid "rejected"
+msgstr ""
+
+#: templates/initproc/item.html:403
+msgid "View modification history"
+msgstr ""
+
+#: templates/initproc/item.html:415
+msgid "After a Vote with "
+msgstr ""
+
+#: templates/initproc/item.html:415
+msgid "votes in favor"
+msgstr ""
+
+#: templates/initproc/item.html:415
+msgid "votes against"
+msgstr ""
+
+#: templates/initproc/item.html:415
+msgid "as well as"
+msgstr ""
+
+#: templates/initproc/item.html:415
+msgid "abstentions"
+msgstr ""
+
+#: templates/initproc/item.html:417
+msgid "accepted"
+msgstr ""
+
+#: templates/initproc/item.html:422
+msgid "With"
+msgstr ""
+
+#: templates/initproc/item.html:422
+msgid ""
+"supporters, the Quorum was not reached. This means the Initiative was "
+"rejected"
+msgstr ""
+
+#: templates/initproc/item.html:541
+msgid "Initial Supporters"
+msgstr ""
+
+#: templates/initproc/new.html:12
+msgid "Edit Initiative"
+msgstr ""
+
+#: templates/initproc/new.html:13
+msgid "More information on the required parts of an Initiative can be found:"
+msgstr ""
+
+#: templates/initproc/new.html:13
+msgid "here"
+msgstr ""
+
+#: templates/initproc/new.html:17
+msgid "Propose Initiative"
+msgstr ""
+
+#: templates/initproc/new.html:18
+msgid "Create a new Initative to be voted on."
+msgstr ""
+
+#: templates/initproc/new.html:18
+msgid "More information on how to create an Initiative"
+msgstr ""
+
+#: templates/pinax/notifications/email_body.txt:6
+msgid "is announcing: "
+msgstr ""
+
+#: templates/pinax/notifications/email_body.txt:11
+#, python-format
+msgid ""
+"You can configure which notifications you want to receive on your Account "
+"page at %(base_url)s%(notices_url)s"
+msgstr ""
+
+#: templates/pinax/notifications/init_discussion/full.txt:2
+msgid "is now in Discussion"
+msgstr ""
+
+#: templates/pinax/notifications/init_discussion/full.txt:4
+msgid "You can find the Initiative at:"
+msgstr ""
+
+#: templates/pinax/notifications/init_discussion_closed/full.txt:2
+#, python-format
+msgid ""
+"The Discussion phase of \"%(sender)s\" has ended and the Initiative can now "
+"be finalized\n"
+"and put up for a Vote.\n"
+msgstr ""
+
+#: templates/pinax/notifications/init_discussion_closed/full.txt:5
+#: templates/pinax/notifications/init_edited/full.txt:4
+#: templates/pinax/notifications/init_new_arg/full.txt:4
+#: templates/pinax/notifications/init_published/full.txt:5
+#: templates/pinax/notifications/init_published/full.txt:9
+#: templates/pinax/notifications/init_submitted/full.txt:4
+#: templates/pinax/notifications/init_vote/full.txt:5
+#: templates/pinax/notifications/init_vote/full.txt:9
+#: templates/pinax/notifications/inivited/full.txt:4
+#: templates/pinax/notifications/invite_accepted/full.txt:4
+#: templates/pinax/notifications/invite_rejected/full.txt:4
+msgid "The Initiative can be found at "
+msgstr ""
+
+#: templates/pinax/notifications/init_edited/full.txt:2
+#: templates/pinax/notifications/init_new_arg/full.txt:2
+#: templates/pinax/notifications/init_published/full.txt:3
+#: templates/pinax/notifications/init_submitted/full.txt:2
+#: templates/pinax/notifications/init_vote/full.txt:3
+#: templates/pinax/notifications/inivited/full.txt:2
+#: templates/pinax/notifications/invite_accepted/full.txt:2
+#: templates/pinax/notifications/invite_rejected/full.txt:2
+msgid "You have "
+msgstr ""
+
+#: templates/pinax/notifications/init_edited/full.txt:2
+#: templates/pinax/notifications/init_new_arg/full.txt:2
+#: templates/pinax/notifications/init_published/full.txt:3
+#: templates/pinax/notifications/init_submitted/full.txt:2
+#: templates/pinax/notifications/init_vote/full.txt:3
+#: templates/pinax/notifications/inivited/full.txt:2
+#: templates/pinax/notifications/invite_accepted/full.txt:2
+#: templates/pinax/notifications/invite_rejected/full.txt:2
+msgid "has"
+msgstr ""
+
+#: templates/pinax/notifications/init_new_arg/full.txt:2
+#, python-format
+msgid ""
+" added a new Argument: %(argument.title)s to the Initiative \"%(target)s\""
+msgstr ""
+
+#: templates/pinax/notifications/init_published/full.txt:3
+#, python-format
+msgid " published the Intiative \"%(target)s\" which now requires supporters"
+msgstr ""
+
+#: templates/pinax/notifications/init_submitted/full.txt:2
+#, python-format
+msgid " submitted the Initiative \"%(target)s\" for review"
+msgstr ""
+
+#: templates/pinax/notifications/init_vote/full.txt:7
+#, python-format
+msgid "\"%(sender)s\" was opened for Voting"
+msgstr ""
+
+#: templates/pinax/notifications/invite_accepted/full.txt:2
+#, python-format
+msgid " accepted the invitation for Initiative \"%(target)s\""
+msgstr ""
+
+#: templates/pinax/notifications/invite_rejected/full.txt:2
+#, python-format
+msgid " rejected the Invitiation for Initiative \"%(target)s\""
+msgstr ""
+
+#: templates/pinax/notifications/notice_settings.html:5
+msgid "Plenum: Notification Settings"
+msgstr ""
+
+#: templates/pinax/notifications/notice_settings.html:10
+msgid "Notification Settings"
+msgstr ""
+
+#: templates/pinax/notifications/notice_settings.html:16
+msgid "You do not have a verified email address to which notices can be sent"
+msgstr ""
+
+#: templates/pinax/notifications/notice_settings.html:16
+msgid "Add Email"
+msgstr ""
+
+#: templates/pinax/notifications/notice_settings.html:24
+msgid "Notification Purpose"
+msgstr ""
+
+#: templates/static/about.html:10
+msgid "About this Voting Platform"
+msgstr ""
+
+#: templates/static/about.html:12
+msgid "Quorum"
+msgstr ""
+
+#: templates/static/about.html:13
+msgid ""
+"According to the Voting regulations for Initiatives, the Quorum is "
+"determined on each 1st of the month on the Basis of registered participants. "
+"The latest Quorum is the binding one. "
+msgstr ""
+
+#: templates/static/about.html:21
+msgid "This tool is run by "
+msgstr ""
+
+#: templates/static/about.html:22
+msgid "The corresponding legal notice can be found here"
+msgstr ""
+
+#: templates/static/about.html:24
+msgid "Licence"
+msgstr ""
+
+#: templates/static/about.html:26
+msgid "Initiators have full copyright for their Initiatives."
+msgstr ""
+
+#: templates/static/about.html:28
+msgid "Software"
+msgstr ""
+
+#: templates/static/about.html:30
+msgid ""
+"This software is written with Python/Django and Postgres. It is Open Source "
+"and licenced under AGPL 3.0"
+msgstr ""
+
+#: templates/static/about.html:31
+msgid "The source code has been published on Github"
+msgstr ""
+
+#: templates/static/help.html:10
+msgid "Frequently Asked Questions"
+msgstr ""
+
+#: templates/static/help.html:12
+msgid "What is this platform about?"
+msgstr ""
+
+#: templates/static/help.html:13
+#, python-format
+msgid ""
+"On this platform we collaboratively work on what "
+"%('PLATFORM_TITLE_ACRONYM'|get_setting)s should stand for. You can discuss, "
+"propose improvements and vote. You can propose Initiative, which, if "
+"approved, become part of the political program."
+msgstr ""
+
+#: templates/static/help.html:15
+msgid "How can I participate?"
+msgstr ""
+
+#: templates/static/help.html:16
+msgid "By joining:"
+msgstr ""
+
+#: templates/static/help.html:18
+msgid "Everyone can participate!"
+msgstr ""
+
+#: templates/static/help.html:20
+msgid "I have registered but my account has not been activated yet."
+msgstr ""
+
+#: templates/static/help.html:21
+msgid "Account validation may take up to 5 days. Please be patient."
+msgstr ""
+
+#: templates/static/help.html:23
+msgid "Do I have to use my actual name?"
+msgstr ""
+
+#: templates/static/help.html:24
+msgid ""
+"When registering, yes. We need to be able to verify if you actually exist to "
+"prevent multiple registrations. Your name will only shown publicly on the "
+"platform when you launch an Initiative of your own. Discussing and voting "
+"can be done under a pseudonym."
+msgstr ""
+
+#: templates/static/help.html:25
+msgid ""
+"However, when it is possible for you, we appreciate when participants use "
+"their actual names."
+msgstr ""
+
+#: templates/static/help.html:27
+msgid "What is an Initiative?"
+msgstr ""
+
+#: templates/static/help.html:28
+#, python-format
+msgid ""
+"An Initiative is a proposal for the politica programm of "
+"%('PLATFORM_TITLE_ACRONYM'|get_setting)s. It consists of a short assessment "
+"of a problem, resulting demands as well as information regarding potential "
+"cost and means of financing."
+msgstr ""
+
+#: templates/static/help.html:30
+msgid "How does the voting process work?"
+msgstr ""
+
+#: templates/static/help.html:31
+msgid "An Initiative will go through different phases throughout the Plenum:"
+msgstr ""
+
+#: templates/static/help.html:33
+msgid "Validation"
+msgstr ""
+
+#: templates/static/help.html:34
+#, python-format
+msgid ""
+"Intially the governance team will verify that a new Initiative meets all "
+"requirements. This mostly refers to being aligned with the basic values of "
+"%('PLATFORM_TITLE_ACRONYM'|get_setting)s as well as meeting formal criteria."
+msgstr ""
+
+#: templates/static/help.html:37
+#, python-format
+msgid ""
+"In this phase at least 1%% of registered participants have to support the "
+"Initiative. This ensures, that enough people consider the topic for "
+"important and worth supporting. Until the number of registered participants "
+"is below 5000, a different, lower Quorum is applied. "
+msgstr ""
+
+#: templates/static/help.html:38
+msgid ""
+"The support phase will last between two weeks and six months at a maximum. "
+"If an Initiative does noch reach the required number of supporters after six "
+"months, it will be deleted."
+msgstr ""
+
+#: templates/static/help.html:40
+msgid "Discussion"
+msgstr ""
+
+#: templates/static/help.html:41
+msgid ""
+"In this Phase you can give your opinion on Initiatives and propose "
+"improvements. You can leave comments in favor or against an Initiative. The "
+"best arguments will automatically move to the top. This way particpants with "
+"less time can also inform themselves quickly about the status of an "
+"Initiative."
+msgstr ""
+
+#: templates/static/help.html:42
+msgid ""
+"The discussion phase will last three weeks. Afterwards, the discussion will "
+"be closed."
+msgstr ""
+
+#: templates/static/help.html:44
+msgid "Modifications"
+msgstr ""
+
+#: templates/static/help.html:45
+msgid ""
+"In this phase, the Initiator(s) can modify or amend the Initiative based on "
+"proposals and arguments gathered during the discussion phase."
+msgstr ""
+
+#: templates/static/help.html:48
+msgid ""
+"In case an Initiative was modified, the governance teams will re-validate it "
+"afterwards."
+msgstr ""
+
+#: templates/static/help.html:50
+msgid "Vote"
+msgstr ""
+
+#: templates/static/help.html:51
+msgid ""
+"In this phase a vote on the Initiative is held. The vote will last at least "
+"three weeks. If an Intiative is accepted, it will become part of the "
+"official political programm once it is validated on a party convention."
+msgstr ""
+
+#: templates/static/help.html:55
+msgid "What can be demanded in an Initiative and what not?"
+msgstr ""
+
+#: templates/static/help.html:56
+#, python-format
+msgid ""
+"All Intiatives have to conform with the basic values of "
+"%('PLATFORM_TITLE'|get_setting)s. The "
+"%('PLATFORM_TITLE_ACRONYM'|get_setting)s-values are:"
+msgstr ""
+
+#: templates/static/help.html:58
+msgid "democracy, participation and transparency"
+msgstr ""
+
+#: templates/static/help.html:59
+msgid "Fairness in social, political, economical and ecological aspects"
+msgstr ""
+
+#: templates/static/help.html:60
+msgid "Openness and diversity"
+msgstr ""
+
+#: templates/static/help.html:61
+msgid "Forward and sustainable thinking"
+msgstr ""
+
+#: templates/static/help.html:63
+msgid ""
+"Put differently: Support for single parents, protecting the environment and "
+"installing a lobbying register are topics we consider on par with our vaues "
+"while demanding the death penalty, nuclear power or rebuilding walls are not "
+"on line with our agenda."
+msgstr ""
+
+#: templates/static/help.html:64
+msgid ""
+"An Initiative also has to refer to the actual political program and not for "
+"example on the organisational structure or processes with the movement. An "
+"Initiative must also not be identical or similar to an Initiative rejected "
+"during the last six months."
+msgstr ""
+
+#: templates/static/help.html:65
+msgid ""
+"If the governance team comes to the conclusion, that an Initiative does not "
+"meet the requirements, it can reject the Initiative outright. Whenever "
+"possible, the Initiator(s) will be given the opportunity to alleviate or "
+"dispel. Should you not agree with the decision of the governance team, you "
+"can relegate the Initiative to a curatorium made up of separately and "
+"randomly chosen participants from all eligible registered users (half of "
+"which are members of the movement, half participants). The curatorium then "
+"decides finally whether an Initiative is permitted or not."
+msgstr ""
+
+#: templates/static/help.html:67
+msgid "How can I start an Initiative?"
+msgstr ""
+
+#: templates/static/help.html:68
+#, python-format
+msgid ""
+"You can propose your idea on the <a href="
+"\"%('PLATFORM_MARKETPLACE_URL'|get_setting)s\">marketplace of ideas</a>. It "
+"is a place to find other participants for your Initiative who can also help "
+"you formulate the Initiative. To launch an Initiative you need to be at "
+"least three Initiators. <a href=\"%('INITIATIVE_TEMPLATE_URL'|get_setting)s"
+"\">Here is a template</a> including the questions, which an Initiative "
+"should answer. <a href=\"/initiative/new\">Here you can submit a new "
+"Initiative."
+msgstr ""
+
+#: templates/static/help.html:70
+msgid "What happens when there are multiple Initiatives on the same topic?"
+msgstr ""
+
+#: templates/static/help.html:71
+msgid ""
+"The governancen teams can identify Initiatives as mutual alternatives. These "
+"Initiatives will be voted on together."
+msgstr ""
+
+#: templates/static/help.html:73
+msgid ""
+"I want to know more about the principles of Initiatives. Do you have more "
+"information?"
+msgstr ""
+
+#: templates/static/help.html:74
+msgid "See here:"
+msgstr ""
+
+#: templates/static/help.html:74
+msgid "How does the Initiative process work?"
+msgstr ""
+
+#: templates/static/help.html:75
+#, python-format
+msgid ""
+"Should you require additional information, please have a look at the <a href="
+"\"%('PLATFORM_VOTING_REGULATION_URL'|get_setting)s\">voting regulartions</a>."
+msgstr ""
+
+#: templates/static/help.html:77
+msgid "I would like to launch an Initiative and could use some help."
+msgstr ""
+
+#: templates/static/help.html:78
+#, python-format
+msgid ""
+"For technical, formal or organisational help, send a message to: <a href="
+"\"mailto:%('INITIATIVE_SUPPORT_EMAIL'|get_setting)s\">"
+"%('INITIATIVE_SUPPORT_EMAIL'|get_setting)s</a>."
+msgstr ""
+
+#: templates/static/help.html:80
+msgid "Something is not working/I have suggestions/Further enquiries"
+msgstr ""
+
+#: templates/static/help.html:81
+#, python-format
+msgid ""
+"Tell us about your problem, suggestion or question in <a href="
+"\"%('PLATFORM_TECH_DEVELOPMENT_URL'|get_setting)s\">the respective support "
+"category on the marketplace of ideas</a>. Please note you have to be "
+"registered on the marketplace in order to access categories."
+msgstr ""
+
+#: templates/static/help.html:83
+msgid "I'm developer/graphic designer and like your prjoect. Can I help you?"
+msgstr ""
+
+#: templates/static/help.html:84
+#, python-format
+msgid ""
+"Yes, of course! Write us on <a href="
+"\"%('PLATFORM_TECH_SUPPORT_URL'|get_setting)s\">the marketplace of ideas</"
+"a>. You can also check out the source code on <a href="
+"\"%('PLATFORM_TECH_SOURCE_CODE_URL'|get_setting)s\">on Github directly</a> "
+"including current tickets on <a href="
+"\"%('PLATFORM_TECH_DEVELOPMENT_TICKET_URL'|get_setting)s\">our Kanban board</"
+"a>."
+msgstr ""
+
+#: templates/static/register.html:10
+msgid "Time to Participate"
+msgstr ""
+
+#: templates/static/register.html:11
+msgid "Submit Initiatives for discussion and voting"
+msgstr ""
+
+#: templates/static/register.html:12
+msgid ""
+"is a political movement like no other. It is a place where everyone can "
+"Initiatives, discuss them collaboratively and cast votes. As a participant "
+"you can influence and contribute to our political programm and its direction "
+"within the boundaries of our values - even if you are not a member of our "
+"movement. Submitting and voting on Initiatives is done online through our "
+"Voting platform."
+msgstr ""
+
+#: templates/static/register.html:13
+msgid "Register Now!"
+msgstr ""
+
+#: voty/initadmin/views.py:82
+msgid "Email or Username"
+msgstr ""
+
+#: voty/initadmin/views.py:108
+msgid "invitations were sent"
+msgstr ""
+
+#: voty/initadmin/views.py:133
+msgid "Data updated."
+msgstr ""
+
+#: voty/initproc/apps.py:14
+msgid "Invitation to Initiative"
+msgstr ""
+
+#: voty/initproc/apps.py:15
+msgid "You have been invitied to a new Initiative"
+msgstr ""
+
+#: voty/initproc/apps.py:17
+msgid "Invitation accepted"
+msgstr ""
+
+#: voty/initproc/apps.py:18
+msgid "The Invitation was accepted"
+msgstr ""
+
+#: voty/initproc/apps.py:20
+msgid "Invitation declined"
+msgstr ""
+
+#: voty/initproc/apps.py:21
+msgid "The Invitation was declined"
+msgstr ""
+
+#: voty/initproc/apps.py:25
+msgid "Initiative modified"
+msgstr ""
+
+#: voty/initproc/apps.py:26
+msgid "The Initiative was modified"
+msgstr ""
+
+#: voty/initproc/apps.py:28
+msgid "Initiative submitted"
+msgstr ""
+
+#: voty/initproc/apps.py:29
+msgid "The Initiative was submitted"
+msgstr ""
+
+#: voty/initproc/apps.py:31 voty/initproc/views.py:508
+msgid "Initiative published"
+msgstr ""
+
+#: voty/initproc/apps.py:32
+msgid "The Initiative was published"
+msgstr ""
+
+#: voty/initproc/apps.py:34
+msgid "Initiative in discussion"
+msgstr ""
+
+#: voty/initproc/apps.py:35
+msgid "The Initiative has been moved to the discussion phase"
+msgstr ""
+
+#: voty/initproc/apps.py:37
+msgid "Discussion for Initiative ended"
+msgstr ""
+
+#: voty/initproc/apps.py:38
+msgid "The Initiative can now be finally modified"
+msgstr ""
+
+#: voty/initproc/apps.py:40
+msgid "Initiative in Vote"
+msgstr ""
+
+#: voty/initproc/apps.py:41
+msgid "The Initiative has been put to Vote"
+msgstr ""
+
+#: voty/initproc/apps.py:45
+msgid "New Argument in Discussion for Initiative"
+msgstr ""
+
+#: voty/initproc/apps.py:46
+msgid "A new Argument was postet in the Discussion for the Initiative"
+msgstr ""
+
+#: voty/initproc/forms.py:107
+msgid "Type to search"
+msgstr ""
+
+#: voty/initproc/forms.py:120
+msgid "Headline"
+msgstr ""
+
+#: voty/initproc/forms.py:121
+msgid "Teaser"
+msgstr ""
+
+#: voty/initproc/forms.py:123
+msgid "Problem Assessment"
+msgstr ""
+
+#: voty/initproc/forms.py:126
+msgid "Finance Proposition"
+msgstr ""
+
+#: voty/initproc/forms.py:127
+msgid "Methodology"
+msgstr ""
+
+#: voty/initproc/forms.py:134
+msgid "The headline should state the proposal in a short and precise way."
+msgstr ""
+
+#: voty/initproc/forms.py:135
+msgid ""
+"Briefly describe the problem or situation, the Initiative should adress. Try "
+"limiting yourself to 1-2 sentences."
+msgstr ""
+
+#: voty/initproc/forms.py:136
+msgid "Summarize the Initiative in 3-4 sentences."
+msgstr ""
+
+#: voty/initproc/forms.py:137
+msgid ""
+"State and assess the situation or problem, the Initiative should solve in "
+"3-4 sentences."
+msgstr ""
+
+#: voty/initproc/forms.py:138
+msgid "What are the concreted demands or proposals?"
+msgstr ""
+
+#: voty/initproc/forms.py:139
+msgid ""
+"Will the Initiative cause costs? Try to give an estimation of the cost "
+"associated with the Initiative."
+msgstr ""
+
+#: voty/initproc/forms.py:140
+msgid ""
+"Briefly describe your ideas of how costs associated with the Initiative "
+"could be covered. It would be sufficient to write that the Initiative will "
+"be financed via tax income."
+msgstr ""
+
+#: voty/initproc/forms.py:141
+msgid ""
+"Have you consulted experts? What information is your assessment based on? Is "
+"it possible to sources of information?"
+msgstr ""
+
+#: voty/initproc/forms.py:142
+msgid ""
+"Please state why this Initiative is important for you and why you are "
+"submitting it."
+msgstr ""
+
+#: voty/initproc/forms.py:147
+msgid "Add New Argument"
+msgstr ""
+
+#: voty/initproc/forms.py:152
+msgid ""
+"Arguments should be kept as clear as possible. Please ensure your argument "
+"is new and unique."
+msgstr ""
+
+#: voty/initproc/forms.py:154
+msgid "Complete Description"
+msgstr ""
+
+#: voty/initproc/forms.py:156
+msgid ""
+"If a similar Argument already exits, please add a comment to this Argument."
+msgstr ""
+
+#: voty/initproc/forms.py:163
+msgid ""
+"Proposals should be kept as clear as possible. Please ensure your proposal "
+"is new and unique."
+msgstr ""
+
+#: voty/initproc/forms.py:165
+msgid "Detailed Overview"
+msgstr ""
+
+#: voty/initproc/forms.py:167
+msgid ""
+"If a similar Proposal already exits, please add a comment to this Proposal."
+msgstr ""
+
+#: voty/initproc/forms.py:171
+msgid "Your comment"
+msgstr ""
+
+#: voty/initproc/forms.py:172
+msgid "Paragraphs and urls will be formatted"
+msgstr ""
+
+#: voty/initproc/forms.py:173
+msgid "Please refer to the above Argument in your comment."
+msgstr ""
+
+#: voty/initproc/forms.py:184
+msgid "Moderation"
+msgstr ""
+
+#: voty/initproc/forms.py:185
+msgid "The Initiative ... (please remove non-fitting characteristics"
+msgstr ""
+
+#: voty/initproc/forms.py:187
+msgid "Contradicts in some point with human rights or human dignity"
+msgstr ""
+
+#: voty/initproc/forms.py:188
+msgid "Contains pejorative terms against certain groups (eg Immigrants"
+msgstr ""
+
+#: voty/initproc/forms.py:189
+msgid "Is excluding/rasict/homophobe/discriminatory/transphobe/sexist"
+msgstr ""
+
+#: voty/initproc/forms.py:190
+msgid "Is nationalistic"
+msgstr ""
+
+#: voty/initproc/forms.py:191
+msgid "Is un-democratic?"
+msgstr ""
+
+#: voty/initproc/forms.py:192
+msgid "Leads to less transparency"
+msgstr ""
+
+#: voty/initproc/forms.py:193
+msgid "Leads to more patronizing or exclusion of persons in participating"
+msgstr ""
+
+#: voty/initproc/forms.py:194
+msgid "Is putting a burden on future generations"
+msgstr ""
+
+#: voty/initproc/forms.py:195
+msgid "Endangers the climate and our planet"
+msgstr ""
+
+#: voty/initproc/forms.py:196
+msgid ""
+"Leads to a widening of the prospertiy divide (rich get richer, poor get "
+"poorer"
+msgstr ""
+
+#: voty/initproc/forms.py:197
+msgid "Puts groups of disadvantaged persons at even more disadvantages."
+msgstr ""
+
+#: voty/initproc/forms.py:198
+msgid "Comment/Hint/Remark"
+msgstr ""
+
+#: voty/initproc/forms.py:199
+msgid "Your Assessment"
+msgstr ""
+
+#: voty/initproc/forms.py:214
+msgid ""
+"You voted postively, although you marked at least one of the above issues."
+msgstr ""
+
+#: voty/initproc/forms.py:218
+msgid "Can you justifiy your decision?"
+msgstr ""
+
+#: voty/initproc/globals.py:68
+msgid "Global Politics & International Cooperation"
+msgstr ""
+
+#: voty/initproc/globals.py:69
+msgid "Education, Research & Culture"
+msgstr ""
+
+#: voty/initproc/globals.py:70
+msgid "Interior Politics"
+msgstr ""
+
+#: voty/initproc/globals.py:71
+msgid "Net- & Media Politics"
+msgstr ""
+
+#: voty/initproc/globals.py:72
+msgid "Gender Equality"
+msgstr ""
+
+#: voty/initproc/globals.py:73
+msgid "Diversity & Integration"
+msgstr ""
+
+#: voty/initproc/globals.py:74
+msgid "Democracy & Transparency"
+msgstr ""
+
+#: voty/initproc/globals.py:75
+msgid "Health, Nutrition, Consumer Protection"
+msgstr ""
+
+#: voty/initproc/globals.py:76
+msgid "Environment, Mobility, Infrastructural Development"
+msgstr ""
+
+#: voty/initproc/globals.py:77
+msgid "Social Justice, Economy, Work & Finance"
+msgstr ""
+
+#: voty/initproc/globals.py:78
+msgid "Other"
+msgstr ""
+
+#: voty/initproc/guard.py:77
+msgid ""
+"You can comment on your Argument only after another person has added a "
+"comment."
+msgstr ""
+
+#: voty/initproc/guard.py:80
+msgid ""
+"To foster the discussion you can comment on your Argument only after another "
+"person has added a comment."
+msgstr ""
+
+#: voty/initproc/guard.py:234
+msgid "As Co-Initiator you are not authorized to moderate."
+msgstr ""
+
+#: voty/initproc/models.py:56
+msgid "Single Initiative"
+msgstr ""
+
+#: voty/initproc/models.py:57
+msgid "Federal Level"
+msgstr ""
+
+#: voty/initproc/models.py:331
+msgid "Does not conform to my convictions."
+msgstr ""
+
+#: voty/initproc/models.py:332
+msgid "Is not important enough."
+msgstr ""
+
+#: voty/initproc/models.py:333
+msgid "Is not specific enough."
+msgstr ""
+
+#: voty/initproc/models.py:334
+msgid "Is not mature enough (in terms of contents.)"
+msgstr ""
+
+#: voty/initproc/models.py:335
+msgid "Contains a detail, I do not agree with."
+msgstr ""
+
+#: voty/initproc/models.py:336
+msgid "Does not fit to {{ PLATFORM_TITLE_ACRONYM }}"
+msgstr ""
+
+#: voty/initproc/models.py:337
+msgid "Is difficult to stand in for."
+msgstr ""
+
+#: voty/initproc/models.py:338
+msgid "Is no longer relevant."
+msgstr ""
+
+#: voty/initproc/views.py:211 voty/initproc/views.py:330
+msgid "Please correct the following problems:"
+msgstr ""
+
+#: voty/initproc/views.py:326
+msgid "Initiative saved."
+msgstr ""
+
+#: voty/initproc/views.py:345
+msgid "The Initiative was received and is being validated."
+msgstr ""
+
+#: voty/initproc/views.py:351
+msgid "The requirements for submission have not been met."
+msgstr ""
+
+#: voty/initproc/views.py:391
+msgid "Initiators invited."
+msgstr ""
+
+#: voty/initproc/views.py:391
+msgid "Supporters invited."
+msgstr ""
+
+#: voty/initproc/views.py:413
+msgid "Thank you for the confirmation"
+msgstr ""
+
+#: voty/initproc/views.py:426
+msgid "Your support has been retracted"
+msgstr ""
+
+#: voty/initproc/views.py:533
+msgid "Initiative activated for Voting."
+msgstr ""
+
+#: voty/initproc/views.py:540
+msgid "Entry registered"
+msgstr ""
+
+#: voty/initproc/views.py:566
+msgid "Thank you for your comment."
+msgstr ""
+
+#: voty/settings.py:176
+msgid "English"
+msgstr ""
+
+#: voty/settings.py:177
+msgid "German"
+msgstr ""

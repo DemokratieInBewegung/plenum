@@ -1,3 +1,4 @@
-{% if sender == recipient %}Du hast{% else %}{{sender.get_full_name|default:sender.username}} hat{% endif %} die Einladung zu "{{target}}" angenommen.
+{% load i18n %}
+{% if sender == recipient %}{% trans "You have "%}{% else %}{{sender.get_full_name|default:sender.username}} {% trans "has" %}{% endif %}{% blocktrans %} accepted the invitation for Initiative "{{target}}"{% endblocktrans %}.
 
-Du findest die Initiative unter {{ base_url }}/initiative/{{target.id}}-{{target.slug}}
+{% trans "The Initiative can be found at " %}{{ base_url }}/initiative/{{target}}-{{target.slug}}

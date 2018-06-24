@@ -1,6 +1,6 @@
 {% extends "site_base.html" %}
-
-{% block head_title %}Plenum: Abmelden{% endblock %}
+{% load i18n %}
+{% block head_title %}{% trans "Plenum: Logout" %}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
@@ -8,11 +8,11 @@
         <div class="row">
             <div class="col">
                 <form method="POST" action="{% url "account_logout" %}">
-                    <h2>Abmelden</h2>
+                    <h2>{% trans "Logout" %}</h2>
                     <fieldset>
                         {% csrf_token %}
-                        <p>Willst Du Dich wirklich abmelden?</p>
-                        <button type="submit" class="btn btn-primary">Abmelden</button>
+                        <p>{% trans "Please confirm you want to logout?" %}</p>
+                        <button type="submit" class="btn btn-primary">{% trans "Logout" %}</button>
                     </fieldset>
                 </form>
             </div>

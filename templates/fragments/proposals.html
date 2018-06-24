@@ -1,15 +1,17 @@
+{% load i18n %}
 
 <div id="proposal-list">
-    {% for argument in proposals %}
-        {% include "fragments/argument/item.html" %}
+  {% for argument in proposals %}
+    {% include "fragments/argument/item.html" %}
     {% empty %}
-    <div id="no-proposals" class="alert alert-info">Es wurden {% if initiative.state == 'd' %}bisher{% endif %} keine Vorschläge eingebracht.</div>
-    {% endfor %}
+    <div id="no-proposals" class="alert alert-info">
+      {% if initiative.state == 'd' %}{% trans "Up to this point " %}{% endif %} {% trans "no Proposals have been made" %}.
+    </div>
+  {% endfor %}
 </div>
-<div id="proposals-thanks" class="container-fluid push-alert fixed-top">
-</div>
-    {% if initiative.state == 'd' %}
-	    <div id="new-proposal">
-{% include "fragments/argument/propose.html" %}
-	    </div>
-    {% endif %}
+<div id="proposals-thanks" class="container-fluid push-alert fixed-top"></div>
+{% if initiative.state == 'd' %}
+  <div id="new-proposal">
+  {% include "fragments/argument/propose.html" %}
+  </div>
+{% endif %}

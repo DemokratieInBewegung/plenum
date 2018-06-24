@@ -1,11 +1,10 @@
-
+{% load i18n %}
 {% if target %}
-{% if sender == recipient %}Du hast{% else %}{{sender.get_full_name|default:sender.username}} hat{% endif %} die Initiative "{{target}}" zur Abstimmung freigegeben.
+{% if sender == recipient %}{% trans "You have "%}{% else %}{{sender.get_full_name|default:sender.username}} {% trans "has" %}{% endif %}{% trans "opened the following Initiative for voting:" } "{{target}}".
 
-Du findest die Initiative unter {{ base_url }}/initiative/{{target.id}}-{{target.slug}}
-
+{% trans "The Initiative can be found at " %}{{ base_url }}/initiative/{{sender.id}}-{{sender.slug}}
 {% else %}
-"{{sender}}" wurde zur Abstimmung freigegeben.
+{% blocktrans %}"{{sender}}" was opened for Voting{% endblocktrans %}.
 
-Du findest die Initiative unter {{ base_url }}/initiative/{{sender.id}}-{{sender.slug}}
+{% trans "The Initiative can be found at " %}{{ base_url }}/initiative/{{sender.id}}-{{sender.slug}}
 {% endif %}

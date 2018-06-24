@@ -34,7 +34,7 @@ from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderatio
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
                     NewProposalForm, NewModerationForm, InviteUsersForm)
 from .serializers import SimpleInitiativeSerializer
-
+from django.utils.translation import ugettext as _
 
 DEFAULT_FILTERS = [
     STATES.PREPARE,
@@ -96,10 +96,15 @@ def personalize_argument(arg, user_id):
                 arg.has_commented = True
                 break
 
-def ueber(request):
-    return render(request, 'static/ueber.html',context=dict(
+def about(request):
+    return render(request, 'static/about.html', context=dict(
             quorums=Quorum.objects.order_by("-created_at")))
 
+def account_language(request):
+    return render(request, "account/language.html")
+
+def crawler(request, filename):
+    return render(request, filename, {}, content_type="text/plain")
 
 def index(request):
     filters = [f for f in request.GET.getlist("f")]
@@ -203,7 +208,7 @@ def new(request):
             Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
             return redirect('/initiative/{}-{}'.format(ini.id, ini.slug))
         else:
-            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+            messages.warning(request, _("Please correct the following problems:"))
 
     return render(request, 'initproc/new.html', context=dict(form=form))
 
@@ -318,11 +323,11 @@ def edit(request, initiative):
 
             initiative.supporting.filter(initiator=True).update(ack=False)
 
-            messages.success(request, "Initiative gespeichert.")
+            messages.success(request, _("Initiative saved."))
             initiative.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
             return redirect('/initiative/{}'.format(initiative.id))
         else:
-            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+            messages.warning(request, _("Please correct the following problems:"))
 
     return render(request, 'initproc/new.html', context=dict(form=form, initiative=initiative))
 
@@ -337,13 +342,13 @@ def submit_to_committee(request, initiative):
         # make sure moderation starts from the top
         initiative.moderations.update(stale=True)
 
-        messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
+        messages.success(request, _("The Initiative was received and is being validated."))
         initiative.notify_initiators(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         initiative.notify(get_user_model().objects.filter(is_staff=True, is_active=True).all(),
                           NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         return redirect('/initiative/{}'.format(initiative.id))
     else:
-        messages.warning(request, "Die Bedingungen für die Einreichung sind nicht erfüllt.")
+        messages.warning(request, _("The requirements for submission have not been met."))
 
     return redirect('/initiative/{}'.format(initiative.id))
 
@@ -383,7 +388,7 @@ def invite(request, form, initiative, invite_type):
 
         notify([user], NOTIFICATIONS.INVITE.SEND, {"target": initiative}, sender=request.user)
 
-    messages.success(request, "Initiator*innen eingeladen." if invite_type == 'initiators' else 'Unterstützer*innen eingeladen.' )
+    messages.success(request, _("Initiators invited.") if invite_type == 'initiators' else _("Supporters invited."))
     return redirect("/initiative/{}-{}".format(initiative.id, initiative.slug))
 
 
@@ -405,7 +410,7 @@ def ack_support(request, initiative):
     sup.ack = True
     sup.save()
 
-    messages.success(request, "Danke für die Bestätigung")
+    messages.success(request, _("Thank you for the confirmation"))
     initiative.notify_initiators(NOTIFICATIONS.INVITE.ACCEPTED, subject=request.user)
 
     return redirect('/initiative/{}'.format(initiative.id))
@@ -418,7 +423,7 @@ def rm_support(request, initiative):
     sup = get_object_or_404(Supporter, initiative=initiative, user_id=request.user.id)
     sup.delete()
 
-    messages.success(request, "Deine Unterstützung wurde zurückgezogen")
+    messages.success(request, _("Your support has been retracted"))
     initiative.notify_initiators(NOTIFICATIONS.INVITE.REJECTED, subject=request.user)
 
     if initiative.state == 's':
@@ -500,7 +505,7 @@ def moderate(request, form, initiative):
             initiative.state = STATES.SEEKING_SUPPORT
             initiative.save()
 
-            messages.success(request, "Initiative veröffentlicht")
+            messages.success(request, _("Initiative published"))
             initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
             initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=request.user)
             return redirect('/initiative/{}'.format(initiative.id))
@@ -525,14 +530,14 @@ def moderate(request, form, initiative):
                     init.notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE)
                     init.notify_moderators(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE, subject=request.user)
 
-                messages.success(request, "Initiative(n) zur Abstimmung frei gegeben.")
+                messages.success(request, _("Initiative activated for Voting."))
                 return redirect('/initiative/{}-{}'.format(initiative.id, initiative.slug))
 
 
     
     return {
         'fragments': {'#no-moderations': ""},
-        'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>"},
+        'inner-fragments': {'#moderation-new': "".join(["<strong>", _("Entry registered"), "</strong>"])},
         'append-fragments': {'#moderation-list': render_to_string("fragments/moderation/item.html",
                                                   context=dict(m=model,initiative=initiative,full=0),
                                                   request=request)}
@@ -558,7 +563,7 @@ def comment(request, form, target_type, target_id):
 
     return {
         'inner-fragments': {'#{}-new-comment'.format(model.unique_id):
-                "<strong>Danke für Deinen Kommentar</strong>",
+                "".join(["<strong>", _("Thank you for your comment."), "</strong>"]),
                 '#{}-chat-icon'.format(model.unique_id):
                 "chat_bubble", # This user has now commented, so fill in the chat icon
                 '#{}-comment-count'.format(model.unique_id):

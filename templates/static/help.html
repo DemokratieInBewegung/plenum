@@ -1,0 +1,90 @@
+{% extends 'site_base.html' %}
+{% load i18n %}
+{% load site_defaults %}
+
+{% block body %}
+<div class="container-fluid">
+  <div class="container">
+    <div class="row">
+      <div class="col help">
+        <h2>{% trans "Frequently Asked Questions" %}</h2>
+
+        <h3>{% trans "What is this platform about?" %}</h3>
+        <p>{% blocktrans %}On this platform we collaboratively work on what {{ 'PLATFORM_TITLE_ACRONYM'|get_setting }} should stand for. You can discuss, propose improvements and vote. You can propose Initiative, which, if approved, become part of the political program.{% endblocktrans %}</p>
+
+        <h3>{% trans "How can I participate?" %}</h3>
+        <p>{% trans "By joining:" %}</p>
+        <a href="{{ 'PLATFORM_REGISTRATION_URL'|get_setting }}" class="btn btn-outline-primary">{% trans "Create Account" %}</a>
+        <p>{% trans "Everyone can participate!" %}</p>
+
+        <h3>{% trans "I have registered but my account has not been activated yet." %}</h3>
+        <p>{% trans "Account validation may take up to 5 days. Please be patient." %}</p>
+
+        <h3>{% trans "Do I have to use my actual name?" %}</h3>
+        <p>{% trans "When registering, yes. We need to be able to verify if you actually exist to prevent multiple registrations. Your name will only shown publicly on the platform when you launch an Initiative of your own. Discussing and voting can be done under a pseudonym." %}</p>
+        <p>{% trans "However, when it is possible for you, we appreciate when participants use their actual names." %}</p>
+
+        <h3>{% trans "What is an Initiative?" %}</h3>
+        <p>{% blocktrans %}An Initiative is a proposal for the politica programm of {{ 'PLATFORM_TITLE_ACRONYM'|get_setting }}. It consists of a short assessment of a problem, resulting demands as well as information regarding potential cost and means of financing.{% endblocktrans %}</p>
+
+        <h3>{% trans "How does the voting process work?" %}</h3>
+        <p>{% trans "An Initiative will go through different phases throughout the Plenum:" %}</p>
+        <ol>
+          <li><b>{% trans "Validation" %}</b>
+            <p>{% blocktrans %}Intially the governance team will verify that a new Initiative meets all requirements. This mostly refers to being aligned with the basic values of {{ 'PLATFORM_TITLE_ACRONYM'|get_setting }} as well as meeting formal criteria.{% endblocktrans %}</p>
+          </li>
+          <li><b>{% trans "Seeking Supporters" %}</b>
+            <p>{% blocktrans %}In this phase at least 1% of registered participants have to support the Initiative. This ensures, that enough people consider the topic for important and worth supporting. Until the number of registered participants is below 5000, a different, lower Quorum is applied. {% endblocktrans %}</p>
+            <p>{% trans "The support phase will last between two weeks and six months at a maximum. If an Initiative does noch reach the required number of supporters after six months, it will be deleted." %}</p>
+          </li>
+          <li><b>{% trans "Discussion" %}</b>
+            <p>{% blocktrans %}In this Phase you can give your opinion on Initiatives and propose improvements. You can leave comments in favor or against an Initiative. The best arguments will automatically move to the top. This way particpants with less time can also inform themselves quickly about the status of an Initiative.{% endblocktrans %}
+            <br/>{% trans "The discussion phase will last three weeks. Afterwards, the discussion will be closed." %}</p>
+          </li>
+          <li><b>{% trans "Modifications" %}</b>
+            <p>{% trans "In this phase, the Initiator(s) can modify or amend the Initiative based on proposals and arguments gathered during the discussion phase." %}</p>
+          </li>
+          <li><b>{% trans "Final Review" %}</b>
+            <p>{% trans "In case an Initiative was modified, the governance teams will re-validate it afterwards." %}</p>
+          </li>
+          <li><b>{% trans "Vote" %}</b>
+            <p>{% trans "In this phase a vote on the Initiative is held. The vote will last at least three weeks. If an Intiative is accepted, it will become part of the official political programm once it is validated on a party convention." %}</p>
+          </li>
+        </ol>
+
+        <h3>{% trans "What can be demanded in an Initiative and what not?" %}</h3>
+        <p>{% blocktrans %}All Intiatives have to conform with the basic values of {{ 'PLATFORM_TITLE'|get_setting }}. The {{ 'PLATFORM_TITLE_ACRONYM'|get_setting }}-values are:{% endblocktrans %}</p>
+        <ul>
+          <li>{% trans "democracy, participation and transparency" %}</li>
+          <li>{% trans "Fairness in social, political, economical and ecological aspects" %}</li>
+          <li>{% trans "Openness and diversity" %}</li>
+          <li>{% trans "Forward and sustainable thinking" %}</li>
+        </ul>
+        <p>{% trans "Put differently: Support for single parents, protecting the environment and installing a lobbying register are topics we consider on par with our vaues while demanding the death penalty, nuclear power or rebuilding walls are not on line with our agenda." %}</p>
+        <p>{% trans "An Initiative also has to refer to the actual political program and not for example on the organisational structure or processes with the movement. An Initiative must also not be identical or similar to an Initiative rejected during the last six months."%}</p>
+        <p>{% trans "If the governance team comes to the conclusion, that an Initiative does not meet the requirements, it can reject the Initiative outright. Whenever possible, the Initiator(s) will be given the opportunity to alleviate or dispel. Should you not agree with the decision of the governance team, you can relegate the Initiative to a curatorium made up of separately and randomly chosen participants from all eligible registered users (half of which are members of the movement, half participants). The curatorium then decides finally whether an Initiative is permitted or not." %}</p>
+
+        <h3>{% trans "How can I start an Initiative?" %}</h3>
+        <p>{% blocktrans %}You can propose your idea on the <a href="{{ 'PLATFORM_MARKETPLACE_URL'|get_setting }}">marketplace of ideas</a>. It is a place to find other participants for your Initiative who can also help you formulate the Initiative. To launch an Initiative you need to be at least three Initiators. <a href="{{ 'INITIATIVE_TEMPLATE_URL'|get_setting }}">Here is a template</a> including the questions, which an Initiative should answer. <a href="/initiative/new">Here you can submit a new Initiative.{% endblocktrans %}</a></p>
+
+        <h3>{% trans "What happens when there are multiple Initiatives on the same topic?" %}</h3>
+        <p>{% trans "The governancen teams can identify Initiatives as mutual alternatives. These Initiatives will be voted on together." %}</p>
+
+        <h3>{% trans "I want to know more about the principles of Initiatives. Do you have more information?" %}</h3>
+        <p>{% trans "See here:" %} <a href="{{ 'INITIATIVE_EXPLANATION_URL'|get_setting }}">{% trans "How does the Initiative process work?" %}</a></p>
+        <p>{% blocktrans %}Should you require additional information, please have a look at the <a href="{{ 'PLATFORM_VOTING_REGULATION_URL'|get_setting }}">voting regulartions</a>.{% endblocktrans %}</p>
+
+        <h3>{% trans "I would like to launch an Initiative and could use some help." %}</h3>
+        <p>{% blocktrans %}For technical, formal or organisational help, send a message to: <a href="mailto:{{ 'INITIATIVE_SUPPORT_EMAIL'|get_setting }}">{{ 'INITIATIVE_SUPPORT_EMAIL'|get_setting }}</a>.{% endblocktrans %}</p>
+
+        <h3>{% trans "Something is not working/I have suggestions/Further enquiries" %}</h3>
+        <p>{% blocktrans %}Tell us about your problem, suggestion or question in <a href="{{ 'PLATFORM_TECH_DEVELOPMENT_URL'|get_setting }}">the respective support category on the marketplace of ideas</a>. Please note you have to be registered on the marketplace in order to access categories.{% endblocktrans %}</p>
+
+        <h3>{% trans "I'm developer/graphic designer and like your prjoect. Can I help you?" %}</h3>
+        <p>{% blocktrans %}Yes, of course! Write us on <a href="{{ 'PLATFORM_TECH_SUPPORT_URL'|get_setting }}">the marketplace of ideas</a>. You can also check out the source code on <a href="{{ 'PLATFORM_TECH_SOURCE_CODE_URL'|get_setting }}">on Github directly</a> including current tickets on <a href="{{ 'PLATFORM_TECH_DEVELOPMENT_TICKET_URL'|get_setting }}">our Kanban board</a>.{% endblocktrans %}</p>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

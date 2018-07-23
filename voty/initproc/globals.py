@@ -54,19 +54,6 @@ class VOTY_TYPES:
     PolicyChange = 'ao-aenderung'
     BallotVote = 'urabstimmung'
 
-class AREAS:
-    """
-    The areas a voty object can have
-    """
-    Mitbestimmung = 'Mitbestimmung'
-    Transparenz = 'Transparenz und Lobbyismus'
-    Europa = 'Demokratisches und solidarisches Europa'
-    Gerechtigkeit = 'Gerechtigkeit und Verantwortung füreinander'
-    Vielfalt = 'Vielfältige, weltoffene und inklusive Gesellschaft'
-    Nachhaltigkeit = 'Nachhaltigkeit'
-    Zukunft = 'Zukunft aktiv gestalten'
-    andere = '(andere)'
-
 class VOTED:
     """
     The possibilities for casting a vote

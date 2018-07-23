@@ -70,7 +70,6 @@ class Initiative(models.Model):
 
     @cached_property
     def slug(self):
-        print("Initiative type is {}".format(self.einordnung))
         return slugify(self.title)
 
     @cached_property
@@ -335,7 +334,6 @@ class Initiative(models.Model):
 
         if self.is_policychange():
             if not self.supporting.exists():
-                print("calculate supporters for policychange")
                 self.supporting = get_user_model().objects.filter(is_active=True) #TODO: ,is_bv=True)
         return self.supporting.all()
 

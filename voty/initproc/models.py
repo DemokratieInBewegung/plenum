@@ -56,7 +56,7 @@ class Initiative(models.Model):
         (VOTY_TYPES.PolicyChange,'AO-Änderung'),
         (VOTY_TYPES.BallotVote,'Urabstimmung')])
     ebene = models.CharField(max_length=50, choices=[('Bund', 'Bund')])
-    bereich = models.CharField(max_length=50, choices=[(item,item) for item in SUBJECT_CATEGORIES])
+    bereich = models.CharField(max_length=60, choices=[(item,item) for item in SUBJECT_CATEGORIES])
 
     went_public_at = models.DateField(blank=True, null=True)
     went_to_discussion_at = models.DateField(blank=True, null=True)
@@ -204,7 +204,7 @@ class Initiative(models.Model):
                     return self.went_to_discussion_at + (5 * week)
 
                 elif self.state == 'v':
-                    return self.went_to_voting_at + (2 * week)
+                    return self.went_to_voting_at + (3 * week)
 
         return None
 

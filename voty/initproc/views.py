@@ -87,15 +87,8 @@ def get_voting_fragments(vote, initiative, request):
 
 
 def personalize_argument(arg, user_id):
-    arg.has_liked = arg.likes.filter(user=user_id).count() > 0
-    if arg.user.id == user_id:
-        arg.has_commented = True
-    else:
-        arg.has_commented = False
-        for cmt in arg.comments.all():
-            if cmt.user.id == user_id:
-                arg.has_commented = True
-                break
+    arg.has_liked = arg.likes.filter(user=user_id).exists()
+    arg.has_commented = arg.comments.filter(user__id=user_id).exists()
 
 def ueber(request):
     return render(request, 'static/ueber.html',context=dict(
@@ -221,6 +214,7 @@ def item(request, init, slug=None, initype=None):
 
     ctx['arguments'].sort(key=lambda x: (-x.likes.count(), x.created_at))
     ctx['proposals'].sort(key=lambda x: (-x.likes.count(), x.created_at))
+    ctx['is_editable'] = request.guard.is_editable (init)
 
     if request.user.is_authenticated:
         user_id = request.user.id
@@ -228,7 +222,7 @@ def item(request, init, slug=None, initype=None):
         ctx.update({'has_supported': init.supporting.filter(user=user_id).count()})
 
         votes = init.votes.filter(user=user_id)
-        if (votes.count()):
+        if (votes.exists()):
             ctx['vote'] = votes.first()
 
         for arg in ctx['arguments'] + ctx['proposals']:
@@ -252,14 +246,14 @@ def show_resp(request, initiative, target_type, target_id, slug=None, initype=No
 
     ctx = dict(argument=arg,
                has_commented=False,
-               can_like=False,
+               is_editable=request.guard.is_editable(arg),
                full=param_as_bool(request.GET.get('full', 0)),
-               comments=arg.comments.order_by('-created_at').prefetch_related('likes').all())
+               comments=arg.comments.order_by('created_at').prefetch_related('likes').all())
 
     if request.user.is_authenticated:
         personalize_argument(arg, request.user.id)
         for cmt in ctx['comments']:
-            cmt.has_liked = cmt.likes.filter(user=request.user).count() > 0
+            cmt.has_liked = cmt.likes.filter(user=request.user).exists()
 
     template = 'fragments/argument/item.html'
 
@@ -279,13 +273,13 @@ def show_moderation(request, initiative, target_id, slug=None, initype=None):
 
     ctx = dict(m=arg,
                has_commented=False,
-               can_like=False,
                has_liked=False,
+               is_editable=True,
                full=1,
-               comments=arg.comments.order_by('-created_at').all())
+               comments=arg.comments.order_by('created_at').all())
 
     if request.user:
-        ctx['has_liked'] = arg.likes.filter(user=request.user).count() > 0
+        ctx['has_liked'] = arg.likes.filter(user=request.user).exists()
         if arg.user == request.user:
             ctx['has_commented'] = True
 
@@ -608,7 +602,10 @@ def like(request, target_type, target_id):
     if not request.guard.can_like(model):
         raise PermissionDenied()
 
-    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": True}
+    if not request.guard.is_editable(model):
+        raise PermissionDenied()
+
+    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": True, "is_editable": True}
     for key in ['show_text', 'show_count']:
         if key in request.GET:
             ctx[key] = param_as_bool(request.GET[key])
@@ -631,9 +628,12 @@ def unlike(request, target_type, target_id):
     model_cls = apps.get_model('initproc', target_type)
     model = get_object_or_404(model_cls, pk=target_id)
 
+    if not request.guard.is_editable(model):
+        raise PermissionDenied()
+
     model.likes.filter(user_id=request.user.id).delete()
 
-    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": False}
+    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": False, "is_editable": True}
     for key in ['show_text', 'show_count']:
         if key in request.GET:
             ctx[key] = param_as_bool(request.GET[key])

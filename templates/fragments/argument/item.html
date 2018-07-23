@@ -55,7 +55,7 @@
             	<h6 class="text-muted classification">Kommentare</h6>
 			{% endif %}
 			<div id="{{argument.unique_id}}-comment-list" class="argument-comment-list">
-                {% for comment in comments reversed %}
+                {% for comment in comments %}
                 	{% include 'fragments/comment/item.html' %}
 			    {% endfor %}
 			</div>

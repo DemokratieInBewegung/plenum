@@ -1,11 +1,11 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <a href="/initiative/{{initiative.id}}-{{initiative.slug}}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zurück zur Initiative</a>
+            <a href="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zurück zur {{initiative.get_einordnung_display}}</a>
         </div>
     </div>
 	<div class="row">
-		<h2>Änderungshistorie Initiative #{{initiative.id}}</h2>	
+        <h2>Änderungshistorie {{initiative.get_einordnung_display}} #{{initiative.id}}</h2>
 	</div>
 
 	<div class="row">
@@ -19,7 +19,7 @@
 	        		{% for v in initiative.versions %}
 	        			{% if v == latest %}
 	        			{% else %}
-	        				<a href="/initiative/{{initiative.id}}-{{initiative.slug}}/compare/{{v.id}}"
+	        				<a href="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/compare/{{v.id}}"
 	        					class="dropdown-item"
 	        					data-ajax="true">
 	        					{% if v == selected %}<strong>{%endif%}
@@ -66,6 +66,7 @@
     <div class="col-12">
     	<h3>Zusammenfassung</h3>
         {{compare.summary}}
+        {% if not initiative.is_policychange %}
         <h2>Problembeschreibung</h2>
         {{compare.problem}}
         <h2>Forderung</h2>
@@ -80,6 +81,7 @@
         <blockquote class="blockquote">
             {{compare.init_argument}}
         </blockquote>
+        {% endif %}
     </div>
 </div>
 </div>

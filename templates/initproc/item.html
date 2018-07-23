@@ -10,7 +10,7 @@
 {% block custom_sm_title %}
     <meta property="og:title" content="{{initiative.title}}">
     <meta property="og:description" content="{{initiative.subtitle}}">
-    <meta property="og:url" content="{% fullurl 'initiative_item' init_id=initiative.id slug=initiative.slug %}">
+    <meta property="og:url" content="{% fullurl 'initiative_item' initype=initiative.einordnung init_id=initiative.id slug=initiative.slug %}">
 {% endblock %}
 
 {% block custom_header %}

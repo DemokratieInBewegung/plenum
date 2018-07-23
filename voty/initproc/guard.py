@@ -8,14 +8,14 @@ from django.db.models import Q
 
 from functools import wraps
 from voty.initadmin.models import UserConfig
-from voty.initproc.models import Moderation
-from .globals import STATES, PUBLIC_STATES, TEAM_ONLY_STATES, INITIATORS_COUNT, MINIMUM_MODERATOR_VOTES, MINIMUM_FEMALE_MODERATOR_VOTES, MINIMUM_DIVERSE_MODERATOR_VOTES
+from .globals import STATES, PUBLIC_STATES, TEAM_ONLY_STATES, INITIATORS_COUNT, MINIMUM_MODERATOR_VOTES, \
+    MINIMUM_FEMALE_MODERATOR_VOTES, MINIMUM_DIVERSE_MODERATOR_VOTES, VOTY_TYPES
 from .models import Initiative, Supporter
 
 
 def can_access_initiative(states=None, check=None):
     def wrap(fn):
-        def view(request, init_id, slug, *args, **kwargs):
+        def view(request, initype, init_id, slug, *args, **kwargs):
             init = get_object_or_404(Initiative, pk=init_id)
             if states:
                 assert init.state in states, "{} Not in expected state: {}".format(init.state, states)
@@ -27,7 +27,6 @@ def can_access_initiative(states=None, check=None):
                     raise PermissionDenied()
 
             request.initiative = init
-
             return fn(request, init, *args, **kwargs)
         return view
     return wrap
@@ -242,9 +241,14 @@ class Guard:
         return (female <= 0) & (diverse <= 0) & (total <= 0)
 
     def _can_support_initiative(self, init):
-        return init.state == STATES.SEEKING_SUPPORT and self.user.is_authenticated
+        return (not init.is_policychange()) and \
+               init.state == STATES.SEEKING_SUPPORT and \
+               self.user.is_authenticated
 
     def _can_moderate_initiative(self, init):
+        if init.is_policychange():
+            return False
+
         if init.state in [STATES.INCOMING, STATES.MODERATION] and self.user.has_perm('initproc.add_moderation'):
             if init.supporting.filter(user=self.user, initiator=True):
                 self.reason = "Als Mitinitator*in darfst Du nicht mit moderieren."

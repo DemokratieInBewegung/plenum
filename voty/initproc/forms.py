@@ -114,7 +114,7 @@ class InitiativeForm(forms.ModelForm):
         model = Initiative
         fields = ['title', 'subtitle', 'summary', 'problem', 'forderung',
                   'kosten', 'fin_vorschlag', 'arbeitsweise', 'init_argument',
-                  'einordnung', 'ebene', 'bereich']
+                  'ebene', 'bereich']
 
         labels = {
             "title" : "Überschrift",
@@ -219,3 +219,20 @@ class NewModerationForm(forms.ModelForm):
         model = Moderation
         fields = ['q{}'.format(i) for i in range(QESTIONS_COUNT)] + ['text', 'vote']
 
+
+class PolicyChangeForm(forms.ModelForm):
+
+    class Meta:
+        model = Initiative
+        fields = ['title', 'subtitle','summary']
+
+        labels = {
+            "title" : "Überschrift",
+            "subtitle": "Anreißer",
+            "summary" : "Text",
+        }
+        help_texts = {
+            "title" : "Die Überschrift sollte die AO-Änderung kurz zusammenfassen.",
+            "subtitle": "Ein bis zwei Sätze zur AO-Änderung.",
+            "summary" : "Kompletter Text der AO-Änderung, mit Referenzen/Links auf bestehende AO-Artikel.",
+        }

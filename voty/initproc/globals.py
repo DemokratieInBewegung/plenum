@@ -49,6 +49,11 @@ TEAM_ONLY_STATES = [STATES.INCOMING,
                     STATES.MODERATION,
                     STATES.HIDDEN]
 
+class VOTY_TYPES:
+    Einzelinitiative = 'initiative'
+    PolicyChange = 'ao-aenderung'
+    BallotVote = 'urabstimmung'
+
 class VOTED:
     """
     The possibilities for casting a vote

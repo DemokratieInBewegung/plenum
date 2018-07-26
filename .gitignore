@@ -4,6 +4,7 @@ pip-selfcheck.json
 
 .project
 .pydevproject
+.settings/
 
 bin:
 activate

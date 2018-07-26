@@ -28,12 +28,13 @@ import reversion
 from functools import wraps
 import json
 
-from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS
+from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS, VOTY_TYPES
 from .guard import can_access_initiative
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
-                    NewProposalForm, NewModerationForm, InviteUsersForm)
+                    NewProposalForm, NewModerationForm, InviteUsersForm, PolicyChangeForm)
 from .serializers import SimpleInitiativeSerializer
+from django.contrib.auth.models import Permission
 
 
 DEFAULT_FILTERS = [
@@ -84,6 +85,10 @@ def get_voting_fragments(vote, initiative, request):
 #
 #                                                       
 
+
+def personalize_argument(arg, user_id):
+    arg.has_liked = arg.likes.filter(user=user_id).exists()
+    arg.has_commented = arg.comments.filter(user__id=user_id).exists()
 
 def ueber(request):
     return render(request, 'static/ueber.html',context=dict(
@@ -180,6 +185,7 @@ def new(request):
         if form.is_valid():
             ini = form.save(commit=False)
             with reversion.create_revision():
+                ini.einordnung = VOTY_TYPES.Einzelinitiative
                 ini.state = STATES.PREPARE
                 ini.save()
 
@@ -198,7 +204,7 @@ def new(request):
 
 
 @can_access_initiative()
-def item(request, init, slug=None):
+def item(request, init, slug=None, initype=None):
 
     ctx = dict(initiative=init,
                user_count=init.eligible_voter_count,
@@ -208,32 +214,30 @@ def item(request, init, slug=None):
 
     ctx['arguments'].sort(key=lambda x: (-x.likes.count(), x.created_at))
     ctx['proposals'].sort(key=lambda x: (-x.likes.count(), x.created_at))
-
+    ctx['is_editable'] = request.guard.is_editable (init)
 
     if request.user.is_authenticated:
         user_id = request.user.id
-        ctx.update({'has_supported': init.supporting.filter(user=user_id).count(),
-                    'has_voted': init.votes.filter(user=user_id).count()})
-        if ctx['has_voted']:
-            ctx['vote'] = init.votes.filter(user_id=user_id).first()
+
+        ctx.update({'has_supported': init.supporting.filter(user=user_id).count()})
+
+        votes = init.votes.filter(user=user_id)
+        if (votes.exists()):
+            ctx['vote'] = votes.first()
 
         for arg in ctx['arguments'] + ctx['proposals']:
-            arg.has_liked = arg.likes.filter(user=user_id).count() > 0
-            if arg.user.id == user_id:
-                arg.has_commented = True
-            else:
-                for cmt in arg.comments.all():
-                    if cmt.user.id == user_id:
-                        arg.has_commented = True
-                        break
+            personalize_argument(arg, user_id)
 
     print(ctx)
-    return render(request, 'initproc/item.html', context=ctx)
+    if init.is_policychange():
+        return render(request, 'initproc/policychange.html', context=ctx)
+    elif init.is_initiative():
+        return render(request, 'initproc/item.html', context=ctx)
 
 
 @ajax
 @can_access_initiative()
-def show_resp(request, initiative, target_type, target_id, slug=None):
+def show_resp(request, initiative, target_type, target_id, slug=None, initype=None):
 
     model_cls = apps.get_model('initproc', target_type)
     arg = get_object_or_404(model_cls, pk=target_id)
@@ -242,20 +246,14 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
 
     ctx = dict(argument=arg,
                has_commented=False,
-               can_like=False,
+               is_editable=request.guard.is_editable(arg),
                full=param_as_bool(request.GET.get('full', 0)),
-               comments=arg.comments.order_by('-created_at').prefetch_related('likes').all())
+               comments=arg.comments.order_by('created_at').prefetch_related('likes').all())
 
     if request.user.is_authenticated:
-        arg.has_liked = arg.likes.filter(user=request.user).count() > 0
-        if arg.user == request.user:
-            ctx['has_commented'] = True
-
+        personalize_argument(arg, request.user.id)
         for cmt in ctx['comments']:
-            cmt.has_liked = cmt.likes.filter(user=request.user).count() > 0
-            if cmt.user == request.user:
-                ctx['has_commented'] = True
-
+            cmt.has_liked = cmt.likes.filter(user=request.user).exists()
 
     template = 'fragments/argument/item.html'
 
@@ -268,24 +266,25 @@ def show_resp(request, initiative, target_type, target_id, slug=None):
 @ajax
 @login_required
 @can_access_initiative(None, 'can_moderate')
-def show_moderation(request, initiative, target_id, slug=None):
+def show_moderation(request, initiative, target_id, slug=None, initype=None):
     arg = get_object_or_404(Moderation, pk=target_id)
 
     assert arg.initiative == initiative, "How can this be?"
 
     ctx = dict(m=arg,
                has_commented=False,
-               can_like=False,
                has_liked=False,
-               comments=arg.comments.order_by('-created_at').all())
+               is_editable=True,
+               full=1,
+               comments=arg.comments.order_by('created_at').all())
 
     if request.user:
-        ctx['has_liked'] = arg.likes.filter(user=request.user).count() > 0
+        ctx['has_liked'] = arg.likes.filter(user=request.user).exists()
         if arg.user == request.user:
             ctx['has_commented'] = True
 
     return {'fragments': {
-        '#{arg.type}-{arg.id}'.format(arg=arg): render_to_string('fragments/moderation/full.html',
+        '#{arg.type}-{arg.id}'.format(arg=arg): render_to_string('fragments/moderation/item.html',
                                                                  context=ctx, request=request)
         }}
 
@@ -304,26 +303,47 @@ def show_moderation(request, initiative, target_id, slug=None):
 @login_required
 @can_access_initiative([STATES.PREPARE, STATES.FINAL_EDIT], 'can_edit')
 def edit(request, initiative):
-    form = InitiativeForm(request.POST or None, instance=initiative)
-    if request.method == 'POST':
-        if form.is_valid():
-            with reversion.create_revision():
-                initiative.save()
+    if initiative.is_initiative():
+        form = InitiativeForm(request.POST or None, instance=initiative)
+        if request.method == 'POST':
+            if form.is_valid():
+                with reversion.create_revision():
+                    initiative.save()
 
-                # Store some meta-information.
-                reversion.set_user(request.user)
-                if request.POST.get('commit_message', None):
-                    reversion.set_comment(request.POST.get('commit_message'))
+                    # Store some meta-information.
+                    reversion.set_user(request.user)
+                    if request.POST.get('commit_message', None):
+                        reversion.set_comment(request.POST.get('commit_message'))
 
-            initiative.supporting.filter(initiator=True).update(ack=False)
+                initiative.supporting.filter(initiator=True).update(ack=False)
 
-            messages.success(request, "Initiative gespeichert.")
-            initiative.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
-            return redirect('/initiative/{}'.format(initiative.id))
-        else:
-            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+                messages.success(request, "Initiative gespeichert.")
+                initiative.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
+                return redirect('/initiative/{}'.format(initiative.id))
+            else:
+                messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new.html', context=dict(form=form, initiative=initiative))
+        return render(request, 'initproc/new.html', context=dict(form=form, initiative=initiative))
+    elif initiative.is_policychange():
+        form = PolicyChangeForm(request.POST or None, instance=initiative)
+        if request.method == 'POST':
+            if form.is_valid():
+                with reversion.create_revision():
+                    initiative.save()
+
+                    # Store some meta-information.
+                    reversion.set_user(request.user)
+                    if request.POST.get('commit_message', None):
+                        reversion.set_comment(request.POST.get('commit_message'))
+
+                messages.success(request, "AO-Änderung gespeichert.")
+                # TODO fix pc.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
+                return redirect('/{}/{}'.format(initiative.einordnung, initiative.id))
+            else:
+                messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+
+        return render(request, 'initproc/new_policychange.html', context=dict(form=form, policychange=initiative))
+
 
 
 @login_required
@@ -338,7 +358,10 @@ def submit_to_committee(request, initiative):
 
         messages.success(request, "Deine Initiative wurde angenommen und wird geprüft.")
         initiative.notify_initiators(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
-        initiative.notify(get_user_model().objects.filter(is_staff=True, is_active=True).all(),
+        # To notify the review team, we notify all members of groups with moderation permission,
+        # which doesn't include superusers, though they individually have moderation permission.
+        moderation_permission = Permission.objects.filter(content_type__app_label='initproc', codename='add_moderation')
+        initiative.notify(get_user_model().objects.filter(groups__permissions=moderation_permission, is_active=True).all(),
                           NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         return redirect('/initiative/{}'.format(initiative.id))
     else:
@@ -530,10 +553,10 @@ def moderate(request, form, initiative):
 
     
     return {
-        'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>",
-                            '#moderation-list':
-                                render_to_string("fragments/moderation/list_small.html",
-                                                  context=dict(moderations=initiative.current_moderations),
+        'fragments': {'#no-moderations': ""},
+        'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>"},
+        'append-fragments': {'#moderation-list': render_to_string("fragments/moderation/item.html",
+                                                  context=dict(m=model,initiative=initiative,full=0),
                                                   request=request)}
     }
 
@@ -557,7 +580,11 @@ def comment(request, form, target_type, target_id):
 
     return {
         'inner-fragments': {'#{}-new-comment'.format(model.unique_id):
-                "<strong>Danke für Deinen Kommentar</strong>"},
+                "<strong>Danke für Deinen Kommentar</strong>",
+                '#{}-chat-icon'.format(model.unique_id):
+                "chat_bubble", # This user has now commented, so fill in the chat icon
+                '#{}-comment-count'.format(model.unique_id):
+                model.comments.count()},
         'append-fragments': {'#{}-comment-list'.format(model.unique_id):
             render_to_string("fragments/comment/item.html",
                              context=dict(comment=cmt),
@@ -575,7 +602,10 @@ def like(request, target_type, target_id):
     if not request.guard.can_like(model):
         raise PermissionDenied()
 
-    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": True}
+    if not request.guard.is_editable(model):
+        raise PermissionDenied()
+
+    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": True, "is_editable": True}
     for key in ['show_text', 'show_count']:
         if key in request.GET:
             ctx[key] = param_as_bool(request.GET[key])
@@ -598,9 +628,12 @@ def unlike(request, target_type, target_id):
     model_cls = apps.get_model('initproc', target_type)
     model = get_object_or_404(model_cls, pk=target_id)
 
+    if not request.guard.is_editable(model):
+        raise PermissionDenied()
+
     model.likes.filter(user_id=request.user.id).delete()
 
-    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": False}
+    ctx = {"target": model, "with_link": True, "show_text": False, "show_count": True, "has_liked": False, "is_editable": True}
     for key in ['show_text', 'show_count']:
         if key in request.GET:
             ctx[key] = param_as_bool(request.GET[key])
@@ -680,3 +713,43 @@ def compare(request, initiative, version_id):
 def reset_vote(request, init):
     Vote.objects.filter(initiative=init, user_id=request.user).delete()
     return get_voting_fragments(None, init, request)
+
+@login_required
+def new_policychange(request):
+    form = PolicyChangeForm()
+    if request.method == 'POST':
+        form = PolicyChangeForm(request.POST)
+        if form.is_valid():
+            pc = form.save(commit=False)
+            with reversion.create_revision():
+                pc.state = STATES.PREPARE
+                pc.einordnung = VOTY_TYPES.PolicyChange
+                pc.save()
+
+                # Store some meta-information.
+                reversion.set_user(request.user)
+                if request.POST.get('commit_message', None):
+                    reversion.set_comment(request.POST.get('commit_message'))
+
+                # whole bv is supporter of policychange
+                for initor in get_user_model().objects.filter(is_active=True): #TODO isBv()
+                    Supporter(initiative=pc, user=initor, initiator=True, ack=True, public=True).save()
+
+            return redirect('/{}/{}-{}'.format(pc.einordnung, pc.id, pc.slug))
+        else:
+            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+
+    return render(request, 'initproc/new_policychange.html', context=dict(form=form))
+
+@login_required
+@can_access_initiative([STATES.PREPARE], 'can_edit')
+def start_discussion_phase(request, init):
+    if init.ready_for_next_stage:
+        init.state = STATES.DISCUSSION
+        init.save()
+        # TODO fix notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION)
+        return redirect('/{}/{}'.format(init.einordnung, init.id))
+    else:
+        messages.warning(request, "Die Bedingungen für die Einreichung sind nicht erfüllt.")
+
+    return redirect('/{}/{}'.format(init.einordnung, init.id))

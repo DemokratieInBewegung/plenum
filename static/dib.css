@@ -1256,6 +1256,7 @@ Argument base design
 
 .argument-meta .stats > span {
   padding-right: .25rem;
+  padding-left: .25rem
 }
 
 /*

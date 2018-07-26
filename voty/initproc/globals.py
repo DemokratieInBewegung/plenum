@@ -45,9 +45,14 @@ PUBLIC_STATES = [STATES.SEEKING_SUPPORT,
                  STATES.ACCEPTED,
                  STATES.REJECTED]
 
-STAFF_ONLY_STATES = [STATES.INCOMING,
-                     STATES.MODERATION,
-                     STATES.HIDDEN]
+TEAM_ONLY_STATES = [STATES.INCOMING,
+                    STATES.MODERATION,
+                    STATES.HIDDEN]
+
+class VOTY_TYPES:
+    Einzelinitiative = 'initiative'
+    PolicyChange = 'ao-aenderung'
+    BallotVote = 'urabstimmung'
 
 class VOTED:
     """
@@ -64,8 +69,21 @@ COMPARING_FIELDS = [
     "einordnung", "ebene", "bereich",
 ]
 
+SUBJECT_CATEGORIES = [
+    'Globale Politik & internationale Zusammenarbeit',
+    'Bildung, Forschung & Kultur',
+    'Innenpolitik',
+    'Netz- & Medienpolitik',
+    'Geschlechtergerechtigkeit',
+    'Vielfalt & Integration',
+    'Demokratie & Transparenz',
+    'Gesundheit, Ernährung & Verbraucher*innenschutz',
+    'Umwelt, Mobilität, Infrastruktur & Strukturentwicklung',
+    'Soziale Gerechtigkeit, Wirtschaft, Arbeit & Finanzen',
+    'Anderes'
+]
 
-ABSTENTION_START = date(2017, 11, 1) # Everything published after this has abstentions
+ABSTENTION_START = date(2017, 12, 1) # Everything published after this has abstentions
 SPEED_PHASE_END = date(2017, 8, 21) # Everything published before this has speed phase
 INITIATORS_COUNT = 3
 

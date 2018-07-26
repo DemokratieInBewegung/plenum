@@ -10,7 +10,7 @@
 {% block custom_sm_title %}
     <meta property="og:title" content="{{initiative.title}}">
     <meta property="og:description" content="{{initiative.subtitle}}">
-    <meta property="og:url" content="{% fullurl 'initiative_item' init_id=initiative.id slug=initiative.slug %}">
+    <meta property="og:url" content="{% fullurl 'initiative_item' initype=initiative.einordnung init_id=initiative.id slug=initiative.slug %}">
 {% endblock %}
 
 {% block custom_header %}
@@ -115,7 +115,7 @@
                     <p>
                     Diese Initiative <strong class="badge-prepare">wird gerade geprüft</strong> und {% if initiative.state == 'i' %} wird dann veröffentlicht {% else %} geht dann in <strong  class="badge-prepare">die Abstimmung</strong>{% endif %}.
                     </p>
-                    {% if request.user.is_staff %}
+                    {% if perms.initproc.add_moderation %}
                         {% if request.guard.can_moderate %}
                             {% include 'fragments/moderation/index.html' %}
                         {% else %}
@@ -405,29 +405,7 @@
         {% endif %}
         <div class="row" style="padding-top: 1rem">
             <div class="col-12">
-                 <p><strong>{{initiative.votes.count}}</strong>{% if initiative.votes.count == 1 %} Person hat{% else %} Personen haben{% endif %} an dieser Abstimmung teilgenommen.
-                </p> 
-                <div class="progress participation">
-                    <div class="progress-bar bg-voted" role="progressbar" style="width: {% widthratio initiative.votes.count user_count 100 %}%;" aria-valuenow="{{initiative.votes.count}}" aria-valuemin="0" aria-valuemax="{{user_count}}">
-                    </div>
-                </div>
-                <p>Das waren <strong>{% widthratio initiative.votes.count user_count 100 %}</strong> Prozent aller <strong>{{user_count}}</strong> Abstimmungsberechtigten.
-                </p>
-                {% if has_voted %}
-                <p>Du hast mit 
-                </p>
-                <div class="your-vote">
-                {% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>
-                {% elif vote.against %}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>
-                {% else %}<span class="abstained text-center"><i class="material-icons">panorama_fish_eye</i> <br /><strong>Enthaltung</strong></span>{% endif %}
-                </div>
-                <p>abgestimmt.
-                </p>
-                {% else %}
-                {% if user.is_authenticated %}
-                <p>Du hast an dieser Abstimmung nicht teilgenommen.</p>
-                {% endif %}
-                {% endif %}
+			{% include "fragments/participation.html" with closed=1 %}
             </div>
         </div>
     </div>

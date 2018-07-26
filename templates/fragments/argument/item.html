@@ -26,13 +26,13 @@
         <a data-ajax="true" href="/initiative/{{argument.initiative.id}}/{{argument.type}}/{{argument.id}}?fragment={{argument.unique_id}}&full={% if full %}0{% else %}1{% endif %}">
             <div class="row argument-meta no-gutters">
                 <div class="col-auto">
-					{% if full %}Weniger{% else %}Mehr{% endif %} anzeigen
-				</div>
+					          {% if full %}Weniger{% else %}Mehr{% endif %} anzeigen
+				        </div>
                 <div class="col-auto ml-auto stats">
                     {% include 'fragments/like.html' with author=argument.user has_liked=argument.has_liked target=argument 	show_text=0 show_count=1 with_link=0 %}
-                    <i class="material-icons">chat_bubble_outline</i> {{argument.comments.count}}
-				</div>
-			</div>
+                    <i class="material-icons"><span id="{{argument.unique_id}}-chat-icon" class="comment-icon">chat_bubble{% if not argument.has_commented %}_outline{% endif %}</span></i><span id="{{argument.unique_id}}-comment-count">{{argument.comments.count}}</span>
+				        </div>
+  			    </div>
          </a>
          {% if full %}
             <div class="row no-gutters argument-head">
@@ -55,7 +55,7 @@
             	<h6 class="text-muted classification">Kommentare</h6>
 			{% endif %}
 			<div id="{{argument.unique_id}}-comment-list" class="argument-comment-list">
-                {% for comment in comments reversed %}
+                {% for comment in comments %}
                 	{% include 'fragments/comment/item.html' %}
 			    {% endfor %}
 			</div>

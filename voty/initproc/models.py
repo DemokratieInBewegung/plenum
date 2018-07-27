@@ -390,15 +390,21 @@ class Initiative(models.Model):
         notify(recipients, notice_type, context, **kwargs)
 
 
-class Vote(models.Model):
+class AbstractVote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User)
-    initiative = models.ForeignKey(Initiative, related_name="votes")
+    # related name is "votes" for Votes and "teamvotes" for TeamVotes
+    initiative = models.ForeignKey(Initiative, related_name="%(class)ss")
     value = models.IntegerField(choices=[
         (VOTED.YES, "Ja"),
         (VOTED.NO, "Nein"),
         (VOTED.ABSTAIN, "Enthaltung")])
+
+    class Meta:
+        abstract = True
+
+class Vote(AbstractVote):
+    user = models.ForeignKey(User)
     reason = models.CharField(max_length=100, blank=True)
 
     class Meta:
@@ -552,3 +558,31 @@ class Moderation(Response):
             ('n', 'no!')
         ])
     text = models.CharField(max_length=500, blank=True)
+
+class Team(models.Model):
+    name = models.CharField(max_length=200)
+    short_description = models.CharField(max_length=1000)
+    long_description = models.CharField(max_length=5000)
+    links = models.TextField(blank=True)
+    members = models.ManyToManyField(User, through="TeamMembership")
+
+class TeamMembership(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User)
+    team = models.ForeignKey(Team)
+    class Meta:
+        unique_together = (("user", "team"),)
+
+class Delegation(models.Model):
+    user = models.ForeignKey(User, related_name="delegations")
+    team = models.ForeignKey(Team, related_name="delegations")
+    revoked_at = models.DateTimeField()
+    was_used = models.BooleanField(default=False)
+#   TODO tag(s) and level(s)
+
+class TeamVote(AbstractVote):
+    team = models.ForeignKey(Team, related_name="votes")
+    rationale = models.TextField()
+
+    class Meta:
+        unique_together = (("team", "initiative"),)

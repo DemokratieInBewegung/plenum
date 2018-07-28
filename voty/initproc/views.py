@@ -732,7 +732,7 @@ def new_policychange(request):
                     reversion.set_comment(request.POST.get('commit_message'))
 
                 # whole bv is supporter of policychange
-                for initor in get_user_model().objects.filter(is_active=True): #TODO isBv()
+                for initor in get_user_model().objects.filter(groups__name='Bundesvorstand', is_active=True):
                     Supporter(initiative=pc, user=initor, initiator=True, ack=True, public=True).save()
 
             return redirect('/{}/{}-{}'.format(pc.einordnung, pc.id, pc.slug))

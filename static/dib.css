@@ -166,6 +166,10 @@ nav .dropdown-menu .dropdown-item {
   padding-right: 0.25rem;
 }
 
+.material-icons.group-add {
+  padding-right: 1.8rem;
+}
+
 .material-icons.notifications {
   padding-right: 0.0625rem;
 }
@@ -206,19 +210,22 @@ p.card-text {
   line-height: 1.75rem;
 }
 
-.initiative-text {
+.initiative-text, .team-long-description {
   padding-top: .5rem;
 }
 
 .initiative-text li,
-.initiative-text p {
+.initiative-text p,
+.team-long-description li,
+.team-long-description p {
   font-family: 'Merriweather', serif;
   font-weight: 300;
   font-size: 1.125rem;
   line-height: 2.25rem;
 }
 
-.initiative-text > .col, .initiative-subtitle > .col, .initiative-title > .col {
+.initiative-text > .col, .initiative-subtitle > .col, .initiative-title > .col,
+.team-long-description > .col, .team-short-description > .col, .team-name > .col {
   overflow: hidden;
 }
 
@@ -360,7 +367,7 @@ img.avatar {
   border-radius: 50%;
 }
 
-.initiative-single {
+.initiative-single, .team-single {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
   background-color: rgba(255, 255, 255, 1);
@@ -413,7 +420,8 @@ img.avatar {
   margin-bottom: 1rem;
 }
 
-.initiative-subtitle p {
+.initiative-subtitle p,
+.team-short-description p {
   font-size: 1.25rem;
   line-height: 2rem;
   margin-bottom: 0;
@@ -474,21 +482,21 @@ img.avatar {
   margin-right: .25rem;
 }
 
-.initiators {
+.initiators, .team-members {
   margin-top: 1rem;
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
   background-color: rgba(0, 0, 0, 0.03);
 }
 
-.initiator {
+.initiator, .team-member {
   padding-top: 0.75rem;
   padding-bottom: 0.5rem;
   padding-right: 1rem;
   padding-left: 1rem;
 }
 
-.initiator div.name {
+.initiator div.name,.team-member div.name {
   padding-top: 0.75rem;
   width: 8rem;
   font-size: 0.875rem;
@@ -603,13 +611,13 @@ strong {
 }
 
 /*@media (min-width: 768px) and (max-width: 1199px) {
-  .initiative-single > .container {
+  .initiative-single > .container, .team-single > .container {
     width: 100%;
   }
 }*/
 
 /*@media (min-width: 576px) and (max-width: 1199px) {
-  .initiative-single > .container {
+  .initiative-single > .container, .team-single > .container {
     width: 100%;
   }
 }*/
@@ -1479,7 +1487,7 @@ orange: #D2892B;
   .initiative-state {
     padding-top: 1.5rem;
   }
-  .initiators {
+  .initiators, .team-members {
     margin-top: 1.5rem;
   }
   .initiative-text p,

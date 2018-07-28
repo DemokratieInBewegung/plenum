@@ -561,15 +561,19 @@ class Moderation(Response):
 
 class Team(models.Model):
     name = models.CharField(max_length=200)
-    short_description = models.CharField(max_length=1000)
-    long_description = models.CharField(max_length=5000)
+    short_description = models.TextField(max_length=1000)
+    long_description = models.TextField(max_length=5000)
     links = models.TextField(blank=True)
     members = models.ManyToManyField(User, through="TeamMembership")
+
+    @cached_property
+    def slug(self):
+        return slugify(self.name)
 
 class TeamMembership(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
-    team = models.ForeignKey(Team)
+    team = models.ForeignKey(Team,related_name="memberships")
     class Meta:
         unique_together = (("user", "team"),)
 

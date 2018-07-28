@@ -7,6 +7,7 @@ from dal import autocomplete
 from uuid import uuid4
 
 from .models import Pro, Contra, Like, Comment, Proposal, Moderation, Initiative
+from voty.initproc.models import Team
 
 
 def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_ajax=True,
@@ -235,4 +236,25 @@ class PolicyChangeForm(forms.ModelForm):
             "title" : "Die Überschrift sollte die AO-Änderung kurz zusammenfassen.",
             "subtitle": "Ein bis zwei Sätze zur AO-Änderung.",
             "summary" : "Kompletter Text der AO-Änderung, mit Referenzen/Links auf bestehende AO-Artikel.",
+        }
+
+# begin teams
+
+class TeamForm(forms.ModelForm):
+
+    class Meta:
+        model = Team
+        fields = ['name', 'short_description', 'long_description', 'links', ]
+
+        labels = {
+            "name" : "Name des Teams",
+            "short_description": "Kurzbeschreibung",
+            "long_description" : "Ausführliche Beschreibung",
+            "links": "Soziale Medien des Teams",
+        }
+        help_texts = {
+            "name" : "Mit diesem Namen wird das Team bezeichnet, wenn es z.B. in einer Liste erscheint.",
+            "short_description": "Dieser Text sollte einen ersten Eindruck von Themen und Positionen des Teams geben.",
+            "long_description" : "Hier könnt Ihr ausführlich beschreiben, wofür Ihr steht, wie Ihr arbeitet, usw.",
+            "links": "Hier könnt Ihr Links zu Euren Seiten bei Facebook, Twitter, Instagram, usw. angeben.",
         }

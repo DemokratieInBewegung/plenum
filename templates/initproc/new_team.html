@@ -1,0 +1,40 @@
+{% extends "_base.html" %}
+
+{% load static %}
+{% load bootstrap %}
+
+{% block content %}
+<div class="container new-initiative">
+	<div class="card">
+		{% if False %}
+		<div class="card-header">
+			<h1>Team bearbeiten</h1>
+			<p>Hier vielleicht noch <a href="https://d15zn84cat5tp0.cloudfront.net/wp-content/uploads/2013/08/uglimuahmrmw1ihdc1b1.jpg">einen Post verlinken</a>, der das Team-Konzept erklärt?</p>
+		</div>
+		{% else %}
+		<div class="card-header">
+		  <h1>Neues Team gründen</h1>
+		  <p>Hier kannst Du ein Team gründen, dem andere dann beitreten können und das Stimmen delegiert bekommen kann. <span style="color:red;">Hier vielleicht noch <a href="https://d15zn84cat5tp0.cloudfront.net/wp-content/uploads/2013/08/uglimuahmrmw1ihdc1b1.jpg">eine Erklärung des Konzepts</a> verlinken?</span></p>
+		</div>
+		{% endif %}
+		<form method="POST">
+			 {% csrf_token %}
+			<div class="card-body">
+				<div class="container">
+				{{form|bootstrap}}
+				</div>
+			</div>
+			<div class="card-footer">
+				<button type="submit" class="btn btn-primary">Speichern</button>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}
+
+
+{% block body-javascript %}
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+{{ form.media }}
+{% endblock %}

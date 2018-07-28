@@ -14,12 +14,14 @@
   	<div class="card-footer">
   		<div class="container-fluid">
 			 <div class="row no-gutters">
-			 	<div class="col text-muted align-self-center">
-			 		Abstimmungen: 0 / 0
+				<div class="text-muted align-self-center">
+                    <span style="padding-right:1rem">Abstimmungen: 0 / 0</span>
+                    <span style="padding-right:1rem">Stimmen: 0</span>
+                    <span>Initiativen: 0</span>
 			 	</div>
 			 	<div class="col text-right avatar align-self-center">
-			 		{% for member in team.members.all %}
-			          {% include "fragments/avatar.html" with size=40 user=member %}
+                    {% for user in team.members.all %}
+                        {% include "fragments/avatar.html" with size=40 %}
 			        {% endfor %}
 			 	</div>
 			</div>

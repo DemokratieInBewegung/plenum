@@ -560,7 +560,7 @@ class Moderation(Response):
     text = models.CharField(max_length=500, blank=True)
 
 class Team(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=80)
     short_description = models.CharField(max_length=1000)
     long_description = models.CharField(max_length=5000)
     links = models.TextField(blank=True)

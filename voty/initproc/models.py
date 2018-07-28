@@ -560,6 +560,7 @@ class Moderation(Response):
     text = models.CharField(max_length=500, blank=True)
 
 class Team(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=80)
     short_description = models.TextField(max_length=1000)
     long_description = models.TextField(max_length=5000)

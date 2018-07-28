@@ -229,7 +229,7 @@ p.card-text {
   overflow: hidden;
 }
 
-.initiative-text .classification {
+.initiative-text .classification, .team-long-description .classification {
   margin-bottom: 0;
   padding-bottom: 1rem;
 }
@@ -1491,11 +1491,13 @@ orange: #D2892B;
     margin-top: 1.5rem;
   }
   .initiative-text p,
-  .initiative-text li {
+  .initiative-text li,
+  .team-long-description p,
+  .team-long-description li {
     font-size: 1rem;
     line-height: 1.75rem;
   }
-  .initiative-subtitle p, .initiative-state p, a.skip-meta {
+  .initiative-subtitle p, .team-short-description p, .initiative-state p, a.skip-meta {
     font-size: 1.125rem;
     line-height: 1.875rem;
   }

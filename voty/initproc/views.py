@@ -791,3 +791,7 @@ def team_item(request, team_id, slug=None):
         ctx.update({'is_member': team.memberships.filter(user=user_id).exists()})
 
     return render(request, 'initproc/team.html', context=ctx)
+
+@login_required
+def my_teams(request):
+    return render(request, 'initproc/my_teams.html', dict(memberships=request.user.memberships.all))

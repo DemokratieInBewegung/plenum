@@ -170,6 +170,10 @@ nav .dropdown-menu .dropdown-item {
   padding-right: 1.8rem;
 }
 
+.material-icons.people {
+  padding-right: 1.8rem;
+}
+
 .material-icons.notifications {
   padding-right: 0.0625rem;
 }
@@ -307,6 +311,10 @@ em {
 
 .init-index .card {
   margin: 1rem 0 3rem 0;
+}
+
+.no-team {
+  margin: 1rem;
 }
 
 #filters {

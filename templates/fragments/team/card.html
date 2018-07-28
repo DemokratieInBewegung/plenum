@@ -1,0 +1,28 @@
+{% load fullurl %}
+<div id="team-card-{{team.id}}" class="card">
+	<div class="card-block">
+    	<h4 class="card-title team-name">
+    		<a href="{% fullurl 'team_item' team_id=team.id slug=team.slug %}">
+				{{team.name}}
+			</a>
+		</h4>
+    	<p class="card-text">
+    		{{team.short_description}}
+    	</p>
+    	<a href="{% fullurl 'team_item' team_id=team.id slug=team.slug %}" class="go-to-team"><i class="material-icons chevron-right">chevron_right</i>zum Team</a>
+  	</div>
+  	<div class="card-footer">
+  		<div class="container-fluid">
+			 <div class="row no-gutters">
+			 	<div class="col text-muted align-self-center">
+			 		Abstimmungen: 0 / 0
+			 	</div>
+			 	<div class="col text-right avatar align-self-center">
+			 		{% for member in team.members.all %}
+			          {% include "fragments/avatar.html" with size=40 user=member %}
+			        {% endfor %}
+			 	</div>
+			</div>
+		</div>
+  	</div>
+</div>

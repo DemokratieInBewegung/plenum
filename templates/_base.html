@@ -68,6 +68,9 @@
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
+                         <a class="nav-link" href="{% url 'my_teams' %}"><i class="material-icons people">people</i>Meine Teams</a>
+                    </li>
+                    <li class="nav-item">
                          <a class="nav-link" href="{% url 'new_team' %}"><i class="material-icons group-add">group_add</i>Neues Team</a>
                     </li>
                     <li class="nav-item">

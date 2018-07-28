@@ -33,5 +33,6 @@ urlpatterns = [
 
     # teams
     url('^team/new$', views.new_team, name="new_team"),
+    url('^team/my$', views.my_teams, name="my_teams"),
     url(r'^team/(?P<team_id>\d+)(?:-(?P<slug>.*))?$', views.team_item, name="team_item"),
 ]

@@ -1,0 +1,49 @@
+{% extends "_base.html" %}
+
+{% block custom_header %}
+<div class="container-fluid init-index-header">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="/" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Übersicht</a>
+            </div>
+        </div>
+        <div class="row title">
+            <div class="col-12 text-center" style="padding: 3rem 0;">
+                <h1>Meine Team-Mitgliedschaften</h1>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="init-list" class="container init-index">
+    {% for membership in memberships %}
+	    {% include "fragments/team/card.html" with team=membership.team %}
+    {% empty %}
+    <div class="card">
+        <div class="container-fluid">
+             <div class="row no-team">
+                <div class="col align-self-center">
+                    Du bist noch nicht Mitglied in einem Team.
+                </div>
+                <div class="btn btn-success">
+                    <a href="{% url 'new_team' %}">Team gründen</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block body-javascript %}
+{{ block.super }}
+<script>
+// Initialize Tooltips
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+{% endblock %}

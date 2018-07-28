@@ -573,7 +573,7 @@ class Team(models.Model):
 
 class TeamMembership(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User,related_name="memberships")
     team = models.ForeignKey(Team,related_name="memberships")
     class Meta:
         unique_together = (("user", "team"),)

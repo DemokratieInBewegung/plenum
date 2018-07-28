@@ -68,6 +68,9 @@
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
+                         <a class="nav-link" href="{% url 'new_team' %}"><i class="material-icons group-add">group_add</i>Neues Team</a>
+                    </li>
+                    <li class="nav-item">
                          <a class="nav-link" href="{% url 'new_initiative' %}"><i class="material-icons add-circle-outline">add_circle_outline</i>Neue Initiative</a>
                     </li>
                     <li class="nav-item"> <!-- TODO: only bv can start policychanges -->

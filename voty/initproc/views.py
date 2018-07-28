@@ -30,9 +30,11 @@ import json
 
 from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS, VOTY_TYPES
 from .guard import can_access_initiative
-from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
+from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like,
+                     Team, TeamMembership)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
-                    NewProposalForm, NewModerationForm, InviteUsersForm, PolicyChangeForm)
+                    NewProposalForm, NewModerationForm, InviteUsersForm, PolicyChangeForm,
+                    TeamForm)
 from .serializers import SimpleInitiativeSerializer
 from django.contrib.auth.models import Permission
 
@@ -753,3 +755,39 @@ def start_discussion_phase(request, init):
         messages.warning(request, "Die Bedingungen für die Einreichung sind nicht erfüllt.")
 
     return redirect('/{}/{}'.format(init.einordnung, init.id))
+
+# begin teams
+
+@login_required
+def new_team(request):
+    form = TeamForm()
+    if request.method == 'POST':
+        form = TeamForm(request.POST)
+        if form.is_valid():
+            team = form.save(commit=False)
+            with reversion.create_revision():
+                team.save()
+
+                # Store some meta-information.
+                reversion.set_user(request.user)
+                if request.POST.get('commit_message', None):
+                    reversion.set_comment(request.POST.get('commit_message'))
+
+            TeamMembership(team=team, user=request.user).save()
+            return redirect('/team/{}-{}'.format(team.id, team.slug))
+        else:
+            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+
+    return render(request, 'initproc/new_team.html', context=dict(form=form))
+
+def team_item(request, team_id, slug=None):
+    team = get_object_or_404(Team, pk=team_id)
+
+    ctx = dict(team=team)
+
+    if request.user.is_authenticated:
+        user_id = request.user.id
+
+        ctx.update({'is_member': team.memberships.filter(user=user_id).exists()})
+
+    return render(request, 'initproc/team.html', context=ctx)

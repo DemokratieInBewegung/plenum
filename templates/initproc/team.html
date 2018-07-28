@@ -1,0 +1,91 @@
+{% extends "_base.html" %}
+{% load mathfilters %}
+{% load markdown %}
+{% load fullurl %}
+
+{% block head_title %}
+Team {{team.name}} – im Plenum der Beweger*innen von DEMOKRATIE IN BEWEGUNG
+{% endblock %}
+
+{% block custom_sm_title %}
+    <meta property="og:title" content="{{team.name}}">
+    <meta property="og:description" content="{{team.short_description}}">
+    <meta property="og:url" content="{% fullurl 'team_item' team_id=team.id slug=team.slug %}">
+{% endblock %}
+
+{% block custom_header %}
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="/" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Übersicht</a>
+            </div>
+        </div>
+        <div class="row team-name">
+            <div class="col-12">
+                <h1 class="display-4">Team {{team.name}}</h1>
+            </div>
+        </div>
+        <div class="row team-short-description">
+            <div class="col-12">
+                <p>{{team.short_description}}</p>
+            </div>
+        </div>
+       <div class="row skip-meta">
+            <div class="col-12">
+                <a href="#long-description" class="skip-meta"><i class="material-icons expand-more">expand_more</i>Mehr erfahren</a>
+            </div>
+        </div>
+     </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+<div class="container-fluid team-members">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Team-Mitglieder</h6>
+            </div>
+        </div>
+        <div class="row no-gutters avatar">
+            <div class="d-flex flex-wrap">
+                {% for member in team.members.all %}
+                <div class="text-center team-member">
+                    {% include "fragments/avatar.html" with user=member %}
+                    <div class="name">
+                        {{ member.get_full_name|default:member.username }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="long-description" class="container-fluid team-single">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h6 class="text-muted classification">Über das Team</h6>
+            </div>
+        </div>
+        <div class="row team-long-description">
+            <div class="col-12">
+                <p>{{team.long_description}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block body-javascript %} {{ block.super }}
+<script type="text/javascript">
+// Initialize Tooltips
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+{% endblock %}

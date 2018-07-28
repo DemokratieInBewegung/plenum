@@ -29,6 +29,9 @@ urlpatterns = [
     url('^like/(?P<target_type>.*)/(?P<target_id>\d+)$', views.like),
     url('^unlike/(?P<target_type>.*)/(?P<target_id>\d+)$', views.unlike),
     url('^ao-aenderung/new$', views.new_policychange, name="new_policychange"),
-    url(r'^(?P<initype>ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/start_discussion_phase$', views.start_discussion_phase)
+    url(r'^(?P<initype>ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/start_discussion_phase$', views.start_discussion_phase),
 
+    # teams
+    url('^team/new$', views.new_team, name="new_team"),
+    url(r'^team/(?P<team_id>\d+)(?:-(?P<slug>.*))?$', views.team_item, name="team_item"),
 ]

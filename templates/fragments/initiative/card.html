@@ -1,89 +1,180 @@
 {% load i18n %}
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <a href="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zurÃ¼ck zur {{initiative.get_einordnung_display}}</a>
-        </div>
-    </div>
-  </div>
+{% load guard %}
+{% load mathfilters %}
+{% load fullurl %}
+<div id="init-card-{{initiative.id}}" class="card {% guard is_supporting initiative %}{% if is_supporting %}supported{% endif %} {% guard my_vote initiative %}{% if my_vote %}voted{% endif %}">
+	<div class="card-header">
+		<div class="container-fluid">
+			 <div class="row no-gutters">
+			 	<div class="col align-self-center">
+			 		<div class="d-flex flex-wrap">
+				 		<div class="flex-item">
+							{% ifequal initiative.state 'p' %}
+							<span class="badge badge-prepare">
+								{% trans "In Preparation" %}
+							</span>
+							{% endifequal %}
 
-	<div class="row">
-        <h2>Ãnderungshistorie {{initiative.get_einordnung_display}} #{{initiative.id}}</h2>
+							{% ifequal initiative.state 'i' %}
+							<span class="badge badge-arrivals">
+
+								{% if perms.initproc.add_moderation %}
+									{% guard should_moderate_initiative initiative %}
+									{% if should_moderate_initiative %}
+									💥💥 {% trans "Please validate" %} 💥💥
+									{% else %}
+									{% trans "Validation pending" %}
+									{% endif %}
+								{% else %}
+								{% trans "Validation pending" %}
+								{% endif %}
+							</span>
+							{% endifequal %}
+
+							{% ifequal initiative.state 's' %}
+							<span class="badge badge-support">
+								{% trans "Needs Supporters" %} -
+								{% if initiative.absolute_supporters < initiative.quorum %}
+								  {{initiative.quorum|sub:initiative.absolute_supporters}} {% trans "missing" %} {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}{% trans "supporter" %}{% else %}{% trans "Supporters" %}{% endif %}
+							    {% else %}
+								  {% trans "Reached Quorum" %}
+							    {% endif %}
+							</span>
+							{% endifequal %}
+
+							{% ifequal initiative.state 'd' %}
+							<span class="badge badge-discussion">
+								{% trans "In Discussion" %}
+							</span>
+							{% endifequal %}
+
+							{% ifequal initiative.state 'e' %}
+							<span class="badge badge-edits">
+								{% trans "Final Review" %}
+							</span>
+							{% endifequal %}
+
+							{% ifequal initiative.state 'm' %}
+
+							<span class="badge badge-arrivals">
+
+								{% if perms.initproc.add_moderation %}
+									{% guard should_moderate_initiative initiative %}
+									{% if should_moderate_initiative %}
+									💥💥 {% trans "Final Review required" %} 💥💥
+									{% else %}
+									{% trans "Final Review pending" %}
+									{% endif %}
+								{% else %}
+								{% trans "Final Review pending" %}
+								{% endif %}
+					      	</span>
+							{% endifequal %}
+
+							{% ifequal initiative.state 'v' %}
+							<span class="badge badge-vote">
+								{% trans "Up for Vote" %}
+							</span>
+							{% endifequal %}
+
+							{% ifequal initiative.state 'a' %}
+							<span class="badge badge-accepted">
+								{% trans "Accepted" %}
+							</span>
+							{% endifequal %}
+
+							{% ifequal initiative.state 'r' %}
+							<span class="badge badge-rejected">
+								{% trans "Rejected" %}
+							</span>
+							{% endifequal %}
+						</div>
+						{% if initiative.state != 'i' and initiative.state != 'a' and initiative.state != 'r' and initiative.state != 'p' and initiative.state != 'm' %}
+						<div class="flex-item mr-auto">
+							<span class="text-muted align-middle">
+								{% trans "Time remaining:" %} {{initiative.end_of_this_phase | timeuntil}}
+							</span>
+						</div>
+						{% else %}
+						<!-- Dirty Positioning Fix â only temporary, find better solution or resolve with new design -->
+						<div class="flex-item mr-auto">
+						</div>
+						{% endif %}
+
+						{% if user.is_authenticated %}
+
+						<div class="flex-item">
+							{% if initiative.state != 'p' and initiative.state != 'i' %}
+							{% guard is_supporting initiative %}
+							{% if is_supporting %}
+							<div class="participation-indicator">
+								<i class="material-icons check-circle fg-support" data-toggle="tooltip" title="{% if initiative.state == 's' %}{% trans 'You support this Initiative' %}{% else %}{% trans 'You supported this Initiative' %}{% endif %}">check_circle</i>
+							</div>
+							{% else %}
+							<div class="participation-indicator">
+								<i class="material-icons check-circle fg-inactive" data-toggle="tooltip" title="{% if initiative.state == 's' %}{% trans 'You are not supporting this Initiative yet' %}{% else %}{% trans 'You did not support this Initiative' %}{% endif %}">check_circle</i>
+							</div>
+							{% endif %}
+							{% endif %}
+
+							{% if initiative.state == 'v' or initiative.state == 'a' or initiative.state == 'r' %}
+							{% guard my_vote initiative %}
+							{% if my_vote %}
+  								{% if my_vote.in_favor %}
+								<div class="participation-indicator">
+									<i class="material-icons thumb-up" data-toggle="tooltip" title="{% if initiative.state == 'v' %}{% trans 'You are voting for this Initiative' %}{% else %}{% trans 'You voted for this Initiative' %}{% endif %}">thumb_up</i>
+								</div>
+								{% elif my_vote.against %}
+								<div class="participation-indicator">
+									<i class="material-icons thumb-down" data-toggle="tooltip" title="{% if initiative.state == 'v' %}{% trans 'You are voting against this Initiative' %}{% else %}{% trans 'You voted against this Initiative' %}{% endif %}">thumb_down</i>
+								</div>
+								{% elif my_vote.abstained %}
+								<div class="participation-indicator">
+									<i class="material-icons abstain" data-toggle="tooltip" title="{% if initiative.state == 'v' %}{% trans 'You abstain from this Initiative' %}{% else %}{% trans 'You abstained from this Initiative' %}{% endif %}">panorama_fish_eye</i>
+								</div>
+								{% endif %}
+							{% else %}
+							<div class="participation-indicator">
+								<i class="material-icons thumbs-up-down fg-inactive" data-toggle="tooltip" title="{% if initiative.state == 'v' %}{% trans 'You have not yet' %} {% else %}{% trans 'You have not' %} {% endif %}{% trans 'voted for this Initiative' %}">thumbs_up_down</i>
+							</div>
+							{% endif %}
+							{% endif %}
+						</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-
-	<div class="row">
-		<div class="col-md-4 text-right">
-      <h6 class="text-muted classification">{% trans "Compare version" %}</h6>
-        <div class="dropdown">
-        	<a id="versionSelectDropdown" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-has-popup="true" aria-expanded="false"><strong>{{ selected.revision.date_created }}</strong> {% if selected.revision.user %} - {% include "fragments/avatar.html" with size=25 user=selected.revision.user %}{% endif %}</a>
-        	<br />{% if selected.revision.comment %}<em>{{selected.revision.comment}}</em>{% endif %}
-
-	        	<div class="dropdown-menu dropdown-menu-right " aria-labelledby="versionSelectDropdown">
-	        		{% for v in initiative.versions %}
-	        			{% if v == latest %}
-	        			{% else %}
-	        				<a href="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/compare/{{v.id}}"
-	        					class="dropdown-item"
-	        					data-ajax="true">
-	        					{% if v == selected %}<strong>{%endif%}
-
-        					{{v.revision.date_created}} {% if v.revision.user %} - {% include "fragments/avatar.html" with size=25 user=v.revision.user %}{% endif %}
-
-        					{% if v == selected %}</strong>{%endif%}
-        				</a>
-        			{% endif %}
-        		{% endfor %}
-          </div>
-        </div> 
-	    </div>
-		<div class="col-md-8">
-      <h6 class="text-muted classification">{% trans "with current version" %}</h6>
-      <div>
-      	<strong>{{latest.revision.date_created}}</strong> {% if latest.revision.user %} - {% include "fragments/avatar.html" with size=25 user=latest.revision.user %}{% endif %}
-      	<br />{% if latest.revision.comment %}<em>{{latest.revision.comment}}</em>{% endif %}
-      </div>
-	  </div>
-  </div>
-
-  <hr/>
-
-  <div class="container-fluid">
-      <div class="container">
-          <div class="row initiative-title">
-              <div class="col-12">
-                  <h1 class="display-4">{{compare.title}}</h1>
-              </div>
-          </div>
-          <div class="row initiative-subtitle">
-              <div class="col-12">
-                  <p>{{compare.subtitle}}</p>
-              </div>
-          </div>
-      </div>
-  </div>
-
-  {% include "initproc/blocks/meta.html" with initiative=compare %}
-
-
-  <div class="container">
-    <div class="row initiative-text">
-      <div class="col-12">
-      	<h3>{% trans "Summary" %}</h3>
-          {{compare.summary}}
-          <h2>{% trans "Situation Assessment" %}</h2>
-          {{compare.problem}}
-          <h2>{% trans "Proposal" %}</h2>
-          {{compare.forderung}}
-          <h2>{% trans "Cost Estimation" %}</h2>
-          {{compare.kosten}}
-          <h2>{% trans "Financing Proposal" %}</h2>
-          {{compare.fin_vorschlag}}
-          <h2>{% trans "Operation Workflow" %}</h2>
-          {{compare.arbeitsweise}}
-          <h2>{% trans "Initiator Argument" %}</h2>
-          <blockquote class="blockquote">
-              {{compare.init_argument}}
-          </blockquote>
-      </div>
-  </div>
+	<div class="card-block">
+    	<h4 class="card-title init-title">
+    		<a href="{% fullurl 'initiative_item' initype=initiative.einordnung init_id=initiative.id slug=initiative.slug %}">
+				{{initiative.title}}
+			</a>
+		</h4>
+    	<p class="card-text">
+    		{{initiative.subtitle}}
+    	</p>
+    	<a href="{% fullurl 'initiative_item' initype=initiative.einordnung init_id=initiative.id slug=initiative.slug %}" class="go-to-intiative"><i class="material-icons chevron-right">chevron_right</i>zur {{initiative.get_einordnung_display}}</a>
+  	</div>
+  	<div class="card-footer">
+  		<div class="container-fluid">
+			 <div class="row no-gutters">
+			 	{% if initiative.state != 'i' and initiative.state != 'p' %}
+			 	<div class="col text-muted align-self-center">
+			 		{% trans "Published on" %} {{initiative.went_public_at}}
+			 	</div>
+			 	{% else %}
+			 	<div class="col text-muted align-self-center">
+			 		{% trans "Not published yet" %}
+			 	</div>
+			 	{% endif %}
+			 	<div class="col text-right avatar align-self-center">
+			 		{% for ini in initiative.initiators %}
+			          {% include "fragments/avatar.html" with size=40 user=ini.user %}
+			        {% endfor %}
+			 	</div>
+			</div>
+		</div>
+  	</div>
 </div>

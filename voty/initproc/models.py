@@ -52,12 +52,12 @@ class Initiative(models.Model):
     arbeitsweise = models.TextField(blank=True)
     init_argument = models.TextField(blank=True)
 
-
     einordnung = models.CharField(max_length=50, choices=[
-        (VOTY_TYPES.Einzelinitiative,'Einzelinitiative'),
-        (VOTY_TYPES.PolicyChange,'AO-Ãnderung'),
-        (VOTY_TYPES.BallotVote,'Urabstimmung')])
-    ebene = models.CharField(max_length=50, choices=[('Bund', 'Bund')])
+      ("single_initiative", _("Single Initiative")),
+      ("policy_change", _("Policy Change")),
+      ("ballot_vote", _("Ballot Vote")
+    ])
+    ebene = models.CharField(max_length=50, choices=[("federal_level"), _("Federal Level"))])
     bereich = models.CharField(max_length=60, choices=[(item,item) for item in SUBJECT_CATEGORIES])
 
     went_public_at = models.DateField(blank=True, null=True)

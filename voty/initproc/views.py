@@ -460,7 +460,7 @@ def rm_support(request, initiative):
 @simple_form_verifier(NewArgumentForm, template="fragments/argument/new.html")
 def new_argument(request, form, initiative):
     data = form.cleaned_data
-    argCls = Pro if data['type'] == "👍" else Contr
+    argCls = Pro if data['type'] == "👍" else Contra
 
     arg = argCls(initiative=initiative,
                  user_id=request.user.id,
@@ -742,7 +742,7 @@ def new_policychange(request):
 
             return redirect('/{}/{}-{}'.format(pc.einordnung, pc.id, pc.slug))
         else:
-            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+            messages.warning(request, "Please correct the following problems:")
 
     return render(request, 'initproc/new_policychange.html', context=dict(form=form))
 
@@ -755,6 +755,6 @@ def start_discussion_phase(request, init):
         # TODO fix notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION)
         return redirect('/{}/{}'.format(init.einordnung, init.id))
     else:
-        messages.warning(request, "Die Bedingungen für die Einreichung sind nicht erfüllt.")
+        messages.warning(request, _("The requirements for a submission have not been met."))
 
     return redirect('/{}/{}'.format(init.einordnung, init.id))

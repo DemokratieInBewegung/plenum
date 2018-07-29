@@ -68,119 +68,115 @@
                     </ol>
                   </div>
 
-                  {% if initiative.state == 'p' %}
-                    <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being edited" %}</strong>.</p>
-                  {% elif initiative.state == 'e' %}
-                    <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being finalized for a Vote" %}</strong>.</p>
-                  {% elif initiative.state == 'i' or initiative.state == 'm' %}
-                    <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being reviewed" %}</strong> {% trans "and" %} {% if initiative.state == 'i' %} {% trans "will then be published" %} {% else %} {% trans "will then be posted " %}<strong class="badge-prepare">{% trans "for a Vote" %}</strong>{% endif %}.</p>
-                    {% if perms.initproc.add_moderation %}
-                      {% if request.guard.can_moderate %}
-                        {% include 'fragments/moderation/index.html' %}
-                      {% else %}
-                        <div class="alert alert-info">{{request.guard.reason}}</div>
-                      {% endif %}
+                {% if initiative.state == 'p' %}
+                  <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being edited" %}</strong>.</p>
+                {% elif initiative.state == 'e' %}
+                  <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being finalized for a Vote" %}</strong>.</p>
+                {% elif initiative.state == 'i' or initiative.state == 'm' %}
+                  <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being reviewed" %}</strong> {% trans "and" %} {% if initiative.state == 'i' %} {% trans "will then be published" %} {% else %} {% trans "will then be posted " %}<strong class="badge-prepare">{% trans "for a Vote" %}</strong>{% endif %}.</p>
+                  {% if perms.initproc.add_moderation %}
+                    {% if request.guard.can_moderate %}
+                      {% include 'fragments/moderation/index.html' %}
+                    {% else %}
+                      <div class="alert alert-info">{{request.guard.reason}}</div>
                     {% endif %}
                   {% endif %}
 
-                  <form action="/initiative/{{initiative.id}}/edit" style="display:inline"  method="GET">
+                {% endif %}
+                <form action="/initiative/{{initiative.id}}/edit" style="display:inline"  method="GET">
+                  {% csrf_token %}
+                  <button title="{% trans 'Edit' %}" class="btn btn-success edit" type="submit">
+                    <i class="material-icons edit">edit</i><span>{% trans "Edit" %}</span>
+                  </button>
+                </form>
+
+                {% if initiative.ready_for_next_stage %}
+                  <form action="/initiative/{{initiative.id}}/submit_to_committee" style="display:inline"  method="POST">
                     {% csrf_token %}
-                    <button title="{% trans 'Edit' %}" class="btn btn-success edit" type="submit">
-                      <i class="material-icons edit">edit</i><span>{% trans "Edit" %}</span>
-                    </button>
-                  </form>
-                  <!-- unreachable? -->
-                  {% if initiative.ready_for_next_stage %}
-                    <form action="/initiative/{{initiative.id}}/submit_to_committee" style="display:inline"  method="POST">
-                      {% csrf_token %}
-                      {% if initiative.state != 'e' %}
-                        <button title="{% trans 'Submit' %}" class="btn btn-success submit" type="submit">
-                          <i class="material-icons public">public</i><span>{% trans "Submit" %}</span>
-                        </button>
-                      {% else %}
-                        <button title="{% trans 'Submit for Vote' %}" class="btn bg-vote submit" type="submit">
-                          <i class="material-icons thumbs-up-down">thumbs_up_down</i><span>{% trans "Submit for Vote" %}</span>
-                        </button>
-                      {% endif %}
-                    </form>
-                  {% else %}
                     {% if initiative.state != 'e' %}
-                      <button title="{% trans 'Not possible to submit in current state' %}" class="btn btn-success submit" style="display:inline" disabled=True type="submit">
+                      <button title="{% trans 'Submit' %}" class="btn btn-success submit" type="submit">
                         <i class="material-icons public">public</i><span>{% trans "Submit" %}</span>
                       </button>
                     {% else %}
-                      <button title="{% trans 'Not possible to submit for vote in current state' %}" class="btn bg-vote submit" style="display:inline" disabled=True type="submit">
+                      <button title="{% trans 'Submit for Vote' %}" class="btn bg-vote submit" type="submit">
                         <i class="material-icons thumbs-up-down">thumbs_up_down</i><span>{% trans "Submit for Vote" %}</span>
                       </button>
                     {% endif %}
+                  </form>
+                {% else %}
+                  {% if initiative.state != 'e' %}
+                    <button title="{% trans 'Not possible to submit in current state' %}" class="btn btn-success submit" style="display:inline" disabled=True type="submit">
+                      <i class="material-icons public">public</i><span>{% trans "Submit" %}</span>
+                    </button>
+                  {% else %}
+                    <button title="{% trans 'Not possible to submit for vote in current state' %}" class="btn bg-vote submit" style="display:inline" disabled=True type="submit">
+                      <i class="material-icons thumbs-up-down">thumbs_up_down</i><span>{% trans "Submit for Vote" %}</span>
+                    </button>
                   {% endif %}
-                </div>
-              {% endif %}
+    
+              </div>
             {% endif %}
           {% endif %}
+        {% endif %}
 
-          {% if initiative.state == 'p' %}
-            <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being edited" %}</strong>.</p>
-          {% elif initiative.state == 'e' %}
-            <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being finalized for a Vote" %}</strong>.</p>
-          {% elif initiative.state == 'i' or initiative.state == 'm' %}
-            <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being reviewed" %}</strong> {% trans "and" %} {% if initiative.state == 'i' %} {% trans "will then be published" %} {% else %} {% trans "will then be posted " %}<strong class="badge-prepare">{% trans "for a Vote" %}</strong>{% endif %}.</p>
-            {% if request.user.is_staff %}
-              {% if request.guard.can_moderate %}
-                  {% include 'fragments/moderation/index.html' %}
-              {% else %}
-                  <div class="alert alert-info">{{request.guard.reason}}</div>
-              {% endif %}
+        {% if initiative.state == 'p' %}
+          <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being edited" %}</strong>.</p>
+        {% elif initiative.state == 'e' %}
+          <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being finalized for a Vote" %}</strong>.</p>
+        {% elif initiative.state == 'i' or initiative.state == 'm' %}
+          <p>{% trans "This Initiative " %}<strong class="badge-prepare">{% trans "is being reviewed" %}</strong> {% trans "and" %} {% if initiative.state == 'i' %} {% trans "will then be published" %} {% else %} {% trans "will then be posted " %}<strong class="badge-prepare">{% trans "for a Vote" %}</strong>{% endif %}.</p>
+          {% if request.user.is_staff %}
+            {% if request.guard.can_moderate %}
+                {% include 'fragments/moderation/index.html' %}
+            {% else %}
+                <div class="alert alert-info">{{request.guard.reason}}</div>
             {% endif %}
           {% endif %}
+        {% endif %}
 
-          {% ifequal initiative.state 'h' %}
-            <p>{% trans "This Initiative " %} <strong class="badge-arrivals">{% trans "is not visible" %}</strong>.</p>
-          {% endifequal %}
-
-          {% ifequal initiative.state 's' %}
-            {% if initiative.absolute_supporters < initiative.quorum %}
-              <p>{% trans "This Initiative " %}<a href="#cta"><strong class="badge-support">{% trans "requires at least" %} {{initiative.quorum|sub:initiative.absolute_supporters}} {% if initiative.absolute_supporters == 1 %}{% trans "supporter" %}{% else %}{% trans "supporters" %}{% endif %}</strong></a>. {% trans "Remaining time available for this Initiative" %} <strong>{{initiative.end_of_this_phase | timeuntil}}</strong>.</p>
-            {% elif initiative.absolute_supporters == initiative.quorum %}
+        {% ifequal initiative.state 'h' %}
+          <p>{% trans "This Initiative " %} <strong class="badge-arrivals">{% trans "is not visible" %}</strong>.</p>
+        {% endifequal %}
+        {% ifequal initiative.state 's' %}
+          {% if initiative.absolute_supporters < initiative.quorum %}
+            <p>{% trans "This Initiative " %}<a href="#cta"><strong class="badge-support">{% trans "requires at least" %} {{initiative.quorum|sub:initiative.absolute_supporters}} {% if initiative.absolute_supporters == 1 %}{% trans "supporter" %}{% else %}{% trans "supporters" %}{% endif %}</strong></a>. {% trans "Remaining time available for this Initiative" %} <strong>{{initiative.end_of_this_phase | timeuntil}}</strong>.</p>
+          {% elif initiative.absolute_supporters == initiative.quorum %}
+            <p>
+              {% trans "This Initiative " %}
+              <a href="#cta"><strong class="badge-support">{% trans "has reached the Quorum" %}</strong></a>!
+              <br />
+              {% trans "It will go into discussion in" %} <strong>{{initiative.end_of_this_phase | timeuntil}}</strong>.
+            </p>
+          {% else %}
               <p>
-                {% trans "This Initiative " %}
-                <a href="#cta"><strong class="badge-support">{% trans "has reached the Quorum" %}</strong></a>!
-                <br />
-                {% trans "It will go into discussion in" %} <strong>{{initiative.end_of_this_phase | timeuntil}}</strong>.
-              </p>
-            {% else %}
-                <p>
-                {% trans "This Initiative " %}
-                <a href="#cta"><strong class="badge-support">{% trans "has reached the Quorum" %}</strong></a>{% trans "and in addition " %} <strong>{{initiative.absolute_supporters|sub:initiative.quorum}}</strong> {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}{% trans "supporter" %}{% else %}{% trans "supporters" %}{% endif %}.
-                <br />
-                {% trans "It will go into discussion in" %} <strong>{{initiative.end_of_this_phase | timeuntil}}</strong>.
-              </p>
-            {% endif %}
-          {% endifequal %}
-
-          {% ifequal initiative.state 'd' %}
-            <p>{% blocktrans %}This initiative is currently being <a href="#debate">discussed</a>{% endblocktrans %}.</p>
-          {% endifequal %}
-
-          {% ifequal initiative.state 'v' %}
-            <p>{% blocktrans %}This initiative is currently being <a href="#voting"><strong class="badge-vote">voted on</strong></a>{% endblocktrans %}.</p>
-          {% endifequal %}
-
-          {% ifequal initiative.state 'a' %}
-            <p>{% trans "This Initiative " %}{% if user.is_authenticated %}<a href="#cta">{% endif %}<strong class="badge-accepted">{% trans "was accepted" %}</strong>{% if user.is_authenticated %}</a>{% endif %}.</p>
-          {% endifequal %}
-
-          {% ifequal initiative.state 'r' %}
-            {% if initiative.went_to_discussion_at %}
-              <p>{% trans "This Initiative " %} <a href="#cta"><strong class="badge-rejected">{>% trans "was rejected" %}</strong></a>.</p>
-            {% else %}
-              <p>{% trans "This Initiative " %} <strong class="badge-rejected">{% trans "was rejected" %}</strong>, {% trans "because it did not reach the Quorum" %}.</p>
-            {% endif %}
-          {% endifequal %}
-        </div>
+              {% trans "This Initiative " %}
+              <a href="#cta"><strong class="badge-support">{% trans "has reached the Quorum" %}</strong></a>{% trans "and in addition " %} <strong>{{initiative.absolute_supporters|sub:initiative.quorum}}</strong> {% if initiative.absolute_supporters|sub:initiative.quorum == 1 %}{% trans "supporter" %}{% else %}{% trans "supporters" %}{% endif %}.
+              <br />
+              {% trans "It will go into discussion in" %} <strong>{{initiative.end_of_this_phase | timeuntil}}</strong>.
+            </p>
+          {% endif %}
+        {% endifequal %}
+        {% ifequal initiative.state 'd' %}
+          <p>{% blocktrans %}This initiative is currently being <a href="#debate">discussed</a>{% endblocktrans %}.</p>
+        {% endifequal %}
+        {% ifequal initiative.state 'v' %}
+          <p>{% blocktrans %}This initiative is currently being <a href="#voting"><strong class="badge-vote">voted on</strong></a>{% endblocktrans %}.</p>
+        {% endifequal %}
+        {% ifequal initiative.state 'a' %}
+          <p>{% trans "This Initiative " %}{% if user.is_authenticated %}<a href="#cta">{% endif %}<strong class="badge-accepted">{% trans "was accepted" %}</strong>{% if user.is_authenticated %}</a>{% endif %}.</p>
+        {% endifequal %} 
+        {% ifequal initiative.state 'r' %}
+          {% if initiative.went_to_discussion_at %}
+            <p>{% trans "This Initiative " %} <a href="#cta"><strong class="badge-rejected">{>% trans "was rejected" %}</strong></a>.</p>
+          {% else %}
+            <p>{% trans "This Initiative " %} <strong class="badge-rejected">{% trans "was rejected" %}</strong>, {% trans "because it did not reach the Quorum" %}.</p>
+          {% endif %}
+        {% endifequal %}
       </div>
     </div>
   </div>
+  </div>
+
 
   <div class="container-fluid initiators">
     <div class="container">
@@ -240,22 +236,24 @@
 
   {% include "initproc/blocks/variants.html" %}
 
+
   {% ifequal initiative.state 's' %}
-  <div id="cta" class="container-fluid cta">
-    <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <h6 class="text-muted classification">{% trans "Time remaining" %} {{initiative.end_of_this_phase | timeuntil}}</h6>
-          <span class="meta-content current-supporters">
-            <strong>{{initiative.absolute_supporters|default:0}}</strong>
-              {% if initiative.absolute_supporters == 1 %}
-                {% trans "Supporter" %}
-              {% else %}
-                {% trans "Supporters" %}
-              {% endif %}
-          </span>
-          <div class="progress">
-            <div class="progress-bar bg-support" role="progressbar" style="width: {% if initiative.relative_support <= 100 %}{{initiative.relative_support|floatformat:"0"}}{% else %}100{% endif %}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}"></div>
+    <div id="cta" class="container-fluid cta">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <h6 class="text-muted classification">{% trans "Time remaining" %} {{initiative.end_of_this_phase | timeuntil}}</h6>
+            <span class="meta-content current-supporters">
+              <strong>{{initiative.absolute_supporters|default:0}}</strong>
+                {% if initiative.absolute_supporters == 1 %}
+                  {% trans "Supporter" %}
+                {% else %}  
+                  {% trans "Supporters" %}
+                {% endif %}
+            </span>
+            <div class="progress">
+              <div class="progress-bar bg-support" role="progressbar" style="width: {% if initiative.relative_support <= 100 %}{{initiative.relative_support|floatformat:"0"}}{% else %}100{% endif %}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
+            </div>
           </div>
 
           {% if initiative.absolute_supporters < initiative.quorum %}
@@ -281,28 +279,27 @@
                 {% trans "Supporter" %}{% else %}{% trans "Supporters" %}{% endif %}.
             </span>
           {% endif %}
-
-          {% if has_supported %}
-            <span class="meta-content support supported-by">
-              {% trans "You are supporting this Initiative!" %}
-            </span>
-          {% else %}
-            <form action="/initiative/{{initiative.id}}/support" method="GET">
-              <button class="btn bg-support" type="submit">
-                {% trans "Support this Initiative" %}
-              </button>
-              <div class="form-check">
-                <label class="form-check-label text-muted">
-                  <input type="checkbox" class="form-check-input" name="public">
-                  {% trans "Show support publicly" %}
-                </label>
-              </div>
-            </form>
-          {% endif %}
+            {% if has_supported %}
+              <span class="meta-content support supported-by">
+                {% trans "You are supporting this Initiative!" %}
+              </span>
+            {% else %}
+              <form action="/initiative/{{initiative.id}}/support" method="GET">
+                <button class="btn bg-support" type="submit">
+                  {% trans "Support this Initiative" %}
+                </button>
+                <div class="form-check">
+                  <label class="form-check-label text-muted">
+                    <input type="checkbox" class="form-check-input" name="public">
+                    {% trans "Show support publicly" %}
+                  </label>
+                </div>
+              </form>
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
-  </div>
   {% endifequal %}
 
   {% ifequal initiative.state 'd' %}
@@ -405,7 +402,7 @@
       {% endif %}
       <div class="row" style="padding-top: 1rem">
         <div class="col-12">
-          {% include "fragments/participation.html" with closed=1 %}
+                            {% include "fragments/participation.html" with closed=1 %}
         </div>
       </div>
     </div>
@@ -422,7 +419,7 @@
       </div>
 
       {% include "initproc/blocks/content.html" %}
-
+        
       {% if initiative.was_closed_at %}
         <!--<div class="row">
           <div class="col-12">
@@ -444,6 +441,7 @@
       {% endif %}
     </div>
   </div>
+
 
   {% include "initproc/blocks/variants.html" %}
 
@@ -551,7 +549,7 @@
   {% if initiative.show_supporters %}
   <div class="container-fluid show-supporters">
     <div class="container">
-      {% if initiative.first_supporters.count %}
+    {% if initiative.first_supporters.count %}
       <div class="row">
         <div class="col-12">
           <h2>{% trans "Initial Supporters" %}</h2>
@@ -559,7 +557,9 @@
             {% for sup in initiative.first_supporters.all %} 
               <div class="text-center initiator">
                 {% include "fragments/avatar.html" with user=sup.user %}
-                <div class="name">{{ sup.user.get_full_name|default:sup.user.username }}</div>
+                <div class="name">
+                  {{ sup.user.get_full_name|default:sup.user.username }}
+                </div>
                 {% if initiative.state == 'i' or initiative.state == 'p' %}
                   <div class="approval">
                     {% if sup.ack %}
@@ -567,7 +567,7 @@
                     {% else %}
                       {% if sup.user == user %}
                         <strong style="display:block">{% trans "Confirm now" %}</strong>
-
+  
                         <form action="/initiative/{{initiative.id}}/ack_support"  style="display:inline"  method="POST">
                           {% csrf_token %}
                           <button title="{% trans 'Support' %}" class="btn btn-success" type="submit">
@@ -591,9 +591,9 @@
           </div>
         </div>
       </div>
-      {% endif %}
+    {% endif %}
 
-      {% if initiative.public_supporters.count %}
+    {% if initiative.public_supporters.count %}
       <div class="row">
         <div class="col-12">
           <h2>{% trans "Supporters" %}</h2>
@@ -609,23 +609,20 @@
           </div>
         </div>
       </div>
-      {% endif %}
+    {% endif %}
 
-      {% if request.guard.can_edit %}
+    {% if request.guard.can_edit %}
       <div class="row">
         <div class="col-12">
           <div id="invite-supporters">
-            <a data-ajax="true" href="/initiative/{{initiative.id}}/invite/supporters?fragment=%23invite-supporters" class="btn btn-success">
-              <i class="material-icons person-add">person_add</i>
-              <span>{% trans "Invite additional Initiators" %}</span>
-            </a>
+            <a data-ajax="true" href="/initiative/{{initiative.id}}/invite/supporters?fragment=%23invite-supporters" class="btn btn-success"><i class="material-icons person-add">person_add</i><span>{% trans "Invite additional Initiators" %}</a>
           </div>
         </div>
       </div>
-      {% endif %}
-    </div>
+    {% endif %}
   </div>
-  {% endif %}
+</div>
+{% endif %}
 
 {% endblock %} {% block body-javascript %} {{ block.super }}
 <script type="text/javascript">

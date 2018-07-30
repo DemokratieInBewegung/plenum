@@ -73,7 +73,7 @@
                     </li>
                     {% guard can_create_policy_change %}
                     {% if can_create_policy_change %}
-                    <li class="nav-item"> <!-- TODO: only bv can start policychanges -->
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'new_policychange' %}"><i class="material-icons add-circle-outline">add_circle_outline</i>AO-Änderung</a>
                     </li>
                     {% endif %}

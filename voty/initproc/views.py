@@ -750,6 +750,9 @@ def new_policychange(request):
 def start_discussion_phase(request, init):
     if init.ready_for_next_stage:
         init.state = STATES.DISCUSSION
+        init.went_public_at = datetime.now()
+        init.went_to_discussion_at = datetime.now()
+
         init.save()
         # TODO fix notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION)
         return redirect('/{}/{}'.format(init.einordnung, init.id))

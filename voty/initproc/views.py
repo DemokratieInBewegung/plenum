@@ -745,6 +745,7 @@ def new_policychange(request):
 
     return render(request, 'initproc/new_policychange.html', context=dict(form=form))
 
+# This is only used for policy changes; the policy change goes directly from preparation to discussion; see §9 (2) AO
 @login_required
 @can_access_initiative([STATES.PREPARE], 'can_edit')
 def start_discussion_phase(request, init):

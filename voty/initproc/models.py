@@ -329,13 +329,7 @@ class Initiative(models.Model):
 
     @cached_property
     def initiators(self):
-        if self.is_initiative():
-            return self.supporting.filter(initiator=True).order_by("created_at")
-
-        if self.is_policychange():
-            if not self.supporting.exists():
-                self.supporting = get_user_model().objects.filter(is_active=True) #TODO: ,is_bv=True)
-        return self.supporting.all()
+        return self.supporting.filter(initiator=True).order_by("created_at")
 
     @cached_property
     def custom_cls(self):

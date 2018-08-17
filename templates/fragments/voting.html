@@ -3,7 +3,7 @@
     <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}} in Abstimmung</h6>
     {% if vote %}
      	<h3>Danke, Deine Stimme wurde gezählt!</h3>
-     	<form data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/reset_vote" method="POST">
+     	<form data-ajax-submit="true" action="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/reset_vote" method="POST">
 			{% include "fragments/participation.html" with closed=0 %}
 	 		{% csrf_token %}
      		<button class="btn btn-sm btn-default" type="submit" title="hier klicken um zurück zu nehmen">Stimme zurücknehmen</button>
@@ -17,7 +17,7 @@
  			<hr />
  			<h3>Magst Du den Initiator*innen sagen warum?</h3>
  			
-		 	<form data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
+		 	<form data-ajax-submit="true" action="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
 		 		{% csrf_token %}
 		 		<input type="hidden" name="v" value="n" />
 		 		<p>Die Initiative ...</p>
@@ -30,7 +30,7 @@
 		 		</ul>
 		 		<button class="btn btn-default btn-primary">Abschicken</button>
 		 	</form>
-		 	<form data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
+		 	<form data-ajax-submit="true" action="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
 		 		{% csrf_token %}
 		 		<input type="hidden" name="v" value="n" />
 		 		<input type="hidden" name="reason" value=' ' />
@@ -40,8 +40,10 @@
 		 {% endif %}
 
     {% else %}
-     	<h3> Stimmst Du dieser Initiative zu?</h3>
-	 	<form id="initial_vote" class="row" data-ajax-submit="true" action="/initiative/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
+		<h3> Stimmst Du dieser Initiative zu?</h3>
+		<h3> Stimmst Du dieser Initiative zu?</h3>
+		<h3> Stimmst Du dieser Initiative zu?</h3>
+	 	<form id="initial_vote" class="row" data-ajax-submit="true" action="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
 	 		{% csrf_token %}
 	 		{% if initiative.allows_abstention %}
 	 		<div class="col-12 col-sm-4 text-center">

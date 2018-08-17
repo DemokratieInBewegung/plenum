@@ -8,7 +8,7 @@
 	{% if request.guard.should_moderate_initiative %}
 		<br/>
 		<div id="moderation-new">
-			<a data-ajax=True href="/initiative/{{initiative.id}}/new_moderation?fragment=%23moderation-new" class="btn btn-outline-primary">Moderationsbewertung eintragen</a>
+			<a data-ajax=True href="/{{initiative.einordnung}}/{{initiative.id}}/new_moderation?fragment=%23moderation-new" class="btn btn-outline-primary">Moderationsbewertung eintragen</a>
 		</div>
 	{% endif %}
 

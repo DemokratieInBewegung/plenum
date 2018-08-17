@@ -103,7 +103,7 @@
 						{% if user.is_authenticated %}
 
 						<div class="flex-item">
-							{% if initiative.state != 'p' and initiative.state != 'i' %}
+							{% if initiative.is_initiative and initiative.state != 'p' and initiative.state != 'i' %}
 							{% guard is_supporting initiative %}
 							{% if is_supporting %}
 							<div class="participation-indicator">

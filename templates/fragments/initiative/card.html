@@ -107,11 +107,11 @@
 							{% guard is_supporting initiative %}
 							{% if is_supporting %}
 							<div class="participation-indicator">
-								<i class="material-icons check-circle fg-support" data-toggle="tooltip" title="{% if initiative.state == 's' %}Du unterstützt diese Initiative{% else %}Du hast diese Initiative unterstützt{% endif %}">check_circle</i>
+								<i class="material-icons check-circle fg-support" data-toggle="tooltip" title="{% if initiative.state == 's' %}Du unterstützt diese {{initiative.subject}}{% else %}Du hast diese {{initiative.subject}} unterstützt{% endif %}">check_circle</i>
 							</div>
 							{% else %}
 							<div class="participation-indicator">
-								<i class="material-icons check-circle fg-inactive" data-toggle="tooltip" title="{% if initiative.state == 's' %}Du unterstützt diese Initiative noch nicht{% else %}Du hast diese Initiative nicht unterstützt{% endif %}">check_circle</i>
+								<i class="material-icons check-circle fg-inactive" data-toggle="tooltip" title="{% if initiative.state == 's' %}Du unterstützt diese {{initiative.subject}} noch nicht{% else %}Du hast diese {{initiative.subject}} nicht unterstützt{% endif %}">check_circle</i>
 							</div>
 							{% endif %}
 							{% endif %}
@@ -121,11 +121,11 @@
 							{% if my_vote %}
   								{% if my_vote.in_favor %}
 								<div class="participation-indicator">
-									<i class="material-icons thumb-up" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du stimmst für diese Initiative{% else %}Du hast für diese Initiative gestimmt{% endif %}">thumb_up</i>
+									<i class="material-icons thumb-up" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du stimmst für diese {{initiative.subject}}{% else %}Du hast für diese {{initiative.subject}} gestimmt{% endif %}">thumb_up</i>
 								</div>
 								{% elif my_vote.against %}
 								<div class="participation-indicator">
-									<i class="material-icons thumb-down" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du stimmst gegen diese Initiative{% else %}Du hast gegen diese Initiative gestimmt{% endif %}">thumb_down</i>
+									<i class="material-icons thumb-down" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du stimmst gegen diese {{initiative.subject}}{% else %}Du hast gegen diese {{initiative.subject}} gestimmt{% endif %}">thumb_down</i>
 								</div>
 								{% elif my_vote.abstained %}
 								<div class="participation-indicator">
@@ -134,7 +134,7 @@
 								{% endif %}
 							{% else %}
 							<div class="participation-indicator">
-								<i class="material-icons thumbs-up-down fg-inactive" data-toggle="tooltip" title="Du hast über diese Initiative {% if initiative.state == 'v' %}noch {% endif %}nicht abgestimmt">thumbs_up_down</i>
+								<i class="material-icons thumbs-up-down fg-inactive" data-toggle="tooltip" title="Du hast über diese {{initiative.subject}} {% if initiative.state == 'v' %}noch {% endif %}nicht abgestimmt">thumbs_up_down</i>
 							</div>
 							{% endif %}
 							{% endif %}

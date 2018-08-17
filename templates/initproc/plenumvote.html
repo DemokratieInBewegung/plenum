@@ -50,14 +50,14 @@
                         <h6>Um die Plenumsentscheidungsvorlage veröffentlichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
                         Alle Textfelder müssen ausgefüllt sein.
                     </div>
-                    <form action="/{{initiative.einordnung}}/{{initiative.id}}/edit" style="display:inline"  method="GET">
-                        {% csrf_token %}
-                        <button title="Bearbeiten" class="btn btn-success edit" type="submit">
-                            <i class="material-icons edit">edit</i><span>Bearbeiten</span>
-                        </button>
-                    </form>
                 </div>
                 {% endif %}
+                <form action="/{{initiative.einordnung}}/{{initiative.id}}/edit" style="display:inline"  method="GET">
+                    {% csrf_token %}
+                    <button title="Bearbeiten" class="btn btn-success edit" type="submit">
+                        <i class="material-icons edit">edit</i><span>Bearbeiten</span>
+                    </button>
+                </form>
                 {% if initiative.ready_for_next_stage %}
                 <form action="/{{initiative.einordnung}}/{{initiative.id}}/start_voting" style="display:inline"  method="POST">
                     {% csrf_token %}

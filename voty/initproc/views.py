@@ -32,7 +32,7 @@ from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_F
 from .guard import can_access_initiative
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
-                    NewProposalForm, NewModerationForm, InviteUsersForm, PolicyChangeForm)
+                    NewProposalForm, NewModerationForm, InviteUsersForm, PolicyChangeForm, PlenumVoteForm)
 from .serializers import SimpleInitiativeSerializer
 from django.contrib.auth.models import Permission
 
@@ -231,6 +231,8 @@ def item(request, init, slug=None, initype=None):
     print(ctx)
     if init.is_policychange():
         return render(request, 'initproc/policychange.html', context=ctx)
+    if init.is_plenumvote():
+        return render(request, 'initproc/plenumvote.html', context=ctx)
     elif init.is_initiative():
         return render(request, 'initproc/item.html', context=ctx)
 
@@ -343,6 +345,24 @@ def edit(request, initiative):
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
         return render(request, 'initproc/new_policychange.html', context=dict(form=form, policychange=initiative))
+    elif initiative.is_plenumvote():
+        form = PlenumVoteForm(request.POST or None, instance=initiative)
+        if request.method == 'POST':
+            if form.is_valid():
+                with reversion.create_revision():
+                    initiative.save()
+
+                    # Store some meta-information.
+                    reversion.set_user(request.user)
+                    if request.POST.get('commit_message', None):
+                        reversion.set_comment(request.POST.get('commit_message'))
+
+                messages.success(request, "Plenumsentscheidung gespeichert.")
+                return redirect('/{}/{}'.format(initiative.einordnung, initiative.id))
+            else:
+                messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+
+        return render(request, 'initproc/new_plenumvote.html', context=dict(form=form, plenumvote=initiative))
 
 
 
@@ -759,5 +779,46 @@ def start_discussion_phase(request, init):
         return redirect('/{}/{}'.format(init.einordnung, init.id))
     else:
         messages.warning(request, "Die Bedingungen für die Einreichung sind nicht erfüllt.")
+
+    return redirect('/{}/{}'.format(init.einordnung, init.id))
+
+@login_required
+def new_plenumvote(request):
+    form = PlenumVoteForm()
+    if request.method == 'POST':
+        form = PlenumVoteForm(request.POST)
+        if form.is_valid():
+            pv = form.save(commit=False)
+            with reversion.create_revision():
+                pv.state = STATES.PREPARE
+                pv.einordnung = VOTY_TYPES.PlenumVote
+                pv.save()
+
+                # Store some meta-information.
+                reversion.set_user(request.user)
+                if request.POST.get('commit_message', None):
+                    reversion.set_comment(request.POST.get('commit_message'))
+
+                # whole bv is supporter of this type of vote
+                for initor in get_user_model().objects.filter(groups__name='Bundesvorstand', is_active=True):
+                    Supporter(initiative=pv, user=initor, initiator=True, ack=True, public=True).save()
+
+            return redirect('/{}/{}-{}'.format(pv.einordnung, pv.id, pv.slug))
+        else:
+            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+
+    return render(request, 'initproc/new_plenumvote.html', context=dict(form=form))
+
+@login_required
+@can_access_initiative([STATES.PREPARE], 'can_edit')
+def start_voting(request, init):
+    if init.is_plenumvote and init.ready_for_next_stage:
+        init.went_public_at = datetime.now()
+        init.went_to_voting_at = datetime.now()
+        init.state = STATES.VOTING
+        init.save()
+        return redirect('/{}/{}'.format(init.einordnung, init.id))
+    else:
+        messages.warning(request, "Die Bedingungen für die Veröffentlichung sind nicht erfüllt.")
 
     return redirect('/{}/{}'.format(init.einordnung, init.id))

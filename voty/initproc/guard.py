@@ -244,21 +244,18 @@ class Guard:
         return (female <= 0) & (diverse <= 0) & (total <= 0)
 
     def _can_support_initiative(self, init):
-        return (not init.is_policychange()) and \
+        return (init.is_initiative()) and \
                init.state == STATES.SEEKING_SUPPORT and \
                self.user.is_authenticated
 
     def _can_moderate_initiative(self, init):
-        if init.is_policychange():
-            return False
-
-        if init.state in [STATES.INCOMING, STATES.MODERATION] and self.user.has_perm('initproc.add_moderation'):
-            if init.supporting.filter(user=self.user, initiator=True):
-                self.reason = "Als Mitinitator*in darfst Du nicht mit moderieren."
-                return False
-            return True
+        if init.is_initiative():
+            if init.state in [STATES.INCOMING, STATES.MODERATION] and self.user.has_perm('initproc.add_moderation'):
+                if init.supporting.filter(user=self.user, initiator=True):
+                    self.reason = "Als Mitinitator*in darfst Du nicht mit moderieren."
+                    return False
+                return True
         return False
-
 
     def _can_comment_pro(self, obj=None):
         if obj.initiative.state == STATES.DISCUSSION:

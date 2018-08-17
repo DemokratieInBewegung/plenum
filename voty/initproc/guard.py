@@ -9,7 +9,7 @@ from django.db.models import Q
 from functools import wraps
 from voty.initadmin.models import UserConfig
 from .globals import STATES, PUBLIC_STATES, TEAM_ONLY_STATES, INITIATORS_COUNT, MINIMUM_MODERATOR_VOTES, \
-    MINIMUM_FEMALE_MODERATOR_VOTES, MINIMUM_DIVERSE_MODERATOR_VOTES, VOTY_TYPES
+    MINIMUM_FEMALE_MODERATOR_VOTES, MINIMUM_DIVERSE_MODERATOR_VOTES, VOTY_TYPES, BOARD_GROUP
 from .models import Initiative, Supporter
 
 
@@ -198,6 +198,9 @@ class Guard:
 
         # user cannot contribute to fulfilling quota -- should moderate unless we already know it'll be wasted
         return (total > female) & (total > diverse)
+
+    def can_create_policy_change(self, init=None):
+        return self.user.groups.filter(name=BOARD_GROUP).exists();
 
     ## compounds
 

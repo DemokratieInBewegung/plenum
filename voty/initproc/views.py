@@ -28,7 +28,7 @@ import reversion
 from functools import wraps
 import json
 
-from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS, VOTY_TYPES
+from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS, VOTY_TYPES, BOARD_GROUP
 from .guard import can_access_initiative
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
@@ -714,8 +714,12 @@ def reset_vote(request, init):
     Vote.objects.filter(initiative=init, user_id=request.user).delete()
     return get_voting_fragments(None, init, request)
 
+# See §9 (2) AO
 @login_required
 def new_policychange(request):
+    if not request.guard.can_create_policy_change():
+        raise PermissionDenied()
+
     form = PolicyChangeForm()
     if request.method == 'POST':
         form = PolicyChangeForm(request.POST)
@@ -731,9 +735,9 @@ def new_policychange(request):
                 if request.POST.get('commit_message', None):
                     reversion.set_comment(request.POST.get('commit_message'))
 
-                # whole bv is supporter of policychange
-                for initor in get_user_model().objects.filter(groups__name='Bundesvorstand', is_active=True):
-                    Supporter(initiative=pc, user=initor, initiator=True, ack=True, public=True).save()
+                # all board members are initiators of a policy change
+                for initiator in get_user_model().objects.filter(groups__name=BOARD_GROUP, is_active=True):
+                    Supporter(initiative=pc, user=initiator, initiator=True, ack=True, public=True).save()
 
             return redirect('/{}/{}-{}'.format(pc.einordnung, pc.id, pc.slug))
         else:
@@ -741,11 +745,15 @@ def new_policychange(request):
 
     return render(request, 'initproc/new_policychange.html', context=dict(form=form))
 
+# This is only used for policy changes; the policy change goes directly from preparation to discussion; see §9 (2) AO
 @login_required
 @can_access_initiative([STATES.PREPARE], 'can_edit')
 def start_discussion_phase(request, init):
     if init.ready_for_next_stage:
         init.state = STATES.DISCUSSION
+        init.went_public_at = datetime.now()
+        init.went_to_discussion_at = datetime.now()
+
         init.save()
         # TODO fix notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION)
         return redirect('/{}/{}'.format(init.einordnung, init.id))

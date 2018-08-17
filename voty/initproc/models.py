@@ -304,6 +304,14 @@ class Initiative(models.Model):
     def is_plenumvote(self):
         return self.einordnung == VOTY_TYPES.PlenumVote
 
+    def subject(self):
+        if self.is_initiative():
+            return 'Initiative'
+        if self.is_policychange():
+            return 'AO-Änderung'
+        if self.is_plenumvote():
+            return 'Vorlage'
+
     def initiative_is_accepted(self):
         if self.yays <= self.nays: #always reject if too few yays
             return False

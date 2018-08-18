@@ -327,10 +327,6 @@ em {
     border-radius: 0;
 }*/
 
-.plenumsentscheidung-card > .card-header {
-  background-image: linear-gradient(to right,rgba(39, 79, 158, 0.5), rgba(235, 92, 74, 0.5))
-}
-
 .card-header {
   padding: 0.5rem 1rem;
 }

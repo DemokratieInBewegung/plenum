@@ -84,7 +84,7 @@ class Initiative(models.Model):
 
     @cached_property
     def type_priority(self):
-        return timedelta(days = 0 if self.is_initiative else -1000000)
+        return timedelta(days = 0 if self.is_initiative() else -1000000)
 
     @cached_property
     def time_index(self):

@@ -1,7 +1,7 @@
 {% load guard %}
 {% load mathfilters %}
 {% load fullurl %}
-<div id="init-card-{{initiative.id}}" class="card {% guard is_supporting initiative %}{% if is_supporting %}supported{% endif %} {% guard my_vote initiative %}{% if my_vote %}voted{% endif %}">
+<div id="init-card-{{initiative.id}}" class="card {% guard is_supporting initiative %}{% if is_supporting %}supported{% endif %} {% guard my_vote initiative %}{% if my_vote %}voted{% endif %} {{initiative.einordnung}}-card">
 	<div class="card-header">
 		<div class="container-fluid">
 			 <div class="row no-gutters">

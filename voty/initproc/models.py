@@ -80,6 +80,14 @@ class Initiative(models.Model):
 
     @cached_property
     def sort_index(self):
+        return self.type_priority + self.time_index
+
+    @cached_property
+    def type_priority(self):
+        return timedelta(days = 0 if self.is_initiative else -1000000)
+
+    @cached_property
+    def time_index(self):
         timezone = self.created_at.tzinfo
         if self.was_closed_at: #recently closed first
             return datetime.today().date() - self.was_closed_at

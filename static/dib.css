@@ -1409,6 +1409,17 @@ Argument base design
 /*
  
 
+      TAGS
+
+*/
+
+.tag {
+  padding-right: 1rem;
+}
+
+/*
+ 
+
       MODERATION
 
 */

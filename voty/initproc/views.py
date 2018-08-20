@@ -784,6 +784,9 @@ def start_discussion_phase(request, init):
 
 @login_required
 def new_plenumvote(request):
+    if not request.guard.can_create_plenum_vote():
+        raise PermissionDenied()
+
     form = PlenumVoteForm()
     if request.method == 'POST':
         form = PlenumVoteForm(request.POST)
@@ -799,9 +802,9 @@ def new_plenumvote(request):
                 if request.POST.get('commit_message', None):
                     reversion.set_comment(request.POST.get('commit_message'))
 
-                # whole bv is supporter of this type of vote
-                for initor in get_user_model().objects.filter(groups__name='Bundesvorstand', is_active=True):
-                    Supporter(initiative=pv, user=initor, initiator=True, ack=True, public=True).save()
+                # all board members are initiators of a plenum vote
+                for initiator in get_user_model().objects.filter(groups__name=BOARD_GROUP, is_active=True):
+                    Supporter(initiative=pv, user=initiator, initiator=True, ack=True, public=True).save()
 
             return redirect('/{}/{}-{}'.format(pv.einordnung, pv.id, pv.slug))
         else:
@@ -809,6 +812,7 @@ def new_plenumvote(request):
 
     return render(request, 'initproc/new_plenumvote.html', context=dict(form=form))
 
+# This is only used for plenum votes; the plenum vote goes directly from preparation to voting
 @login_required
 @can_access_initiative([STATES.PREPARE], 'can_edit')
 def start_voting(request, init):
@@ -817,6 +821,7 @@ def start_voting(request, init):
         init.went_to_voting_at = datetime.now()
         init.state = STATES.VOTING
         init.save()
+        # TODO fix notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE)
         return redirect('/{}/{}'.format(init.einordnung, init.id))
     else:
         messages.warning(request, "Die Bedingungen für die Veröffentlichung sind nicht erfüllt.")

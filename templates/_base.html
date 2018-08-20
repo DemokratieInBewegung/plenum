@@ -76,6 +76,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'new_policychange' %}"><i class="material-icons add-circle-outline">add_circle_outline</i>AO-Änderung</a>
                     </li>
+                    {% endif %}
+                    {% guard can_create_plenum_vote %}
+                    {% if can_create_plenum_vote %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'new_plenumvote' %}"><i class="material-icons add-circle-outline">add_circle_outline</i>Plenumsentscheidung</a>
                     </li>

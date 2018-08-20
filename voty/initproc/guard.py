@@ -200,8 +200,14 @@ class Guard:
         # user cannot contribute to fulfilling quota -- should moderate unless we already know it'll be wasted
         return (total > female) & (total > diverse)
 
+    def userIsBoard(self):
+        return self.user.groups.filter(name=BOARD_GROUP).exists()
+
     def can_create_policy_change(self, init=None):
-        return self.user.groups.filter(name=BOARD_GROUP).exists();
+        return self.userIsBoard()
+
+    def can_create_plenum_vote(self, init=None):
+        return self.userIsBoard()
 
     ## compounds
 

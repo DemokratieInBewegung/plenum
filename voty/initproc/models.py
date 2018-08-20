@@ -13,11 +13,15 @@ import reversion
 
 from datetime import datetime, timedelta, date
 
-from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START, VOTY_TYPES
+from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START, VOTY_TYPES, SUBJECT_CATEGORIES
 from django.db import models
 import pytz
 
-from voty.initproc.globals import SUBJECT_CATEGORIES
+class Tag(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
 
 @reversion.register()
 class Initiative(models.Model):
@@ -67,6 +71,7 @@ class Initiative(models.Model):
 
     supporters = models.ManyToManyField(User, through="Supporter")
     eligible_voters = models.IntegerField(blank=True, null=True)
+    tags = models.ManyToManyField(Tag)
 
     @cached_property
     def slug(self):
@@ -338,6 +343,10 @@ class Initiative(models.Model):
         return self.supporting.all()
 
     @cached_property
+    def all_tags(self):
+        return self.tags.all()
+
+    @cached_property
     def custom_cls(self):
         return 'item-{} state-{} area-{}'.format(slugify(self.title),
                     slugify(self.state), slugify(self.bereich))
@@ -447,8 +456,6 @@ class Supporter(models.Model):
 
     class Meta:
         unique_together = (("user", "initiative"),)
-
-
 
 # Debating Models
 

@@ -31,10 +31,10 @@ import json
 from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS, VOTY_TYPES
 from .guard import can_access_initiative
 from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like,
-                     Team, TeamMembership)
+                     Team, TeamMembership, Tag)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
                     NewProposalForm, NewModerationForm, InviteUsersForm, PolicyChangeForm,
-                    TeamForm)
+                    TeamForm, NewTagForm)
 from .serializers import SimpleInitiativeSerializer
 from django.contrib.auth.models import Permission
 
@@ -179,6 +179,19 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
         return render_to_string('fragments/autocomplete/user_item.html',
                                 context=dict(user=item))
 
+class TagAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated():
+            return Tag.objects.none()
+
+        # remove tags that are already set?
+        qs = Tag.objects.all()
+
+        if self.q: #q = entered search string
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs
+
 @login_required
 def new(request):
     form = InitiativeForm()
@@ -310,6 +323,8 @@ def edit(request, initiative):
         if request.method == 'POST':
             if form.is_valid():
                 with reversion.create_revision():
+                    data = form.cleaned_data
+                    initiative.tags.set(data['tags'])
                     initiative.save()
 
                     # Store some meta-information.
@@ -715,6 +730,23 @@ def compare(request, initiative, version_id):
 def reset_vote(request, init):
     Vote.objects.filter(initiative=init, user_id=request.user).delete()
     return get_voting_fragments(None, init, request)
+
+@non_ajax_redir('/')
+@ajax
+@login_required
+@can_access_initiative() # state check depends on user
+@simple_form_verifier(NewTagForm, template="fragments/tag.html")
+def add_tag(request, form, initiative):
+    data = form.cleaned_data
+    initiative.tags.set(data['tag'])
+    initiative.save()
+
+    return {
+        'inner-fragments': {'.tags':
+                                render_to_string("initproc/blocks/tags.html",
+                                                 context=dict(initiative=initiative),
+                                                 request=request)}
+    }
 
 @login_required
 def new_policychange(request):

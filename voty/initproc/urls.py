@@ -6,6 +6,7 @@ urlpatterns = [
 	# globals
     url('^$', views.index, name='home'),
     url('^user_autocomplete$', views.UserAutocomplete.as_view(), name='user_autocomplete'),
+    url('^tag_autocomplete$', views.TagAutocomplete.as_view(), name='tag_autocomplete'),
 
     # initiative specifics
     url('^ueber/$', views.ueber, name="ueber"),
@@ -22,6 +23,7 @@ urlpatterns = [
     url(r'^(?P<initype>initiative|ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/reset_vote$', views.reset_vote, name="reset_vote"),
     url(r'^(?P<initype>initiative|ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/compare/(?P<version_id>\d+)$', views.compare),
     url(r'^(?P<initype>initiative|ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/invite/(?P<invite_type>.*)$', views.invite),
+    url(r'^(?P<initype>initiative|ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/add_tag$', views.add_tag),
     url(r'^(?P<initype>initiative|ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/moderation/(?P<target_id>\d+)$', views.show_moderation),
     url(r'^(?P<initype>initiative|ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/(?P<target_type>.*)/(?P<target_id>\d+)$', views.show_resp),
     url(r'^(?P<initype>initiative|ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?$', views.item, name="initiative_item"),

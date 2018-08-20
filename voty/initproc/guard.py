@@ -272,6 +272,20 @@ class Guard:
             raise ContinueChecking()
         return False
 
+    def can_edit_tags(self, init=None):
+        init = init or self.request.initiative
+        # review team can edit tags before discussion
+        if init.state in [STATES.PREPARE, STATES.INCOMING, STATES.SEEKING_SUPPORT] and \
+            self.user.has_perm('initproc.change_tags'):
+                return True
+
+        # initiators can edit tags before submission
+        if init.state in [STATES.PREPARE] and \
+           init.supporting.filter(user=self.user, initiator=True):
+                return True
+
+        # nobody else
+        return False
 
 def add_guard(get_response):
     """

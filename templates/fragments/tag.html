@@ -1,0 +1,22 @@
+{% load bootstrap %}
+
+<div>
+	<form id="js-add-tag" method="POST" {%if ajax%}data-ajax-submit="true"{%endif%} action="{{request.path}}{% if fragment %}?fragment={{fragment|urlencode}}{% endif %}">
+
+		<div class="row no-gutters">
+			<div class="col-12 col-md-10">
+
+				{% csrf_token %}
+				{{form|bootstrap}}
+				<div class="text-right">
+					<button type="submit" class="btn {{submit_klasses}}">Abschicken</button>
+				</div>
+			</div>
+		</div>
+
+	</form>
+	{{form.media}}
+	<script type="text/javascript">
+	setup_char_counter('#js-add-tag ');
+</script>
+</div>

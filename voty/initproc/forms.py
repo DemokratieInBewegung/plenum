@@ -6,9 +6,7 @@ from django.contrib.auth import get_user_model
 from dal import autocomplete
 from uuid import uuid4
 
-from .models import Pro, Contra, Like, Comment, Proposal, Moderation, Initiative
-from voty.initproc.models import Team
-
+from .models import Pro, Contra, Like, Comment, Proposal, Moderation, Initiative, Tag, Team
 
 def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_ajax=True,
                          submit_klasses="btn-outline-primary", submit_title="Abschicken"):
@@ -19,7 +17,7 @@ def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_aj
                 if form.is_valid():
                     return fn(request, form, *args, **kwargs)
             else:
-                form = form_cls(initial=request.GET)
+                form = form_cls(initial=dict(request.GET.lists()))
 
             fragment = request.GET.get('fragment')
             rendered = render_to_string(template,
@@ -98,6 +96,7 @@ class MultipleSubmitButton(forms.Select):
                 return inside_out_choices[value]
         return None
 
+
 class InviteUsersForm(forms.Form):
     user = forms.ModelMultipleChoiceField(
         label="Einladen",
@@ -115,7 +114,7 @@ class InitiativeForm(forms.ModelForm):
         model = Initiative
         fields = ['title', 'subtitle', 'summary', 'problem', 'forderung',
                   'kosten', 'fin_vorschlag', 'arbeitsweise', 'init_argument',
-                  'ebene', 'bereich']
+                  'ebene', 'bereich', 'tags']
 
         labels = {
             "title" : "Überschrift",
@@ -127,6 +126,7 @@ class InitiativeForm(forms.ModelForm):
             "fin_vorschlag": "Finanzierungsvorschlag",
             "arbeitsweise": "Arbeitsweise",
             "init_argument": "Argument der Initiator*innen",
+            "tags": "Schlagworte",
         }
         help_texts = {
             "title" : "Die Überschrift sollte kurz und knackig Eure Forderung enthalten.",
@@ -140,6 +140,13 @@ class InitiativeForm(forms.ModelForm):
             "init_argument": "Hier dürft Ihr emotional werden: Warum ist Euch das wichtig und warum bringt Ihr diese Initiative ein?",
 
         }
+    tags = forms.ModelMultipleChoiceField(
+        label="Schlagworte",
+        queryset=Tag.objects,
+        required=False,
+        widget=autocomplete.ModelSelect2Multiple(
+                    url='tag_autocomplete',
+                    attrs={"data-placeholder": "Zum Suchen tippen"}))
 
 
 class NewArgumentForm(forms.Form):
@@ -175,6 +182,16 @@ class NewCommentForm(forms.ModelForm):
         model = Comment
         fields = ['text']
 
+
+class NewTagForm(forms.Form):
+    tag = forms.ModelMultipleChoiceField(
+        label="Schlagworte ändern",
+        queryset=Tag.objects.all(),
+        required=False,
+        widget=autocomplete.ModelSelect2Multiple(
+            url='tag_autocomplete',
+            attrs={"data-placeholder": "Zum Suchen tippen",
+                   'data-html': "True"}))
 
 QESTIONS_COUNT = 11
 class NewModerationForm(forms.ModelForm):

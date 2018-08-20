@@ -270,6 +270,7 @@ class PlenumVoteForm(forms.ModelForm):
             "title" : "Die Überschrift sollte die Entscheidungsvorlage kurz zusammenfassen.",
             "subtitle": "Ein bis zwei Sätze zur Entscheidungsvorlage.",
             "summary" : "Kompletter Text der Plenumsentscheidungsvorlage.",
+        }
 
 # begin teams
 

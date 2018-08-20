@@ -33,7 +33,7 @@ urlpatterns = [
     url('^ao-aenderung/new$', views.new_policychange, name="new_policychange"),
     url('^plenumsentscheidung/new$', views.new_plenumvote, name="new_plenumvote"),
 	url(r'^(?P<initype>ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/start_discussion_phase$', views.start_discussion_phase),
-    url(r'^(?P<initype>plenumsentscheidung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/start_voting$', views.start_voting)
+    url(r'^(?P<initype>plenumsentscheidung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/start_voting$', views.start_voting),
 
     # teams
     url('^team/new$', views.new_team, name="new_team"),

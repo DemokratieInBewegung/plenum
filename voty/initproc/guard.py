@@ -244,12 +244,13 @@ class Guard:
 
     def can_edit_tags(self, init=None):
         init = init or self.request.initiative
-        # staff can edit tags at any time
-        if self.user.is_staff:
-            return True
+        # review team can edit tags before discussion
+        if init.state in [STATES.PREPARE, STATES.INCOMING, STATES.SEEKING_SUPPORT] and \
+            self.user.has_perm('initproc.change_tags'):
+                return True
 
-        # initiators can edit tags before publication
-        if init.state in [STATES.INCOMING, STATES.PREPARE, STATES.MODERATION] and \
+        # initiators can edit tags before submission
+        if init.state in [STATES.PREPARE] and \
            init.supporting.filter(user=self.user, initiator=True):
                 return True
 

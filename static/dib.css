@@ -342,6 +342,16 @@ em {
     border-radius: 0;
 }*/
 
+.plenumsentscheidung-card, .ao-aenderung-card {
+  border: 2px solid #777;
+}
+
+.plenumsentscheidung-card .badge, .ao-aenderung-card .badge {
+  background-image: linear-gradient(to right,#274f9e, #eb5c4a);
+  border: 0;
+  color: white;
+}
+
 .card-header {
   padding: 0.5rem 1rem;
 }

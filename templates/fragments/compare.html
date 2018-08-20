@@ -66,7 +66,7 @@
     <div class="col-12">
     	<h3>Zusammenfassung</h3>
         {{compare.summary}}
-        {% if not initiative.is_policychange %}
+        {% if initiative.is_initiative %}
         <h2>Problembeschreibung</h2>
         {{compare.problem}}
         <h2>Forderung</h2>

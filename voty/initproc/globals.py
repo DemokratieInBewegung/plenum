@@ -53,6 +53,7 @@ class VOTY_TYPES:
     Einzelinitiative = 'initiative'
     PolicyChange = 'ao-aenderung'
     BallotVote = 'urabstimmung'
+    PlenumVote = 'plenumsentscheidung'
 
 class VOTED:
     """
@@ -90,3 +91,5 @@ INITIATORS_COUNT = 3
 MINIMUM_MODERATOR_VOTES = 5
 MINIMUM_FEMALE_MODERATOR_VOTES = 3
 MINIMUM_DIVERSE_MODERATOR_VOTES = 2
+
+BOARD_GROUP = "Bundesvorstand"

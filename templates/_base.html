@@ -1,6 +1,7 @@
 {% load notifications_tags %}
 {% load static %}
 {% load fullurl %}
+{% load guard %}
 <!DOCTYPE html>
 <html lang="de">
 
@@ -76,9 +77,15 @@
                     <li class="nav-item">
                          <a class="nav-link" href="{% url 'new_initiative' %}"><i class="material-icons add-circle-outline">add_circle_outline</i>Neue Initiative</a>
                     </li>
-                    <li class="nav-item"> <!-- TODO: only bv can start policychanges -->
+                    {% guard can_create_policy_change %}
+                    {% if can_create_policy_change %}
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'new_policychange' %}"><i class="material-icons add-circle-outline">add_circle_outline</i>AO-Änderung</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'new_plenumvote' %}"><i class="material-icons add-circle-outline">add_circle_outline</i>Plenumsentscheidung</a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="material-icons notifications">notifications</i>

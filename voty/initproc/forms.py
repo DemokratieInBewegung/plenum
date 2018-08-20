@@ -255,6 +255,22 @@ class PolicyChangeForm(forms.ModelForm):
             "summary" : "Kompletter Text der AO-Änderung, mit Referenzen/Links auf bestehende AO-Artikel.",
         }
 
+class PlenumVoteForm(forms.ModelForm):
+
+    class Meta:
+        model = Initiative
+        fields = ['title', 'subtitle','summary']
+
+        labels = {
+            "title" : "Überschrift",
+            "subtitle": "Anreißer",
+            "summary" : "Text",
+        }
+        help_texts = {
+            "title" : "Die Überschrift sollte die Entscheidungsvorlage kurz zusammenfassen.",
+            "subtitle": "Ein bis zwei Sätze zur Entscheidungsvorlage.",
+            "summary" : "Kompletter Text der Plenumsentscheidungsvorlage.",
+
 # begin teams
 
 class TeamForm(forms.ModelForm):

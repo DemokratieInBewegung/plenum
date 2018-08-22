@@ -21,7 +21,6 @@ from io import StringIO, TextIOWrapper
 import csv
 
 from voty.initproc.models import Initiative, Vote
-from voty.initproc.globals import VOTED
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
@@ -102,7 +101,7 @@ def mass_invite(request):
 @user_passes_test(lambda u: u.is_staff)
 def export_results(request):
     results = StringIO()
-    fieldnames = ["Titel", "Abschlussdatum"]
+    fieldnames = ["Titel", "Abschlussdatum","Abstimmungsberechtigte","ca. Abstimmungsberechtigte"]
     for (value,name) in Vote.CHOICES:
         fieldnames.append(name)
     print (fieldnames)
@@ -112,6 +111,8 @@ def export_results(request):
         row = {
                 "Titel": initiative.title,
                 "Abschlussdatum": initiative.was_closed_at.strftime("%d. %m. %Y"),
+                "Abstimmungsberechtigte": initiative.eligible_voters,
+                "ca. Abstimmungsberechtigte": get_user_model().objects.filter(date_joined__lte=initiative.was_closed_at).count()
             }
         for (value,name) in Vote.CHOICES:
             row [name] = initiative.votes.filter(value=value).count()

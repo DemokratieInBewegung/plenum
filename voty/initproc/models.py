@@ -450,10 +450,11 @@ class Vote(models.Model):
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
     initiative = models.ForeignKey(Initiative, related_name="votes")
-    value = models.IntegerField(choices=[
+    CHOICES = [
         (VOTED.YES, "Ja"),
         (VOTED.NO, "Nein"),
-        (VOTED.ABSTAIN, "Enthaltung")])
+        (VOTED.ABSTAIN, "Enthaltung")]
+    value = models.IntegerField(choices=CHOICES)
     reason = models.CharField(max_length=100, blank=True)
 
     class Meta:

@@ -101,7 +101,7 @@ def mass_invite(request):
 @user_passes_test(lambda u: u.is_staff)
 def export_results(request):
     results = StringIO()
-    fieldnames = ["Titel", "Abschlussdatum","Abstimmungsberechtigte","ca. Abstimmungsberechtigte"]
+    fieldnames = ["Titel", "Abschlussdatum","Abstimmungsberechtigte"]
     for (value,name) in Vote.CHOICES:
         fieldnames.append(name)
     print (fieldnames)
@@ -111,8 +111,7 @@ def export_results(request):
         row = {
                 "Titel": initiative.title,
                 "Abschlussdatum": initiative.was_closed_at.strftime("%d. %m. %Y"),
-                "Abstimmungsberechtigte": initiative.eligible_voters,
-                "ca. Abstimmungsberechtigte": get_user_model().objects.filter(date_joined__lte=initiative.was_closed_at).count()
+                "Abstimmungsberechtigte": initiative.eligible_voters
             }
         for (value,name) in Vote.CHOICES:
             row [name] = initiative.votes.filter(value=value).count()

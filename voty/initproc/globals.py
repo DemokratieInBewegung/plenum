@@ -53,6 +53,7 @@ class VOTY_TYPES:
     Einzelinitiative = 'initiative'
     PolicyChange = 'ao-aenderung'
     BallotVote = 'urabstimmung'
+    PlenumVote = 'plenumsentscheidung'
 
 class VOTED:
     """

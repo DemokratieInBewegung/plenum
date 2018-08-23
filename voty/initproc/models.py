@@ -54,7 +54,8 @@ class Initiative(models.Model):
     einordnung = models.CharField(max_length=50, choices=[
         (VOTY_TYPES.Einzelinitiative,'Einzelinitiative'),
         (VOTY_TYPES.PolicyChange,'AO-Änderung'),
-        (VOTY_TYPES.BallotVote,'Urabstimmung')])
+        (VOTY_TYPES.BallotVote,'Urabstimmung'),
+        (VOTY_TYPES.PlenumVote,'Plenumsentscheidung')])
     ebene = models.CharField(max_length=50, choices=[('Bund', 'Bund')])
     bereich = models.CharField(max_length=60, choices=[(item,item) for item in SUBJECT_CATEGORIES])
 
@@ -79,6 +80,14 @@ class Initiative(models.Model):
 
     @cached_property
     def sort_index(self):
+        return self.type_priority + self.time_index
+
+    @cached_property
+    def type_priority(self):
+        return timedelta(days = 0 if self.is_initiative() else -1000000)
+
+    @cached_property
+    def time_index(self):
         timezone = self.created_at.tzinfo
         if self.was_closed_at: #recently closed first
             return datetime.today().date() - self.was_closed_at
@@ -96,6 +105,9 @@ class Initiative(models.Model):
 
         if self.is_policychange():
             return self.policy_change_ready_for_next_stage
+
+        if self.is_plenumvote():
+            return self.plenumvote_ready_for_next_stage
 
     @cached_property
     def initiative_ready_for_next_stage(self):
@@ -149,6 +161,19 @@ class Initiative(models.Model):
 
         return False
 
+    @cached_property
+    def plenumvote_ready_for_next_stage(self):
+        if self.state in [STATES.PREPARE, STATES.FINAL_EDIT]:
+            #no empty text fields
+            return (self.title and
+                    self.subtitle and
+                    self.summary)
+
+        if self.state == STATES.VOTING:
+            # there is nothing we have to accomplish
+            return True
+
+        return False
 
     @cached_property
     def end_of_this_phase(self):
@@ -157,6 +182,9 @@ class Initiative(models.Model):
 
         if self.is_policychange():
             return self.policy_change_end_of_this_phase
+
+        if self.is_plenumvote():
+            return self.plenumvote_end_of_this_phase
 
     @cached_property
     def initiative_end_of_this_phase(self):
@@ -229,6 +257,19 @@ class Initiative(models.Model):
         return None
 
     @cached_property
+    def plenumvote_end_of_this_phase(self):
+        week = timedelta(days=7)
+        halfyear = timedelta(days=183)
+
+        if self.was_closed_at:
+            return self.was_closed_at + halfyear # Half year later.
+
+        if self.state == STATES.VOTING:
+            return self.went_to_voting_at + (1 * week)
+
+        return None
+
+    @cached_property
     def quorum(self):
         return Quorum.current_quorum()
 
@@ -259,11 +300,25 @@ class Initiative(models.Model):
         if self.is_policychange():
             return self.policy_change_is_accepted
 
-    def is_policychange(self):
-        return self.einordnung == VOTY_TYPES.PolicyChange
+        if self.is_plenumvote():
+            return self.plenumvote_is_accepted
 
     def is_initiative(self):
         return self.einordnung == None or self.einordnung == VOTY_TYPES.Einzelinitiative
+
+    def is_policychange(self):
+        return self.einordnung == VOTY_TYPES.PolicyChange
+
+    def is_plenumvote(self):
+        return self.einordnung == VOTY_TYPES.PlenumVote
+
+    def subject(self):
+        if self.is_initiative():
+            return 'Initiative'
+        if self.is_policychange():
+            return 'AO-Änderung'
+        if self.is_plenumvote():
+            return 'Vorlage'
 
     def initiative_is_accepted(self):
         if self.yays <= self.nays: #always reject if too few yays
@@ -290,6 +345,12 @@ class Initiative(models.Model):
 
     def policy_change_is_accepted(self):
         if self.yays >= (self.nays * 2): #two third majority
+            return True
+
+        return False
+
+    def plenumvote_is_accepted(self):
+        if self.yays > (self.nays): #simple majority
             return True
 
         return False
@@ -389,10 +450,11 @@ class Vote(models.Model):
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
     initiative = models.ForeignKey(Initiative, related_name="votes")
-    value = models.IntegerField(choices=[
+    CHOICES = [
         (VOTED.YES, "Ja"),
         (VOTED.NO, "Nein"),
-        (VOTED.ABSTAIN, "Enthaltung")])
+        (VOTED.ABSTAIN, "Enthaltung")]
+    value = models.IntegerField(choices=CHOICES)
     reason = models.CharField(max_length=100, blank=True)
 
     class Meta:

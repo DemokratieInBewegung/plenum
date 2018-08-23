@@ -20,6 +20,7 @@ from uuid import uuid4
 from io import StringIO, TextIOWrapper
 import csv
 
+from voty.initproc.models import Initiative, Vote
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
@@ -96,6 +97,30 @@ def mass_invite(request):
     return render(request, 'initadmin/mass_invite.html', context=dict(form=form,
         invitebatches=InviteBatch.objects.order_by("-created_at")))
 
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def export_results(request):
+    results = StringIO()
+    fieldnames = ["Titel", "Abschlussdatum","Abstimmungsberechtigte"]
+    for (value,name) in Vote.CHOICES:
+        fieldnames.append(name)
+    print (fieldnames)
+    writer = csv.DictWriter(results, fieldnames=fieldnames)
+    writer.writeheader()
+    for initiative in sorted (Initiative.objects.filter(was_closed_at__isnull=False), key=lambda x: x.was_closed_at):
+        row = {
+                "Titel": initiative.title,
+                "Abschlussdatum": initiative.was_closed_at.strftime("%d. %m. %Y"),
+                "Abstimmungsberechtigte": initiative.eligible_voters
+            }
+        for (value,name) in Vote.CHOICES:
+            row [name] = initiative.votes.filter(value=value).count()
+
+        writer.writerow(row)
+
+    response=HttpResponse(results.getvalue(), content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=results.csv'
+    return response
 
 class UserEditForm(forms.ModelForm):
     class Meta:

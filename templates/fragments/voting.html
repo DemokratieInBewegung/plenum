@@ -1,4 +1,3 @@
-
 <div class="col-12" id="voting">
     <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}} in Abstimmung</h6>
     {% if vote %}
@@ -15,12 +14,12 @@
  		{% if vote.nay_survey_options and not vote.in_favor and not vote.abstained and not vote.reason %}
  			<div class="feedback">
  			<hr />
- 			<h3>Magst Du den Initiator*innen sagen warum?</h3>
+			<h3>Magst Du {% if initiative.is_initiative %}den Initiator*innen{% else %}dem Bundesvorstand{% endif %} sagen warum?</h3>
  			
 		 	<form data-ajax-submit="true" action="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
 		 		{% csrf_token %}
 		 		<input type="hidden" name="v" value="n" />
-		 		<p>Die Initiative ...</p>
+				<p>Die {{initiative.subject}} ...</p>
 		 		<ul>
 		 			{% for r in vote.nay_survey_options %}
 			 			<li>
@@ -40,7 +39,8 @@
 		 {% endif %}
 
     {% else %}
-		<h3> Stimmst Du dieser Initiative zu?</h3>
+
+	 	<h3> Stimmst Du dieser {{initiative.subject}} zu?</h3>
 	 	<form id="initial_vote" class="row" data-ajax-submit="true" action="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
 	 		{% csrf_token %}
 	 		{% if initiative.allows_abstention %}

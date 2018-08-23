@@ -8,6 +8,7 @@ from django.db.models import Q
 
 from functools import wraps
 from voty.initadmin.models import UserConfig
+from voty.initproc.models import Moderation
 from .globals import STATES, PUBLIC_STATES, TEAM_ONLY_STATES, INITIATORS_COUNT, MINIMUM_MODERATOR_VOTES, \
     MINIMUM_FEMALE_MODERATOR_VOTES, MINIMUM_DIVERSE_MODERATOR_VOTES, VOTY_TYPES, BOARD_GROUP
 from .models import Initiative, Supporter
@@ -199,8 +200,14 @@ class Guard:
         # user cannot contribute to fulfilling quota -- should moderate unless we already know it'll be wasted
         return (total > female) & (total > diverse)
 
+    def userIsBoard(self):
+        return self.user.groups.filter(name=BOARD_GROUP).exists()
+
     def can_create_policy_change(self, init=None):
-        return self.user.groups.filter(name=BOARD_GROUP).exists();
+        return self.userIsBoard()
+
+    def can_create_plenum_vote(self, init=None):
+        return self.userIsBoard()
 
     ## compounds
 
@@ -244,21 +251,18 @@ class Guard:
         return (female <= 0) & (diverse <= 0) & (total <= 0)
 
     def _can_support_initiative(self, init):
-        return (not init.is_policychange()) and \
+        return (init.is_initiative()) and \
                init.state == STATES.SEEKING_SUPPORT and \
                self.user.is_authenticated
 
     def _can_moderate_initiative(self, init):
-        if init.is_policychange():
-            return False
-
-        if init.state in [STATES.INCOMING, STATES.MODERATION] and self.user.has_perm('initproc.add_moderation'):
-            if init.supporting.filter(user=self.user, initiator=True):
-                self.reason = "Als Mitinitator*in darfst Du nicht mit moderieren."
-                return False
-            return True
+        if init.is_initiative():
+            if init.state in [STATES.INCOMING, STATES.MODERATION] and self.user.has_perm('initproc.add_moderation'):
+                if init.supporting.filter(user=self.user, initiator=True):
+                    self.reason = "Als Mitinitator*in darfst Du nicht mit moderieren."
+                    return False
+                return True
         return False
-
 
     def _can_comment_pro(self, obj=None):
         if obj.initiative.state == STATES.DISCUSSION:

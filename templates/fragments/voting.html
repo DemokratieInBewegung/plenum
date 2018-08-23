@@ -39,8 +39,8 @@
 		 {% endif %}
 
     {% else %}
-        <h3> Stimmst Du dieser {{initiative.subject}} zu?</h3>
 
+	 	<h3> Stimmst Du dieser {{initiative.subject}} zu?</h3>
 	 	<form id="initial_vote" class="row" data-ajax-submit="true" action="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/vote" method="POST">
 	 		{% csrf_token %}
 	 		{% if initiative.allows_abstention %}

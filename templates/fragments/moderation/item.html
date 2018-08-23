@@ -22,7 +22,7 @@
 </div>
 {% else %}
 	{% if m.text %}
-		<a data-ajax="true" href="/initiative/{{initiative.id}}/moderation/{{m.id}}?fragment=%23{{m.unique_id}}"><i class="material-icons">comment</i></a>
+		<a data-ajax="true" href="/{{initiative.einordnung}}/{{initiative.id}}/moderation/{{m.id}}?fragment=%23{{m.unique_id}}"><i class="material-icons">comment</i></a>
 	{% endif %}
 {% endif %}
 </div>

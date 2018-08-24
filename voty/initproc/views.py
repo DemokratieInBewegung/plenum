@@ -219,7 +219,7 @@ def item(request, init, slug=None, initype=None):
     if request.user.is_authenticated:
         user_id = request.user.id
 
-        ctx.update({'has_supported': init.supporting.filter(user=user_id).count()})
+        ctx.update({'has_supported': init.supporting.filter(user=user_id).exists()})
 
         votes = init.votes.filter(user=user_id)
         if (votes.exists()):

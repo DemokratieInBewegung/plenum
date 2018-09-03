@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     # must be before admin ...
     'dal',
     'dal_select2',
+    'django_su',
     'django.contrib.admin',
 
     # locally
@@ -103,6 +104,7 @@ LOGGING = {
 AUTHENTICATION_BACKENDS = (
     "account.auth_backends.EmailAuthenticationBackend",
     'django.contrib.auth.backends.ModelBackend',
+    'django_su.backends.SuBackend',
 )
 
 ROOT_URLCONF = 'voty.urls'

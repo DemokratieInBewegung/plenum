@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.views import generic
 from . import views
 
@@ -6,6 +6,7 @@ urlpatterns = [
 	# globals
     url('^$', views.index, name='home'),
     url('^user_autocomplete$', views.UserAutocomplete.as_view(), name='user_autocomplete'),
+    url(r'^su/', include('django_su.urls')),
 
     # initiative specifics
     url('^ueber/$', views.ueber, name="ueber"),

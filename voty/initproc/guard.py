@@ -218,11 +218,11 @@ class Guard:
         if not self.user.is_authenticated:
             return False
 
-        if not self.user.has_perm('initproc.add_moderation') and \
-           not init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=self.request.user.id):
-            return False
+        if self.user.has_perm('initproc.add_moderation') or \
+           init.supporting.filter(Q(first=True) | Q(initiator=True), user_id=self.request.user.id):
+            return True
 
-        return True
+        return False
 
     def _can_edit_initiative(self, init):
         if not init.state in [STATES.PREPARE, STATES.FINAL_EDIT]:
@@ -231,10 +231,10 @@ class Guard:
             return False
         if self.user.is_superuser:
             return True
-        if not init.supporting.filter(initiator=True, user_id=self.request.user.id):
-            return False
+        if init.supporting.filter(initiator=True, user_id=self.request.user.id):
+            return True
 
-        return True
+        return False
 
     def _can_publish_initiative(self, init):
         if not self.user.has_perm('initproc.add_moderation'):

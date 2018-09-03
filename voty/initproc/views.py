@@ -431,7 +431,7 @@ def invite(request, form, initiative, invite_type):
 
 
 @login_required
-@can_access_initiative(STATES.SEEKING_SUPPORT, 'can_support') # must be seeking for supporters
+@can_access_initiative(STATES.SEEKING_SUPPORT, 'can_support') # must be seeking supporters
 def support(request, initiative):
     Supporter(initiative=initiative, user_id=request.user.id,
               public=not not request.GET.get("public", False)).save()

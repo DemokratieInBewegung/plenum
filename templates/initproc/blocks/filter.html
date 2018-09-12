@@ -1,4 +1,5 @@
 <form id="filters" data-ajax-submit="true" method="GET">
+	<input name="page" type="hidden" id="filters-page" value="1" />
 	<div class="typefilter">
 		<div class="container">
 			<div class="row no-gutters">
@@ -92,3 +93,13 @@
 		</div>
     </div>
  </form>
+{% if with_js %}
+<script type="text/javascript">
+  	$(function(){
+  		var submitTimeout = null;
+	    $('.typefilter input').change(function(item) {
+	    	load_page(1);
+	    });	
+  	});
+</script>
+{% endif %}

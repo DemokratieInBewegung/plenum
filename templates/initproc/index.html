@@ -52,11 +52,16 @@
 
 {{ block.super }}
 <script type="text/javascript">
+	function load_page(num) {
+	    	$("#init-list").html("Loading ...");
+	    	$("#filters-page").val(num);
+	    	$("#filters").submit();
+	};
+
   	$(function(){
   		var submitTimeout = null;
 	    $('.typefilter input').change(function(item) {
-	    	$("#init-list").html("Loading ...");
-	    	$("#filters").submit();
+	    	load_page(1);
 	    });	
   	});
   	// Initialize Tooltips

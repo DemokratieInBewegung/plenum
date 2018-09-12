@@ -3,6 +3,7 @@ from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.paginator import Paginator
 from django.utils.decorators import available_attrs
 from django.utils.safestring import mark_safe
 from django.contrib.postgres.search import SearchVector
@@ -124,30 +125,50 @@ def index(request):
             else:
                 inits = inits.filter(Q(title__icontains=searchstr) | Q(subtitle__icontains=searchstr))
 
+    try:
+        per_page = int(request.GET.get('per_page', 25))
+    except ValueError:
+        per_page = 25
 
-    inits = sorted(inits, key=lambda x: x.sort_index or timedelta(days=1000))
+    try:
+        page_num = max(int(request.GET.get('page', 1)), 1)
+    except Exception as e:
+        page_num = 1
 
     # now we filter for urgency
+    inis = sorted(inits, key=lambda x: x.sort_index or timedelta(days=1000))
+    page = Paginator(inis, per_page).page(page_num)
+    print(inis, per_page, page_num, page.object_list)
 
 
     if request.is_ajax():
-        return render_to_json(
-            {'fragments': {
+        fragments = {
                 "#init-card-{}".format(init.id) : render_to_string("fragments/initiative/card.html",
                                                                context=dict(initiative=init),
                                                                request=request)
-                    for init in inits },
+                    for init in page.object_list }
+        fragments['#filters'] = render_to_string("initproc/blocks/filter.html",
+                                             context=dict(filters=filters, with_js=True),
+                                             request=request)
+        return render_to_json(
+            {'fragments': fragments,
              'inner-fragments': {
                 '#init-list': render_to_string("fragments/initiative/list.html",
-                                               context=dict(initiatives=inits),
+                                               context=dict(initiatives=page.object_list, page=page),
                                                request=request)
              },
              # FIXME: ugly work-a-round as long as we use django-ajax
              #        for rendering - we have to pass it as a dict
              #        or it chokes on rendering :(
              'initiatives': json.loads(JSONRenderer().render(
-                                SimpleInitiativeSerializer(inits, many=True).data,
-                            ))
+                                SimpleInitiativeSerializer(page.object_list, many=True).data,
+                            )),
+             'page': {
+                "page": page.number,
+                "per_page": per_page,
+                "has_next": page.has_next(),
+                "next_page_num": page.next_page_number() if page.has_next() else -1,
+             }
         }
 )
 
@@ -155,8 +176,8 @@ def index(request):
 
     count_inbox = request.guard.make_intiatives_query(['i']).count()
 
-    return render(request, 'initproc/index.html',context=dict(initiatives=inits,
-                    inbox_count=count_inbox, filters=filters))
+    return render(request, 'initproc/index.html',context=dict(initiatives=page.object_list,
+                    page=page, inbox_count=count_inbox, filters=filters))
 
 
 

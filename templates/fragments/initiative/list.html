@@ -7,6 +7,24 @@
 	</div>
 </div>
 {% endfor %}
+
+
+{% if page.has_other_pages %}
+<div class="paging">
+	{% if page.has_previous %}
+		<button onclick="load_page({{page.previous_page_number}});">Vorherige</button>
+	{% else %}
+		<button disabled>Vorherige</button>
+	{% endif %}
+
+	{% if page.has_next %}
+		<button onclick="load_page({{page.next_page_number}});">Nächste</button>
+	{% else %}
+		<button disabled>Nächste</button>
+	{% endif %}
+</div>
+{% endif %}
+
 <script>
 // Initialize Tooltips
 $(function () {

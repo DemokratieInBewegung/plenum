@@ -67,7 +67,8 @@ class Initiative(models.Model):
     went_to_voting_at = models.DateField(blank=True, null=True)
     was_closed_at = models.DateField(blank=True, null=True)
 
-    variant_of = models.ForeignKey('self', blank=True, null=True, default=None, related_name="variants")
+    variant_of = models.ForeignKey('self', on_delete=models.CASCADE,
+            blank=True, null=True, default=None, related_name="variants")
 
     supporters = models.ManyToManyField(User, through="Supporter")
     eligible_voters = models.IntegerField(blank=True, null=True)
@@ -487,8 +488,8 @@ class Initiative(models.Model):
 class Vote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User)
-    initiative = models.ForeignKey(Initiative, related_name="votes")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    initiative = models.ForeignKey(Initiative, on_delete=models.CASCADE, related_name="votes")
     CHOICES = [
         (VOTED.YES, "Ja"),
         (VOTED.NO, "Nein"),
@@ -516,7 +517,8 @@ class Vote(models.Model):
         return self.value == VOTED.ABSTAIN
 
 class Option(models.Model):
-    initiative = models.ForeignKey(Initiative, related_name="options")
+    initiative = models.ForeignKey(Initiative,
+            related_name="options", on_delete=models.CASCADE)
     text = models.TextField()
     index = models.IntegerField()
 
@@ -526,8 +528,9 @@ class Option(models.Model):
 class Preference(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User)
-    option = models.ForeignKey(Option, related_name="preferences")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    option = models.ForeignKey(Option,
+            related_name="preferences", on_delete=models.CASCADE)
     value = models.IntegerField()
 
     class Meta:
@@ -545,8 +548,9 @@ class Quorum(models.Model):
 
 class Supporter(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User)
-    initiative = models.ForeignKey(Initiative, related_name="supporting")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    initiative = models.ForeignKey(Initiative,
+            on_delete=models.CASCADE, related_name="supporting")
     # whether this initiator has acknowledged they are
     ack = models.BooleanField(default=False)
     initiator = models.BooleanField(default=False)
@@ -562,7 +566,7 @@ class Supporter(models.Model):
 
 class Like(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     target_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     target_id = models.IntegerField()
@@ -588,7 +592,7 @@ class Comment(Likeable):
     type = "comment"
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     target_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     target_id = models.IntegerField()
@@ -614,8 +618,8 @@ class Commentable(models.Model):
 class Response(Likeable, Commentable):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User, related_name="%(class)ss")
-    initiative = models.ForeignKey(Initiative, related_name="%(class)ss")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="%(class)ss")
+    initiative = models.ForeignKey(Initiative, on_delete=models.CASCADE, related_name="%(class)ss")
 
     class Meta:
         abstract = True

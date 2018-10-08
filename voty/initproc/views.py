@@ -203,12 +203,12 @@ def new(request):
                 ini.einordnung = VOTY_TYPES.Einzelinitiative
                 ini.state = STATES.PREPARE
                 ini.save()
+                form.save_m2m() #tags
 
                 # Store some meta-information.
                 reversion.set_user(request.user)
                 if request.POST.get('commit_message', None):
                     reversion.set_comment(request.POST.get('commit_message'))
-
 
             Supporter(initiative=ini, user=request.user, initiator=True, ack=True, public=True).save()
             return redirect('/initiative/{}-{}'.format(ini.id, ini.slug))

@@ -54,6 +54,7 @@ class VOTY_TYPES:
     PolicyChange = 'ao-aenderung'
     BallotVote = 'urabstimmung'
     PlenumVote = 'plenumsentscheidung'
+    PlenumOptions = 'plenumsabwaegung'
 
 class VOTED:
     """

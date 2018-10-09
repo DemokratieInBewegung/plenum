@@ -253,3 +253,25 @@ class PlenumVoteForm(forms.ModelForm):
             "subtitle": "Ein bis zwei Sätze zur Entscheidungsvorlage.",
             "summary" : "Kompletter Text der Plenumsentscheidungsvorlage.",
         }
+
+class PlenumOptionsForm(forms.ModelForm):
+
+    #TODO: variable number of options
+    option1 = forms.CharField(label="Option1",widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Die erste Option'}))
+    option2 = forms.CharField(label="Option2",widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Die zweite Option'}))
+    option3 = forms.CharField(label="Option3",widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Die dritte Option'}))
+
+    class Meta:
+        model = Initiative
+        fields = ['title', 'subtitle','summary']
+
+        labels = {
+            "title" : "Überschrift",
+            "subtitle": "Anreißer",
+            "summary" : "Text",
+        }
+        help_texts = {
+            "title" : "Die Überschrift sollte die Abwägungsvorlage kurz zusammenfassen.",
+            "subtitle": "Ein bis zwei Sätze zur Abwägungsvorlage.",
+            "summary" : "Kompletter Text der Plenumsabwägungsvorlage.",
+        }

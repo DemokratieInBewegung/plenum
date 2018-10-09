@@ -55,7 +55,9 @@ class Initiative(models.Model):
         (VOTY_TYPES.Einzelinitiative,'Einzelinitiative'),
         (VOTY_TYPES.PolicyChange,'AO-Änderung'),
         (VOTY_TYPES.BallotVote,'Urabstimmung'),
-        (VOTY_TYPES.PlenumVote,'Plenumsentscheidung')])
+        (VOTY_TYPES.PlenumVote,'Plenumsentscheidung'),
+        (VOTY_TYPES.PlenumOptions,'Plenumsabwägung')
+    ])
     ebene = models.CharField(max_length=50, choices=[('Bund', 'Bund')])
     bereich = models.CharField(max_length=60, choices=[(item,item) for item in SUBJECT_CATEGORIES])
 
@@ -93,7 +95,7 @@ class Initiative(models.Model):
             return datetime.today().date() - self.was_closed_at
 
         elif self.end_of_this_phase: #closest to deadline first
-            return self.end_of_this_phase - datetime.today().date()
+            return self.end_of_this_phase_date - datetime.today().date()
 
         else: #newest first
             return datetime.now(timezone) - self.created_at
@@ -107,6 +109,9 @@ class Initiative(models.Model):
             return self.policy_change_ready_for_next_stage
 
         if self.is_plenumvote():
+            return self.plenumvote_ready_for_next_stage
+
+        if self.is_plenumoptions(): # TODO: check that options are non-empty
             return self.plenumvote_ready_for_next_stage
 
     @cached_property
@@ -176,6 +181,10 @@ class Initiative(models.Model):
         return False
 
     @cached_property
+    def end_of_this_phase_date(self):
+        return self.end_of_this_phase.date() if hasattr(self.end_of_this_phase,'date') else self.end_of_this_phase
+
+    @cached_property
     def end_of_this_phase(self):
         if self.is_initiative():
             return self.initiative_end_of_this_phase
@@ -185,6 +194,9 @@ class Initiative(models.Model):
 
         if self.is_plenumvote():
             return self.plenumvote_end_of_this_phase
+
+        if self.is_plenumoptions():
+            return self.plenumoptions_end_of_this_phase
 
     @cached_property
     def initiative_end_of_this_phase(self):
@@ -270,6 +282,20 @@ class Initiative(models.Model):
         return None
 
     @cached_property
+    def plenumoptions_end_of_this_phase(self):
+        duration = timedelta(days=3,hours=12)
+        halfyear = timedelta(days=183)
+
+        if self.was_closed_at:
+            return self.was_closed_at + halfyear # Half year later.
+
+        if self.state == STATES.VOTING:
+            at = self.went_to_voting_at
+            return datetime(year=at.year,month=at.month,day=at.day) + duration
+
+        return None
+
+    @cached_property
     def quorum(self):
         return Quorum.current_quorum()
 
@@ -311,6 +337,9 @@ class Initiative(models.Model):
 
     def is_plenumvote(self):
         return self.einordnung == VOTY_TYPES.PlenumVote
+
+    def is_plenumoptions(self):
+        return self.einordnung == VOTY_TYPES.PlenumOptions
 
     def subject(self):
         if self.is_initiative():
@@ -444,7 +473,6 @@ class Initiative(models.Model):
 
         notify(recipients, notice_type, context, **kwargs)
 
-
 class Vote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
@@ -475,6 +503,21 @@ class Vote(models.Model):
     @cached_property
     def abstained(self):
         return self.value == VOTED.ABSTAIN
+
+class Option(models.Model):
+    initiative = models.ForeignKey(Initiative, related_name="options")
+    text = models.TextField()
+    index = models.IntegerField()
+
+class Preference(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    changed_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User)
+    option = models.ForeignKey(Option, related_name="preferences")
+    value = models.IntegerField()
+
+    class Meta:
+        unique_together = (("user", "option"),)
 
 class Quorum(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

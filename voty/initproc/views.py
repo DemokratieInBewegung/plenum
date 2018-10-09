@@ -30,9 +30,9 @@ import json
 
 from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS, VOTY_TYPES, BOARD_GROUP
 from .guard import can_access_initiative
-from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Moderation, Quorum, Supporter, Like)
+from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Option, Preference, Moderation, Quorum, Supporter, Like)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
-                    NewProposalForm, NewModerationForm, InviteUsersForm, PolicyChangeForm, PlenumVoteForm)
+                    NewProposalForm, NewModerationForm, InviteUsersForm, PolicyChangeForm, PlenumVoteForm, PlenumOptionsForm)
 from .serializers import SimpleInitiativeSerializer
 from django.contrib.auth.models import Permission
 
@@ -65,10 +65,11 @@ def non_ajax_redir(*redir_args, **redir_kwargs):
         return inner
     return decorator
 
-def get_voting_fragments(vote, initiative, request):
-    context = dict(vote=vote, initiative=initiative, user_count=initiative.eligible_voter_count)
+def get_voting_fragments(initiative, request):
+    context = dict(initiative=initiative, user_count=initiative.eligible_voter_count)
+    add_vote_context(context, initiative, request)
     return {'fragments': {
-        '#voting': render_to_string("fragments/voting.html",
+        '#voting': render_to_string("fragments/weighting.html" if initiative.is_plenumoptions() else "fragments/voting.html",
                                     context=context,
                                     request=request),
         '#jump-to-vote': render_to_string("fragments/jump_to_vote.html",
@@ -85,6 +86,19 @@ def get_voting_fragments(vote, initiative, request):
 #
 #                                                       
 
+def add_vote_context(ctx, init, request):
+    votes = init.votes.filter(user=request.user.id)
+    if votes.exists():
+        ctx['vote'] = votes.first()
+        ctx['participation_count'] = init.votes.count()
+
+    preferences = get_preferences(request,init)
+    if preferences.exists():
+        ctx['preferences'] = preferences
+        ctx['participation_count'] = init.options.first().preferences.count()
+
+def get_preferences(request,init):
+    return Preference.objects.filter(option__initiative=init, user_id=request.user)
 
 def personalize_argument(arg, user_id):
     arg.has_liked = arg.likes.filter(user=user_id).exists()
@@ -221,9 +235,7 @@ def item(request, init, slug=None, initype=None):
 
         ctx.update({'has_supported': init.supporting.filter(user=user_id).exists()})
 
-        votes = init.votes.filter(user=user_id)
-        if (votes.exists()):
-            ctx['vote'] = votes.first()
+        add_vote_context(ctx, init, request)
 
         for arg in ctx['arguments'] + ctx['proposals']:
             personalize_argument(arg, user_id)
@@ -233,6 +245,8 @@ def item(request, init, slug=None, initype=None):
         return render(request, 'initproc/policychange.html', context=ctx)
     if init.is_plenumvote():
         return render(request, 'initproc/plenumvote.html', context=ctx)
+    if init.is_plenumoptions():
+        return render(request, 'initproc/plenumoptions.html', context=ctx)
     elif init.is_initiative():
         return render(request, 'initproc/item.html', context=ctx)
 
@@ -305,9 +319,10 @@ def show_moderation(request, initiative, target_id, slug=None, initype=None):
 @login_required
 @can_access_initiative([STATES.PREPARE, STATES.FINAL_EDIT], 'can_edit')
 def edit(request, initiative):
+    is_post = request.method == 'POST'
     if initiative.is_initiative():
         form = InitiativeForm(request.POST or None, instance=initiative)
-        if request.method == 'POST':
+        if is_post:
             if form.is_valid():
                 with reversion.create_revision():
                     initiative.save()
@@ -328,7 +343,7 @@ def edit(request, initiative):
         return render(request, 'initproc/new.html', context=dict(form=form, initiative=initiative))
     elif initiative.is_policychange():
         form = PolicyChangeForm(request.POST or None, instance=initiative)
-        if request.method == 'POST':
+        if is_post:
             if form.is_valid():
                 with reversion.create_revision():
                     initiative.save()
@@ -347,7 +362,7 @@ def edit(request, initiative):
         return render(request, 'initproc/new_policychange.html', context=dict(form=form, policychange=initiative))
     elif initiative.is_plenumvote():
         form = PlenumVoteForm(request.POST or None, instance=initiative)
-        if request.method == 'POST':
+        if is_post:
             if form.is_valid():
                 with reversion.create_revision():
                     initiative.save()
@@ -363,7 +378,33 @@ def edit(request, initiative):
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
         return render(request, 'initproc/new_plenumvote.html', context=dict(form=form, plenumvote=initiative))
+    elif initiative.is_plenumoptions():
+        options = {}
+        if not is_post:
+            for i in range (1,4): # TODO variable number of options
+                options ['option{}'.format (i)] = initiative.options.get(index=i).text
+        form = PlenumOptionsForm(request.POST or None, instance=initiative,initial=options)
+        if is_post:
+            if form.is_valid():
+                with reversion.create_revision():
+                    initiative.save()
+                    for i in range (1,4): # TODO variable number of options
+                        option = Option.objects.get (initiative=initiative,index=i)
+                        option.text=form.data ['option{}'.format (i)]
+                        option.save ()
 
+                # Store some meta-information.
+                    reversion.set_user(request.user)
+                    if request.POST.get('commit_message', None):
+                        reversion.set_comment(request.POST.get('commit_message'))
+
+                messages.success(request, "Plenumsabwägung gespeichert.")
+                return redirect('/{}/{}'.format(initiative.einordnung, initiative.id))
+            else:
+                messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+
+
+        return render(request, 'initproc/new_plenumvote.html', context=dict(form=form, plenumvote=initiative))
 
 
 @login_required
@@ -694,8 +735,30 @@ def vote(request, init):
         my_vote.reason = reason
     my_vote.save()
 
-    return get_voting_fragments(my_vote, init, request)
+    return get_voting_fragments(init, request)
 
+@non_ajax_redir('/')
+@ajax
+@login_required
+@require_POST
+@can_access_initiative(STATES.VOTING) # must be in voting
+def preference(request, init):
+    preferences = get_preferences(request, init)
+    preferences_existed = preferences.exists()
+#    preferences.delete()
+#    return
+    print ("preference count: {}".format (preferences.count()))
+    print ("preference exists: {}".format (preferences.exists()))
+    for option in init.options.all():
+        value = request.POST.get('option{}'.format(option.index))
+        if preferences_existed:
+            my_preference = preferences.get(option=option)
+            my_preference.value = value
+        else:
+            my_preference = Preference(option=option, user_id=request.user.id, value=value)
+        my_preference.save()
+
+    return get_voting_fragments(init, request)
 
 
 @non_ajax_redir('/')
@@ -732,7 +795,16 @@ def compare(request, initiative, version_id):
 @can_access_initiative(STATES.VOTING) # must be in voting
 def reset_vote(request, init):
     Vote.objects.filter(initiative=init, user_id=request.user).delete()
-    return get_voting_fragments(None, init, request)
+    return get_voting_fragments(init, request)
+
+@non_ajax_redir('/')
+@ajax
+@login_required
+@require_POST
+@can_access_initiative(STATES.VOTING) # must be in voting
+def reset_preference(request, init):
+    get_preferences(request, init).delete()
+    return get_voting_fragments(init, request)
 
 # See §9 (2) AO
 @login_required
@@ -812,11 +884,44 @@ def new_plenumvote(request):
 
     return render(request, 'initproc/new_plenumvote.html', context=dict(form=form))
 
+@login_required
+def new_plenumoptions(request):
+    if not request.guard.can_create_plenum_vote():
+        raise PermissionDenied()
+
+    form = PlenumOptionsForm()
+    if request.method == 'POST':
+        form = PlenumOptionsForm(request.POST)
+        if form.is_valid():
+            pv = form.save(commit=False)
+            with reversion.create_revision():
+                pv.state = STATES.PREPARE
+                pv.einordnung = VOTY_TYPES.PlenumOptions
+                pv.save()
+
+                for i in range (1,4): # TODO variable number of options
+                    Option(initiative=pv,text=form.data ['option{}'.format (i)],index=i).save()
+
+                # Store some meta-information.
+                reversion.set_user(request.user)
+                if request.POST.get('commit_message', None):
+                    reversion.set_comment(request.POST.get('commit_message'))
+
+                # all board members are initiators of a plenum vote
+                for initiator in get_user_model().objects.filter(groups__name=BOARD_GROUP, is_active=True):
+                    Supporter(initiative=pv, user=initiator, initiator=True, ack=True, public=True).save()
+
+            return redirect('/{}/{}-{}'.format(pv.einordnung, pv.id, pv.slug))
+        else:
+            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+
+    return render(request, 'initproc/new_plenumoptions.html', context=dict(form=form))
+
 # This is only used for plenum votes; the plenum vote goes directly from preparation to voting
 @login_required
 @can_access_initiative([STATES.PREPARE], 'can_edit')
 def start_voting(request, init):
-    if init.is_plenumvote and init.ready_for_next_stage:
+    if (init.is_plenumvote or init.is_plenumoptions) and init.ready_for_next_stage:
         init.went_public_at = datetime.now()
         init.went_to_voting_at = datetime.now()
         init.state = STATES.VOTING

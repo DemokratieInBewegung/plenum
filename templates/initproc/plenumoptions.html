@@ -254,6 +254,19 @@
     </div>
 </div>
 
+{% if initiative.state == 'v' %}
+
+<div id="vote" class="container-fluid cta">
+    <div class="container">
+        <div class="row no-gutters">
+            {% include "fragments/weighting.html" %}
+
+        </div>
+    </div>
+</div>
+
+{% else %}
+
 {% for option in initiative.options.all %}
 <div id="initiative-text" class="container-fluid initiative-single">
     <div class="container">
@@ -271,17 +284,6 @@
     </div>
 </div>
 {% endfor %}
-
-{% if initiative.state == 'v' %}
-
-<div id="vote" class="container-fluid cta">
-    <div class="container">
-        <div class="row no-gutters">
-            {% include "fragments/weighting.html" %}
-
-        </div>
-    </div>
-</div>
 
 {% endif %}
 

@@ -111,7 +111,7 @@ class Guard:
         return init.supporting.filter(user_id=self.user.id)
 
     def my_vote(self, init):
-        return init.votes.filter(user=self.user.id).first()
+        return init.options.first().preferences.filter(user=self.user.id).exists() if init.options.exists() else init.votes.filter(user=self.user.id).first()
 
     @_compound_action
     def can_view(self, obj=None):

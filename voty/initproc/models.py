@@ -348,6 +348,8 @@ class Initiative(models.Model):
             return 'AO-Änderung'
         if self.is_plenumvote():
             return 'Vorlage'
+        if self.is_plenumoptions():
+            return 'Vorlage'
 
     def initiative_is_accepted(self):
         if self.yays <= self.nays: #always reject if too few yays

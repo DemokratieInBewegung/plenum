@@ -509,6 +509,9 @@ class Option(models.Model):
     text = models.TextField()
     index = models.IntegerField()
 
+    class Meta:
+        ordering = ['index']
+
 class Preference(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
@@ -518,6 +521,7 @@ class Preference(models.Model):
 
     class Meta:
         unique_together = (("user", "option"),)
+        ordering = ['option__index']
 
 class Quorum(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

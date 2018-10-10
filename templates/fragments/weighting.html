@@ -26,8 +26,10 @@ function enable_submit(which) {
 			<p style="padding-top:30px">{{option.text}}</p>
 			<div class="btn-group" role="group" style="display:inline">
 				{% for i in "01234567890" %}
-				<input type="radio" onchange="javascript:enable_submit({{option.index}})" name="option{{option.index}}" id="o{{option.index}}{{forloop.counter0}}" value="{{forloop.counter0}}" style="margin-right:0.1rem;margin-left:0.8rem">
-				<label for="o{{option.index}}{{forloop.counter0}}">{{forloop.counter0}}</label>
+				<label for="o{{option.index}}{{forloop.counter0}}">
+					<input type="radio" onchange="javascript:enable_submit({{option.index}})" name="option{{option.index}}" id="o{{option.index}}{{forloop.counter0}}" value="{{forloop.counter0}}" style="margin-right:0.1rem;margin-left:0.8rem">
+					{{forloop.counter0}}
+				</label>
 				{% endfor %}
 			</div>
 			{% endfor %}

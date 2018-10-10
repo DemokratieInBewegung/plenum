@@ -20,9 +20,9 @@
 <h3>Du hast folgende Widerstandspunkte vergeben:</h3>
 {% for preference in preferences %}
 <p style="padding-top:30px">{{preference.option.text}}</p>
-<div class="btn-group" role="group">
+<div class="btn-group" role="group" style="display:inline">
 	{% for i in "01234567890" %}
-	<input type="radio" onchange="javascript:enable_submit({{preference.option.index}})" name="option{{preference.option.index}}" id="o{{preference.option.index}}{{forloop.counter0}}" value="{{forloop.counter0}}" {% if preference.value == forloop.counter0 %}checked{% else %}disabled{% endif %}="1" style="height:1.5rem;margin-right:0.33rem;margin-left:1rem">
+	<input type="radio" onchange="javascript:enable_submit({{preference.option.index}})" name="option{{preference.option.index}}" id="o{{preference.option.index}}{{forloop.counter0}}" value="{{forloop.counter0}}" {% if preference.value == forloop.counter0 %}checked{% else %}disabled{% endif %}="1" style="margin-right:0.1rem;margin-left:0.8rem">
 	<label for="o{{preference.option.index}}{{forloop.counter0}}">{{forloop.counter0}}</label>
 	{% endfor %}
 </div>

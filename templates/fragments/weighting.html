@@ -13,7 +13,7 @@ function enable_submit(which) {
      	<form data-ajax-submit="true" action="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/reset_preference" method="POST">
 			{% include "fragments/participation.html" with closed=0 %}
 	 		{% csrf_token %}
-     		<button class="btn btn-sm btn-default" type="submit" title="hier klicken um zurückzunehmen" style="margin-top:30px">Widerstandspunkte zurücknehmen</button>
+			<div><button class="btn btn-sm btn-default" type="submit" title="hier klicken um zurückzunehmen" style="margin-top:30px">Widerstandspunkte zurücknehmen</button></div>
      		<div class="back-to-index">
 	 		<a href="/" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Übersicht</a>
 	 		</div>

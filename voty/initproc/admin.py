@@ -1,7 +1,7 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from .models import Initiative, Quorum, Supporter, Pro, Contra, Proposal, Comment, Vote, Moderation
+from .models import Initiative, Quorum, Supporter, Pro, Contra, Proposal, Comment, Vote, Moderation, Option, Preference
 
 class InitiativeAdmin(VersionAdmin):
     list_display = ['einordnung', 'title', 'state', 'created_at', 'changed_at']
@@ -33,3 +33,5 @@ admin.site.register(Proposal)
 admin.site.register(Comment)
 admin.site.register(Moderation, ModerationAdmin)
 admin.site.register(Vote)
+admin.site.register(Option)
+admin.site.register(Preference)

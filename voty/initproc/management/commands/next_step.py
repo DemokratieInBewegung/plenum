@@ -21,7 +21,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         
         for i in Initiative.objects.filter(state__in=AUTOMATIC_STAGES):
-            if i.ready_for_next_stage and i.end_of_this_phase <= date.today():
+            if i.ready_for_next_stage and i.end_of_this_phase_date <= date.today():
 
                 # phases incoming, prepare and moderation are entered through manual action
 

@@ -321,13 +321,13 @@ class Initiative(models.Model):
 
     def is_accepted(self):
         if self.is_initiative():
-            return self.initiative_is_accepted
+            return self.initiative_is_accepted()
 
         if self.is_policychange():
-            return self.policy_change_is_accepted
+            return self.policy_change_is_accepted()
 
         if self.is_plenumvote():
-            return self.plenumvote_is_accepted
+            return self.plenumvote_is_accepted()
 
     def is_initiative(self):
         return self.einordnung == None or self.einordnung == VOTY_TYPES.Einzelinitiative

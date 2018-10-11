@@ -4,8 +4,8 @@ from reversion.admin import VersionAdmin
 from .models import Initiative, Quorum, Supporter, Pro, Contra, Proposal, Comment, Vote, Moderation, Option, Preference
 
 class InitiativeAdmin(VersionAdmin):
-    list_display = ['einordnung', 'title', 'state', 'created_at', 'changed_at']
-    ordering = ['einordnung', 'title', 'created_at', 'changed_at']
+    list_display = ['einordnung', 'id', 'title', 'state', 'created_at', 'changed_at']
+    ordering = ['id', 'einordnung', 'title', 'created_at', 'changed_at']
     # actions = ['move_on', 'send_invite', 'decline']
     search_fields = ['einordnung', 'title', 'summary']
 

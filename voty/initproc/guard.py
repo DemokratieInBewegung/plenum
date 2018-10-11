@@ -94,7 +94,7 @@ class Guard:
 
     def is_editable(self, obj=None): #likes
         initiative = self.find_parent_initiative(obj)
-        if initiative and initiative.state in [STATES.ACCEPTED, STATES.REJECTED]: # no liking of closed inis
+        if initiative and initiative.state in [STATES.COMPLETED, STATES.ACCEPTED, STATES.REJECTED]: # no liking of closed inis
             return False
         return True
 

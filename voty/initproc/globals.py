@@ -17,6 +17,7 @@ class NOTIFICATIONS:
         WENT_TO_DISCUSSION = "init_discussion"
         DISCUSSION_CLOSED = "init_discussion_closed"
         WENT_TO_VOTE = 'init_vote'
+        COMPLETED = 'init_completed'
         ACCEPTED = 'init_accepted'
         REJECTED = 'init_rejected'
         NEW_ARGUMENT = 'init_new_arg'
@@ -34,6 +35,7 @@ class STATES:
     MODERATION = 'm'
     HIDDEN = 'h'
     VOTING = 'v'
+    COMPLETED = 'c'
     ACCEPTED = 'a'
     REJECTED = 'r'
 
@@ -42,6 +44,7 @@ PUBLIC_STATES = [STATES.SEEKING_SUPPORT,
                  STATES.DISCUSSION,
                  STATES.FINAL_EDIT,
                  STATES.VOTING,
+                 STATES.COMPLETED,
                  STATES.ACCEPTED,
                  STATES.REJECTED]
 

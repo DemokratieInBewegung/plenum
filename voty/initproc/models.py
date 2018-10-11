@@ -36,6 +36,7 @@ class Initiative(models.Model):
             (STATES.MODERATION, "with moderation team"),
             (STATES.HIDDEN, "hidden"),
             (STATES.VOTING, "is being voted on"),
+            (STATES.COMPLETED, "was completed"),
             (STATES.ACCEPTED, "was accepted"),
             (STATES.REJECTED, "was rejected")
         ])
@@ -305,7 +306,7 @@ class Initiative(models.Model):
 
     @property
     def show_debate(self):
-        return self.state in [self.STATES.DISCUSSION, self.STATES.FINAL_EDIT, self.STATES.MODERATION, self.STATES.VOTING, self.STATES.ACCEPTED, self.STATES.REJECTED]
+        return self.state in [self.STATES.DISCUSSION, self.STATES.FINAL_EDIT, self.STATES.MODERATION, self.STATES.VOTING, self.STATES.COMPLETED, self.STATES.ACCEPTED, self.STATES.REJECTED]
 
     @cached_property
     def yays(self):
@@ -318,6 +319,13 @@ class Initiative(models.Model):
     @cached_property
     def abstains(self):
         return self.votes.filter(value=VOTED.ABSTAIN).count()
+
+    def get_vote_result(self):
+        if self.is_plenumoptions():
+            return STATES.COMPLETED
+        if self.is_accepted():
+            return STATES.ACCEPTED
+        return STATES.REJECTED
 
     def is_accepted(self):
         if self.is_initiative():

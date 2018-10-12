@@ -95,7 +95,7 @@
 							</span>
 							{% endifequal %}
 						</div>
-						{% if initiative.state != 'i' and initiative.state != 'a' and initiative.state != 'r' and initiative.state != 'p' and initiative.state != 'm' %}
+						{% if initiative.state != 'i' and initiative.state != 'c' and initiative.state != 'a' and initiative.state != 'r' and initiative.state != 'p' and initiative.state != 'm' %}
 						<div class="flex-item mr-auto">
 							<span class="text-muted align-middle">
 								Noch {{initiative.end_of_this_phase | timeuntil}}

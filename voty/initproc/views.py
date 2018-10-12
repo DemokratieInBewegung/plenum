@@ -95,7 +95,16 @@ def add_vote_context(ctx, init, request):
     preferences = get_preferences(request,init)
     if preferences.exists():
         ctx['preferences'] = preferences
+
+    if init.options.exists():
         ctx['participation_count'] = init.options.first().preferences.count()
+        ctx['options'] = sorted ([{
+            "text": option.text,
+            "total": sum([preference.value for preference in option.preferences.all()])}
+            for option in init.options.all()],
+            key=lambda x:x['total'])
+        for option in ctx['options']:
+            option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
 
 def get_preferences(request,init):
     return Preference.objects.filter(option__initiative=init, user_id=request.user)

@@ -13,8 +13,7 @@ Enthaltungen: {{target.abstains}}
 {% if target.nays %}
 Folgende Gründe für Nein-Stimmen wurden angegeben:
 {% for i in reasons %}{% if i.reason %}
-{{i.count}}x: Die Initiative {{i.reason}}
-{% endif %}{% endfor %}{% endif %}
+{{i.count}}x: {% if i.reason.strip %}Die {{target.subject}} {{i.reason}}{% else %}Keine Angabe{% endif %}{% endif %}{% endfor %}{% endif %}
 
 Viele Grüße,
 DEMOKRATIE IN BEWEGUNG

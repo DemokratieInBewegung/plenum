@@ -87,24 +87,14 @@ def get_voting_fragments(initiative, request):
 #                                                       
 
 def add_vote_context(ctx, init, request):
-    votes = init.votes.filter(user=request.user.id)
-    if votes.exists():
-        ctx['vote'] = votes.first()
-        ctx['participation_count'] = init.votes.count()
 
     preferences = get_preferences(request,init)
     if preferences.exists():
         ctx['preferences'] = preferences
 
-    if init.options.exists():
-        ctx['participation_count'] = init.options.first().preferences.count()
-        ctx['options'] = sorted ([{
-            "text": option.text,
-            "total": sum([preference.value for preference in option.preferences.all()])}
-            for option in init.options.all()],
-            key=lambda x:x['total'])
-        for option in ctx['options']:
-            option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
+    votes = init.votes.filter(user=request.user.id)
+    if votes.exists():
+        ctx['vote'] = votes.first()
 
 def get_preferences(request,init):
     return Preference.objects.filter(option__initiative=init, user_id=request.user)
@@ -238,6 +228,19 @@ def item(request, init, slug=None, initype=None):
     ctx['arguments'].sort(key=lambda x: (-x.likes.count(), x.created_at))
     ctx['proposals'].sort(key=lambda x: (-x.likes.count(), x.created_at))
     ctx['is_editable'] = request.guard.is_editable (init)
+
+    if init.options.exists():
+        ctx['participation_count'] = init.options.first().preferences.count()
+        if init.state == 'c':
+            ctx['options'] = sorted ([{
+                "text": option.text,
+                "total": sum([preference.value for preference in option.preferences.all()])}
+                for option in init.options.all()],
+                key=lambda x:x['total'])
+            for option in ctx['options']:
+                option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
+    else:
+        ctx['participation_count'] = init.votes.count()
 
     if request.user.is_authenticated:
         user_id = request.user.id

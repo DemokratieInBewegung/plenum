@@ -1,10 +1,10 @@
 Hallo,
 
-die Abstimmung Deiner Initiative {{target.title}} ist beendet.
+die Abstimmung Deiner {{target.subject}} {{target.title}} ist beendet.
 
-Du findest die Initiative unter {{ base_url }}/initiative/{{target.id}}-{{target.slug}}
+Du findest die {{target.subject}} unter {{ base_url }}/{{target.einordnung}}/{{target.id}}-{{target.slug}}
 
-Es haben {{votecount}} Beweger*innen abgestimmt.
+Es haben {{votecount}} Abstimmungsberechtigte abgestimmt.
 
 Ja-Stimmen: {{target.yays}}
 Nein-Stimmen: {{target.nays}}

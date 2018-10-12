@@ -6,7 +6,6 @@ from django.core.mail import EmailMessage
 from django.db.models import Count
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from math import ceil
 from datetime import datetime, date
 
 """
@@ -61,16 +60,17 @@ class Command(BaseCommand):
                         #     i.notify_followers(NOTIFICATIONS.INITIATIVE.REJECTED) todo: define rejected notification
 
                         #send feedback message to all initiators
-                        EmailMessage(
-                            'Feedback zur Abstimmung',
-                            render_to_string('initadmin/voting_feedback.txt', context=dict(
-                                target=i,
-                                votecount = i.votes.count,
-                                reasons = i.votes.values('reason').annotate(count=Count('reason'))
-                            )),
-                            settings.DEFAULT_FROM_EMAIL,
-                            [u.user.email for u in i.initiators]
-                        ).send()
+                        if not i.is_plenumoptions():
+                            EmailMessage(
+                                'Feedback zur Abstimmung',
+                                render_to_string('initadmin/voting_feedback.txt', context=dict(
+                                    target=i,
+                                    votecount = i.votes.count,
+                                    reasons = i.votes.values('reason').annotate(count=Count('reason'))
+                                )),
+                                settings.DEFAULT_FROM_EMAIL,
+                                [u.user.email for u in i.initiators]
+                            ).send()
 
                     except Exception as e:
                         print(e)

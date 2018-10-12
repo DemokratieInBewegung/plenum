@@ -140,6 +140,7 @@ var magicSearch = new Vue({
         {name: 'Finale Überarbeitung', value:'e'},
         {name: 'Finale Prüfung', value:'m'},
         {name: 'Abstimmung', value:'v'},
+        {name: 'Abgewogen', value:'c'},
         {name: 'Angenommen', value:'a'},
         {name: 'Abgelehnt', value:'r'}
       ]},

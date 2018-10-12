@@ -77,6 +77,12 @@
 							</span>
 							{% endifequal %}
 
+							{% ifequal initiative.state 'c' %}
+							<span class="badge badge-completed">
+								Abgewogen
+							</span>
+							{% endifequal %}
+
 							{% ifequal initiative.state 'a' %}
 							<span class="badge badge-accepted">
 								Angenommen

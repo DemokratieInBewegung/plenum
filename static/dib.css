@@ -931,6 +931,17 @@ header .alert {
   background-color: #AE2568;
 }
 
+/* Badge Color: Was Completed */
+
+.badge-completed {
+  color: #BBBBBB;
+  border-color: #BBBBBB;
+}
+
+.typefilter input:checked + .badge-completed {
+  background-color: #BBBBBB;
+}
+
 /* Badge Color: Was Accepted */
 
 .badge-accepted {

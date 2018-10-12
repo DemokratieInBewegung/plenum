@@ -2,7 +2,7 @@ Hallo,
 
 die Abstimmung Deiner {{target.subject}} {{target.title}} ist beendet.
 
-Du findest die {{target.subject}} unter {{ base_url }}/{{target.einordnung}}/{{target.id}}-{{target.slug}}
+Du findest die {{target.subject}} unter http://abstimmen.bewegung.jetzt/{{target.einordnung}}/{{target.id}}-{{target.slug}}
 
 Es haben {{votecount}} Abstimmungsberechtigte abgestimmt.
 

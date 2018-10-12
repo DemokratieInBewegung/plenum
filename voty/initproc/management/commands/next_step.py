@@ -6,7 +6,6 @@ from django.core.mail import EmailMessage
 from django.db.models import Count
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from math import ceil
 from datetime import datetime, date
 
 """

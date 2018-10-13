@@ -234,11 +234,21 @@ def item(request, init, slug=None, initype=None):
         if init.state == 'c':
             ctx['options'] = sorted ([{
                 "text": option.text,
-                "total": sum([preference.value for preference in option.preferences.all()])}
+                "total": sum([preference.value for preference in option.preferences.all()]),
+                "counts": [option.preferences.filter(value=i).count() for i in range(0, 11)]}
                 for option in init.options.all()],
                 key=lambda x:x['total'])
+            max_count = 0
+            min_total = 10 * ctx['participation_count'] + 1
             for option in ctx['options']:
                 option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
+                for count in option['counts']:
+                    max_count = max(max_count, count)
+                if option['total'] < min_total:
+                    min_total = option['total']
+                    ctx['preferred_option'] = option['text']
+            ctx['max_count'] = max_count
+
     else:
         ctx['participation_count'] = init.votes.count()
 

@@ -17,8 +17,8 @@ body {
          -- select Custom Subsetting and use Unicode Ranges
             -- download files for Unicode range 0000-00FF
             -- download files for Unicode range 0100-FFFF
-      4. Rename the files downloaded from fontsquirrel and place them in static/fonts
-      5. Add font faces below (one per weight/style/range combination)
+      3. Rename the files downloaded from fontsquirrel and place them in static/fonts
+      4. Add font faces below (one per weight/style/range combination)
 
    Useful for finding out which fonts a page actually uses: https://fount.artequalswork.com
 */

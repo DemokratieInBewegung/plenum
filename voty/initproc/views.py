@@ -68,6 +68,8 @@ def non_ajax_redir(*redir_args, **redir_kwargs):
 def get_voting_fragments(initiative, request):
     context = dict(initiative=initiative, user_count=initiative.eligible_voter_count)
     add_vote_context(context, initiative, request)
+    add_participation_count(context, initiative)
+
     return {'fragments': {
         '#voting': render_to_string("fragments/weighting.html" if initiative.is_plenumoptions() else "fragments/voting.html",
                                     context=context,
@@ -95,6 +97,9 @@ def add_vote_context(ctx, init, request):
     votes = init.votes.filter(user=request.user.id)
     if votes.exists():
         ctx['vote'] = votes.first()
+
+def add_participation_count(ctx, init):
+    ctx['participation_count'] = init.options.first().preferences.count() if init.options.exists() else init.votes.count()
 
 def get_preferences(request,init):
     return Preference.objects.filter(option__initiative=init, user_id=request.user)
@@ -230,7 +235,6 @@ def item(request, init, slug=None, initype=None):
     ctx['is_editable'] = request.guard.is_editable (init)
 
     if init.options.exists():
-        ctx['participation_count'] = init.options.first().preferences.count()
         if init.state == 'c':
             ctx['options'] = sorted ([{
                 "text": option.text,
@@ -249,8 +253,7 @@ def item(request, init, slug=None, initype=None):
                     ctx['preferred_option'] = option['text']
             ctx['max_count'] = max_count
 
-    else:
-        ctx['participation_count'] = init.votes.count()
+    add_participation_count(ctx, init)
 
     if request.user.is_authenticated:
         user_id = request.user.id

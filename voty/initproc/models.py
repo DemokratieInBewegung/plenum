@@ -271,7 +271,7 @@ class Initiative(models.Model):
 
     @cached_property
     def plenumvote_end_of_this_phase(self):
-        duration = timedelta(days=3,hours=16)
+        duration = timedelta(days=4,hours=16)
         halfyear = timedelta(days=183)
 
         if self.was_closed_at:

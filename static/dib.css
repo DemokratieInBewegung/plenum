@@ -32,6 +32,80 @@ body {
 }
 
 @font-face {
+  font-family: 'Merriweather';
+  font-style: italic;
+  font-weight: 300;
+  src: url(/static/fonts/Merriweather-LightItalic.eot); /* For IE6-8 */
+  src: local('Merriweather-LightItalic'),
+    url(/static/fonts/Merriweather-LightItalic.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-LightItalic.woff) format('woff'),
+    url(/static/fonts/Merriweather-LightItalic.ttf) format('truetype');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: italic;
+  font-weight: 300;
+  src: url(/static/fonts/Merriweather-LightItalic-Extended.eot); /* For IE6-8 */
+  src: local('Merriweather-LightItalic'),
+    url(/static/fonts/Merriweather-LightItalic-Extended.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-LightItalic-Extended.woff) format('woff'),
+    url(/static/fonts/Merriweather-LightItalic-Extended.ttf) format('truetype');
+    unicode-range: U+0100-FFFF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/static/fonts/Merriweather-Regular.eot); /* For IE6-8 */
+  src: local('Merriweather'),
+    local('Merriweather-Regular'),
+    url(/static/fonts/Merriweather-Regular.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-Regular.woff) format('woff'),
+    url(/static/fonts/Merriweather-Regular.ttf) format('truetype');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/static/fonts/Merriweather-Regular-Extended.eot); /* For IE6-8 */
+  src: local('Merriweather'),
+    local('Merriweather-Regular'),
+    url(/static/fonts/Merriweather-Regular-Extended.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-Regular-Extended.woff) format('woff'),
+    url(/static/fonts/Merriweather-Regular-Extended.ttf) format('truetype');
+    unicode-range: U+0100-FFFF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: italic;
+  font-weight: 400;
+  src: url(/static/fonts/Merriweather-Italic.eot); /* For IE6-8 */
+  src: local('Merriweather-Italic'),
+    url(/static/fonts/Merriweather-Italic.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-Italic.woff) format('woff'),
+    url(/static/fonts/Merriweather-Italic.ttf) format('truetype');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: italic;
+  font-weight: 400;
+  src: url(/static/fonts/Merriweather-Italic-Extended.eot); /* For IE6-8 */
+  src: local('Merriweather-Italic'),
+    url(/static/fonts/Merriweather-Italic-Extended.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-Italic-Extended.woff) format('woff'),
+    url(/static/fonts/Merriweather-Italic-Extended.ttf) format('truetype');
+    unicode-range: U+0100-FFFF;
+}
+
+@font-face {
   font-family: 'Rubik';
   font-style: normal;
   font-weight: 300;

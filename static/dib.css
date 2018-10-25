@@ -5,23 +5,7 @@ body {
   /*background-image: linear-gradient(90deg, #21466b, #62388E, #eb5c4a);*/
 }
 
-/* Google fonts
-   To add further fonts:
-      1. Download the TTF files for the font from https://fonts.google.com
-         -- click "Select this font"
-         -- click the download icon
-         -- the customize tab has no effect on the download but is useful for translating weight/style combinations to filenames
-      2. Upload the TTF files for the required weight/stlye combinations at https://www.fontsquirrel.com/tools/webfont-generator
-         -- use Expert mode
-         -- select TrueType, WOFF, WOFF2 and EOT Lite
-         -- select Custom Subsetting and use Unicode Ranges
-            -- download files for Unicode range 0000-00FF
-            -- download files for Unicode range 0100-FFFF
-      3. Rename the files downloaded from fontsquirrel and place them in static/fonts
-      4. Add font faces below (one per weight/style/range combination)
-
-   Useful for finding out which fonts a page actually uses: https://fount.artequalswork.com
-*/
+/* Google fonts */
 
 @font-face {
   font-family: 'Merriweather';

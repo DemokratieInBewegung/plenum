@@ -12,9 +12,7 @@ body {
   font-style: normal;
   font-weight: 300;
   src: url(/static/fonts/Merriweather-Light.eot); /* For IE6-8 */
-  src: local('Merriweather'),
-    local('Merriweather-Light'),
-    local('Merriweather Light'),
+  src: local('Merriweather-Light'),
     url(/static/fonts/Merriweather-Light.woff2) format('woff2'),
     url(/static/fonts/Merriweather-Light.woff) format('woff'),
     url(/static/fonts/Merriweather-Light.ttf) format('truetype');
@@ -26,9 +24,7 @@ body {
   font-style: normal;
   font-weight: 300;
   src: url(/static/fonts/Merriweather-Light-Extended.eot); /* For IE6-8 */
-  src: local('Merriweather'),
-    local('Merriweather-Light'),
-    local('Merriweather Light'),
+  src: local('Merriweather-Light'),
     url(/static/fonts/Merriweather-Light-Extended.woff2) format('woff2'),
     url(/static/fonts/Merriweather-Light-Extended.woff) format('woff'),
     url(/static/fonts/Merriweather-Light-Extended.ttf) format('truetype');
@@ -40,9 +36,7 @@ body {
   font-style: normal;
   font-weight: 300;
   src: url(/static/fonts/Rubik-Light.eot); /* For IE6-8 */
-  src: local('Rubik'),
-    local('Rubik-Light'),
-    local('Rubik Light'),
+  src: local('Rubik-Light'),
     url(/static/fonts/Rubik-Light.woff2) format('woff2'),
     url(/static/fonts/Rubik-Light.woff) format('woff'),
     url(/static/fonts/Rubik-Light.ttf) format('truetype');
@@ -54,9 +48,7 @@ body {
   font-style: normal;
   font-weight: 300;
   src: url(/static/fonts/Rubik-Light-Extended.eot); /* For IE6-8 */
-  src: local('Rubik'),
-    local('Rubik-Light'),
-    local('Rubik Light'),
+  src: local('Rubik-Light'),
     url(/static/fonts/Rubik-Light-Extended.woff2) format('woff2'),
     url(/static/fonts/Rubik-Light-Extended.woff) format('woff'),
     url(/static/fonts/Rubik-Light-Extended.ttf) format('truetype');
@@ -70,7 +62,6 @@ body {
   src: url(/static/fonts/Rubik-Regular.eot); /* For IE6-8 */
   src: local('Rubik'),
     local('Rubik-Regular'),
-    local('Rubik Regular'),
     url(/static/fonts/Rubik-Regular.woff2) format('woff2'),
     url(/static/fonts/Rubik-Regular.woff) format('woff'),
     url(/static/fonts/Rubik-Regular.ttf) format('truetype');
@@ -84,7 +75,6 @@ body {
   src: url(/static/fonts/Rubik-Regular-Extended.eot); /* For IE6-8 */
   src: local('Rubik'),
     local('Rubik-Regular'),
-    local('Rubik Regular'),
     url(/static/fonts/Rubik-Regular-Extended.woff2) format('woff2'),
     url(/static/fonts/Rubik-Regular-Extended.woff) format('woff'),
     url(/static/fonts/Rubik-Regular-Extended.ttf) format('truetype');
@@ -96,9 +86,7 @@ body {
   font-style: italic;
   font-weight: 400;
   src: url(/static/fonts/Rubik-Italic.eot); /* For IE6-8 */
-  src: local('Rubik'),
-    local('Rubik-Italic'),
-    local('Rubik Italic'),
+  src: local('Rubik-Italic'),
     url(/static/fonts/Rubik-Italic.woff2) format('woff2'),
     url(/static/fonts/Rubik-Italic.woff) format('woff'),
     url(/static/fonts/Rubik-Italic.ttf) format('truetype');
@@ -110,9 +98,7 @@ body {
   font-style: italic;
   font-weight: 400;
   src: url(/static/fonts/Rubik-Italic-Extended.eot); /* For IE6-8 */
-  src: local('Rubik'),
-    local('Rubik-Italic'),
-    local('Rubik Italic'),
+  src: local('Rubik-Italic'),
     url(/static/fonts/Rubik-Italic-Extended.woff2) format('woff2'),
     url(/static/fonts/Rubik-Italic-Extended.woff) format('woff'),
     url(/static/fonts/Rubik-Italic-Extended.ttf) format('truetype');
@@ -124,9 +110,7 @@ body {
   font-style: normal;
   font-weight: 500;
   src: url(/static/fonts/Rubik-Medium.eot); /* For IE6-8 */
-  src: local('Rubik'),
-    local('Rubik-Medium'),
-    local('Rubik Medium'),
+  src: local('Rubik-Medium'),
     url(/static/fonts/Rubik-Medium.woff2) format('woff2'),
     url(/static/fonts/Rubik-Medium.woff) format('woff'),
     url(/static/fonts/Rubik-Medium.ttf) format('truetype');
@@ -138,9 +122,7 @@ body {
   font-style: normal;
   font-weight: 500;
   src: url(/static/fonts/Rubik-Medium-Extended.eot); /* For IE6-8 */
-  src: local('Rubik'),
-    local('Rubik-Medium'),
-    local('Rubik Medium'),
+  src: local('Rubik-Medium'),
     url(/static/fonts/Rubik-Medium-Extended.woff2) format('woff2'),
     url(/static/fonts/Rubik-Medium-Extended.woff) format('woff'),
     url(/static/fonts/Rubik-Medium-Extended.ttf) format('truetype');

@@ -234,6 +234,8 @@ def item(request, init, slug=None, initype=None):
     ctx['proposals'].sort(key=lambda x: (-x.likes.count(), x.created_at))
     ctx['is_editable'] = request.guard.is_editable (init)
 
+    add_participation_count(ctx, init)
+
     if init.options.exists():
         if init.state == 'c':
             ctx['options'] = sorted ([{
@@ -252,8 +254,6 @@ def item(request, init, slug=None, initype=None):
                     min_total = option['total']
                     ctx['preferred_option'] = option['text']
             ctx['max_count'] = max_count
-
-    add_participation_count(ctx, init)
 
     if request.user.is_authenticated:
         user_id = request.user.id

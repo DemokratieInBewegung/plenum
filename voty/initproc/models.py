@@ -13,7 +13,7 @@ import reversion
 
 from datetime import datetime, timedelta, date
 
-from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START
+from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START, VOTY_TYPES
 from django.db import models
 import pytz
 
@@ -36,13 +36,13 @@ class Initiative(models.Model):
             (STATES.MODERATION, "with moderation team"),
             (STATES.HIDDEN, "hidden"),
             (STATES.VOTING, "is being voted on"),
+            (STATES.COMPLETED, "was completed"),
             (STATES.ACCEPTED, "was accepted"),
             (STATES.REJECTED, "was rejected")
         ])
 
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
-
 
     summary = models.TextField(blank=True)
     problem = models.TextField(blank=True)
@@ -52,9 +52,15 @@ class Initiative(models.Model):
     arbeitsweise = models.TextField(blank=True)
     init_argument = models.TextField(blank=True)
 
-    einordnung = models.CharField(max_length=50, choices=[('Einzelinitiative','Einzelinitiative')])
+    einordnung = models.CharField(max_length=50, choices=[
+        (VOTY_TYPES.Einzelinitiative,'Einzelinitiative'),
+        (VOTY_TYPES.PolicyChange,'AO-Änderung'),
+        (VOTY_TYPES.BallotVote,'Urabstimmung'),
+        (VOTY_TYPES.PlenumVote,'Plenumsentscheidung'),
+        (VOTY_TYPES.PlenumOptions,'Plenumsabwägung')
+    ])
     ebene = models.CharField(max_length=50, choices=[('Bund', 'Bund')])
-    bereich = models.CharField(max_length=50, choices=[(item,item) for item in SUBJECT_CATEGORIES])
+    bereich = models.CharField(max_length=60, choices=[(item,item) for item in SUBJECT_CATEGORIES])
 
     went_public_at = models.DateField(blank=True, null=True)
     went_to_discussion_at = models.DateField(blank=True, null=True)
@@ -77,54 +83,124 @@ class Initiative(models.Model):
 
     @cached_property
     def sort_index(self):
+        return self.type_priority + self.time_index
+
+    @cached_property
+    def type_priority(self):
+        return timedelta(days = 0 if self.is_initiative() else -1000000)
+
+    @cached_property
+    def time_index(self):
         timezone = self.created_at.tzinfo
         if self.was_closed_at: #recently closed first
             return datetime.today().date() - self.was_closed_at
 
         elif self.end_of_this_phase: #closest to deadline first
-            return self.end_of_this_phase - datetime.today().date()
+            return self.end_of_this_phase_date - datetime.today().date()
 
         else: #newest first
             return datetime.now(timezone) - self.created_at
 
     @cached_property
     def ready_for_next_stage(self):
+        if self.is_initiative():
+            return self.initiative_ready_for_next_stage
 
-        if self.state in [Initiative.STATES.INCOMING, Initiative.STATES.MODERATION]:
+        if self.is_policychange():
+            return self.policy_change_ready_for_next_stage
+
+        if self.is_plenumvote():
+            return self.plenumvote_ready_for_next_stage
+
+        if self.is_plenumoptions(): # TODO: check that options are non-empty
+            return self.plenumvote_ready_for_next_stage
+
+    @cached_property
+    def initiative_ready_for_next_stage(self):
+        if self.state in [STATES.INCOMING, STATES.MODERATION]:
             return self.supporting.filter(initiator=True, ack=True).count() == INITIATORS_COUNT
 
-        if self.state in [Initiative.STATES.PREPARE, Initiative.STATES.FINAL_EDIT]:
+        if self.state in [STATES.PREPARE, STATES.FINAL_EDIT]:
             #three initiators and no empty text fields
             return (self.supporting.filter(initiator=True, ack=True).count() == INITIATORS_COUNT and
-                self.title and
-                self.subtitle and
-                self.arbeitsweise and
-                self.bereich and
-                self.ebene and
-                self.einordnung and
-                self.fin_vorschlag and
-                self.forderung and
-                self.init_argument and
-                self.kosten and
-                self.problem and
-                self.summary)
+                    self.title and
+                    self.subtitle and
+                    self.arbeitsweise and
+                    self.bereich and
+                    self.ebene and
+                    self.einordnung and
+                    self.fin_vorschlag and
+                    self.forderung and
+                    self.init_argument and
+                    self.kosten and
+                    self.problem and
+                    self.summary)
 
-        if self.state == Initiative.STATES.SEEKING_SUPPORT:
+        if self.state == STATES.SEEKING_SUPPORT:
             return self.supporting.filter().count() >= self.quorum
 
-        if self.state == Initiative.STATES.DISCUSSION:
+        if self.state == STATES.DISCUSSION:
             # there is nothing we have to accomplish
             return True
 
-        if self.state == Initiative.STATES.VOTING:
+        if self.state == STATES.VOTING:
             # there is nothing we have to accomplish
             return True
 
         return False
 
+    @cached_property
+    def policy_change_ready_for_next_stage(self):
+        if self.state in [STATES.PREPARE, STATES.FINAL_EDIT]:
+            #no empty text fields
+            return (self.title and
+                    self.subtitle and
+                    self.summary)
+
+        if self.state == STATES.DISCUSSION:
+            # there is nothing we have to accomplish
+            return True
+
+        if self.state == STATES.VOTING:
+            # there is nothing we have to accomplish
+            return True
+
+        return False
+
+    @cached_property
+    def plenumvote_ready_for_next_stage(self):
+        if self.state in [STATES.PREPARE, STATES.FINAL_EDIT]:
+            #no empty text fields
+            return (self.title and
+                    self.subtitle and
+                    self.summary)
+
+        if self.state == STATES.VOTING:
+            # there is nothing we have to accomplish
+            return True
+
+        return False
+
+    @cached_property
+    def end_of_this_phase_date(self):
+        return self.end_of_this_phase.date() if hasattr(self.end_of_this_phase,'date') else self.end_of_this_phase
 
     @cached_property
     def end_of_this_phase(self):
+        if self.is_initiative():
+            return self.initiative_end_of_this_phase
+
+        if self.is_policychange():
+            return self.policy_change_end_of_this_phase
+
+        if self.is_plenumvote():
+            return self.plenumvote_end_of_this_phase
+
+        if self.is_plenumoptions():
+            return self.plenumoptions_end_of_this_phase
+
+    @cached_property
+    def initiative_end_of_this_phase(self):
         week = timedelta(days=7)
         halfyear = timedelta(days=183)
 
@@ -174,6 +250,54 @@ class Initiative(models.Model):
         return None
 
     @cached_property
+    def policy_change_end_of_this_phase(self):
+        week = timedelta(days=7)
+        halfyear = timedelta(days=183)
+
+        if self.was_closed_at:
+            return self.was_closed_at + halfyear # Half year later.
+
+        if self.went_to_discussion_at:
+            if self.state == STATES.DISCUSSION:
+                return self.went_to_discussion_at + (3 * week)
+
+            elif self.state == STATES.FINAL_EDIT:
+                return self.went_to_discussion_at + (5 * week)
+
+            elif self.state == STATES.VOTING:
+                return self.went_to_voting_at + (2 * week)
+
+        return None
+
+    @cached_property
+    def plenumvote_end_of_this_phase(self):
+        duration = timedelta(days=4,hours=18)
+        halfyear = timedelta(days=183)
+
+        if self.was_closed_at:
+            return self.was_closed_at + halfyear # Half year later.
+
+        if self.state == STATES.VOTING:
+            at = self.went_to_voting_at
+            return datetime(year=at.year,month=at.month,day=at.day) + duration
+
+        return None
+
+    @cached_property
+    def plenumoptions_end_of_this_phase(self):
+        duration = timedelta(days=3,hours=12)
+        halfyear = timedelta(days=183)
+
+        if self.was_closed_at:
+            return self.was_closed_at + halfyear # Half year later.
+
+        if self.state == STATES.VOTING:
+            at = self.went_to_voting_at
+            return datetime(year=at.year,month=at.month,day=at.day) + duration
+
+        return None
+
+    @cached_property
     def quorum(self):
         return Quorum.current_quorum()
 
@@ -183,7 +307,7 @@ class Initiative(models.Model):
 
     @property
     def show_debate(self):
-        return self.state in [self.STATES.DISCUSSION, self.STATES.FINAL_EDIT, self.STATES.MODERATION, self.STATES.VOTING]
+        return self.state in [self.STATES.DISCUSSION, self.STATES.FINAL_EDIT, self.STATES.MODERATION, self.STATES.VOTING, self.STATES.COMPLETED, self.STATES.ACCEPTED, self.STATES.REJECTED]
 
     @cached_property
     def yays(self):
@@ -197,7 +321,46 @@ class Initiative(models.Model):
     def abstains(self):
         return self.votes.filter(value=VOTED.ABSTAIN).count()
 
+    def get_vote_result(self):
+        if self.is_plenumoptions():
+            return STATES.COMPLETED
+        if self.is_accepted():
+            return STATES.ACCEPTED
+        return STATES.REJECTED
+
     def is_accepted(self):
+        if self.is_initiative():
+            return self.initiative_is_accepted()
+
+        if self.is_policychange():
+            return self.policy_change_is_accepted()
+
+        if self.is_plenumvote():
+            return self.plenumvote_is_accepted()
+
+    def is_initiative(self):
+        return self.einordnung is None or self.einordnung == VOTY_TYPES.Einzelinitiative
+
+    def is_policychange(self):
+        return self.einordnung == VOTY_TYPES.PolicyChange
+
+    def is_plenumvote(self):
+        return self.einordnung == VOTY_TYPES.PlenumVote
+
+    def is_plenumoptions(self):
+        return self.einordnung == VOTY_TYPES.PlenumOptions
+
+    def subject(self):
+        if self.is_initiative():
+            return 'Initiative'
+        if self.is_policychange():
+            return 'AO-Änderung'
+        if self.is_plenumvote():
+            return 'Vorlage'
+        if self.is_plenumoptions():
+            return 'Vorlage'
+
+    def initiative_is_accepted(self):
         if self.yays <= self.nays: #always reject if too few yays
             return False
 
@@ -219,6 +382,18 @@ class Initiative(models.Model):
 
         # no variants:
         return self.yays > self.nays
+
+    def policy_change_is_accepted(self):
+        if self.yays >= (self.nays * 2): #two third majority
+            return True
+
+        return False
+
+    def plenumvote_is_accepted(self):
+        if self.yays > (self.nays): #simple majority
+            return True
+
+        return False
 
     @cached_property
     def all_variants(self):
@@ -285,7 +460,7 @@ class Initiative(models.Model):
             return get_user_model().objects.filter(is_active=True).count()
 
     def __str__(self):
-        return self.title;
+        return self.title
 
     def notify_moderators(self, *args, **kwargs):
         return self.notify([m.user for m in self.moderations.all()], *args, **kwargs)
@@ -309,16 +484,16 @@ class Initiative(models.Model):
 
         notify(recipients, notice_type, context, **kwargs)
 
-
 class Vote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
     initiative = models.ForeignKey(Initiative, related_name="votes")
-    value = models.IntegerField(choices=[
+    CHOICES = [
         (VOTED.YES, "Ja"),
         (VOTED.NO, "Nein"),
-        (VOTED.ABSTAIN, "Enthaltung")])
+        (VOTED.ABSTAIN, "Enthaltung")]
+    value = models.IntegerField(choices=CHOICES)
     reason = models.CharField(max_length=100, blank=True)
 
     class Meta:
@@ -339,6 +514,25 @@ class Vote(models.Model):
     @cached_property
     def abstained(self):
         return self.value == VOTED.ABSTAIN
+
+class Option(models.Model):
+    initiative = models.ForeignKey(Initiative, related_name="options")
+    text = models.TextField()
+    index = models.IntegerField()
+
+    class Meta:
+        ordering = ['index']
+
+class Preference(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    changed_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User)
+    option = models.ForeignKey(Option, related_name="preferences")
+    value = models.IntegerField()
+
+    class Meta:
+        unique_together = (("user", "option"),)
+        ordering = ['option__index']
 
 class Quorum(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

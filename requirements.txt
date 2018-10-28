@@ -19,6 +19,7 @@ django-notifications-hq==1.2
 django-rest-framework==0.1.0
 django-reversion==2.0.9
 django-reversion-compare==0.7.5
+django-su==0.7.0
 django-tag-parser==2.1
 django-user-accounts==2.0.1
 djangoajax==2.3.7

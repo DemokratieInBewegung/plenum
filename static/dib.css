@@ -327,6 +327,16 @@ em {
     border-radius: 0;
 }*/
 
+.plenumsabwaegung-card, .plenumsentscheidung-card, .ao-aenderung-card {
+  border: 2px solid #777;
+}
+
+.plenumsabwaegung-card .badge, .plenumsentscheidung-card .badge, .ao-aenderung-card .badge {
+  background-image: linear-gradient(to right,#274f9e, #eb5c4a);
+  border: 0;
+  color: white;
+}
+
 .card-header {
   padding: 0.5rem 1rem;
 }
@@ -646,6 +656,10 @@ a:hover, a:focus, a:visited {
   text-decoration: none;
 }
 
+div.initiative-subtitle a {
+  color: rgba(57, 92, 208, 1);
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-weight: 400;
 }
@@ -915,6 +929,17 @@ header .alert {
 
 .typefilter input:checked + .badge-vote {
   background-color: #AE2568;
+}
+
+/* Badge Color: Was Completed */
+
+.badge-completed {
+  color: #BBBBBB;
+  border-color: #BBBBBB;
+}
+
+.typefilter input:checked + .badge-completed {
+  background-color: #BBBBBB;
 }
 
 /* Badge Color: Was Accepted */

@@ -1,13 +1,13 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from .models import Initiative, Quorum, Supporter, Pro, Contra, Proposal, Comment, Vote, Moderation
+from .models import Initiative, Quorum, Supporter, Pro, Contra, Proposal, Comment, Vote, Moderation, Option, Preference
 
 class InitiativeAdmin(VersionAdmin):
-    list_display = ['title', 'state', 'created_at', 'changed_at']
-    ordering = ['title', 'created_at', 'changed_at']
+    list_display = ['einordnung', 'id', 'title', 'state', 'created_at', 'changed_at']
+    ordering = ['id', 'einordnung', 'title', 'created_at', 'changed_at']
     # actions = ['move_on', 'send_invite', 'decline']
-    search_fields = ['title', 'summary']
+    search_fields = ['einordnung', 'title', 'summary']
 
 
 class SupporterAdmin(admin.ModelAdmin):
@@ -33,3 +33,5 @@ admin.site.register(Proposal)
 admin.site.register(Comment)
 admin.site.register(Moderation, ModerationAdmin)
 admin.site.register(Vote)
+admin.site.register(Option)
+admin.site.register(Preference)

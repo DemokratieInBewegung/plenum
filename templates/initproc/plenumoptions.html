@@ -1,0 +1,257 @@
+{% extends "_base.html" %}
+{% load mathfilters %}
+{% load markdown %}
+{% load fullurl %}
+
+{% block head_title %}
+{{initiative.title}} – im Plenum der Beweger*innen von DEMOKRATIE IN BEWEGUNG
+{% endblock %}
+
+{% block custom_sm_title %}
+    <meta property="og:title" content="{{initiative.title}}">
+    <meta property="og:description" content="{{initiative.subtitle}}">
+    <meta property="og:url" content="{% fullurl 'initiative_item' initype=initiative.einordnung init_id=initiative.id slug=initiative.slug %}">
+{% endblock %}
+
+{% block custom_header %}
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="/" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Übersicht</a>
+            </div>
+        </div>
+        <div class="row initiative-title">
+            <div class="col-12">
+                <h1 class="display-4">{{initiative.title}}</h1>
+            </div>
+        </div>
+        <div class="row initiative-subtitle">
+            <div class="col-12">
+                {{initiative.subtitle | markdown}}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="container">
+        <div class="row initiative-state">
+            <div class="col-12">
+                {% if initiative.state == 'p' %}
+                {% if request.guard.can_edit %}
+                {% if not initiative.ready_for_next_stage %}
+                <div class="pre-submit">
+                    <div class="alert alert-info" role="alert">
+                        <h6>Um die Plenumsabwägungsvorlage veröffentlichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
+                        Alle Textfelder müssen ausgefüllt sein.
+                    </div>
+                </div>
+                {% endif %}
+                <form action="/{{initiative.einordnung}}/{{initiative.id}}/edit" style="display:inline"  method="GET">
+                    {% csrf_token %}
+                    <button title="Bearbeiten" class="btn btn-success edit" type="submit">
+                        <i class="material-icons edit">edit</i><span>Bearbeiten</span>
+                    </button>
+                </form>
+                {% if initiative.ready_for_next_stage %}
+                <form action="/{{initiative.einordnung}}/{{initiative.id}}/start_voting" style="display:inline"  method="POST">
+                    {% csrf_token %}
+                    <button title="Zur Abstimmung einreichen" class="btn bg-vote submit" type="submit">
+                        <i class="material-icons thumbs-up-down">thumbs_up_down</i><span>Zur Abstimmung einreichen</span>
+                    </button>
+                </form>
+                {% endif %}
+                {% endif %}
+                {% endif %}
+
+                {% if initiative.state == 'p' %}
+                <p>
+                    An dieser Plenumsabwägungsvorlage <strong class="badge-prepare">wird noch gearbeitet</strong>.
+                </p>
+                {% endif %}
+
+                {% ifequal initiative.state 'h' %}
+                <p>
+                    Diese Plenumsabwägungsvorlage <strong class="badge-arrivals">ist nicht sichtbar</strong>.
+                </p>
+                {% endifequal %}
+
+                {% ifequal initiative.state 'v' %}
+                <p>
+                    Über diese Plenumsabwägungsvorlage <a href="#voting"><strong class="badge-vote">wird gerade abgestimmt</strong></a>.
+                </p>
+                {% endifequal %} {% ifequal initiative.state 'c' %}
+                <p>Diese Plenumsabwägung {% if user.is_authenticated %}
+                    <a href="#cta">{% endif %}<strong class="badge-abgewogen">ist abgeschlossen</strong>{% if user.is_authenticated %}</a>{% endif %}.
+                    {% endifequal %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid initiators">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Bundesvorstand</h6>
+            </div>
+        </div>
+        <div class="row no-gutters avatar">
+            <div class="d-flex flex-wrap">
+                {% for usr in initiative.initiators %}
+                <div class="text-center initiator">
+                    {% include "fragments/avatar.html" with user=usr.user %}
+                    <div class="name">
+                        {{ usr.user.get_full_name|default:usr.user.username }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% include "initproc/blocks/meta.html" %}
+
+{% ifequal initiative.state 'v' %}
+<div id="cta" class="container-fluid cta">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
+                <p>Über diese Plenumsabwägungsvorlage wird gerade abgestimmt.</p>
+                {% include "fragments/jump_to_vote.html" %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endifequal %}
+
+{% if initiative.state == 'c' %}
+<div id="cta" class="container-fluid cta voted">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Ergebnis der Abstimmung</h6>
+            </div>
+        </div>
+        {% if participation_count > 0 %}
+        <div class="row" style="padding-top: 1rem">
+            <div class="col-12">
+                <h6>Die Optionen haben im Durchschnitt folgende Widerstandspunkte bekommen:</h6>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+            <div class="col-12">
+                {% for option in options %}
+                <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{{option.text}}</div>
+                <div class="progress">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ option.total|div:participation_count|mul:10|stringformat:".5s" }}%" aria-valuenow="{{ option.total|div:participation_count|mul:10|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100">{{option.average}}</div>
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ option.total|div:participation_count|sub:10|mul:-1|mul:10|stringformat:".5s" }}%" aria-valuenow="{{ option.total|div:participation_count|sub:10|mul:-1|mul:10|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% if preferred_option %}
+        <div class="row" style="padding-top: 1rem">
+            <div class="col-12">
+                <h6>Als Option mit dem geringsten Widerstand wurde also ausgewählt:</h6>
+                <div style="margin-top:40px;margin-bottom:30px;text-align:center"><span class="text-success" style="font-size:16pt;padding:0.3rem;border:1px solid #5cb85c;border-radius:4px">{{preferred_option}}</span></div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row" style="padding-top: 1rem">
+            <div class="col-12">
+                <h6>Im Einzelnen waren die Widerstandspunkte wie folgt verteilt:</h6>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+            <div class="col-12">
+                {% for option in options %}
+                <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{{option.text}}</div>
+                {% for count in option.counts %}
+                <div class="progress">
+                    <span style="width:1.5rem;background-color:#F8F8F8">{{forloop.counter0}}</span>
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ count|div:max_count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ count|div:max_count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100">{% if count %}{{count}}{% endif %}</div>
+                </div>
+                {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="row" style="padding-top: 1rem">
+            <div class="col-12">
+                <span>An der Abstimmung zu dieser Plenumsabwägung hat niemand teilgenommen.</span>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row" style="padding-top: 1rem">
+            <div class="col-12">
+                {% include "fragments/participation.html" with closed=1 %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div id="initiative-text" class="container-fluid initiative-single">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h6 class="text-muted classification">Text der Plenumsabwägungsvorlage{% if initiative.versions.count > 1 %}
+                    <a href="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/compare/{{initiative.versions.1.id}}" data-ajax="true" class="change-history">(Änderungshistorie einsehen <span class="changes-badge"><span class="material-icons history">history</span> {{initiative.versions.count}}</span>)</a>{% endif %}</h6>
+            </div>
+        </div>
+
+        <div class="row initiative-text">
+            <div class="col-12">
+                {{initiative.summary|markdown}}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if initiative.state == 'v' %}
+
+<div id="vote" class="container-fluid cta">
+    <div class="container">
+        <div class="row no-gutters">
+            {% include "fragments/weighting.html" %}
+
+        </div>
+    </div>
+</div>
+
+{% else %}
+
+{% for option in initiative.options.all %}
+<div id="initiative-text" class="container-fluid initiative-single">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h6 class="text-muted classification">Option {{option.index}}</h6>
+            </div>
+        </div>
+
+        <div class="row initiative-text">
+            <div class="col-12">
+                {{option.text|markdown}}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endif %}
+
+{% endblock %} {% block body-javascript %} {{ block.super }}
+<script type="text/javascript">
+</script>
+{% endblock %}

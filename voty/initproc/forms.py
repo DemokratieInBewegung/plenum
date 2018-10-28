@@ -114,7 +114,7 @@ class InitiativeForm(forms.ModelForm):
         model = Initiative
         fields = ['title', 'subtitle', 'summary', 'problem', 'forderung',
                   'kosten', 'fin_vorschlag', 'arbeitsweise', 'init_argument',
-                  'einordnung', 'ebene', 'bereich']
+                  'ebene', 'bereich']
 
         labels = {
             "title" : "Überschrift",
@@ -219,3 +219,59 @@ class NewModerationForm(forms.ModelForm):
         model = Moderation
         fields = ['q{}'.format(i) for i in range(QESTIONS_COUNT)] + ['text', 'vote']
 
+
+class PolicyChangeForm(forms.ModelForm):
+
+    class Meta:
+        model = Initiative
+        fields = ['title', 'subtitle','summary']
+
+        labels = {
+            "title" : "Überschrift",
+            "subtitle": "Anreißer",
+            "summary" : "Text",
+        }
+        help_texts = {
+            "title" : "Die Überschrift sollte die AO-Änderung kurz zusammenfassen.",
+            "subtitle": "Ein bis zwei Sätze zur AO-Änderung.",
+            "summary" : "Kompletter Text der AO-Änderung, mit Referenzen/Links auf bestehende AO-Artikel.",
+        }
+
+class PlenumVoteForm(forms.ModelForm):
+
+    class Meta:
+        model = Initiative
+        fields = ['title', 'subtitle','summary']
+
+        labels = {
+            "title" : "Überschrift",
+            "subtitle": "Anreißer",
+            "summary" : "Text",
+        }
+        help_texts = {
+            "title" : "Die Überschrift sollte die Entscheidungsvorlage kurz zusammenfassen.",
+            "subtitle": "Ein bis zwei Sätze zur Entscheidungsvorlage.",
+            "summary" : "Kompletter Text der Plenumsentscheidungsvorlage.",
+        }
+
+class PlenumOptionsForm(forms.ModelForm):
+
+    #TODO: variable number of options
+    option1 = forms.CharField(label="Option1",widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Die erste Option'}))
+    option2 = forms.CharField(label="Option2",widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Die zweite Option'}))
+    option3 = forms.CharField(label="Option3",widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Die dritte Option'}))
+
+    class Meta:
+        model = Initiative
+        fields = ['title', 'subtitle','summary']
+
+        labels = {
+            "title" : "Überschrift",
+            "subtitle": "Anreißer",
+            "summary" : "Text",
+        }
+        help_texts = {
+            "title" : "Die Überschrift sollte die Abwägungsvorlage kurz zusammenfassen.",
+            "subtitle": "Ein bis zwei Sätze zur Abwägungsvorlage.",
+            "summary" : "Kompletter Text der Plenumsabwägungsvorlage.",
+        }

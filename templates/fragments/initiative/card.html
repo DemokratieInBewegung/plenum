@@ -1,7 +1,8 @@
 {% load guard %}
 {% load mathfilters %}
 {% load fullurl %}
-<div id="init-card-{{initiative.id}}" class="card {% guard is_supporting initiative %}{% if is_supporting %}supported{% endif %} {% guard my_vote initiative %}{% if my_vote %}voted{% endif %}">
+{% load markdown %}
+<div id="init-card-{{initiative.id}}" class="card {% guard is_supporting initiative %}{% if is_supporting %}supported{% endif %} {% guard my_vote initiative %}{% if my_vote %}voted{% endif %} {{initiative.einordnung}}-card">
 	<div class="card-header">
 		<div class="container-fluid">
 			 <div class="row no-gutters">
@@ -17,7 +18,7 @@
 							{% ifequal initiative.state 'i' %}
 							<span class="badge badge-arrivals">
 
-								{% if user.is_staff %}
+								{% if perms.initproc.add_moderation %}
 									{% guard should_moderate_initiative initiative %}
 									{% if should_moderate_initiative %}
 									💥💥 Bitte prüfen 💥💥
@@ -57,7 +58,7 @@
 
 							<span class="badge badge-arrivals">
 
-								{% if user.is_staff %}
+								{% if perms.initproc.add_moderation %}
 									{% guard should_moderate_initiative initiative %}
 									{% if should_moderate_initiative %}
 									💥💥 Bitte final prüfen 💥💥
@@ -76,6 +77,12 @@
 							</span>
 							{% endifequal %}
 
+							{% ifequal initiative.state 'c' %}
+							<span class="badge badge-completed">
+								Abgewogen
+							</span>
+							{% endifequal %}
+
 							{% ifequal initiative.state 'a' %}
 							<span class="badge badge-accepted">
 								Angenommen
@@ -88,7 +95,7 @@
 							</span>
 							{% endifequal %}
 						</div>
-						{% if initiative.state != 'i' and initiative.state != 'a' and initiative.state != 'r' and initiative.state != 'p' and initiative.state != 'm' %}
+						{% if initiative.state != 'i' and initiative.state != 'c' and initiative.state != 'a' and initiative.state != 'r' and initiative.state != 'p' and initiative.state != 'm' %}
 						<div class="flex-item mr-auto">
 							<span class="text-muted align-middle">
 								Noch {{initiative.end_of_this_phase | timeuntil}}
@@ -103,40 +110,36 @@
 						{% if user.is_authenticated %}
 
 						<div class="flex-item">
-							{% if initiative.state != 'p' and initiative.state != 'i' %}
+							{% if initiative.is_initiative and initiative.state != 'p' and initiative.state != 'i' %}
 							{% guard is_supporting initiative %}
 							{% if is_supporting %}
 							<div class="participation-indicator">
-								<i class="material-icons check-circle fg-support" data-toggle="tooltip" title="{% if initiative.state == 's' %}Du unterstützt diese Initiative{% else %}Du hast diese Initiative unterstützt{% endif %}">check_circle</i>
+								<i class="material-icons check-circle fg-support" data-toggle="tooltip" title="{% if initiative.state == 's' %}Du unterstützt diese {{initiative.subject}}{% else %}Du hast diese {{initiative.subject}} unterstützt{% endif %}">check_circle</i>
 							</div>
 							{% else %}
 							<div class="participation-indicator">
-								<i class="material-icons check-circle fg-inactive" data-toggle="tooltip" title="{% if initiative.state == 's' %}Du unterstützt diese Initiative noch nicht{% else %}Du hast diese Initiative nicht unterstützt{% endif %}">check_circle</i>
+								<i class="material-icons check-circle fg-inactive" data-toggle="tooltip" title="{% if initiative.state == 's' %}Du unterstützt diese {{initiative.subject}} noch nicht{% else %}Du hast diese {{initiative.subject}} nicht unterstützt{% endif %}">check_circle</i>
 							</div>
 							{% endif %}
 							{% endif %}
 
 							{% if initiative.state == 'v' or initiative.state == 'a' or initiative.state == 'r' %}
+							<div class="participation-indicator">
 							{% guard my_vote initiative %}
 							{% if my_vote %}
   								{% if my_vote.in_favor %}
-								<div class="participation-indicator">
-									<i class="material-icons thumb-up" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du stimmst für diese Initiative{% else %}Du hast für diese Initiative gestimmt{% endif %}">thumb_up</i>
-								</div>
+									<i class="material-icons thumb-up" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du stimmst für diese {{initiative.subject}}{% else %}Du hast für diese {{initiative.subject}} gestimmt{% endif %}">thumb_up</i>
 								{% elif my_vote.against %}
-								<div class="participation-indicator">
-									<i class="material-icons thumb-down" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du stimmst gegen diese Initiative{% else %}Du hast gegen diese Initiative gestimmt{% endif %}">thumb_down</i>
-								</div>
+									<i class="material-icons thumb-down" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du stimmst gegen diese {{initiative.subject}}{% else %}Du hast gegen diese {{initiative.subject}} gestimmt{% endif %}">thumb_down</i>
 								{% elif my_vote.abstained %}
-								<div class="participation-indicator">
 									<i class="material-icons abstain" data-toggle="tooltip" title="{% if initiative.state == 'v' %}Du enthältst Dich{% else %}Du hast Dich enthalten{% endif %}">panorama_fish_eye</i>
-								</div>
+								{% else %}
+									<i class="material-icons thumbs-up-down" data-toggle="tooltip" title="Du hast über diese {{initiative.subject}} {% if initiative.state == 'v' %}schon {% endif %}abgestimmt">thumbs_up_down</i>
 								{% endif %}
 							{% else %}
-							<div class="participation-indicator">
-								<i class="material-icons thumbs-up-down fg-inactive" data-toggle="tooltip" title="Du hast über diese Initiative {% if initiative.state == 'v' %}noch {% endif %}nicht abgestimmt">thumbs_up_down</i>
-							</div>
+								<i class="material-icons thumbs-up-down fg-inactive" data-toggle="tooltip" title="Du hast über diese {{initiative.subject}} {% if initiative.state == 'v' %}noch {% endif %}nicht abgestimmt">thumbs_up_down</i>
 							{% endif %}
+							</div>
 							{% endif %}
 						</div>
 						{% endif %}
@@ -147,14 +150,14 @@
 	</div>
 	<div class="card-block">
     	<h4 class="card-title init-title">
-    		<a href="{% fullurl 'initiative_item' init_id=initiative.id slug=initiative.slug %}">
+    		<a href="{% fullurl 'initiative_item' initype=initiative.einordnung init_id=initiative.id slug=initiative.slug %}">
 				{{initiative.title}}
 			</a>
 		</h4>
-    	<p class="card-text">
-    		{{initiative.subtitle}}
-    	</p>
-    	<a href="{% fullurl 'initiative_item' init_id=initiative.id slug=initiative.slug %}" class="go-to-intiative"><i class="material-icons chevron-right">chevron_right</i>zur Initiative</a>
+		<div class="card-text">
+			{{initiative.subtitle | markdown}}
+		</div>
+		<a href="{% fullurl 'initiative_item' initype=initiative.einordnung init_id=initiative.id slug=initiative.slug %}" class="go-to-initiative"><i class="material-icons chevron-right">chevron_right</i>zur {{initiative.get_einordnung_display}}</a>
   	</div>
   	<div class="card-footer">
   		<div class="container-fluid">

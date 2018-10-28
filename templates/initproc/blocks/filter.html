@@ -70,6 +70,14 @@
 						    </label>
 						</div>
 						<div class="col-auto">
+							<label>
+								<input name="f" value="c" type="checkbox" {% if 'c' in filters %} checked{% endif %}>
+								<span class="badge badge-completed">
+									<i class="material-icons check-box">check_box</i><i class="material-icons check-box-outline-blank">check_box_outline_blank</i>Abgewogen
+								</span>
+							</label>
+						</div>
+						<div class="col-auto">
 						    <label>
 						      	<input name="f" value="a" type="checkbox" {% if 'a' in filters %} checked{% endif %}>
 						      	<span class="badge badge-accepted">
@@ -85,6 +93,7 @@
 						      	</span>
 						    </label>
 						</div>
+						<input name="f" value="x" type="checkbox" checked hidden="true">
 					</div>
 				</div>
 			</div>

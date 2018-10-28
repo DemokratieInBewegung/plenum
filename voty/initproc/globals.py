@@ -17,6 +17,7 @@ class NOTIFICATIONS:
         WENT_TO_DISCUSSION = "init_discussion"
         DISCUSSION_CLOSED = "init_discussion_closed"
         WENT_TO_VOTE = 'init_vote'
+        COMPLETED = 'init_completed'
         ACCEPTED = 'init_accepted'
         REJECTED = 'init_rejected'
         NEW_ARGUMENT = 'init_new_arg'
@@ -34,6 +35,7 @@ class STATES:
     MODERATION = 'm'
     HIDDEN = 'h'
     VOTING = 'v'
+    COMPLETED = 'c'
     ACCEPTED = 'a'
     REJECTED = 'r'
 
@@ -42,12 +44,20 @@ PUBLIC_STATES = [STATES.SEEKING_SUPPORT,
                  STATES.DISCUSSION,
                  STATES.FINAL_EDIT,
                  STATES.VOTING,
+                 STATES.COMPLETED,
                  STATES.ACCEPTED,
                  STATES.REJECTED]
 
-STAFF_ONLY_STATES = [STATES.INCOMING,
-                     STATES.MODERATION,
-                     STATES.HIDDEN]
+TEAM_ONLY_STATES = [STATES.INCOMING,
+                    STATES.MODERATION,
+                    STATES.HIDDEN]
+
+class VOTY_TYPES:
+    Einzelinitiative = 'initiative'
+    PolicyChange = 'ao-aenderung'
+    BallotVote = 'urabstimmung'
+    PlenumVote = 'plenumsentscheidung'
+    PlenumOptions = 'plenumsabwaegung'
 
 class VOTED:
     """
@@ -85,3 +95,5 @@ INITIATORS_COUNT = 3
 MINIMUM_MODERATOR_VOTES = 5
 MINIMUM_FEMALE_MODERATOR_VOTES = 3
 MINIMUM_DIVERSE_MODERATOR_VOTES = 2
+
+BOARD_GROUP = "Bundesvorstand"

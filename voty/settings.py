@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'avatar',
     'mathfilters',
     'mailer',
+    'easy_thumbnails',
     'pinax.notifications',
     'notifications',
     'bootstrapform',
@@ -52,6 +53,8 @@ INSTALLED_APPS = [
     'django_ajax',
     'reversion',
     'corsheaders',
+    'pinax.invitations',
+    'pinax.teams',
 
     # must be before admin ...
     'dal',

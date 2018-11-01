@@ -39,7 +39,9 @@ oauthlib==2.1.0
 olefile==0.46
 packaging==17.1
 Pillow==5.2.0
+pinax-invitations==6.1.2
 pinax-notifications==5.0.3
+pinax-teams==1.0.5
 psycopg2==2.7.5
 pyparsing==2.2.1
 python3-openid==3.1.0

@@ -26,7 +26,7 @@
                         {% endif %}
 
                         <div class="media-body">
-                            <h4 class="media-heading"><a href="{% url 'team_detail' slug=team.slug %}">{{ team.name }}</a></h4>
+                            <h4 class="media-heading"><a href="{% url 'teams:team_detail' slug=team.slug %}">{{ team.name }}</a></h4>
                             {{ team.get_access_display }}
                         </div>
                     </div>

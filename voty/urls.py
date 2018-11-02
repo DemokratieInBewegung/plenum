@@ -20,7 +20,8 @@ from django.conf.urls.static import static
 from django.views.generic.base import TemplateView
 import notifications.urls
 
-urlpatterns = [
+urlpatterns =  static(settings.STATIC_URL, document_root=settings.STATIC_ROOT
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + [
     url(r'', include('voty.initadmin.urls')),
     url(r'^admin/', admin.site.urls),
     url(r"^account/", include("account.urls")),
@@ -29,7 +30,6 @@ urlpatterns = [
     url(r'^registrieren', TemplateView.as_view(template_name='static/registrieren.html')),
     url(r'^nachrichten/', include(notifications.urls, namespace='notifications')),
     url(r"^nachrichten/", include("pinax.notifications.urls")),
-    url(r"^teams/", include("pinax.teams.urls", namespace="teams")),
+    url(r'', include('voty.publikative.urls')),
     url(r'', include('voty.initproc.urls'))
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT
-) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]

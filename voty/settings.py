@@ -55,7 +55,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'pinax.invitations',
     'pinax.teams',
-
+    'pinax.blog',
+    'pinax.images',
+    "pinax.templates",
     # must be before admin ...
     'dal',
     'dal_select2',
@@ -114,6 +116,10 @@ ROOT_URLCONF = 'voty.urls'
 LOGIN_URL = "/account/login/"
 LOGIN_REDIRECT_URL = "/"
 
+PINAX_BLOG_SCOPING_MODEL = "pinax_teams.Team"
+PINAX_BLOG_SCOPING_URL_VAR = "team"
+PINAX_BLOG_SLUG_UNIQUE = True
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -128,6 +134,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'account.context_processors.account',
+                "pinax.blog.context_processors.scoped"
             ],
         },
     },

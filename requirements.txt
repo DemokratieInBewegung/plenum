@@ -25,7 +25,7 @@ django-reversion-compare==0.8.5
 django-su==0.8.0
 django-tag-parser==3.1
 django-user-accounts==2.0.3
-djangoajax==3.0.3
+djangoajax==2.3.7
 djangorestframework==3.8.2
 dominate==2.3.1
 easy-thumbnails==2.5

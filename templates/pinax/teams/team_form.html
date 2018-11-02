@@ -1,4 +1,4 @@
-{% extends "in_box.html" %}
+{% extends "site_base.html" %}
 
 {% load bootstrap %}
 {% load thumbnail %}
@@ -8,7 +8,7 @@
 {% block head_title %}Create Team{% endblock %}
 
 
-{% block body %}
+{% block content %}
     <div class="row">
         <div class="col-md-6">
             <form class="form profile-form" action="" method="POST" enctype="multipart/form-data">
@@ -44,9 +44,9 @@
 
                 <button type="submit" class="btn btn-primary">Save</button>
                 {% if team.pk %}
-                    <a class="btn btn-default" href="{% url 'teams:team_detail' team.slug %}">Cancel</a>
+                    <a class="btn btn-default" href="{% url 'pub:teams:team_detail' team.slug %}">Cancel</a>
                 {% else %}
-                    <a class="btn btn-default" href="{% url 'teams:team_list' %}">Cancel</a>
+                    <a class="btn btn-default" href="{% url 'pub:teams:team_list' %}">Cancel</a>
                 {% endif %}
             </form>
         </div>

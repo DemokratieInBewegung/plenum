@@ -34,7 +34,7 @@ blog_general = [
 ]
 
 team_blog = [
-    url(r"^$", BlogIndexView.as_view(), name="blog"),
+    url(r"^$", BlogIndexView.as_view(), name="show"),
     url(r"^post/(?P<post_pk>\d+)/$", StaffPostDetailView.as_view(), name="blog_post_pk"),
     url(r"^post/(?P<post_secret_key>\w+)/$", SecretKeyPostDetailView.as_view(), name="blog_post_secret"),
 

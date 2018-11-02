@@ -23,7 +23,7 @@
 
             {% if team.description %}<p>{{ team.description }}</p>{% endif %}
 
-            <a class="btn btn-default btn-xs" href="{% url 'teams:team_detail' team.slug %}">back to team</a>
+            <a class="btn btn-default btn-xs" href="{% url 'blog:show' team.slug %}">back to team</a>
         </div>
         <div class="col-md-8">
             {% if user.is_staff or role == "manager" or role == "owner" %}

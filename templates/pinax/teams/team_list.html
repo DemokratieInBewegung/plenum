@@ -1,15 +1,16 @@
-{% extends "in_box.html" %}
+{% extends "site_base.html" %}
+{% load thumbnail %}
 
 {% block head_title %}Teams{% endblock %}
 
-{% block body %}
+{% block content %}
 <div class="container-fluid">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
 
                 <h1>Teams
-                    <a class="btn btn-default" href="{% url 'teams:team_create' %}"><i class="fa fa-plus"></i> Create Team</a>
+                    <a class="btn btn-default" href="{% url 'pub:teams:team_create' %}"><i class="fa fa-plus"></i> Create Team</a>
                 </h1>
             </div>
         </div>
@@ -18,7 +19,7 @@
                 <div class="col-md-3">
                     <div class="media" style="margin-bottom: 16px;">
                         {% if team.avatar %}
-                            <img width="72" height="72" class="media-object pull-left" src="{{team.avatar}}" alt="{{ profile.name|default:user.username }}">
+                            <img width="72" height="72" class="media-object pull-left" src="{% thumbnail team.avatar 72x72 crop %}" alt="{{ profile.name|default:user.username }}">
                         {% else %}
                             <div class="default-avatar media-object pull-left">
                                 <i class="fa fa-group fa-3x"></i>
@@ -26,7 +27,7 @@
                         {% endif %}
 
                         <div class="media-body">
-                            <h4 class="media-heading"><a href="{% url 'teams:team_detail' slug=team.slug %}">{{ team.name }}</a></h4>
+                            <h4 class="media-heading"><a href="{% url 'pub:blog:show' slug=team.slug %}">{{ team.name }}</a></h4>
                             {{ team.get_access_display }}
                         </div>
                     </div>

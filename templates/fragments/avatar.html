@@ -1,4 +1,5 @@
 {% load avatar_full_url %}
+<div class="moderation-icon">
 <img
 	src="{% avatar_full_url user size %}"
 	title="{{user.firstname|default:user.username}}"
@@ -6,3 +7,7 @@
 	height="{{ size }}"
 	class="avatar"
 />
+	{{badgex}}
+{% if badgex == 'y' %}<span class="badge badge-success"><i class="material-icons">thumb_up</i></span>{% elif badgex == 'n' %}<span class="badge badge-danger"><i class="material-icons">thumb_down</i></span>{% else %}<span class="badge badge-default"><i class="material-icons">thumbs_updown</i></span>{% endif %}
+
+</div>

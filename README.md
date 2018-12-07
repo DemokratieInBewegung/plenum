@@ -47,6 +47,8 @@ pip install -r requirements.txt
 
 3. (create and) update the database
 ```
+python manage.py migrate pinax_notifications
+python manage.py migrate initproc 0009
 python manage.py migrate
 ```
 

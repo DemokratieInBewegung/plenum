@@ -31,7 +31,7 @@ def init_teams_and_permissions(apps, schema_editor):
     if team:
         for user in User.objects.filter(is_staff=True, is_active=True):
             user.groups.add (team)
-            print ('... added all staff members to group "Prüfungsteam"')
+        print ('... added all staff members to group "Prüfungsteam"')
 
         permission = Permission.objects.get(content_type__app_label='initproc', codename='add_moderation')
         team.permissions.add (permission)

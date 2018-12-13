@@ -209,7 +209,7 @@ class NewModerationForm(forms.ModelForm):
         if cleanded_data['vote'] == 'y':
             for i in range(QESTIONS_COUNT):
                 if cleanded_data['q{}'.format(i) ]:
-                    self.add_error("vote", "Du hast positive gewertet, dabei hast Du mindestens ein Problem oben markiert")
+                    self.add_error("vote", "Du hast positiv gewertet, dabei hast Du mindestens ein Problem oben markiert")
                     break
         else:
             if not cleanded_data['text']:

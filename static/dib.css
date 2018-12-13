@@ -106,6 +106,54 @@ body {
 }
 
 @font-face {
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: 700;
+  src: url(/static/fonts/Merriweather-Bold.eot); /* For IE6-8 */
+  src: local('Merriweather-Bold'),
+    url(/static/fonts/Merriweather-Bold.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-Bold.woff) format('woff'),
+    url(/static/fonts/Merriweather-Bold.ttf) format('truetype');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: 700;
+  src: url(/static/fonts/Merriweather-Bold-Extended.eot); /* For IE6-8 */
+  src: local('Merriweather-Bold'),
+    url(/static/fonts/Merriweather-Bold-Extended.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-Bold-Extended.woff) format('woff'),
+    url(/static/fonts/Merriweather-Bold-Extended.ttf) format('truetype');
+    unicode-range: U+0100-FFFF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: italic;
+  font-weight: 700;
+  src: url(/static/fonts/Merriweather-BoldItalic.eot); /* For IE6-8 */
+  src: local('Merriweather-BoldItalic'),
+    url(/static/fonts/Merriweather-BoldItalic.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-BoldItalic.woff) format('woff'),
+    url(/static/fonts/Merriweather-BoldItalic.ttf) format('truetype');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: italic;
+  font-weight: 700;
+  src: url(/static/fonts/Merriweather-BoldItalic-Extended.eot); /* For IE6-8 */
+  src: local('Merriweather-BoldItalic'),
+    url(/static/fonts/Merriweather-BoldItalic-Extended.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-BoldItalic-Extended.woff) format('woff'),
+    url(/static/fonts/Merriweather-BoldItalic-Extended.ttf) format('truetype');
+    unicode-range: U+0100-FFFF;
+}
+
+@font-face {
   font-family: 'Rubik';
   font-style: normal;
   font-weight: 300;
@@ -799,6 +847,10 @@ img.avatar {
 
 strong {
   font-weight: 500;
+}
+
+.initiative-text strong, .help strong {
+  font-weight: 700;
 }
 
 .text-muted.full {

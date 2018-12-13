@@ -1474,6 +1474,7 @@ h6.voting-footer {
 }
 
 .moderation-item{
+  margin-top: 9px;
   position: relative;
 }
 

@@ -208,27 +208,6 @@
 {% endif %}
 <div class="row" style="padding-top: 1rem">
     <div class="col-12">
-        {% if vote %}
-        <div class="your-vote-all">
-            Du hast mit
-            <div class="your-vote">
-                {% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>
-                {% elif vote.against %}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>
-                {% else %}<span class="abstained text-center"><i class="material-icons">panorama_fish_eye</i> <br /><strong>Enthaltung</strong></span>{% endif %}
-            </div>
-            <p>abgestimmt.
-            </p>
-        </div>
-        {% else %}
-        {% if user.is_authenticated %}
-        <p>Du hast an dieser Abstimmung nicht teilgenommen.</p>
-        {% endif %}
-        {% endif %}
-        <div class="row">
-            <div class="col-12">
-                <h6 class="text-muted classification voting-footer">Abstimmungsbeteiligung</h6>
-            </div>
-        </div>
         <p><strong>{{initiative.votes.count}}</strong>{% if initiative.votes.count == 1 %} Person hat{% else %} Personen haben{% endif %} an dieser Abstimmung teilgenommen.
         </p>
         <div class="progress participation">
@@ -237,6 +216,21 @@
         </div>
         <p>Das waren <strong>{% widthratio initiative.votes.count user_count 100 %}</strong> Prozent aller <strong>{{user_count}}</strong> Abstimmungsberechtigten.
         </p>
+        {% if vote %}
+        <p>Du hast mit
+        </p>
+        <div class="your-vote">
+            {% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>
+            {% elif vote.against %}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>
+            {% else %}<span class="abstained text-center"><i class="material-icons">panorama_fish_eye</i> <br /><strong>Enthaltung</strong></span>{% endif %}
+        </div>
+        <p>abgestimmt.
+        </p>
+        {% else %}
+        {% if user.is_authenticated %}
+        <p>Du hast an dieser Abstimmung nicht teilgenommen.</p>
+        {% endif %}
+        {% endif %}
     </div>
 </div>
 </div>

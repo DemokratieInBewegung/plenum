@@ -648,11 +648,11 @@ footer a:hover {
 }
 
 a {
-  color: rgba(3, 102, 214, 1);
+  color: rgba(37, 60, 135, 1);
 }
 
 a:hover, a:focus, a:visited {
-  color: rgba(3, 102, 214, 1);
+  color: rgba(37, 60, 135, 1);
   text-decoration: none;
 }
 

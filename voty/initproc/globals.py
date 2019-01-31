@@ -74,6 +74,26 @@ COMPARING_FIELDS = [
     "einordnung", "ebene", "bereich",
 ]
 
+ADMINISTRATIVE_LEVELS = [
+    'Bund',
+    'Baden-Württemberg',
+    'Bayern',
+    'Berlin',
+    'Brandenburg',
+    'Bremen',
+    'Hamburg',
+    'Hessen',
+    'Mecklenburg-Vorpommern',
+    'Niedersachsen',
+    'Nordrhein-Westfalen',
+    'Rheinland-Pfalz',
+    'Saarland',
+    'Sachsen',
+    'Sachsen-Anhalt',
+    'Schleswig-Holstein',
+    'Thüringen',
+]
+
 SUBJECT_CATEGORIES = [
     'Globale Politik & internationale Zusammenarbeit',
     'Bildung, Forschung & Kultur',

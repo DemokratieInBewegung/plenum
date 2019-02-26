@@ -17,7 +17,7 @@ from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTIO
 from django.db import models
 import pytz
 
-from voty.initproc.globals import SUBJECT_CATEGORIES
+from voty.initproc.globals import SUBJECT_CATEGORIES, ADMINISTRATIVE_LEVELS
 
 @reversion.register()
 class Initiative(models.Model):
@@ -59,7 +59,7 @@ class Initiative(models.Model):
         (VOTY_TYPES.PlenumVote,'Plenumsentscheidung'),
         (VOTY_TYPES.PlenumOptions,'Plenumsabwägung')
     ])
-    ebene = models.CharField(max_length=50, choices=[('Bund', 'Bund')])
+    ebene = models.CharField(max_length=50, choices=[(item,item) for item in ADMINISTRATIVE_LEVELS])
     bereich = models.CharField(max_length=60, choices=[(item,item) for item in SUBJECT_CATEGORIES])
 
     went_public_at = models.DateField(blank=True, null=True)

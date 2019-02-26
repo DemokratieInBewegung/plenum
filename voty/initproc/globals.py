@@ -92,6 +92,9 @@ ADMINISTRATIVE_LEVELS = [
     'Sachsen-Anhalt',
     'Schleswig-Holstein',
     'Thüringen',
+    'Leinfelden-Echterdingen',
+    'Stuttgart',
+    'Tübingen',
 ]
 
 SUBJECT_CATEGORIES = [

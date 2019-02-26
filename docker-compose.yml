@@ -23,3 +23,7 @@
        - 8000
      links:
        - db
+ networks:
+  default:
+    external:
+      name: nginx-proxy

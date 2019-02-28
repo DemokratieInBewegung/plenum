@@ -1,0 +1,379 @@
+{% extends "_base.html" %}
+{% load mathfilters %}
+{% load markdown %}
+{% load fullurl %}
+
+{% block head_title %}
+{{initiative.title}} – im Plenum der Beweger*innen von DEMOKRATIE IN BEWEGUNG
+{% endblock %}
+
+{% block custom_sm_title %}
+    <meta property="og:title" content="{{initiative.title}}">
+    <meta property="og:description" content="{{initiative.subtitle}}">
+    <meta property="og:url" content="{% fullurl 'initiative_item' initype=initiative.einordnung init_id=initiative.id slug=initiative.slug %}">
+{% endblock %}
+
+{% block custom_header %}
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="{% fullurl 'topic' topic_id=initiative.topic.id slug=initiative.topic.slug %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zum Thema</a>
+            </div>
+        </div>
+        <div class="row initiative-title">
+            <div class="col-12">
+                <h1 class="display-4">{{initiative.title}}</h1>
+            </div>
+        </div>
+        <div class="row initiative-subtitle">
+            <div class="col-12">
+                <p>{{initiative.subtitle}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="container">
+        <div class="row initiative-state">
+            <div class="col-12">
+                {% if initiative.state == 'p' %}
+                {% if request.guard.can_edit %}
+                {% if not initiative.ready_for_next_stage %}
+                <div class="pre-submit">
+                    <div class="alert alert-info" role="alert">
+                        <h6>Um Deinen Beitrag veröffentlichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
+                        Alle Textfelder müssen ausgefüllt sein.
+                    </div>
+                    {% endif %}
+                    <form action="/{{initiative.einordnung}}/{{initiative.id}}/edit" style="display:inline"  method="GET">
+                        {% csrf_token %}
+                        <button title="Bearbeiten" class="btn btn-success edit" type="submit">
+                            <i class="material-icons edit">edit</i><span>Bearbeiten</span>
+                        </button>
+                    </form>
+                    {% if initiative.ready_for_next_stage %}
+                    <form action="/{{initiative.einordnung}}/{{initiative.id}}/start_support_phase" style="display:inline"  method="POST">
+                        {% csrf_token %}
+                        <button title="Einbringen" class="btn btn-success submit" type="submit">
+                            <i class="material-icons public">public</i><span>Einbringen</span>
+                        </button>
+                    </form>
+                    {% else %}
+                    <button title="Ist noch nicht vollständig" class="btn btn-success submit" style="display:inline" disabled=True type="submit">
+                        <i class="material-icons public">public</i><span>Einbringen</span>
+                    </button>
+                </div>
+                {% endif %}
+                {% endif %}
+                <p>
+                    An diesem Beitrag <strong class="badge-prepare">wird noch gearbeitet</strong>.
+                </p>
+                {% endif %}
+
+                {% ifequal initiative.state 'h' %}
+                <p>
+                    Dieser Beitrag <strong class="badge-arrivals">ist nicht sichtbar</strong>.
+                </p>
+                {% endifequal %}
+
+                {% ifequal initiative.state 's' %}
+                <p>
+                    Dieser Beitrag
+                    <a href="#cta"><strong class="badge-support">sucht noch mindestens {{initiative.quorum|sub:initiative.absolute_supporters}} {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}Unterstützer*in{% else %}Unterstützer*innen{% endif %}</strong></a>.
+                </p>
+                {% endifequal %}
+
+                {% ifequal initiative.state 'd' %}
+                <p>
+                    Dieser Beitrag befindet sich <a href="#debate">in Diskussion</a>.
+                </p>
+                {% endifequal %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid initiators">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Autor*in</h6>
+            </div>
+        </div>
+        <div class="row no-gutters avatar">
+            <div class="d-flex flex-wrap">
+                {% for usr in initiative.initiators %}
+                <div class="text-center initiator">
+                    {% include "fragments/avatar.html" with user=usr.user %}
+                    <div class="name">
+                        {{ usr.user.get_full_name|default:usr.user.username }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% include "initproc/blocks/meta.html" %}
+
+{% ifequal initiative.state 's' %}
+<div id="cta" class="container-fluid cta">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
+                <span class="meta-content current-supporters">
+                    <strong>
+                        {{initiative.absolute_supporters|default:0}}
+                    </strong>
+                    {% if initiative.absolute_supporters == 1 %}
+                    Unterstützer*in
+                    {% else %}
+                    Unterstützer*innen
+                    {% endif %}
+                </span>
+                <div class="progress">
+                    <div class="progress-bar bg-support" role="progressbar" style="width: {% if initiative.relative_support <= 100 %}{{initiative.relative_support|floatformat:"0"}}{% else %}100{% endif %}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
+                </div>
+            </div>
+            <span class="meta-content support-needed">
+                    Es fehlen noch
+                    <strong>
+                        {{initiative.quorum|sub:initiative.absolute_supporters}}
+                    </strong>
+                    {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}
+                    Unterstützer*in{% else %}Unterstützer*innen{% endif %} zum Erreichen des Quorums.
+                </span>
+            {% if has_supported %}
+            <span class="meta-content support supported-by">
+                    Du unterstützt diesen Beitrag!
+                </span>
+            {% else %}
+            <form action="/initiative/{{initiative.id}}/support" method="GET">
+                <button class="btn bg-support" type="submit">
+                    Jetzt Unterstützen
+                </button>
+                <div class="form-check">
+                    <label class="form-check-label text-muted">
+                        <input type="checkbox" class="form-check-input" name="public">
+                        Öffentlich anzeigen
+                    </label>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+</div>
+{% endifequal %}
+
+{% ifequal initiative.state 'd' %}
+<div id="cta" class="container-fluid cta">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
+                <p>Dieser Beitrag befindet sich in Diskussion.</p>
+                <a href="#discuss" class="btn bg-discussion">
+                    Jetzt diskutieren
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endifequal %}
+
+
+<div id="initiative-text" class="container-fluid initiative-single">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h6 class="text-muted classification">Text des Beitrags{% if initiative.versions.count > 1 %}
+                    <a href="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/compare/{{initiative.versions.1.id}}" data-ajax="true" class="change-history">(Änderungshistorie einsehen <span class="changes-badge"><span class="material-icons history">history</span> {{initiative.versions.count}}</span>)</a>{% endif %}</h6>
+            </div>
+        </div>
+
+        <div class="row initiative-text">
+            <div class="col-12">
+                {{initiative.summary|markdown}}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if initiative.show_debate %}
+
+<div id="discuss" class="container-fluid cta {% if initiative.state == 'v' or initiative.state == 'e' or initiative.state == 'a' or initiative.state == 'r' %}closed{% endif %}">
+    <div class="container">
+        <div class="row no-gutters">
+            <div class="col-12">
+                <ul class="nav nav-tabs nav-fill" role="tablist">
+                    {% include 'fragments/count.html' with active=True me='debate' list=arguments %}
+                    {% include 'fragments/count.html' with active=False me='proposals' list=proposals %}
+                    {% include 'fragments/count.html' with active=False me='questions' list=questions %}
+                </ul>
+            </div>
+            <div class="col-12 tab-content">
+                <div class="tab-pane active" id="debate" role="tabpanel">
+                    {% include 'fragments/debate.html' %}
+                </div>
+                <div class="tab-pane" id="proposals" role="tabpanel">
+                    {% include 'fragments/proposals.html' %}
+                </div>
+                <div class="tab-pane" id="questions" role="tabpanel">
+                    {% include 'fragments/questions.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- SEEEEKING SUPPPORTERS AREA -->
+
+<div class="container-fluid cta">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
+                {% ifequal initiative.state 's' %}
+                <span class="meta-content current-supporters">
+                    <strong>
+                        {{initiative.absolute_supporters|default:0}}
+                    </strong>
+                    {% if initiative.absolute_supporters == 1 %}
+                    Unterstützer*in
+                    {% else %}
+                    Unterstützer*innen
+                    {% endif %}
+                </span>
+                <div class="progress">
+                    <div class="progress-bar bg-support" role="progressbar" style="width: {% if initiative.relative_support <= 100 %}{{initiative.relative_support|floatformat:"0"}}{% else %}100{% endif %}%;" aria-valuenow="{{initiative.absolute_supporters}}" aria-valuemin="0" aria-valuemax="{{initiative.quorum}}">
+                </div>
+            </div>
+            <span class="meta-content support-needed">
+                    Es fehlen noch
+                    <strong>
+                        {{initiative.quorum|sub:initiative.absolute_supporters}}
+                    </strong>
+                    {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}
+                    Unterstützer*in{% else %}Unterstützer*innen{% endif %} zum Erreichen des Quorums.
+                </span>
+            {% if has_supported %}
+            <span class="meta-content support supported-by">
+                    Du unterstützt diesen Beitrag!
+                </span>
+            {% else %}
+            <form action="/initiative/{{initiative.id}}/support" method="GET">
+                <button class="btn bg-support" type="submit">
+                    Jetzt Unterstützen
+                </button>
+                <div class="form-check">
+                    <label class="form-check-label text-muted">
+                        <input type="checkbox" class="form-check-input" name="public">
+                        Öffentlich anzeigen
+                    </label>
+                </div>
+            </form>
+            {% endif %}
+            {% endifequal %}
+            <div class="back-to-index">
+                <a href="{% fullurl 'topic' topic_id=initiative.topic.id slug=initiative.topic.slug %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zum Thema</a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!--  IIIIIINNNNBOOOOOOXXXXX  -->
+
+{% if initiative.show_supporters %}
+<div class="container-fluid show-supporters">
+    <div class="container">
+        {% if initiative.first_supporters.count %}
+        <div class="row">
+            <div class="col-12">
+                <h2>Erstunterstützer*innen</h2>
+                <div class="d-flex flex-wrap avatar">
+                    {% for sup in initiative.first_supporters.all %}
+                    <div class="text-center initiator">
+                        {% include "fragments/avatar.html" with user=sup.user %}
+                        <div class="name">
+                            {{ sup.user.get_full_name|default:sup.user.username }}
+                        </div>
+                        {% if initiative.state == 'p' %}
+                        <div class="approval">
+                            {% if sup.ack %}
+                            <span title="bestätigt" class=""><i class="material-icons">done</i></span>
+                            {% else %}
+                            {% if sup.user == user %}
+                            <strong style="display:block">Jetzt bestätigen</strong>
+
+                            <form action="/initiative/{{initiative.id}}/ack_support"  style="display:inline"  method="POST">
+                                {% csrf_token %}
+                                <button title="Unterstützen" class="btn btn-success" type="submit">
+                                    <i class="material-icons">done</i>
+                                </button>
+                            </form>
+                            <form action="/initiative/{{initiative.id}}/rm_support"  style="display:inline"  method="POST">
+                                {% csrf_token %}
+                                <button title="Nicht unterstützen" class="btn btn-danger" type="submit">
+                                    <i class="material-icons">not_interested</i>
+                                </button>
+                            </form>
+                            {% else %}
+                            <span title="unbestätigt" class=""><i class="material-icons warning">warning</i></span>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if initiative.public_supporters.count %}
+        <div class="row">
+            <div class="col-12">
+                <h2>Unterstützer*innen</h2>
+                <div class="d-flex flex-wrap avatar">
+                    {% for sup in initiative.public_supporters.all %}
+                    <div class="text-center initiator">
+                        {% include "fragments/avatar.html" with user=sup.user %}
+                        <div class="name">
+                            {{ sup.user.get_full_name|default:sup.user.username }}<br/>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if request.guard.can_edit %}
+        <div class="row">
+            <div class="col-12">
+                <div id="invite-supporters">
+                    <a data-ajax="true" href="/initiative/{{initiative.id}}/invite/supporters?fragment=%23invite-supporters" class="btn btn-success"><i class="material-icons person-add">person_add</i><span>weitere Unterstützer*innen einladen</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %} {% block body-javascript %} {{ block.super }}
+<script type="text/javascript">
+</script>
+{% endblock %}

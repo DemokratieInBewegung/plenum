@@ -13,11 +13,20 @@ import reversion
 
 from datetime import datetime, timedelta, date
 
-from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START, VOTY_TYPES
+from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START, VOTY_TYPES, CONTRIBUTION_QUORUM
 from django.db import models
 import pytz
 
 from voty.initproc.globals import SUBJECT_CATEGORIES, ADMINISTRATIVE_LEVELS
+
+class Topic(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    closed_at = models.DateTimeField(blank=True, null=True)
+    topic = models.TextField(blank=True)
+
+    @cached_property
+    def slug(self):
+        return slugify(self.topic)
 
 @reversion.register()
 class Initiative(models.Model):
@@ -57,7 +66,8 @@ class Initiative(models.Model):
         (VOTY_TYPES.PolicyChange,'AO-Änderung'),
         (VOTY_TYPES.BallotVote,'Urabstimmung'),
         (VOTY_TYPES.PlenumVote,'Plenumsentscheidung'),
-        (VOTY_TYPES.PlenumOptions,'Plenumsabwägung')
+        (VOTY_TYPES.PlenumOptions,'Plenumsabwägung'),
+        (VOTY_TYPES.Contribution,'Beitrag'),
     ])
     ebene = models.CharField(max_length=50, choices=[(item,item) for item in ADMINISTRATIVE_LEVELS])
     bereich = models.CharField(max_length=60, choices=[(item,item) for item in SUBJECT_CATEGORIES])
@@ -71,6 +81,8 @@ class Initiative(models.Model):
 
     supporters = models.ManyToManyField(User, through="Supporter")
     eligible_voters = models.IntegerField(blank=True, null=True)
+
+    topic = models.ForeignKey(Topic, blank=True, null=True, default=None)
 
     @cached_property
     def slug(self):
@@ -114,6 +126,9 @@ class Initiative(models.Model):
 
         if self.is_plenumoptions(): # TODO: check that options are non-empty
             return self.plenumvote_ready_for_next_stage
+
+        if self.is_contribution():
+            return self.contribution_ready_for_next_stage
 
     @cached_property
     def initiative_ready_for_next_stage(self):
@@ -178,6 +193,16 @@ class Initiative(models.Model):
         if self.state == STATES.VOTING:
             # there is nothing we have to accomplish
             return True
+
+        return False
+
+    @cached_property
+    def contribution_ready_for_next_stage(self):
+        if self.state in [STATES.PREPARE]:
+            #no empty text fields
+            return (self.title and
+                    self.subtitle and
+                    self.summary)
 
         return False
 
@@ -298,8 +323,12 @@ class Initiative(models.Model):
         return None
 
     @cached_property
+    def german_gender(self):
+        return 'm' if self.is_contribution() else 'f'
+
+    @cached_property
     def quorum(self):
-        return Quorum.current_quorum()
+        return CONTRIBUTION_QUORUM if self.is_contribution() else Quorum.current_quorum()
 
     @property
     def show_supporters(self):
@@ -349,6 +378,9 @@ class Initiative(models.Model):
 
     def is_plenumoptions(self):
         return self.einordnung == VOTY_TYPES.PlenumOptions
+
+    def is_contribution(self):
+        return self.einordnung == VOTY_TYPES.Contribution
 
     def subject(self):
         if self.is_initiative():
@@ -633,6 +665,12 @@ class Argument(Response):
         abstract = True
 
 ### End of Abstract
+
+class Question(Response):
+    type = "question"
+    icon = False
+    title = models.CharField(max_length=140)
+    text = models.CharField(max_length=1024)
 
 class Proposal(Response):
     type = "proposal"

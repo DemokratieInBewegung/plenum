@@ -5,12 +5,18 @@
 {% load guard %}
 
 {% block custom_header %}
+
 <div class="container-fluid init-index-header">
     <div class="container">
         <div class="row title">
-            <div class="col-12 text-center" style="padding-top: 4rem; padding-bottom: 3rem">
-                <h1 class="display-3">Plenum</h1>
-            </div>
+			{% if user.is_authenticated %}
+			<div class="col-12 text-center" style="margin-top: 4rem;border: 2px solid black;">
+				<a href="{% fullurl 'agora' %}"><h1 class="display-4">Hier kannst Du an der Diskussion auf der Agorá teilnehmen.</h1></a>
+			</div>
+			{% endif %}
+			<div class="col-12 text-center" style="padding-top: 4rem; padding-bottom: 3rem">
+				<h1 class="display-3">Plenum</h1>
+			</div>
         </div>
     </div>
 </div>

@@ -157,7 +157,7 @@
 		<div class="card-text">
 			{{initiative.subtitle | markdown}}
 		</div>
-		<a href="{% fullurl 'initiative_item' initype=initiative.einordnung init_id=initiative.id slug=initiative.slug %}" class="go-to-initiative"><i class="material-icons chevron-right">chevron_right</i>zur {{initiative.get_einordnung_display}}</a>
+		<a href="{% fullurl 'initiative_item' initype=initiative.einordnung init_id=initiative.id slug=initiative.slug %}" class="go-to-initiative"><i class="material-icons chevron-right">chevron_right</i>zu{% if initiative.german_gender == 'f' %}r{% else %}m{% endif %} {{initiative.get_einordnung_display}}</a>
   	</div>
   	<div class="card-footer">
   		<div class="container-fluid">

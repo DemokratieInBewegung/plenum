@@ -1,0 +1,73 @@
+{% extends "_base.html" %}
+
+{% load fullurl %}
+
+{% block custom_header %}
+<div class="container-fluid init-index-header">
+    <div class="container">
+        <div class="row title">
+            <div class="row">
+                <div class="col">
+                    <a href="{% fullurl 'agora' %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Agorá</a>
+                </div>
+            </div>
+            <div class="col-12 text-center" style="padding-top: 4rem; padding-bottom: 3rem">
+                <h1 class="display-4">{{topic.topic}}</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid init-index-header">
+    <div class="container">
+        <div class="row title">
+            <div class="col-12 text-center">
+                <a href="{% fullurl 'new_contribution' topic_id=topic.id slug=topic.slug %}"><h5>Neuen Beitrag zu diesem Thema einbringen</h5></a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container init-index">
+    <div class="container-fluid init-index-header">
+        <div class="container">
+            <div class="row title">
+                <div class="col-12 text-center" style="padding-top: 4rem; padding-bottom: 3rem">
+                    <h1 class="display-4">Diskussionen</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% for initiative in discussions %}
+    {% include "fragments/initiative/card.html"%}
+    {% empty %}
+    <div class="card">
+        <div class="card-block">
+            <em>Zurzeit gibt es zu diesem Thema keine Diskussionen.</em>
+        </div>
+    </div>
+    {% endfor %}
+    <div class="container init-index">
+        <div class="container-fluid init-index-header">
+            <div class="container">
+                <div class="row title">
+                    <div class="col-12 text-center" style="padding-top: 4rem; padding-bottom: 3rem">
+                        <h1 class="display-4">Überlegungen</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% for initiative in reflections %}
+        {% include "fragments/initiative/card.html" %}
+        {% empty %}
+        <div class="card">
+            <div class="card-block">
+                <em>Zurzeit gibt es zu diesem Thema keine Überlegungen.</em>
+            </div>
+        </div>
+        {% endfor %}
+</div>
+{% endblock %}

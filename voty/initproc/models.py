@@ -384,7 +384,7 @@ class Initiative(models.Model):
         return self.yays > self.nays
 
     def policy_change_is_accepted(self):
-        if self.yays >= (self.nays * 2): #two third majority
+        if self.yays > (self.nays * 2): #two third majority
             return True
 
         return False

@@ -335,7 +335,7 @@ class Initiative(models.Model):
         return self.state in [self.STATES.PREPARE, self.STATES.INCOMING, self.STATES.SEEKING_SUPPORT]
 
     @property
-    def show_debate(self):
+    def show_responses(self):
         return self.state in [self.STATES.DISCUSSION, self.STATES.FINAL_EDIT, self.STATES.MODERATION, self.STATES.VOTING, self.STATES.COMPLETED, self.STATES.ACCEPTED, self.STATES.REJECTED]
 
     @cached_property

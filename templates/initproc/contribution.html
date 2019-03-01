@@ -243,8 +243,8 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
                 {% ifequal initiative.state 's' %}
+                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
                 <span class="meta-content current-supporters">
                     <strong>
                         {{initiative.absolute_supporters|default:0}}

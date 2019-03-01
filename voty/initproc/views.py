@@ -445,8 +445,27 @@ def edit(request, initiative):
             else:
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-
         return render(request, 'initproc/new_plenumvote.html', context=dict(form=form, plenumvote=initiative))
+    elif initiative.is_contribution():
+        form = ContributionForm(request.POST or None, instance=initiative)
+        if is_post:
+            if form.is_valid():
+                with reversion.create_revision():
+                    initiative.save()
+
+                    # Store some meta-information.
+                    reversion.set_user(request.user)
+                    if request.POST.get('commit_message', None):
+                        reversion.set_comment(request.POST.get('commit_message'))
+
+                messages.success(request, "Beitrag gespeichert.")
+                # TODO fix pc.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
+                return redirect('/{}/{}'.format(initiative.einordnung, initiative.id))
+            else:
+                messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+
+        return render(request, 'initproc/new_contribution.html', context=dict(form=form, topic=initiative.topic))
+
 
 
 @login_required

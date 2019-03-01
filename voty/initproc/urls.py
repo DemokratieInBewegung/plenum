@@ -18,7 +18,7 @@ urlpatterns = [
     url(r'^(?P<initype>initiative|ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/support$', views.support),
     url(r'^(?P<initype>initiative|ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/ack_support$', views.ack_support),
     url(r'^(?P<initype>initiative|ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/rm_support$', views.rm_support),
-    url(r'^(?P<initype>initiative|ao-aenderung|plenumsentscheidung|plenumsabwaegung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/edit$', views.edit),
+    url(r'^(?P<initype>initiative|ao-aenderung|plenumsentscheidung|plenumsabwaegung|beitrag)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/edit$', views.edit),
     url(r'^(?P<initype>initiative|ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/submit_to_committee$', views.submit_to_committee),
     url(r'^(?P<initype>beitrag)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/new_question$', views.new_question),
     url(r'^(?P<initype>initiative|ao-aenderung|beitrag)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/new_argument$', views.new_argument),

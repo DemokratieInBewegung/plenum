@@ -90,7 +90,7 @@
 
                 {% ifequal initiative.state 'd' %}
                 <p>
-                    Dieser Beitrag befindet sich <a href="#debate">in Diskussion</a>.
+                    Dieser Beitrag befindet sich <a href="#responses">in Diskussion</a>.
                 </p>
                 {% endifequal %}
             </div>
@@ -221,7 +221,7 @@
                     {% include 'fragments/count.html' with active=False me='questions' list=questions %}
                 </ul>
             </div>
-            <div class="col-12 tab-content">
+            <div id="responses" class="col-12 tab-content">
                 <div class="tab-pane active" id="debate" role="tabpanel">
                     {% include 'fragments/debate.html' %}
                 </div>

@@ -107,7 +107,7 @@
 
                 {% ifequal initiative.state 'd' %}
                 <p>
-                    Diese Änderung der Abstimmungsordnung befindet sich <a href="#debate">in Diskussion</a>.
+                    Diese Änderung der Abstimmungsordnung befindet sich <a href="#responses">in Diskussion</a>.
                 </p>
                 {% endifequal %}
 
@@ -325,7 +325,7 @@
                     {% include 'fragments/count.html' with active=False me='proposals' list=proposals %}
                 </ul>
             </div>
-            <div class="col-12 tab-content">
+            <div id="responses" class="col-12 tab-content">
                 <div class="tab-pane active" id="debate" role="tabpanel">
                     {% include 'fragments/debate.html' %}
                 </div>

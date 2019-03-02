@@ -180,14 +180,14 @@ def index(request):
 
 @login_required
 def agora(request):
-    open_topics = Topic.objects.filter(closed_at=None)
+    open_topics = Topic.objects.filter(closed_at=None).order_by('created_at')
     return render(request, 'initproc/agora.html',context=dict(topics=open_topics))
 
 @login_required
 def topic(request, topic_id, slug=None):
     topic = get_object_or_404(Topic, pk=topic_id)
 
-    contributions = Initiative.objects.filter(topic=topic_id)
+    contributions = Initiative.objects.filter(topic=topic_id).order_by('created_at')
     discussions = contributions.filter(state='d')
     reflections = contributions.filter(Q(state='s') | Q(state='p', id__in=request.guard.originally_supported_initiatives()))
     return render(request, 'initproc/topic.html',context=dict(discussions=discussions, reflections=reflections, topic=topic))

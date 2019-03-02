@@ -330,7 +330,7 @@ class Initiative(models.Model):
 
     @cached_property
     def contribution_end_of_this_phase(self):
-        return self.topic.closes_at
+        return self.topic.closes_at if self.topic.closes_at else self.went_public_at + timedelta(days=14)
 
     @cached_property
     def german_gender(self):

@@ -1,6 +1,7 @@
 {% extends "_base.html" %}
 
 {% load fullurl %}
+{% load markdown %}
 
 {% block custom_header %}
 <div class="container-fluid">
@@ -22,9 +23,9 @@
         </div>
         {% if topic.motivation %}
         <h4 class="text-muted" style="margin-top:2rem">Motivation</h4>
-        <div class="row initiative-subtitle">
+        <div class="row initiative-text">
             <div class="col-12">
-                <p>{{topic.motivation}}</p>
+                <p>{{topic.motivation | markdown}}</p>
             </div>
         </div>
         {% endif %}

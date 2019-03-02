@@ -21,8 +21,11 @@ from voty.initproc.globals import SUBJECT_CATEGORIES, ADMINISTRATIVE_LEVELS
 
 class Topic(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
+    closes_at = models.DateTimeField(blank=True, null=True)
     closed_at = models.DateTimeField(blank=True, null=True)
     topic = models.TextField(blank=True)
+    subtitle = models.CharField(max_length=1024, blank=True)
+    motivation = models.TextField(blank=True)
 
     @cached_property
     def slug(self):
@@ -224,6 +227,9 @@ class Initiative(models.Model):
         if self.is_plenumoptions():
             return self.plenumoptions_end_of_this_phase
 
+        if self.is_contribution():
+            return self.contribution_end_of_this_phase
+
     @cached_property
     def initiative_end_of_this_phase(self):
         week = timedelta(days=7)
@@ -321,6 +327,10 @@ class Initiative(models.Model):
             return datetime(year=at.year,month=at.month,day=at.day) + duration
 
         return None
+
+    @cached_property
+    def contribution_end_of_this_phase(self):
+        return self.topic.closes_at
 
     @cached_property
     def german_gender(self):

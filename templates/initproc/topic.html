@@ -3,29 +3,34 @@
 {% load fullurl %}
 
 {% block custom_header %}
-<div class="container-fluid init-index-header">
+<div class="container-fluid">
     <div class="container">
-        <div class="row title">
-            <div class="row">
-                <div class="col">
-                    <a href="{% fullurl 'agora' %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Agorá</a>
-                </div>
+        <div class="row">
+            <div class="col">
+                <a href="{% fullurl 'agora' %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Agorá</a>
             </div>
-            <div class="col-12 text-center" style="padding-top: 4rem; padding-bottom: 3rem">
+        </div>
+        <div class="row initiative-title">
+            <div class="col-12">
                 <h1 class="display-4">{{topic.topic}}</h1>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="container-fluid init-index-header">
-    <div class="container">
-        <div class="row title">
+        <div class="row initiative-subtitle">
+            <div class="col-12">
+                <p>{{topic.subtitle}}</p>
+            </div>
+        </div>
+        <h4 class="text-muted" style="margin-top:2rem">Motivation</h4>
+        <div class="row initiative-subtitle">
+            <div class="col-12">
+                <p>{{topic.motivation}}</p>
+            </div>
+        </div>
+        <div class="row title" style="margin-top:3rem">
             <div class="col-12 text-center">
                 <a href="{% fullurl 'new_contribution' topic_id=topic.id slug=topic.slug %}"><h5>Neuen Beitrag zu diesem Thema einbringen</h5></a>
             </div>
         </div>
-
     </div>
 </div>
 {% endblock %}
@@ -36,7 +41,7 @@
         <div class="container">
             <div class="row title">
                 <div class="col-12 text-center" style="padding-top: 4rem; padding-bottom: 3rem">
-                    <h1 class="display-4">Diskussionen</h1>
+                    <h1 class="display-4">Beiträge, die diskutiert werden</h1>
                 </div>
             </div>
         </div>
@@ -46,7 +51,7 @@
     {% empty %}
     <div class="card">
         <div class="card-block">
-            <em>Zurzeit gibt es zu diesem Thema keine Diskussionen.</em>
+            <em>Zurzeit gibt es zu diesem Thema keine Beiträge, die diskutiert werden.</em>
         </div>
     </div>
     {% endfor %}
@@ -55,7 +60,7 @@
             <div class="container">
                 <div class="row title">
                     <div class="col-12 text-center" style="padding-top: 4rem; padding-bottom: 3rem">
-                        <h1 class="display-4">Überlegungen</h1>
+                        <h1 class="display-4 display-smaller">Beiträge, die Unterstützung suchen</h1>
                     </div>
                 </div>
             </div>
@@ -65,9 +70,18 @@
         {% empty %}
         <div class="card">
             <div class="card-block">
-                <em>Zurzeit gibt es zu diesem Thema keine Überlegungen.</em>
+                <em>Zurzeit gibt es zu diesem Thema keine Beiträge, die Unterstützung suchen.</em>
             </div>
         </div>
         {% endfor %}
 </div>
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <a href="{% fullurl 'agora' %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Agorá</a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

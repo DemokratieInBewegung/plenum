@@ -17,24 +17,6 @@
 
 {% block content %}
 <div id="init-list" class="container init-index">
-    {% for topic in topics %}
-    <div class="container-fluid init-index-header">
-        <div class="container">
-            <div class="row title">
-                <div class="col-12 text-center" style="">
-                    <a href="{% fullurl 'topic' topic_id=topic.id slug=topic.slug %}">
-                        <h4 style="border: 1px solid lightgrey;padding:10px;margin-bottom:40px">{{topic.topic}}</h4>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% empty %}
-    <div class="card">
-        <div class="card-block">
-            <em>Zurzeit werden keine Themen auf der Agorá diskutiert.</em>
-        </div>
-    </div>
+{% include "fragments/topic/list.html" %}
 </div>
-{% endfor %}
 {% endblock %}

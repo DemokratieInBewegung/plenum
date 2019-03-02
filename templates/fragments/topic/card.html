@@ -1,0 +1,45 @@
+{% load guard %}
+{% load mathfilters %}
+{% load fullurl %}
+{% load markdown %}
+<div id="topic-card-{{topic.id}}" class="card topic-card">
+	<div class="card-header">
+		<div class="container-fluid">
+			 <div class="row no-gutters">
+			 	<div class="col align-self-center">
+			 		<div class="d-flex flex-wrap">
+						<div class="flex-item mr-auto">
+							<span class="text-muted align-middle">
+								{% if topic.closes_at %}
+								Noch {{topic.closes_at | timeuntil}}
+								{% else %}
+								Bleibt
+								{% endif %}
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="card-block">
+    	<h4 class="card-title init-title">
+    		<a href="{% fullurl 'topic' topic_id=topic.id slug=topic.slug %}">
+				{{topic.topic}}
+			</a>
+		</h4>
+		<div class="card-text">
+			{{topic.subtitle | markdown}}
+		</div>
+		<a href="{% fullurl 'topic' topic_id=topic.id slug=topic.slug %}" class="go-to-initiative"><i class="material-icons chevron-right">chevron_right</i>zur Frage</a>
+  	</div>
+  	<div class="card-footer">
+  		<div class="container-fluid">
+			 <div class="row no-gutters">
+			 	<div class="col text-muted align-self-center">
+			 		Veröffentlicht am {{topic.created_at}}
+			 	</div>
+			</div>
+		</div>
+  	</div>
+</div>

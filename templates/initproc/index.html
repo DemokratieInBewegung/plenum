@@ -10,8 +10,8 @@
     <div class="container">
         <div class="row title">
 			{% if user.is_authenticated %}
-			<div class="col-12 text-center" style="margin-top: 4rem;border: 2px solid black;">
-				<a href="{% fullurl 'agora' %}"><h1 class="display-4">Hier kannst Du an der Diskussion auf der Agorá teilnehmen.</h1></a>
+			<div class="col-12 text-center" style="margin-top: 4rem;padding-top: 0.5rem;border: 2px solid black;">
+				<a href="{% fullurl 'agora' %}"><h4 class="init-title">Hier kannst Du auf der Agorá an der Debatte<br>über die Zukunft von DiB teilnehmen.</h4></a>
 			</div>
 			{% endif %}
 			<div class="col-12 text-center" style="padding-top: 4rem; padding-bottom: 3rem">

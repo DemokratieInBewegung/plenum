@@ -682,6 +682,10 @@ img.avatar {
   padding-bottom: 2rem;
 }
 
+.display-smaller {
+  font-size: 2.35rem;
+}
+
 .initiative-meta h6.text-muted {
   text-transform: uppercase;
   font-size: 0.875rem;

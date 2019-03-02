@@ -96,6 +96,7 @@
 							{% endifequal %}
 						</div>
 						{% if initiative.state != 'i' and initiative.state != 'c' and initiative.state != 'a' and initiative.state != 'r' and initiative.state != 'p' and initiative.state != 'm' %}
+						{% if initiative.state != 's' or not initiative.is_contribution %}
 						<div class="flex-item mr-auto">
 							<span class="text-muted align-middle">
 								Noch {{initiative.end_of_this_phase | timeuntil}}
@@ -105,6 +106,7 @@
 						<!-- Dirty Positioning Fix – only temporary, find better solution or resolve with new design -->
 						<div class="flex-item mr-auto">
 						</div>
+						{% endif %}
 						{% endif %}
 
 						{% if user.is_authenticated %}

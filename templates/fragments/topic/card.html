@@ -13,7 +13,7 @@
 								{% if topic.closes_at %}
 								Noch {{topic.closes_at | timeuntil}}
 								{% else %}
-								Keine Zeitbegrenzung
+								Bleibt offen
 								{% endif %}
 							</span>
 						</div>
@@ -31,7 +31,7 @@
 		<div class="card-text">
 			{{topic.subtitle | markdown}}
 		</div>
-		<a href="{% fullurl 'topic' topic_id=topic.id slug=topic.slug %}" class="go-to-initiative"><i class="material-icons chevron-right">chevron_right</i>zur Frage</a>
+		<a href="{% fullurl 'topic' topic_id=topic.id slug=topic.slug %}" class="go-to-initiative"><i class="material-icons chevron-right">chevron_right</i>zum Thema</a>
   	</div>
   	<div class="card-footer">
   		<div class="container-fluid">

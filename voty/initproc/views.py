@@ -429,7 +429,7 @@ def edit(request, initiative):
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
 
-        return render(request, 'initproc/new_plenumvote.html', context=dict(form=form, plenumvote=initiative))
+        return render(request, 'initproc/new_plenumoptions.html', context=dict(form=form, plenumvote=initiative))
 
 
 @login_required

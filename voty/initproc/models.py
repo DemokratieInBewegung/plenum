@@ -427,6 +427,9 @@ class Initiative(models.Model):
     def is_contribution(self):
         return self.einordnung == VOTY_TYPES.Contribution
 
+    def is_passive_solution(self):
+        return self.is_contribution() and self.title == "Passivlösung"
+
     def subject(self):
         if self.is_initiative():
             return 'Initiative'

@@ -30,7 +30,7 @@ import json
 
 from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS, VOTY_TYPES, BOARD_GROUP
 from .guard import can_access_initiative
-from .models import (Initiative, Pro, Contra, Proposal, Question, Comment, Vote, Option, Preference, Moderation, Quorum, Supporter, Like, Topic)
+from .models import (Initiative, Pro, Contra, Proposal, Question, Comment, Vote, Option, Preference, Resistance, Moderation, Quorum, Supporter, Like, Topic)
 from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm, NewQuestionForm,
                     NewProposalForm, NewModerationForm, InviteUsersForm, PolicyChangeForm, PlenumVoteForm, PlenumOptionsForm, ContributionForm)
 from .serializers import SimpleInitiativeSerializer
@@ -71,7 +71,9 @@ def get_voting_fragments(initiative, request):
     add_participation_count(context, initiative)
 
     return {'fragments': {
-        '#voting': render_to_string("fragments/weighting.html" if initiative.is_plenumoptions() else "fragments/voting.html",
+        '#voting': render_to_string("fragments/weighting.html" if initiative.is_plenumoptions() else
+                                    "fragments/resistance.html" if initiative.is_contribution() else
+                                    "fragments/voting.html",
                                     context=context,
                                     request=request),
         '#jump-to-vote': render_to_string("fragments/jump_to_vote.html",
@@ -98,11 +100,20 @@ def add_vote_context(ctx, init, request):
     if votes.exists():
         ctx['vote'] = votes.first()
 
+    if init.is_contribution():
+        resistance = init.resistances.filter(user=request.user.id)
+        if resistance.exists():
+            ctx ['resistance'] = resistance.get()
+
+
 def add_participation_count(ctx, init):
     ctx['participation_count'] = init.options.first().preferences.count() if init.options.exists() else init.votes.count()
 
 def get_preferences(request,init):
     return Preference.objects.filter(option__initiative=init, user_id=request.user)
+
+def get_resistances(request,init):
+    return Resistance.objects.filter(contribution=init, user_id=request.user)
 
 def personalize_argument(arg, user_id):
     arg.has_liked = arg.likes.filter(user=user_id).exists()
@@ -838,10 +849,6 @@ def vote(request, init):
 def preference(request, init):
     preferences = get_preferences(request, init)
     preferences_existed = preferences.exists()
-#    preferences.delete()
-#    return
-    print ("preference count: {}".format (preferences.count()))
-    print ("preference exists: {}".format (preferences.exists()))
     for option in init.options.all():
         value = request.POST.get('option{}'.format(option.index))
         if preferences_existed:
@@ -850,6 +857,24 @@ def preference(request, init):
         else:
             my_preference = Preference(option=option, user_id=request.user.id, value=value)
         my_preference.save()
+
+    return get_voting_fragments(init, request)
+
+@non_ajax_redir('/')
+@ajax
+@login_required
+@require_POST
+@can_access_initiative(STATES.DISCUSSION) # must be in discussion
+def resistance(request, init):
+    resistances = get_resistances(request, init)
+    value = request.POST.get('option')
+    if resistances.exists():
+        my_resistance = resistances.get()
+        my_resistance.value = value
+    else:
+        my_resistance = Resistance(contribution=init, user_id=request.user.id, value=value)
+    my_resistance.reason = request.POST.get('reason')
+    my_resistance.save()
 
     return get_voting_fragments(init, request)
 
@@ -897,6 +922,15 @@ def reset_vote(request, init):
 @can_access_initiative(STATES.VOTING) # must be in voting
 def reset_preference(request, init):
     get_preferences(request, init).delete()
+    return get_voting_fragments(init, request)
+
+@non_ajax_redir('/')
+@ajax
+@login_required
+@require_POST
+@can_access_initiative(STATES.DISCUSSION) # must be in discussion
+def reset_resistance(request, init):
+    Resistance.objects.filter(contribution=init, user_id=request.user).delete()
     return get_voting_fragments(init, request)
 
 # See §9 (2) AO

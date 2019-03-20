@@ -27,9 +27,36 @@ class Topic(models.Model):
     subtitle = models.CharField(max_length=1024, blank=True)
     motivation = models.TextField(blank=True)
 
+    def now(self):
+        return datetime.now(self.closes_at.tzinfo)
+
     @cached_property
     def slug(self):
         return slugify(self.topic)
+
+    @property
+    def open_ended(self):
+        return self.closes_at is None
+
+    @property
+    def submission_ends(self):
+        return self.closes_at - timedelta(weeks=1)
+
+    @property
+    def is_archived(self):
+        return self.closes_at and self.now() > self.closes_at
+
+    @property
+    def soliciting_resistance(self):
+        return not (self.is_archived or self.open_ended or self.now() < self.submission_ends)
+
+    @property
+    def accepting_submissions(self):
+        return not (self.is_archived or self.soliciting_resistance)
+
+    @property
+    def end_of_this_phase(self):
+        return self.submission_ends if self.accepting_submissions else self.closes_at
 
 @reversion.register()
 class Initiative(models.Model):
@@ -330,7 +357,7 @@ class Initiative(models.Model):
 
     @cached_property
     def contribution_end_of_this_phase(self):
-        return self.topic.closes_at if self.topic.closes_at else self.went_public_at + timedelta(days=14)
+        return self.went_public_at + timedelta(weeks=3) if self.topic.open_ended else self.topic.end_of_this_phase
 
     @cached_property
     def german_gender(self):
@@ -347,6 +374,10 @@ class Initiative(models.Model):
     @property
     def show_responses(self):
         return self.state in [self.STATES.DISCUSSION, self.STATES.FINAL_EDIT, self.STATES.MODERATION, self.STATES.VOTING, self.STATES.COMPLETED, self.STATES.ACCEPTED, self.STATES.REJECTED]
+
+    @property
+    def seeks_resistance(self):
+        return self.is_contribution() and self.topic.open_ended and self.state == self.STATES.DISCUSSION
 
     @cached_property
     def yays(self):
@@ -565,16 +596,33 @@ class Option(models.Model):
     class Meta:
         ordering = ['index']
 
-class Preference(models.Model):
+class Weight(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
-    option = models.ForeignKey(Option, related_name="preferences")
     value = models.IntegerField()
+
+    class Meta:
+        abstract = True
+
+# "Preference" was a bit of misnomer. Both Preference and Resistance represent resistance values,
+# for plenum options and for agora contributions, respectively
+
+# for plenum options
+class Preference(Weight):
+    option = models.ForeignKey(Option, related_name="preferences")
 
     class Meta:
         unique_together = (("user", "option"),)
         ordering = ['option__index']
+
+# for agora contributions
+class Resistance(Weight):
+    contribution = models.ForeignKey(Initiative, related_name="resistances")
+    reason = models.CharField(max_length=100, blank=True)
+
+    class Meta:
+        unique_together = (("user", "contribution"),)
 
 class Quorum(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

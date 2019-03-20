@@ -10,10 +10,19 @@
 			 		<div class="d-flex flex-wrap">
 						<div class="flex-item mr-auto">
 							<span class="text-muted align-middle">
-								{% if topic.closes_at %}
-								Noch {{topic.closes_at | timeuntil}}
-								{% else %}
+								{% if topic.open_ended %}
 								Bleibt offen
+								{% else %}
+								{% if topic.accepting_submissions %}
+								<span class="badge badge-discussion">
+									In Diskussion
+								</span>
+								{% else %}
+								<span class="badge badge-vote">
+									In Abwägung
+								</span>
+								{% endif %}
+								Noch {{topic.end_of_this_phase | timeuntil}}
 								{% endif %}
 							</span>
 						</div>

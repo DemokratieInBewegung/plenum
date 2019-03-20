@@ -1,0 +1,48 @@
+<script type="text/javascript">
+chosen = -1;
+function radio_selected(selection) {
+	chosen = selection;
+	enable_submit();
+}
+function enable_submit() {
+	document.getElementById('initial_vote_submit').disabled = chosen == -1 || (chosen > 6 && !document.getElementById('reason').value);
+}
+</script><div class="col-12" id="voting">
+	<h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
+	{% if resistance %}
+	<h3>Danke, Deine Widerstandspunkte wurden gezählt!</h3>
+	<form data-ajax-submit="true" action="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/reset_resistance" method="POST">
+		<h3>Du hast folgende Widerstandspunkte vergeben:</h3>
+		<div class="btn-group" role="group" style="display:inline">
+			{% for i in "01234567890" %}
+			<label>
+				<input type="radio" {% if resistance.value == forloop.counter0 %}checked{% else %}disabled{% endif %}="1" style="margin-right:0.1rem;margin-left:0.8rem">
+				{{forloop.counter0}}
+			</label>
+			{% endfor %}
+		</div>
+		{% if resistance.reason %}
+		<div>Begründung: {{resistance.reason}}</div>
+		{% endif %}
+		{% csrf_token %}
+		<div><button class="btn btn-sm btn-default" type="submit" title="hier klicken um zurückzunehmen" style="margin-top:30px">Widerstandspunkte zurücknehmen</button></div>
+	</form>
+	{% else %}
+	<form data-ajax-submit="true" action="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/resistance" method="POST">
+		{% csrf_token %}
+		<p>Hier kannst Du Widerstandspunkte zwischen 0 (kein Widerstand) und 10 (großer Widerstand) vergeben. Um mehr als 6 Widerstandspunkte zu vergeben, musst Du eine Begründung angeben; ansonsten ist die Begründung optional. Solange der Beitrag diskutiert wird, kannst Du die Widerstandspunkte (mitsamt Begründung) jederzeit zurücknehmen und neu vergeben.</p>
+		<div class="btn-group" role="group" style="display:inline">
+			{% for i in "01234567890" %}
+			<label for="o{{forloop.counter0}}">
+				<input type="radio" onchange="javascript:radio_selected({{forloop.counter0}})" name="option" id="o{{forloop.counter0}}" value="{{forloop.counter0}}" style="margin-right:0.1rem;margin-left:0.8rem">
+				{{forloop.counter0}}
+			</label>
+			{% endfor %}
+		</div>
+		<div>Begründung: <input type="text" size="50" maxlength="100" oninput="javascript:enable_submit()" name="reason" id="reason" value="" style="margin-right:0.1rem;margin-left:0.8rem"></div>
+		<div class="col-12 text-left submit-vote" style="margin-top:30px">
+			<button id="initial_vote_submit" type="submit" disabled="disabled" class="btn btn-lg btn-primary">Widerstandspunkte vergeben</button>
+		</div>
+	</form>
+	{% endif %}
+</div>

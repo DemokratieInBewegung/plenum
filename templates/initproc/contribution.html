@@ -209,6 +209,16 @@
     </div>
 </div>
 
+{% if initiative.seeks_resistance %}
+<div id="vote" class="container-fluid cta">
+    <div class="container">
+        <div class="row no-gutters">
+            {% include "fragments/resistance.html" %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% if initiative.show_responses %}
 
 <div id="discuss" class="container-fluid cta {% if initiative.state == 'v' or initiative.state == 'e' or initiative.state == 'a' or initiative.state == 'r' %}closed{% endif %}">

@@ -110,13 +110,7 @@
             <div class="d-flex flex-wrap">
                 {% if initiative.is_passive_solution %}
                 <div class="text-center initiator">
-                    <img
-                        src="/static/img/phoenix.png"
-                        title="Team Phoenix"
-                        width="80"
-                        height="80"
-                        class="avatar"
-                    />
+                    {% include "fragments/phoenix.html" with size=80 %}
                     <div class="name">
                         Team Phoenix
                     </div>

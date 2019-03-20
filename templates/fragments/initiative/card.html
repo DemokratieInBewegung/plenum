@@ -172,9 +172,13 @@
 			 	</div>
 			 	{% endif %}
 			 	<div class="col text-right avatar align-self-center">
-			 		{% for ini in initiative.initiators %}
+					{% if initiative.is_passive_solution %}
+					{% include "fragments/phoenix.html" with size=40 %}
+					{% else %}
+					{% for ini in initiative.initiators %}
 			          {% include "fragments/avatar.html" with size=40 user=ini.user %}
 			        {% endfor %}
+					{% endif %}
 			 	</div>
 			</div>
 		</div>

@@ -361,6 +361,10 @@ class Initiative(models.Model):
         return self.went_public_at + timedelta(weeks=3) if self.topic.open_ended else self.topic.end_of_this_phase
 
     @cached_property
+    def has_phase_end(self):
+        return not (self.state in [self.STATES.INCOMING, self.STATES.COMPLETED, self.STATES.ACCEPTED, self.STATES.REJECTED, self.STATES.PREPARE, self.STATES.MODERATION] or (self.state == self.STATES.SEEKING_SUPPORT and self.is_contribution() and self.topic.open_ended))
+
+    @cached_property
     def german_gender(self):
         return 'm' if self.is_contribution() else 'f'
 

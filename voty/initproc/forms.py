@@ -165,6 +165,17 @@ class NewProposalForm(forms.Form):
                            widget=forms.Textarea(attrs={'rows':10, 'placeholder':'Wenn es bereits einen ähnlichen Vorschlag gibt, dann äußere Dich bitte in den Kommentaren zu diesem.'}))
 
 
+class NewQuestionForm(forms.Form):
+    title = forms.CharField(required=True,
+                            label="Zusammenfassung",
+                            max_length=140,
+                            widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Wir wollen die Fragen so übersichtlich wie möglich halten. Bitte achte darauf, dass Deine Frage wirklich neu ist.'}))
+    text = forms.CharField(required=True,
+                           label="Ausführliche Darstellung",
+                           max_length=1000,
+                           widget=forms.Textarea(attrs={'rows':10, 'placeholder':'Wenn es bereits eine ähnliche Frage gibt, dann äußere Dich bitte in den Kommentaren zu dieser.'}))
+
+
 class NewCommentForm(forms.ModelForm):
     text = forms.CharField(required=True, label="Dein Kommentar",
                            help_text="Absätze sowie URLs werden passend formatiert",
@@ -275,3 +286,21 @@ class PlenumOptionsForm(forms.ModelForm):
             "subtitle": "Ein bis zwei Sätze zur Abwägungsvorlage.",
             "summary" : "Kompletter Text der Plenumsabwägungsvorlage.",
         }
+
+class ContributionForm(forms.ModelForm):
+
+    class Meta:
+        model = Initiative
+        fields = ['title', 'subtitle','summary']
+
+        labels = {
+            "title" : "Überschrift",
+            "subtitle": "Anreißer",
+            "summary" : "Text",
+        }
+        help_texts = {
+            "title" : "Die Überschrift sollte den Beitrag kurz zusammenfassen.",
+            "subtitle": "Ein bis zwei Sätze zum Beitrag.",
+            "summary" : "Kompletter Text des Beitrags.",
+        }
+

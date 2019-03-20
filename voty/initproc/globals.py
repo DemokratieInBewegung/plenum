@@ -58,6 +58,7 @@ class VOTY_TYPES:
     BallotVote = 'urabstimmung'
     PlenumVote = 'plenumsentscheidung'
     PlenumOptions = 'plenumsabwaegung'
+    Contribution = 'beitrag'
 
 class VOTED:
     """
@@ -118,5 +119,7 @@ INITIATORS_COUNT = 3
 MINIMUM_MODERATOR_VOTES = 5
 MINIMUM_FEMALE_MODERATOR_VOTES = 3
 MINIMUM_DIVERSE_MODERATOR_VOTES = 2
+
+CONTRIBUTION_QUORUM = 6
 
 BOARD_GROUP = "Bundesvorstand"

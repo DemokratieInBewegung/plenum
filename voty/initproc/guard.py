@@ -57,6 +57,9 @@ class Guard:
         # for now.
         self.reason = None
 
+    def originally_supported_initiatives(self):
+        return Supporter.objects.filter(Q(first=True) | Q(initiator=True), user_id=self.user.id).values('initiative_id')
+
     def make_intiatives_query(self, filters):
         if not self.user.is_authenticated:
             filters = [f for f in filters if f in PUBLIC_STATES]
@@ -64,10 +67,10 @@ class Guard:
             filters = [f for f in filters if f not in TEAM_ONLY_STATES]
 
         if self.user.is_authenticated and not self.user.has_perm('initproc.add_moderation'):
-            return Initiative.objects.filter(Q(state__in=filters) | Q(state__in=TEAM_ONLY_STATES,
-                    id__in=Supporter.objects.filter(Q(first=True) | Q(initiator=True), user_id=self.user.id).values('initiative_id')))
+            return Initiative.objects.filter(Q(topic=None) & (Q(state__in=filters) | Q(state__in=TEAM_ONLY_STATES,
+                                                                                       id__in=self.originally_supported_initiatives())))
 
-        return Initiative.objects.filter(state__in=filters)
+        return Initiative.objects.filter(topic=None, state__in=filters)
 
     @_compound_action
     def can_comment(self, obj=None):
@@ -209,9 +212,15 @@ class Guard:
     def can_create_plenum_vote(self, init=None):
         return self.userIsBoard()
 
+    def can_create_contribution(self, init=None):
+        return self.user.is_authenticated
+
     ## compounds
 
     def _can_view_initiative(self, init):
+        if init.is_contribution and not self.user.is_authenticated:
+            return False
+
         if init.state not in TEAM_ONLY_STATES:
             return True
 
@@ -251,7 +260,7 @@ class Guard:
         return (female <= 0) & (diverse <= 0) & (total <= 0)
 
     def _can_support_initiative(self, init):
-        return (init.is_initiative()) and \
+        return (init.is_initiative() or init.is_contribution()) and \
                init.state == STATES.SEEKING_SUPPORT and \
                self.user.is_authenticated
 

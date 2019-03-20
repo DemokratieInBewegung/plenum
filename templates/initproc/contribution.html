@@ -108,6 +108,14 @@
         </div>
         <div class="row no-gutters avatar">
             <div class="d-flex flex-wrap">
+                {% if initiative.is_passive_solution %}
+                <div class="text-center initiator">
+                    {% include "fragments/phoenix.html" with size=80 %}
+                    <div class="name">
+                        Team Phoenix
+                    </div>
+                </div>
+                {% else %}
                 {% for usr in initiative.initiators %}
                 <div class="text-center initiator">
                     {% include "fragments/avatar.html" with user=usr.user %}
@@ -116,11 +124,11 @@
                     </div>
                 </div>
                 {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
-
 
 {% include "initproc/blocks/meta.html" %}
 

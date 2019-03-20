@@ -21,6 +21,7 @@ from voty.initproc.globals import SUBJECT_CATEGORIES, ADMINISTRATIVE_LEVELS
 
 class Topic(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
+    created_at.editable=True
     closes_at = models.DateTimeField(blank=True, null=True)
     closed_at = models.DateTimeField(blank=True, null=True)
     topic = models.TextField(blank=True)

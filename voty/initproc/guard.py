@@ -57,7 +57,13 @@ class Guard:
         # for now.
         self.reason = None
 
+    def initiated_initiatives(self):
+        return Supporter.objects.filter(initiator=True, user_id=self.user.id).values('initiative_id')
+
     def originally_supported_initiatives(self):
+        return Supporter.objects.filter(first=True, user_id=self.user.id).values('initiative_id')
+
+    def always_visible_initiatives(self):
         return Supporter.objects.filter(Q(first=True) | Q(initiator=True), user_id=self.user.id).values('initiative_id')
 
     def make_intiatives_query(self, filters):
@@ -68,7 +74,7 @@ class Guard:
 
         if self.user.is_authenticated and not self.user.has_perm('initproc.add_moderation'):
             return Initiative.objects.filter(Q(topic=None) & (Q(state__in=filters) | Q(state__in=TEAM_ONLY_STATES,
-                                                                                       id__in=self.originally_supported_initiatives())))
+                                                                                       id__in=self.always_visible_initiatives())))
 
         return Initiative.objects.filter(topic=None, state__in=filters)
 

@@ -40,6 +40,34 @@
 
 {% block content %}
 <div class="container init-index">
+    {% if initiations.count %}
+    <div class="container-fluid init-index-header">
+        <div class="container">
+            <div class="row title">
+                <div class="col-12 text-center" style="padding-top: 4rem; padding-bottom: 3rem">
+                    <h1 class="display-4 display-smaller">Beiträge, an denen Du arbeitest</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% for initiative in initiations %}
+    {% include "fragments/initiative/card.html"%}
+    {% endfor %}
+    {% endif %}
+    {% if invitations.count %}
+    <div class="container-fluid init-index-header">
+        <div class="container">
+            <div class="row title">
+                <div class="col-12 text-center" style="padding-top: 4rem; padding-bottom: 3rem">
+                    <h1 class="display-4 display-smaller">Beiträge, zu denen Du eingeladen wurdest</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% for initiative in invitations %}
+    {% include "fragments/initiative/card.html"%}
+    {% endfor %}
+    {% endif %}
     <div class="container-fluid init-index-header">
         <div class="container">
             <div class="row title">

@@ -196,12 +196,15 @@ def agora(request):
 
 @login_required
 def topic(request, topic_id, slug=None):
-    topic = get_object_or_404(Topic, pk=topic_id)
+    context = {}
+    context ['topic'] = get_object_or_404(Topic, pk=topic_id)
 
-    contributions = Initiative.objects.filter(topic=topic_id).order_by('created_at')
-    discussions = contributions.filter(state='d')
-    reflections = contributions.filter(Q(state='s') | Q(state='p', id__in=request.guard.originally_supported_initiatives()))
-    return render(request, 'initproc/topic.html',context=dict(discussions=discussions, reflections=reflections, topic=topic))
+    contributions = Initiative.objects.filter(topic=topic_id).order_by('-created_at')
+    context ['discussions'] = contributions.filter(state='d')
+    context ['reflections'] = contributions.filter(state='s')
+    context ['initiations'] = contributions.filter(state='p', id__in=request.guard.initiated_initiatives())
+    context ['invitations'] = contributions.filter(state='p', id__in=request.guard.originally_supported_initiatives())
+    return render(request, 'initproc/topic.html',context)
 
 class UserAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):

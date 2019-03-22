@@ -984,15 +984,15 @@ def start_discussion_phase(request, init):
 
     return redirect('/{}/{}'.format(init.einordnung, init.id))
 
-# This is only used for contributions; the contribution goes directly from preparation to seeking support
+# This is only used for contributions; the contribution goes directly from preparation to seeking support, or to discussion if it already has enough support
 @login_required
 @can_access_initiative([STATES.PREPARE], 'can_edit')
 def start_support_phase(request, init):
     if init.ready_for_next_stage:
-        init.state = STATES.SEEKING_SUPPORT
         # In this case, this doesn't really mean "public", just published for logged-in users
         init.went_public_at = datetime.now()
         init.supporting.filter(ack=False).delete()
+        init.state = STATES.DISCUSSION if init.supporting.count() >= init.quorum else STATES.SEEKING_SUPPORT
         init.save()
         return redirect('/{}/{}'.format(init.einordnung, init.id))
     else:

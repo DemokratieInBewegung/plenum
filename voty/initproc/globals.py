@@ -58,6 +58,7 @@ class VOTY_TYPES:
     BallotVote = 'urabstimmung'
     PlenumVote = 'plenumsentscheidung'
     PlenumOptions = 'plenumsabwaegung'
+    Contribution = 'beitrag'
 
 class VOTED:
     """
@@ -72,6 +73,29 @@ COMPARING_FIELDS = [
     'title', 'subtitle',  "summary", "problem", "forderung", "kosten",
     "fin_vorschlag", "arbeitsweise", "init_argument",
     "einordnung", "ebene", "bereich",
+]
+
+ADMINISTRATIVE_LEVELS = [
+    'Bund',
+    'Baden-Württemberg',
+    'Bayern',
+    'Berlin',
+    'Brandenburg',
+    'Bremen',
+    'Hamburg',
+    'Hessen',
+    'Mecklenburg-Vorpommern',
+    'Niedersachsen',
+    'Nordrhein-Westfalen',
+    'Rheinland-Pfalz',
+    'Saarland',
+    'Sachsen',
+    'Sachsen-Anhalt',
+    'Schleswig-Holstein',
+    'Thüringen',
+    'Leinfelden-Echterdingen',
+    'Stuttgart',
+    'Tübingen',
 ]
 
 SUBJECT_CATEGORIES = [
@@ -95,5 +119,7 @@ INITIATORS_COUNT = 3
 MINIMUM_MODERATOR_VOTES = 5
 MINIMUM_FEMALE_MODERATOR_VOTES = 3
 MINIMUM_DIVERSE_MODERATOR_VOTES = 2
+
+CONTRIBUTION_QUORUM = 6
 
 BOARD_GROUP = "Bundesvorstand"

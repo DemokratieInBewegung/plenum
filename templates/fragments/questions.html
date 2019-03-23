@@ -1,0 +1,15 @@
+
+<div id="question-list">
+    {% for argument in questions %}
+        {% include "fragments/argument/item.html" %}
+    {% empty %}
+    <div id="no-questions" class="alert alert-info">Es wurden {% if initiative.state == 'd' %}bisher{% endif %} keine Fragen gestellt.</div>
+    {% endfor %}
+</div>
+<div id="questions-thanks" class="container-fluid push-alert fixed-top">
+</div>
+    {% if initiative.state == 'd' %}
+	    <div id="new-question">
+{% include "fragments/argument/ask.html" %}
+	    </div>
+    {% endif %}

@@ -8,5 +8,5 @@ register = template.Library()
 
 @cache_result()
 @register.simple_tag(takes_context=True)
-def avatar_full_url(context, user, size=settings.AVATAR_DEFAULT_SIZE):
+def avatar_relative_url(context, user, size=settings.AVATAR_DEFAULT_SIZE):
 	return avatar_url(user, size)

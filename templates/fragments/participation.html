@@ -1,21 +1,14 @@
-<p><strong>{{participation_count}}</strong>{% if participation_count == 1 %} Person hat{% else %} Personen haben{% endif %} {% if closed %}an dieser Abstimmung teilgenommen{% else %}bisher abgestimmt{% endif %}.
-</p> 
-<div class="progress participation">
-    <div class="progress-bar bg-vote{%if closed %}d{% endif %}" role="progressbar" style="width: {% widthratio participation_count user_count 100 %}%;" aria-valuenow="{{participation_count}}" aria-valuemin="0" aria-valuemax="{{user_count}}">
-</div>
-</div>
-<p>Das {% if closed %}waren{% else %}sind{% endif %} <strong>{% widthratio participation_count user_count 100 %}</strong> Prozent aller <strong>{{user_count}}</strong> Abstimmungsberechtigten.
-</p>
 {% if vote %}
-<p>Du hast mit 
-</p>
-<div class="your-vote">
-{% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>
-	{% elif vote.against %}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>
-	{% else %}<span class="abstained text-center"><i class="material-icons">panorama_fish_eye</i> <br /><strong>Enthaltung</strong></span>{% endif %}
+<div class="your-vote-all">
+	Du hast mit
+	<div class="your-vote">
+	{% if vote.in_favor %}<span class="in-favor text-center"><i class="material-icons">thumb_up</i> <br /><strong>Ja</strong></span>
+		{% elif vote.against %}<span class="declined text-center"><i class="material-icons">thumb_down</i> <br /><strong>Nein</strong></span>
+		{% else %}<span class="abstained text-center"><i class="material-icons">panorama_fish_eye</i> <br /><strong>Enthaltung</strong></span>{% endif %}
+	</div>
+	<p>abgestimmt.
+	</p>
 </div>
-<p>abgestimmt.
-</p>
 {% elif preferences %}
 <h3>Du hast folgende Widerstandspunkte vergeben:</h3>
 {% for preference in preferences %}
@@ -34,3 +27,16 @@
 <p>Du hast an dieser Abstimmung nicht teilgenommen.</p>
 {% endif %}
 {% endif %}
+<div class="row">
+	<div class="col-12">
+		<h6 class="text-muted classification voting-footer">Abstimmungsbeteiligung</h6>
+	</div>
+</div>
+<p><strong>{{participation_count}}</strong>{% if participation_count == 1 %} Person hat{% else %} Personen haben{% endif %} {% if closed %}an dieser Abstimmung teilgenommen{% else %}bisher abgestimmt{% endif %}.
+</p>
+<div class="progress participation">
+	<div class="progress-bar bg-vote{%if closed %}d{% endif %}" role="progressbar" style="width: {% widthratio participation_count user_count 100 %}%;" aria-valuenow="{{participation_count}}" aria-valuemin="0" aria-valuemax="{{user_count}}">
+	</div>
+</div>
+<p>Das {% if closed %}waren{% else %}sind{% endif %} <strong>{% widthratio participation_count user_count 100 %}</strong> Prozent aller <strong>{{user_count}}</strong> Abstimmungsberechtigten.
+</p>

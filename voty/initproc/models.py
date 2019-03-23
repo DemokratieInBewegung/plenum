@@ -113,7 +113,7 @@ class Initiative(models.Model):
     supporters = models.ManyToManyField(User, through="Supporter")
     eligible_voters = models.IntegerField(blank=True, null=True)
 
-    topic = models.ForeignKey(Topic, blank=True, null=True, default=None)
+    topic = models.ForeignKey(Topic, blank=True, null=True, default=None, on_delete=models.CASCADE)
 
     @cached_property
     def slug(self):
@@ -619,7 +619,7 @@ class Weight(models.Model):
 
 # for plenum options
 class Preference(Weight):
-    option = models.ForeignKey(Option, related_name="preferences")
+    option = models.ForeignKey(Option, related_name="preferences", on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (("user", "option"),)
@@ -627,7 +627,7 @@ class Preference(Weight):
 
 # for agora contributions
 class Resistance(Weight):
-    contribution = models.ForeignKey(Initiative, related_name="resistances")
+    contribution = models.ForeignKey(Initiative, related_name="resistances", on_delete=models.CASCADE)
     reason = models.CharField(max_length=100, blank=True)
 
     class Meta:

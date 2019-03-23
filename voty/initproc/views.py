@@ -459,7 +459,7 @@ def edit(request, initiative):
             else:
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-        return render(request, 'initproc/new_plenumvote.html', context=dict(form=form, plenumvote=initiative))
+        return render(request, 'initproc/new_plenumoptions.html', context=dict(form=form, plenumvote=initiative))
     elif initiative.is_contribution():
         form = ContributionForm(request.POST or None, instance=initiative)
         if is_post:
@@ -479,7 +479,6 @@ def edit(request, initiative):
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
         return render(request, 'initproc/new_contribution.html', context=dict(form=form, topic=initiative.topic))
-
 
 
 @login_required

@@ -7,6 +7,7 @@ def generate_initiative_from_random_wikipedia_article():
     content = article.content
     chars = int(len(content) / 6)
     Initiative(title=article.title[:80],
+               einordnung='initiative',
                state='i',
                summary=content[0:chars],
                forderung=content[chars:chars*2],

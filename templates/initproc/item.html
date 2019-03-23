@@ -134,7 +134,7 @@
                 {% if initiative.absolute_supporters < initiative.quorum %}
                 <p>
                     Diese Initiative 
-                    <a href="#cta"><strong class="badge-support">sucht noch mindestens {{initiative.quorum|sub:initiative.absolute_supporters}} {% if initiative.absolute_supporters == 1 %}Unterstützer*in{% else %}Unterstützer*innen{% endif %}</strong></a>. Dafür bleiben ihr <strong>noch {{initiative.end_of_this_phase | timeuntil}}</strong>.
+                    <a href="#cta"><strong class="badge-support">sucht noch mindestens {{initiative.quorum|sub:initiative.absolute_supporters}} {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}Unterstützer*in{% else %}Unterstützer*innen{% endif %}</strong></a>. Dafür bleiben ihr <strong>noch {{initiative.end_of_this_phase | timeuntil}}</strong>.
                 </p>
                 {% elif initiative.absolute_supporters == initiative.quorum %}
                 <p>
@@ -258,12 +258,11 @@
                 </div>
                 {% if initiative.absolute_supporters < initiative.quorum %}
                 <span class="meta-content support-needed">
-                    Es fehlen noch 
+                    Es fehl{% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}t noch 1 Unterstützer*in{% else %}en noch
                     <strong>
                         {{initiative.quorum|sub:initiative.absolute_supporters}}
-                    </strong> 
-                    {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}
-                    Unterstützer*in{% else %}Unterstützer*innen{% endif %} zum Erreichen des Quorums.
+                    </strong>
+                    Unterstützer*innen{% endif %} zum Erreichen des Quorums.
                 </span>
                 {% elif initiative.absolute_supporters == initiative.quorum %}
                  <span class="meta-content support-needed">
@@ -345,7 +344,7 @@
         {% if initiative.allows_abstention %}
         <div class="row" style="padding-top: .25rem; padding-bottom: .5rem">
             <div class="col-12" style="padding-top: 1rem">
-                <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
+                <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% if initiative.all_variants %}{% if initiative.yays > initiative.nays %}, weil eine Variante (s.o.) mehr Ja-Stimmen bekommen hat{% endif %}{% endif %}{% endif %}.</p>
             </div>
         </div>
         <div class="row justify-content-center results-display">
@@ -515,12 +514,11 @@
                 </div>
                 {% if initiative.absolute_supporters < initiative.quorum %}
                 <span class="meta-content support-needed">
-                    Es fehlen noch 
+                    Es fehl{% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}t noch 1 Unterstützer*in{% else %}en noch
                     <strong>
                         {{initiative.quorum|sub:initiative.absolute_supporters}}
                     </strong> 
-                    {% if initiative.quorum|sub:initiative.absolute_supporters == 1 %}
-                    Unterstützer*in{% else %}Unterstützer*innen{% endif %} zum Erreichen des Quorums.
+                    Unterstützer*innen{% endif %} zum Erreichen des Quorums.
                 </span>
                 {% elif initiative.absolute_supporters == initiative.quorum %}
                  <span class="meta-content">

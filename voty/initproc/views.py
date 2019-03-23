@@ -30,9 +30,9 @@ import json
 
 from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS, VOTY_TYPES, BOARD_GROUP
 from .guard import can_access_initiative
-from .models import (Initiative, Pro, Contra, Proposal, Comment, Vote, Option, Preference, Moderation, Quorum, Supporter, Like)
-from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm,
-                    NewProposalForm, NewModerationForm, InviteUsersForm, PolicyChangeForm, PlenumVoteForm, PlenumOptionsForm)
+from .models import (Initiative, Pro, Contra, Proposal, Question, Comment, Vote, Option, Preference, Resistance, Moderation, Quorum, Supporter, Like, Topic)
+from .forms import (simple_form_verifier, InitiativeForm, NewArgumentForm, NewCommentForm, NewQuestionForm,
+                    NewProposalForm, NewModerationForm, InviteUsersForm, PolicyChangeForm, PlenumVoteForm, PlenumOptionsForm, ContributionForm)
 from .serializers import SimpleInitiativeSerializer
 from django.contrib.auth.models import Permission
 
@@ -71,7 +71,9 @@ def get_voting_fragments(initiative, request):
     add_participation_count(context, initiative)
 
     return {'fragments': {
-        '#voting': render_to_string("fragments/weighting.html" if initiative.is_plenumoptions() else "fragments/voting.html",
+        '#voting': render_to_string("fragments/weighting.html" if initiative.is_plenumoptions() else
+                                    "fragments/resistance.html" if initiative.is_contribution() else
+                                    "fragments/voting.html",
                                     context=context,
                                     request=request),
         '#jump-to-vote': render_to_string("fragments/jump_to_vote.html",
@@ -98,11 +100,20 @@ def add_vote_context(ctx, init, request):
     if votes.exists():
         ctx['vote'] = votes.first()
 
+    if init.is_contribution():
+        resistance = init.resistances.filter(user=request.user.id)
+        if resistance.exists():
+            ctx ['resistance'] = resistance.get()
+
+
 def add_participation_count(ctx, init):
     ctx['participation_count'] = init.options.first().preferences.count() if init.options.exists() else init.votes.count()
 
 def get_preferences(request,init):
     return Preference.objects.filter(option__initiative=init, user_id=request.user)
+
+def get_resistances(request,init):
+    return Resistance.objects.filter(contribution=init, user_id=request.user)
 
 def personalize_argument(arg, user_id):
     arg.has_liked = arg.likes.filter(user=user_id).exists()
@@ -178,6 +189,23 @@ def index(request):
 
 
 
+@login_required
+def agora(request):
+    open_topics = Topic.objects.filter(closed_at=None).order_by('created_at')
+    return render(request, 'initproc/agora.html',context=dict(topics=open_topics))
+
+@login_required
+def topic(request, topic_id, slug=None):
+    context = {}
+    context ['topic'] = get_object_or_404(Topic, pk=topic_id)
+
+    contributions = Initiative.objects.filter(topic=topic_id).order_by('-created_at')
+    context ['discussions'] = contributions.filter(state='d')
+    context ['reflections'] = contributions.filter(state='s')
+    context ['initiations'] = contributions.filter(state='p', id__in=request.guard.initiated_initiatives())
+    context ['invitations'] = contributions.filter(state='p', id__in=request.guard.originally_supported_initiatives())
+    return render(request, 'initproc/topic.html',context)
+
 class UserAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
@@ -226,12 +254,14 @@ def item(request, init, slug=None, initype=None):
 
     ctx = dict(initiative=init,
                user_count=init.eligible_voter_count,
+               questions=[x for x in init.questions.prefetch_related('likes').all()],
                proposals=[x for x in init.proposals.prefetch_related('likes').all()],
                arguments=[x for x in init.pros.prefetch_related('likes').all()] +\
                          [x for x in init.contras.prefetch_related('likes').all()])
 
     ctx['arguments'].sort(key=lambda x: (-x.likes.count(), x.created_at))
     ctx['proposals'].sort(key=lambda x: (-x.likes.count(), x.created_at))
+    ctx['questions'].sort(key=lambda x: (-x.likes.count(), x.created_at))
     ctx['is_editable'] = request.guard.is_editable (init)
 
     add_participation_count(ctx, init)
@@ -262,17 +292,18 @@ def item(request, init, slug=None, initype=None):
 
         add_vote_context(ctx, init, request)
 
-        for arg in ctx['arguments'] + ctx['proposals']:
+        for arg in ctx['arguments'] + ctx['proposals'] + ctx ['questions']:
             personalize_argument(arg, user_id)
 
-    print(ctx)
+    if init.is_contribution():
+        return render(request, 'initproc/contribution.html', context=ctx)
     if init.is_policychange():
         return render(request, 'initproc/policychange.html', context=ctx)
     if init.is_plenumvote():
         return render(request, 'initproc/plenumvote.html', context=ctx)
     if init.is_plenumoptions():
         return render(request, 'initproc/plenumoptions.html', context=ctx)
-    elif init.is_initiative():
+    if init.is_initiative():
         return render(request, 'initproc/item.html', context=ctx)
 
 
@@ -428,8 +459,26 @@ def edit(request, initiative):
             else:
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-
         return render(request, 'initproc/new_plenumoptions.html', context=dict(form=form, plenumvote=initiative))
+    elif initiative.is_contribution():
+        form = ContributionForm(request.POST or None, instance=initiative)
+        if is_post:
+            if form.is_valid():
+                with reversion.create_revision():
+                    initiative.save()
+
+                    # Store some meta-information.
+                    reversion.set_user(request.user)
+                    if request.POST.get('commit_message', None):
+                        reversion.set_comment(request.POST.get('commit_message'))
+
+                messages.success(request, "Beitrag gespeichert.")
+                # TODO fix pc.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
+                return redirect('/{}/{}'.format(initiative.einordnung, initiative.id))
+            else:
+                messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+
+        return render(request, 'initproc/new_contribution.html', context=dict(form=form, topic=initiative.topic))
 
 
 @login_required
@@ -501,6 +550,12 @@ def invite(request, form, initiative, invite_type):
 def support(request, initiative):
     Supporter(initiative=initiative, user_id=request.user.id,
               public=not not request.GET.get("public", False)).save()
+
+    if (initiative.is_contribution() and initiative.supporting.filter().count() >= initiative.quorum):
+        initiative.state = STATES.DISCUSSION
+        initiative.went_to_discussion_at = datetime.now()
+        initiative.save()
+        initiative.notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION)
 
     return redirect('/initiative/{}'.format(initiative.id))
 
@@ -588,6 +643,32 @@ def new_proposal(request, form, initiative):
         'append-fragments': {'#proposal-list': render_to_string("fragments/argument/item.html",
                                                   context=dict(argument=proposal,full=0),
                                                   request=request)}
+    }
+
+
+@non_ajax_redir('/')
+@ajax
+@login_required
+@can_access_initiative(STATES.DISCUSSION) # must be in discussion
+@simple_form_verifier(NewQuestionForm)
+def new_question(request, form, initiative):
+    data = form.cleaned_data
+    question = Question(initiative=initiative,
+                        user_id=request.user.id,
+                        title=data['title'],
+                        text=data['text'])
+
+    question.save()
+
+    return {
+        'fragments': {'#no-questions': ""},
+        'inner-fragments': {'#new-question': render_to_string("fragments/argument/ask.html",
+                                                              context=dict(initiative=initiative)),
+                            '#questions-thanks': render_to_string("fragments/argument/question_thanks.html"),
+                            '#questions-count': initiative.questions.count()},
+        'append-fragments': {'#question-list': render_to_string("fragments/argument/item.html",
+                                                                context=dict(argument=question,full=0),
+                                                                request=request)}
     }
 
 
@@ -770,10 +851,6 @@ def vote(request, init):
 def preference(request, init):
     preferences = get_preferences(request, init)
     preferences_existed = preferences.exists()
-#    preferences.delete()
-#    return
-    print ("preference count: {}".format (preferences.count()))
-    print ("preference exists: {}".format (preferences.exists()))
     for option in init.options.all():
         value = request.POST.get('option{}'.format(option.index))
         if preferences_existed:
@@ -782,6 +859,24 @@ def preference(request, init):
         else:
             my_preference = Preference(option=option, user_id=request.user.id, value=value)
         my_preference.save()
+
+    return get_voting_fragments(init, request)
+
+@non_ajax_redir('/')
+@ajax
+@login_required
+@require_POST
+@can_access_initiative(STATES.DISCUSSION) # must be in discussion
+def resistance(request, init):
+    resistances = get_resistances(request, init)
+    value = request.POST.get('option')
+    if resistances.exists():
+        my_resistance = resistances.get()
+        my_resistance.value = value
+    else:
+        my_resistance = Resistance(contribution=init, user_id=request.user.id, value=value)
+    my_resistance.reason = request.POST.get('reason')
+    my_resistance.save()
 
     return get_voting_fragments(init, request)
 
@@ -829,6 +924,15 @@ def reset_vote(request, init):
 @can_access_initiative(STATES.VOTING) # must be in voting
 def reset_preference(request, init):
     get_preferences(request, init).delete()
+    return get_voting_fragments(init, request)
+
+@non_ajax_redir('/')
+@ajax
+@login_required
+@require_POST
+@can_access_initiative(STATES.DISCUSSION) # must be in discussion
+def reset_resistance(request, init):
+    Resistance.objects.filter(contribution=init, user_id=request.user).delete()
     return get_voting_fragments(init, request)
 
 # See §9 (2) AO
@@ -879,6 +983,21 @@ def start_discussion_phase(request, init):
 
     return redirect('/{}/{}'.format(init.einordnung, init.id))
 
+# This is only used for contributions; the contribution goes directly from preparation to seeking support, or to discussion if it already has enough support
+@login_required
+@can_access_initiative([STATES.PREPARE], 'can_edit')
+def start_support_phase(request, init):
+    if init.ready_for_next_stage:
+        # In this case, this doesn't really mean "public", just published for logged-in users
+        init.went_public_at = datetime.now()
+        init.supporting.filter(ack=False).delete()
+        init.state = STATES.DISCUSSION if init.supporting.count() >= init.quorum else STATES.SEEKING_SUPPORT
+        init.save()
+        return redirect('/{}/{}'.format(init.einordnung, init.id))
+    else:
+        messages.warning(request, "Die Bedingungen für die Einreichung sind nicht erfüllt.")
+
+    return redirect('/{}/{}'.format(init.einordnung, init.id))
 @login_required
 def new_plenumvote(request):
     if not request.guard.can_create_plenum_vote():
@@ -957,3 +1076,34 @@ def start_voting(request, init):
         messages.warning(request, "Die Bedingungen für die Veröffentlichung sind nicht erfüllt.")
 
     return redirect('/{}/{}'.format(init.einordnung, init.id))
+
+@login_required
+def new_contribution(request, topic_id, slug=None):
+    if not request.guard.can_create_contribution():
+        raise PermissionDenied()
+
+    topic = get_object_or_404(Topic, pk=topic_id)
+
+    form = ContributionForm()
+    if request.method == 'POST':
+        form = ContributionForm(request.POST)
+        if form.is_valid():
+            contribution = form.save(commit=False)
+            with reversion.create_revision():
+                contribution.state = STATES.PREPARE
+                contribution.einordnung = VOTY_TYPES.Contribution
+                contribution.topic = topic
+                contribution.save()
+
+                # Store some meta-information.
+                reversion.set_user(request.user)
+                if request.POST.get('commit_message', None):
+                    reversion.set_comment(request.POST.get('commit_message'))
+
+                Supporter(initiative=contribution, user=request.user, initiator=True, ack=True, public=True).save()
+
+            return redirect('/{}/{}-{}'.format(contribution.einordnung, contribution.id, contribution.slug))
+        else:
+            messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
+
+    return render(request, 'initproc/new_contribution.html', context=dict(form=form,topic=topic))

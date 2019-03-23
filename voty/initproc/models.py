@@ -13,11 +13,50 @@ import reversion
 
 from datetime import datetime, timedelta, date
 
-from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START, VOTY_TYPES
+from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START, VOTY_TYPES, CONTRIBUTION_QUORUM
 from django.db import models
 import pytz
 
-from voty.initproc.globals import SUBJECT_CATEGORIES
+from voty.initproc.globals import SUBJECT_CATEGORIES, ADMINISTRATIVE_LEVELS
+
+class Topic(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    closes_at = models.DateTimeField(blank=True, null=True)
+    closed_at = models.DateTimeField(blank=True, null=True)
+    topic = models.TextField(blank=True)
+    subtitle = models.CharField(max_length=1024, blank=True)
+    motivation = models.TextField(blank=True)
+
+    def now(self):
+        return datetime.now(self.closes_at.tzinfo)
+
+    @cached_property
+    def slug(self):
+        return slugify(self.topic)
+
+    @property
+    def open_ended(self):
+        return self.closes_at is None
+
+    @property
+    def submission_ends(self):
+        return self.closes_at - timedelta(weeks=1)
+
+    @property
+    def is_archived(self):
+        return self.closes_at and self.now() > self.closes_at
+
+    @property
+    def soliciting_resistance(self):
+        return not (self.is_archived or self.open_ended or self.now() < self.submission_ends)
+
+    @property
+    def accepting_submissions(self):
+        return not (self.is_archived or self.soliciting_resistance)
+
+    @property
+    def end_of_this_phase(self):
+        return self.submission_ends if self.accepting_submissions else self.closes_at
 
 @reversion.register()
 class Initiative(models.Model):
@@ -57,9 +96,10 @@ class Initiative(models.Model):
         (VOTY_TYPES.PolicyChange,'AO-Änderung'),
         (VOTY_TYPES.BallotVote,'Urabstimmung'),
         (VOTY_TYPES.PlenumVote,'Plenumsentscheidung'),
-        (VOTY_TYPES.PlenumOptions,'Plenumsabwägung')
+        (VOTY_TYPES.PlenumOptions,'Plenumsabwägung'),
+        (VOTY_TYPES.Contribution,'Beitrag'),
     ])
-    ebene = models.CharField(max_length=50, choices=[('Bund', 'Bund')])
+    ebene = models.CharField(max_length=50, choices=[(item,item) for item in ADMINISTRATIVE_LEVELS])
     bereich = models.CharField(max_length=60, choices=[(item,item) for item in SUBJECT_CATEGORIES])
 
     went_public_at = models.DateField(blank=True, null=True)
@@ -71,6 +111,8 @@ class Initiative(models.Model):
 
     supporters = models.ManyToManyField(User, through="Supporter")
     eligible_voters = models.IntegerField(blank=True, null=True)
+
+    topic = models.ForeignKey(Topic, blank=True, null=True, default=None)
 
     @cached_property
     def slug(self):
@@ -114,6 +156,9 @@ class Initiative(models.Model):
 
         if self.is_plenumoptions(): # TODO: check that options are non-empty
             return self.plenumvote_ready_for_next_stage
+
+        if self.is_contribution():
+            return self.contribution_ready_for_next_stage
 
     @cached_property
     def initiative_ready_for_next_stage(self):
@@ -182,6 +227,16 @@ class Initiative(models.Model):
         return False
 
     @cached_property
+    def contribution_ready_for_next_stage(self):
+        if self.state in [STATES.PREPARE]:
+            #no empty text fields
+            return (self.title and
+                    self.subtitle and
+                    self.summary)
+
+        return False
+
+    @cached_property
     def end_of_this_phase_date(self):
         return self.end_of_this_phase.date() if hasattr(self.end_of_this_phase,'date') else self.end_of_this_phase
 
@@ -198,6 +253,9 @@ class Initiative(models.Model):
 
         if self.is_plenumoptions():
             return self.plenumoptions_end_of_this_phase
+
+        if self.is_contribution():
+            return self.contribution_end_of_this_phase
 
     @cached_property
     def initiative_end_of_this_phase(self):
@@ -298,16 +356,32 @@ class Initiative(models.Model):
         return None
 
     @cached_property
+    def contribution_end_of_this_phase(self):
+        return self.went_public_at + timedelta(weeks=3) if self.topic.open_ended else self.topic.end_of_this_phase
+
+    @cached_property
+    def has_phase_end(self):
+        return not (self.state in [self.STATES.INCOMING, self.STATES.COMPLETED, self.STATES.ACCEPTED, self.STATES.REJECTED, self.STATES.PREPARE, self.STATES.MODERATION] or (self.state == self.STATES.SEEKING_SUPPORT and self.is_contribution() and self.topic.open_ended))
+
+    @cached_property
+    def german_gender(self):
+        return 'm' if self.is_contribution() else 'f'
+
+    @cached_property
     def quorum(self):
-        return Quorum.current_quorum()
+        return CONTRIBUTION_QUORUM if self.is_contribution() else Quorum.current_quorum()
 
     @property
     def show_supporters(self):
         return self.state in [self.STATES.PREPARE, self.STATES.INCOMING, self.STATES.SEEKING_SUPPORT]
 
     @property
-    def show_debate(self):
+    def show_responses(self):
         return self.state in [self.STATES.DISCUSSION, self.STATES.FINAL_EDIT, self.STATES.MODERATION, self.STATES.VOTING, self.STATES.COMPLETED, self.STATES.ACCEPTED, self.STATES.REJECTED]
+
+    @property
+    def seeks_resistance(self):
+        return self.is_contribution() and self.topic.open_ended and self.state == self.STATES.DISCUSSION
 
     @cached_property
     def yays(self):
@@ -349,6 +423,12 @@ class Initiative(models.Model):
 
     def is_plenumoptions(self):
         return self.einordnung == VOTY_TYPES.PlenumOptions
+
+    def is_contribution(self):
+        return self.einordnung == VOTY_TYPES.Contribution
+
+    def is_passive_solution(self):
+        return self.is_contribution() and self.title == "Passivlösung"
 
     def subject(self):
         if self.is_initiative():
@@ -523,16 +603,33 @@ class Option(models.Model):
     class Meta:
         ordering = ['index']
 
-class Preference(models.Model):
+class Weight(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
-    option = models.ForeignKey(Option, related_name="preferences")
     value = models.IntegerField()
+
+    class Meta:
+        abstract = True
+
+# "Preference" was a bit of misnomer. Both Preference and Resistance represent resistance values,
+# for plenum options and for agora contributions, respectively
+
+# for plenum options
+class Preference(Weight):
+    option = models.ForeignKey(Option, related_name="preferences")
 
     class Meta:
         unique_together = (("user", "option"),)
         ordering = ['option__index']
+
+# for agora contributions
+class Resistance(Weight):
+    contribution = models.ForeignKey(Initiative, related_name="resistances")
+    reason = models.CharField(max_length=100, blank=True)
+
+    class Meta:
+        unique_together = (("user", "contribution"),)
 
 class Quorum(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -633,6 +730,12 @@ class Argument(Response):
         abstract = True
 
 ### End of Abstract
+
+class Question(Response):
+    type = "question"
+    icon = False
+    title = models.CharField(max_length=140)
+    text = models.CharField(max_length=1024)
 
 class Proposal(Response):
     type = "proposal"

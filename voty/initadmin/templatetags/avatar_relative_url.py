@@ -1,5 +1,4 @@
 from avatar.templatetags.avatar_tags import avatar_url
-from django.contrib.sites.models import Site
 from avatar.utils import cache_result
 from django import template
 from django.conf import settings

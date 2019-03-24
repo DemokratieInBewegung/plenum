@@ -2,6 +2,8 @@
 <img
 	src="{% avatar_full_url user size %}"
 	title="{{user.firstname|default:user.username}}"
+	data-toggle="tooltip"
+	data-placement="bottom"
 	width="{{ size }}"
 	height="{{ size }}"
 	class="avatar"

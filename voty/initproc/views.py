@@ -246,7 +246,7 @@ def new(request):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new.html', context=dict(form=form))
+    return render(request, 'initproc/new.html', context=dict(form=form,is_new=True))
 
 
 @can_access_initiative()
@@ -964,7 +964,7 @@ def new_policychange(request):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new_policychange.html', context=dict(form=form))
+    return render(request, 'initproc/new_policychange.html', context=dict(form=form,is_new=True))
 
 # This is only used for policy changes; the policy change goes directly from preparation to discussion; see §9 (2) AO
 @login_required
@@ -1026,7 +1026,7 @@ def new_plenumvote(request):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new_plenumvote.html', context=dict(form=form))
+    return render(request, 'initproc/new_plenumvote.html', context=dict(form=form,is_new=True))
 
 @login_required
 def new_plenumoptions(request):
@@ -1059,7 +1059,7 @@ def new_plenumoptions(request):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new_plenumoptions.html', context=dict(form=form))
+    return render(request, 'initproc/new_plenumoptions.html', context=dict(form=form,is_new=True))
 
 # This is only used for plenum votes; the plenum vote goes directly from preparation to voting
 @login_required

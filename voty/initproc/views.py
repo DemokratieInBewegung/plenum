@@ -396,7 +396,7 @@ def edit(request, initiative):
             else:
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-        return render(request, 'initproc/new.html', context=dict(form=form, initiative=initiative))
+        return render(request, 'initproc/new.html', context=dict(form=form))
     elif initiative.is_policychange():
         form = PolicyChangeForm(request.POST or None, instance=initiative)
         if is_post:
@@ -415,7 +415,7 @@ def edit(request, initiative):
             else:
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-        return render(request, 'initproc/new_policychange.html', context=dict(form=form, policychange=initiative))
+        return render(request, 'initproc/new_policychange.html', context=dict(form=form))
     elif initiative.is_plenumvote():
         form = PlenumVoteForm(request.POST or None, instance=initiative)
         if is_post:
@@ -433,7 +433,7 @@ def edit(request, initiative):
             else:
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-        return render(request, 'initproc/new_plenumvote.html', context=dict(form=form, plenumvote=initiative))
+        return render(request, 'initproc/new_plenumvote.html', context=dict(form=form))
     elif initiative.is_plenumoptions():
         options = {}
         if not is_post:
@@ -459,7 +459,7 @@ def edit(request, initiative):
             else:
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-        return render(request, 'initproc/new_plenumoptions.html', context=dict(form=form, plenumvote=initiative))
+        return render(request, 'initproc/new_plenumoptions.html', context=dict(form=form))
     elif initiative.is_contribution():
         form = ContributionForm(request.POST or None, instance=initiative)
         if is_post:
@@ -964,7 +964,7 @@ def new_policychange(request):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new_policychange.html', context=dict(form=form,is_new=True))
+    return render(request, 'initproc/new_policychange.html', context=dict(form=form, is_new=True))
 
 # This is only used for policy changes; the policy change goes directly from preparation to discussion; see §9 (2) AO
 @login_required
@@ -1026,7 +1026,7 @@ def new_plenumvote(request):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new_plenumvote.html', context=dict(form=form,is_new=True))
+    return render(request, 'initproc/new_plenumvote.html', context=dict(form=form, is_new=True))
 
 @login_required
 def new_plenumoptions(request):
@@ -1059,7 +1059,7 @@ def new_plenumoptions(request):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new_plenumoptions.html', context=dict(form=form,is_new=True))
+    return render(request, 'initproc/new_plenumoptions.html', context=dict(form=form, is_new=True))
 
 # This is only used for plenum votes; the plenum vote goes directly from preparation to voting
 @login_required
@@ -1106,4 +1106,4 @@ def new_contribution(request, topic_id, slug=None):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new_contribution.html', context=dict(form=form,topic=topic))
+    return render(request, 'initproc/new_contribution.html', context=dict(form=form, topic=topic, is_new=True))

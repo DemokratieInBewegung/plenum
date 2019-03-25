@@ -6,7 +6,7 @@
                     <h3>Es wurde{% if initiative.all_variants|length > 1 %}n{% endif %} auch folgende Variante{% if initiative.all_variants|length > 1 %}n{% endif %} eingebracht</h3>
                 </div>
             </div>
-            <div  class="container init-index">
+            <div class="container init-index">
                 {% for initiative in initiative.all_variants %}
                     {% include "fragments/initiative/card.html" %}
                 {% endfor %}

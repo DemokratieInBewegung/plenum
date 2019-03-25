@@ -373,7 +373,7 @@
         {% else %}
         <div class="row" style="padding-top: .25rem; padding-bottom: .5rem">
             <div class="col-12" style="padding-top: 1rem">
-                <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
+                <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% if initiative.all_variants %}{% if initiative.yays > initiative.nays %}, weil eine Variante (s.o.) mehr Ja-Stimmen bekommen hat{% endif %}{% endif %}{% endif %}.</p>
             </div>
         </div>
         <div class="row justify-content-center">

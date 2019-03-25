@@ -10,7 +10,7 @@ from functools import wraps
 from voty.initadmin.models import UserConfig
 from voty.initproc.models import Moderation
 from .globals import STATES, PUBLIC_STATES, TEAM_ONLY_STATES, INITIATORS_COUNT, MINIMUM_MODERATOR_VOTES, \
-    MINIMUM_FEMALE_MODERATOR_VOTES, MINIMUM_DIVERSE_MODERATOR_VOTES, VOTY_TYPES, BOARD_GROUP
+    MINIMUM_FEMALE_MODERATOR_VOTES, MINIMUM_DIVERSE_MODERATOR_VOTES, BOARD_GROUP
 from .models import Initiative, Supporter
 
 

@@ -267,3 +267,5 @@ OPTIONAL_NOPE_REASONS = [
     'lässt sich nicht vertreten.',
     'ist nicht mehr relevant.'
 ]
+
+AVATAR_EXPOSE_USERNAMES = False

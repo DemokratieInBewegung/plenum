@@ -1,4 +1,5 @@
 from account.models import SignupCodeResult
+from avatar.models import Avatar, avatar_storage
 from django.contrib import admin
 from django.contrib import messages
 from django.contrib.admin import helpers
@@ -7,6 +8,8 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
 from django.template.response import TemplateResponse
+import os
+from shutil import rmtree
 from random import randint
 from .models import UserConfig
 
@@ -34,6 +37,8 @@ class UserAdmin(BaseUserAdmin):
         count = queryset.count()
         if count:
             for user in queryset:
+                Avatar.objects.filter(user=user).delete()
+                rmtree(avatar_storage.path(os.path.join("avatars", str(user.pk))))
                 user.first_name = ''
                 user.last_name = ''
                 user.email = ''

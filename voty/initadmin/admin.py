@@ -38,7 +38,9 @@ class UserAdmin(BaseUserAdmin):
         if count:
             for user in queryset:
                 Avatar.objects.filter(user=user).delete()
-                rmtree(avatar_storage.path(os.path.join("avatars", str(user.pk))))
+                avatar_dir = avatar_storage.path(os.path.join("avatars", str(user.pk)))
+                if os.path.exists(avatar_dir):
+                    rmtree(avatar_dir)
                 user.first_name = ''
                 user.last_name = ''
                 user.email = ''

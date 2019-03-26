@@ -12,11 +12,11 @@ from django.core.management.base import BaseCommand
 # under the current username. The cached images under the previous username aren't deleted when
 # the username changes and thus lie around orphaned in storage, causing a privacy issue since
 # they can't be deleted when the user is anonymized. We're solving that problem by renaming the
-# directories from current usernames to user ids, moving any original avatars under old usernames
-# into the new directories, and then deleting any remaining directories with old usernames,
-# deleting any remaining directories, and setting AVATAR_EXPOSE_USERNAMES to false. All avatars
-# for a user (including any cached resized images generated later) will then be in the new user
-# id directories, where they can be deleted along with the originals when a user is anonymized.
+# directories from current usernames to user ids, moving any original avatar images under old
+# usernames into the new directories, deleting any directories with old usernames, and setting
+# AVATAR_EXPOSE_USERNAMES to False. All avatars for a user (including any cached resized images
+# generated later) will then be in the new user id directories, where they can be deleted along
+# with the originals when a user is anonymized.
 
 class Command(BaseCommand):
     help = "Anonymize avatar filenames"

@@ -9,6 +9,8 @@ from shutil import rmtree
 from avatar.models import Avatar, avatar_storage
 from django.contrib.auth import get_user_model
 
+base_dir = "avatars"
+
 # django-avatar has an option AVATAR_EXPOSE_USERNAMES, which is unfortunately set by default,
 # resulting in usernames being used as directory names for avatar storage. When a user's username
 # is changed, the original avatar images don't move and can still be located through the Avatar
@@ -24,7 +26,6 @@ from django.contrib.auth import get_user_model
 
 
 def anonymize_avatars(apps, schema_editor):
-    base_dir = "avatars"
     for user in get_user_model().objects.all():
         old_absolute_path = avatar_storage.path(os.path.join(base_dir, str(user.username)))
         new_absolute_path = avatar_storage.path(os.path.join(base_dir, str(user.pk)))
@@ -54,7 +55,6 @@ def anonymize_avatars(apps, schema_editor):
 
 # slightly simpler than anonymize_avatars since we don't have to deal with old usernames
 def personalize_avatars(apps, schema_editor):
-    base_dir = "avatars"
     for user in get_user_model().objects.all():
         old_absolute_path = avatar_storage.path(os.path.join(base_dir, str(user.pk)))
         new_absolute_path = avatar_storage.path(os.path.join(base_dir, str(user.username)))

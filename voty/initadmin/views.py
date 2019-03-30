@@ -101,7 +101,7 @@ def mass_invite(request):
 @user_passes_test(lambda u: u.is_staff)
 def export_results(request):
     results = StringIO()
-    fieldnames = ["Titel", "Abschlussdatum","Abstimmungsberechtigte"]
+    fieldnames = ["Titel", "Abschlussdatum", "Abstimmungsberechtigte"]
     for (value,name) in Vote.CHOICES:
         fieldnames.append(name)
     print (fieldnames)

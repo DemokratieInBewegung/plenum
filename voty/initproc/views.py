@@ -511,7 +511,8 @@ def submit_to_committee(request, initiative):
 @can_access_initiative(STATES.PREPARE, 'can_edit') 
 @simple_form_verifier(InviteUsersForm, submit_title="Einladen")
 def invite(request, form, initiative, invite_type):
-    for user in form.cleaned_data['user']:
+    users = form.cleaned_data['user']
+    for user in users:
         if user == request.user: continue # we skip ourselves
         if invite_type == 'initiators' and \
             initiative.supporting.filter(initiator=True).count() >= INITIATORS_COUNT:
@@ -540,7 +541,8 @@ def invite(request, form, initiative, invite_type):
 
         notify([user], NOTIFICATIONS.INVITE.SEND, {"target": initiative}, sender=request.user)
 
-    messages.success(request, "Initiator*innen eingeladen." if invite_type == 'initiators' else 'Unterstützer*innen eingeladen.' )
+    if users.count():
+        messages.success(request, ("Initiator*in" if invite_type == 'initiators' else 'Unterstützer*in') + ('nen' if users.count() > 1 else '') + ' eingeladen.')
     return redirect("/initiative/{}-{}".format(initiative.id, initiative.slug))
 
 

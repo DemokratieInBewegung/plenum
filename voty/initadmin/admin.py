@@ -12,6 +12,7 @@ import os
 from shutil import rmtree
 from random import randint
 from .models import UserConfig
+from voty.initproc.models import Vote
 
 class UserConfigInline(admin.StackedInline):
     model = UserConfig
@@ -37,6 +38,7 @@ class UserAdmin(BaseUserAdmin):
         count = queryset.count()
         if count:
             for user in queryset:
+                Vote.objects.filter(user=user,initiative__state='v').delete()
                 Avatar.objects.filter(user=user).delete()
                 avatar_dir = avatar_storage.path(os.path.join("avatars", str(user.pk)))
                 if os.path.exists(avatar_dir):

@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from django.utils import timezone
 from django.db import models
 import pytz
 
@@ -16,8 +15,3 @@ class UserConfig(models.Model):
     is_diverse_mod = models.BooleanField(default=False)
     is_female_mod = models.BooleanField(default=False)
     last_activity = models.DateTimeField(default=None, null=True, blank=True)
-
-    def act(self):
-        self.last_activity = timezone.now()
-        self.save()
-

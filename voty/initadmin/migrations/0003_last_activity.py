@@ -14,7 +14,8 @@ def record_activity(config, datetime):
 
 def handle_model(model):
     for o in model.objects.all():
-        record_activity(o.user.config, o.changed_at if hasattr(o, 'changed_at') else o.created_at)
+        if not (isinstance(o, Supporter) and o.initiative.state == 'p' and not o.ack):
+            record_activity(o.user.config, o.changed_at if hasattr(o, 'changed_at') else o.created_at)
 
 
 def init_last_activity(apps, schema_editor):

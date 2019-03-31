@@ -304,6 +304,10 @@ def add_guard(get_response):
         request.guard = guard
         request.user.guard = guard
 
+        # record user's last activity
+        if request.method == 'POST' and request.user.is_authenticated and request.path != '/account/logout/':
+            request.user.config.act()
+
         response = get_response(request)
         return response
 

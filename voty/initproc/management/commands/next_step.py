@@ -7,6 +7,7 @@ from django.db.models import Count
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from datetime import datetime, date
+from .set_quorum import Command as QuorumCommand
 
 """
 Step models into the next step
@@ -21,6 +22,8 @@ class Command(BaseCommand):
         parser.add_argument('--id', type=int)
 
     def handle(self, *args, **options):
+        if date.today().day == 1:
+            QuorumCommand().handle()
 
         id = options['id']
         if id:

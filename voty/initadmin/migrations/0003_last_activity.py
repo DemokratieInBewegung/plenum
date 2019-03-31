@@ -20,8 +20,7 @@ def handle_model(model):
 
 def init_last_activity(apps, schema_editor):
     for user in get_user_model().objects.all():
-        if not hasattr(user, 'config'):
-            user.config = UserConfig.objects.create(user=user)
+        UserConfig.objects.get_or_create(user=user)
 
     handle_model(Vote)
     handle_model(Supporter)

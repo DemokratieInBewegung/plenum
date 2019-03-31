@@ -305,7 +305,7 @@ def add_guard(get_response):
         request.user.guard = guard
 
         # record user's last activity
-        if request.method == 'POST' and request.user.is_authenticated and request.path != '/account/logout/':
+        if request.method == 'POST' and request.user.is_authenticated and request.path != '/account/logout/' and not request.path.startswith('/admin'):
             request.user.config.act()
 
         response = get_response(request)

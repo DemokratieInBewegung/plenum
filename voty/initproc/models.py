@@ -234,6 +234,9 @@ class Initiative(models.Model):
                     self.subtitle and
                     self.summary)
 
+        if self.state in [STATES.DISCUSSION]:
+            return not self.topic.accepting_submissions
+
         return False
 
     @cached_property
@@ -357,7 +360,11 @@ class Initiative(models.Model):
 
     @cached_property
     def contribution_end_of_this_phase(self):
-        return self.went_public_at + timedelta(weeks=3) if self.topic.open_ended else self.topic.end_of_this_phase
+        if self.topic.open_ended:
+            return self.went_public_at + timedelta(weeks=3)
+        if self.state == 'v':
+            return self.topic.closes_at
+        return self.topic.submission_ends
 
     @cached_property
     def has_phase_end(self):

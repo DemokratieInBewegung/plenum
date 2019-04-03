@@ -43,7 +43,7 @@ class Command(BaseCommand):
                     i.notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION)
 
                 elif i.state == STATES.DISCUSSION:
-                    i.state = STATES.FINAL_EDIT
+                    i.state = STATES.VOTING if i.is_contribution() else STATES.FINAL_EDIT
                     i.save()
                     i.notify_initiators(NOTIFICATIONS.INITIATIVE.DISCUSSION_CLOSED)
 
@@ -63,7 +63,7 @@ class Command(BaseCommand):
                         #     i.notify_followers(NOTIFICATIONS.INITIATIVE.REJECTED) todo: define rejected notification
 
                         #send feedback message to all initiators
-                        if not i.is_plenumoptions():
+                        if not (i.is_plenumoptions() or i.is_contribution()):
                             EmailMessage(
                                 'Feedback zur Abstimmung',
                                 render_to_string('initadmin/voting_feedback.txt', context=dict(

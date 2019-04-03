@@ -29,16 +29,55 @@
             </div>
         </div>
         {% endif %}
+        {% if topic.accepting_submissions %}
         <div class="row title" style="margin-top:3rem">
             <div class="col-12 text-center">
                 <a href="{% fullurl 'new_contribution' topic_id=topic.id slug=topic.slug %}"><h5>Neuen Beitrag zu diesem Thema einbringen</h5></a>
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
 
 {% block content %}
+{% if topic.soliciting_resistance %}
+<script type="text/javascript">
+function enable_submit() {
+    var disabled = false;
+    {% for contribution in evaluations %}
+    var value = -1;
+    var radios = document.getElementsByName('contribution{{contribution.id}}');
+    for (var i = 0;i < radios.length;i++)
+        if (radios [i].checked)
+            value = radios [i].value;
+    disabled |= value == -1 || (value > 6 && !document.getElementById('reason{{contribution.id}}').value);
+    {% endfor %}
+    document.getElementById('initial_vote_submit').disabled = disabled;
+}
+</script>
+<div class="container-fluid">
+    <div class="container">
+        <div class="row initiative-state">
+<div class="col-12" id="voting">
+    <h6 class="text-muted classification">Noch {{topic.end_of_this_phase | timeuntil}} in Abwägung</h6>
+    {% if resistances %}
+    <h3>Danke, Deine Widerstandspunkte wurden gezählt!</h3>
+    <form data-ajax-submit="true" action="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/reset_preference" method="POST">
+        {% csrf_token %}
+        <div><button class="btn btn-sm btn-default" type="submit" title="hier klicken um zurückzunehmen" style="margin-top:30px">Widerstandspunkte zurücknehmen</button></div>
+        <div class="back-to-index">
+            <a href="/" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Übersicht</a>
+        </div>
+    </form>
+    {% else %}
+    <h3 style="margin-top:15px">Hier kannst Du in Kürze Widerstandspunkte für die Beiträge verteilen, die zu diesem Thema diskutiert wurden.</h3>
+    {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
 <div class="container init-index">
     {% if initiations.count %}
     <div class="container-fluid init-index-header">
@@ -106,6 +145,7 @@
         </div>
         {% endfor %}
 </div>
+{% endif %}
     <div class="container-fluid">
         <div class="container">
             <div class="row">

@@ -197,9 +197,11 @@ def agora(request):
 @login_required
 def topic(request, topic_id, slug=None):
     context = {}
-    context ['topic'] = get_object_or_404(Topic, pk=topic_id)
+    topic = get_object_or_404(Topic, pk=topic_id)
+    context['topic'] = topic
 
     contributions = Initiative.objects.filter(topic=topic_id).order_by('-created_at')
+    context ['evaluations'] = contributions.filter(state='v')
     context ['discussions'] = contributions.filter(state='d')
     context ['reflections'] = contributions.filter(state='s')
     context ['initiations'] = contributions.filter(state='p', id__in=request.guard.initiated_initiatives())

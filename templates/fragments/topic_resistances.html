@@ -1,0 +1,47 @@
+{% load fullurl %}
+
+<div class="col-12" id="voting">
+    <h6 class="text-muted classification">Noch {{topic.end_of_this_phase | timeuntil}} in Abwägung</h6>
+    {% if resistances %}
+    <h3>Danke, Deine Widerstandspunkte wurden gezählt!</h3>
+    <form data-ajax-submit="true" action="{% fullurl 'reset_topic_resistances' topic_id=topic.id slug=topic.slug %}" method="POST">
+        <h3>Du hast folgende Widerstandspunkte vergeben:</h3>
+        {% for resistance in resistances %}
+        <p style="padding-top:30px"><a href="{% fullurl 'initiative_item' initype=resistance.contribution.einordnung init_id=resistance.contribution.id slug=resistance.contribution.slug %}">{{resistance.contribution.title}}</a></p>
+        <div class="btn-group" role="group" style="display:inline">
+            {% for i in "01234567890" %}
+            <label>
+                <input type="radio" {% if resistance.value == forloop.counter0 %}checked{% else %}disabled{% endif %}="1" style="margin-right:0.1rem;margin-left:0.8rem">
+                {{forloop.counter0}}
+            </label>
+            {% endfor %}
+        </div>
+        {% if resistance.reason %}
+        <div>Begründung: {{resistance.reason}}</div>
+        {% endif %}
+        {% endfor %}
+        {% csrf_token %}
+        <div><button class="btn btn-sm btn-default" type="submit" title="hier klicken um zurückzunehmen" style="margin-top:30px">Widerstandspunkte zurücknehmen</button></div>
+    </form>
+    {% else %}
+    <form data-ajax-submit="true" action="{% fullurl 'topic_resistances' topic_id=topic.id slug=topic.slug %}" method="POST">
+        {% csrf_token %}
+        <p style="margin-top:30px;margin-bottom:20px">Hier kannst Du für die Beiträge, die zu diesem Thema diskutiert wurden, Widerstandspunkte zwischen 0 (kein Widerstand) und 10 (großer Widerstand) vergeben. Um mehr als 6 Widerstandspunkte zu vergeben, musst Du eine Begründung angeben; ansonsten ist die Begründung optional. Bis zum Ende der Phase kannst Du die Widerstandspunkte (mitsamt Begründungen) jederzeit zurücknehmen und neu vergeben. Damit die Ergebnisse vergleichbar sind, musst Du für alle Beiträge gleichzeitig Punkte verteilen.</p>
+        {% for contribution in evaluations %}
+        <p style="padding-top:30px"><a href="{% fullurl 'initiative_item' initype=contribution.einordnung init_id=contribution.id slug=contribution.slug %}">{{contribution.title}}</a></p>
+        <div class="btn-group" role="group" style="display:inline">
+            {% for i in "01234567890" %}
+            <label for="o{{contribution.id}}_{{forloop.counter0}}">
+                <input type="radio" onchange="javascript:enable_submit()" name="contribution{{contribution.id}}" id="o{{contribution.id}}_{{forloop.counter0}}" value="{{forloop.counter0}}" style="margin-right:0.1rem;margin-left:0.8rem">
+                {{forloop.counter0}}
+            </label>
+            {% endfor %}
+            <div>Begründung: <input type="text" size="50" maxlength="100" oninput="javascript:enable_submit()" name="reason{{contribution.id}}" id="reason{{contribution.id}}" value="" style="margin-right:0.1rem;margin-left:0.8rem"></div>
+        </div>
+        {% endfor %}
+        <div class="col-12 text-left submit-vote" style="margin-top:60px">
+            <button id="initial_vote_submit" type="submit" disabled="disabled" class="btn btn-lg btn-primary">Widerstandspunkte vergeben</button>
+        </div>
+    </form>
+    {% endif %}
+</div>

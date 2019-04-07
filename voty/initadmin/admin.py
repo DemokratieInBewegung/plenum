@@ -48,6 +48,9 @@ class UserAdmin(BaseUserAdmin):
                 user.email = ''
                 user.is_staff = False  # for good measure
                 user.is_active = False
+                UserConfig.objects.filter(user=user).delete()
+                for result in SignupCodeResult.objects.filter(user=user):
+                    result.signup_code.delete() # also deletes the result, by cascading
                 while True:
                     user.username = 'anon' + str(randint(1, 9999999999))
                     if not User.objects.filter(username=user.username).exists():

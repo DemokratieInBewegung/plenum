@@ -12,6 +12,7 @@ class InviteBatch(models.Model):
 
 class UserConfig(models.Model):
     user = models.OneToOneField(User, related_name="config", on_delete=models.CASCADE)
+    is_party_member = models.BooleanField(default=False)
     is_diverse_mod = models.BooleanField(default=False)
     is_female_mod = models.BooleanField(default=False)
     last_activity = models.DateTimeField(default=None, null=True, blank=True)

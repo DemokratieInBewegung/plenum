@@ -78,7 +78,7 @@ function update_notifications(data) {
 
         case "init_new_arg":
             message = `<a href="/initiative/${item.target_object_id}">
-                <i class="material-icons">comment</i>${item.actor} hat ein neues Argument zu "${item.target}"" veröffentlicht.
+                <i class="material-icons">comment</i>${item.actor} hat ein neues Argument zu "${item.target}" veröffentlicht.
             </a>`
           break;
 

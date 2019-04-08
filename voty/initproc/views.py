@@ -262,7 +262,7 @@ def new(request):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new.html', context=dict(form=form))
+    return render(request, 'initproc/new.html', context=dict(form=form,is_new=True))
 
 
 @can_access_initiative()
@@ -404,7 +404,7 @@ def edit(request, initiative):
                     if request.POST.get('commit_message', None):
                         reversion.set_comment(request.POST.get('commit_message'))
 
-                initiative.supporting.filter(initiator=True).update(ack=False)
+                initiative.supporting.filter(initiator=True).exclude(user=request.user).update(ack=False)
 
                 messages.success(request, "Initiative gespeichert.")
                 initiative.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
@@ -412,7 +412,7 @@ def edit(request, initiative):
             else:
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-        return render(request, 'initproc/new.html', context=dict(form=form, initiative=initiative))
+        return render(request, 'initproc/new.html', context=dict(form=form))
     elif initiative.is_policychange():
         form = PolicyChangeForm(request.POST or None, instance=initiative)
         if is_post:
@@ -431,7 +431,7 @@ def edit(request, initiative):
             else:
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-        return render(request, 'initproc/new_policychange.html', context=dict(form=form, policychange=initiative))
+        return render(request, 'initproc/new_policychange.html', context=dict(form=form))
     elif initiative.is_plenumvote():
         form = PlenumVoteForm(request.POST or None, instance=initiative)
         if is_post:
@@ -449,7 +449,7 @@ def edit(request, initiative):
             else:
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-        return render(request, 'initproc/new_plenumvote.html', context=dict(form=form, plenumvote=initiative))
+        return render(request, 'initproc/new_plenumvote.html', context=dict(form=form))
     elif initiative.is_plenumoptions():
         options = {}
         if not is_post:
@@ -475,7 +475,7 @@ def edit(request, initiative):
             else:
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-        return render(request, 'initproc/new_plenumvote.html', context=dict(form=form, plenumvote=initiative))
+        return render(request, 'initproc/new_plenumoptions.html', context=dict(form=form))
     elif initiative.is_contribution():
         form = ContributionForm(request.POST or None, instance=initiative)
         if is_post:
@@ -495,7 +495,6 @@ def edit(request, initiative):
                 messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
         return render(request, 'initproc/new_contribution.html', context=dict(form=form, topic=initiative.topic))
-
 
 
 @login_required
@@ -528,7 +527,8 @@ def submit_to_committee(request, initiative):
 @can_access_initiative(STATES.PREPARE, 'can_edit') 
 @simple_form_verifier(InviteUsersForm, submit_title="Einladen")
 def invite(request, form, initiative, invite_type):
-    for user in form.cleaned_data['user']:
+    users = form.cleaned_data['user']
+    for user in users:
         if user == request.user: continue # we skip ourselves
         if invite_type == 'initiators' and \
             initiative.supporting.filter(initiator=True).count() >= INITIATORS_COUNT:
@@ -557,7 +557,8 @@ def invite(request, form, initiative, invite_type):
 
         notify([user], NOTIFICATIONS.INVITE.SEND, {"target": initiative}, sender=request.user)
 
-    messages.success(request, "Initiator*innen eingeladen." if invite_type == 'initiators' else 'Unterstützer*innen eingeladen.' )
+    if users.count():
+        messages.success(request, ("Initiator*in" if invite_type == 'initiators' else 'Unterstützer*in') + ('nen' if users.count() > 1 else '') + ' eingeladen.')
     return redirect("/initiative/{}-{}".format(initiative.id, initiative.slug))
 
 
@@ -762,9 +763,13 @@ def comment(request, form, target_type, target_id):
     cmt = Comment(target=model, user=request.user, **data)
     cmt.save()
 
+    new_comment = "<strong>Danke für Deinen Kommentar</strong>";
+    if (isinstance (model,Moderation)):
+        new_comment += "<br>" + render_to_string("fragments/comment/button.html",context=dict(m=model))
+
     return {
         'inner-fragments': {'#{}-new-comment'.format(model.unique_id):
-                "<strong>Danke für Deinen Kommentar</strong>",
+                new_comment,
                 '#{}-chat-icon'.format(model.unique_id):
                 "chat_bubble", # This user has now commented, so fill in the chat icon
                 '#{}-comment-count'.format(model.unique_id):
@@ -1011,7 +1016,7 @@ def new_policychange(request):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new_policychange.html', context=dict(form=form))
+    return render(request, 'initproc/new_policychange.html', context=dict(form=form, is_new=True))
 
 # This is only used for policy changes; the policy change goes directly from preparation to discussion; see §9 (2) AO
 @login_required
@@ -1073,7 +1078,7 @@ def new_plenumvote(request):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new_plenumvote.html', context=dict(form=form))
+    return render(request, 'initproc/new_plenumvote.html', context=dict(form=form, is_new=True))
 
 @login_required
 def new_plenumoptions(request):
@@ -1106,7 +1111,7 @@ def new_plenumoptions(request):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new_plenumoptions.html', context=dict(form=form))
+    return render(request, 'initproc/new_plenumoptions.html', context=dict(form=form, is_new=True))
 
 # This is only used for plenum votes; the plenum vote goes directly from preparation to voting
 @login_required
@@ -1153,4 +1158,4 @@ def new_contribution(request, topic_id, slug=None):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new_contribution.html', context=dict(form=form,topic=topic))
+    return render(request, 'initproc/new_contribution.html', context=dict(form=form, topic=topic, is_new=True))

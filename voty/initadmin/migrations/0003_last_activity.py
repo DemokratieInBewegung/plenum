@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from django.db import migrations, models
 from django.contrib.auth import get_user_model
-from voty.initproc.models import Vote, Supporter, Like, Comment, Proposal, Pro, Contra, Moderation
+from voty.initproc.models import Vote, Supporter, Like, Comment, Proposal, Pro, Contra, Moderation, Preference, Resistance
 from voty.initadmin.models import UserConfig
 
 
@@ -30,6 +30,8 @@ def init_last_activity(apps, schema_editor):
     handle_model(Pro)
     handle_model(Contra)
     handle_model(Moderation)
+    handle_model(Preference)
+    handle_model(Resistance)
 
 
 def reverse_last_activity(apps, schema_editor):
@@ -43,6 +45,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('initadmin', '0002_userconfig'),
+        ('initproc', '0036_resistance'),
     ]
 
     operations = [

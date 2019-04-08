@@ -763,9 +763,13 @@ def comment(request, form, target_type, target_id):
     cmt = Comment(target=model, user=request.user, **data)
     cmt.save()
 
+    new_comment = "<strong>Danke für Deinen Kommentar</strong>";
+    if (isinstance (model,Moderation)):
+        new_comment += "<br>" + render_to_string("fragments/comment/button.html",context=dict(m=model))
+
     return {
         'inner-fragments': {'#{}-new-comment'.format(model.unique_id):
-                "<strong>Danke für Deinen Kommentar</strong>",
+                new_comment,
                 '#{}-chat-icon'.format(model.unique_id):
                 "chat_bubble", # This user has now commented, so fill in the chat icon
                 '#{}-comment-count'.format(model.unique_id):

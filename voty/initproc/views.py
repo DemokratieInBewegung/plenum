@@ -80,6 +80,15 @@ def get_voting_fragments(initiative, request):
                                     context=context)
         }}
 
+def get_resistances_fragments(topic_id, request):
+    context = get_topic_context(topic_id, request)
+    context['evaluations'] = Initiative.objects.filter(topic=topic_id).filter(state='v').order_by('-went_to_discussion_at', '-went_public_at', '-created_at')
+    return {'fragments': {
+        '#voting': render_to_string("fragments/topic_resistances.html",
+                                    context=context,
+                                    request=request),
+    }}
+
 #
 # ____    ____  __   ___________    __    ____   _______.
 # \   \  /   / |  | |   ____\   \  /  \  /   /  /       |
@@ -105,6 +114,11 @@ def add_vote_context(ctx, init, request):
         if resistance.exists():
             ctx ['resistance'] = resistance.get()
 
+def get_topic_context(topic_id, request):
+    context = {}
+    context['topic'] = get_object_or_404(Topic, pk=topic_id)
+    context['resistances'] = get_topic_resistances(request, topic_id).order_by('created_at')
+    return context
 
 def add_participation_count(ctx, init):
     ctx['participation_count'] = init.options.first().preferences.count() if init.options.exists() else init.votes.count()
@@ -112,8 +126,11 @@ def add_participation_count(ctx, init):
 def get_preferences(request,init):
     return Preference.objects.filter(option__initiative=init, user_id=request.user)
 
-def get_resistances(request,init):
+def get_resistance(request,init):
     return Resistance.objects.filter(contribution=init, user_id=request.user)
+
+def get_topic_resistances(request, topic_id):
+    return Resistance.objects.filter(contribution__topic=topic_id, user_id=request.user.id)
 
 def personalize_argument(arg, user_id):
     arg.has_liked = arg.likes.filter(user=user_id).exists()
@@ -196,14 +213,13 @@ def agora(request):
 
 @login_required
 def topic(request, topic_id, slug=None):
-    context = {}
-    context ['topic'] = get_object_or_404(Topic, pk=topic_id)
-
-    contributions = Initiative.objects.filter(topic=topic_id).order_by('-created_at')
-    context ['discussions'] = contributions.filter(state='d')
-    context ['reflections'] = contributions.filter(state='s')
-    context ['initiations'] = contributions.filter(state='p', id__in=request.guard.initiated_initiatives())
-    context ['invitations'] = contributions.filter(state='p', id__in=request.guard.originally_supported_initiatives())
+    context = get_topic_context(topic_id, request)
+    contributions = Initiative.objects.filter(topic=topic_id)
+    context['evaluations'] = contributions.filter(state='v').order_by('-went_to_discussion_at', '-went_public_at', '-created_at')
+    context['discussions'] = contributions.filter(state='d').order_by('-went_to_discussion_at', '-went_public_at', '-created_at')
+    context['reflections'] = contributions.filter(state='s').order_by('-went_public_at', '-created_at')
+    context['initiations'] = contributions.filter(state='p', id__in=request.guard.initiated_initiatives()).order_by('-created_at')
+    context['invitations'] = contributions.filter(state='p', id__in=request.guard.originally_supported_initiatives()).order_by('-created_at')
     return render(request, 'initproc/topic.html',context)
 
 class UserAutocomplete(autocomplete.Select2QuerySetView):
@@ -388,7 +404,7 @@ def edit(request, initiative):
                     if request.POST.get('commit_message', None):
                         reversion.set_comment(request.POST.get('commit_message'))
 
-                initiative.supporting.filter(initiator=True).update(ack=False)
+                initiative.supporting.filter(initiator=True).exclude(user=request.user).update(ack=False)
 
                 messages.success(request, "Initiative gespeichert.")
                 initiative.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)
@@ -868,10 +884,10 @@ def preference(request, init):
 @require_POST
 @can_access_initiative(STATES.DISCUSSION) # must be in discussion
 def resistance(request, init):
-    resistances = get_resistances(request, init)
+    resistance = get_resistance(request, init)
     value = request.POST.get('option')
-    if resistances.exists():
-        my_resistance = resistances.get()
+    if resistance.exists():
+        my_resistance = resistance.get()
         my_resistance.value = value
     else:
         my_resistance = Resistance(contribution=init, user_id=request.user.id, value=value)
@@ -880,6 +896,28 @@ def resistance(request, init):
 
     return get_voting_fragments(init, request)
 
+
+@non_ajax_redir('/')
+@ajax
+@login_required
+@require_POST
+def topic_resistances(request, topic_id, slug):
+    contributions = Initiative.objects.filter(topic=topic_id, state='v').order_by('-went_to_discussion_at', '-went_public_at', '-created_at')
+    resistances = get_topic_resistances(request, topic_id)
+
+    resistances_existed = resistances.exists()
+    for contribution in contributions:
+        value = request.POST.get('contribution{}'.format(contribution.id))
+        reason = request.POST.get('reason{}'.format(contribution.id))
+        if resistances_existed:
+            my_resistance = resistances.get(contribution=contribution)
+            my_resistance.value = value
+            my_resistance.reason = reason
+        else:
+            my_resistance = Resistance(contribution=contribution, user_id=request.user.id, value=value, reason=reason)
+        my_resistance.save()
+
+    return get_resistances_fragments(topic_id, request)
 
 @non_ajax_redir('/')
 @ajax
@@ -932,8 +970,16 @@ def reset_preference(request, init):
 @require_POST
 @can_access_initiative(STATES.DISCUSSION) # must be in discussion
 def reset_resistance(request, init):
-    Resistance.objects.filter(contribution=init, user_id=request.user).delete()
+    get_resistance(request, init).delete()
     return get_voting_fragments(init, request)
+
+@non_ajax_redir('/')
+@ajax
+@login_required
+@require_POST
+def reset_topic_resistances(request, topic_id, slug):
+    get_topic_resistances(request, topic_id).delete()
+    return get_resistances_fragments(topic_id, request)
 
 # See §9 (2) AO
 @login_required

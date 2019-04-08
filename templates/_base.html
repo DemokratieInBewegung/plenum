@@ -105,6 +105,7 @@
                                 <a class="dropdown-item" href="{% url 'mass_invite' %}">Leute einladen</a>
                                 <a class="dropdown-item" href="{% url 'export_results' %}">Ergebnisse exportieren</a>
                                 {% if user.is_superuser %}
+                                <a class="dropdown-item" href="/debug">Debug</a>
                                 <a class="dropdown-item" href="/admin/">Admin</a>
                                 {% endif %}
                             {% endif %}

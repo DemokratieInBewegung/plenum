@@ -5,6 +5,8 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.db.models.signals import post_save, post_delete
+from django.utils import timezone
 
 from functools import wraps
 from voty.initadmin.models import UserConfig
@@ -224,7 +226,7 @@ class Guard:
     ## compounds
 
     def _can_view_initiative(self, init):
-        if init.is_contribution and not self.user.is_authenticated:
+        if init.is_contribution() and not self.user.is_authenticated:
             return False
 
         if init.state not in TEAM_ONLY_STATES:
@@ -304,7 +306,27 @@ def add_guard(get_response):
         request.guard = guard
         request.user.guard = guard
 
+        def create_config(instance, created, **kwargs):
+            if created:
+                UserConfig.objects.get_or_create(user=instance)
+
+        post_save.connect(create_config, sender=User)
+
+        guard.changed = False
+
+        if request.user.is_authenticated and not request.path.startswith('/account/log') and not request.path.startswith('/admin'):
+            def change(**kwargs):
+                guard.changed = True
+
+            post_delete.connect(change)
+            post_save.connect(change)
+
         response = get_response(request)
+
+        if guard.changed:
+            request.user.config.last_activity = timezone.now()
+            request.user.config.save()
+
         return response
 
     return middleware

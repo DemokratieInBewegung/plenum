@@ -76,6 +76,11 @@ def invite_em(file):
 
 
 @login_required
+@user_passes_test(lambda u: u.is_superuser)
+def debug(request):
+    return render(request, 'initadmin/debug.html')
+
+@login_required
 @user_passes_test(lambda u: u.is_staff)
 def download_csv(request, id):
     batch = get_object_or_404(InviteBatch, pk=id)

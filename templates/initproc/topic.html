@@ -29,16 +29,41 @@
             </div>
         </div>
         {% endif %}
+        {% if topic.accepting_submissions %}
         <div class="row title" style="margin-top:3rem">
             <div class="col-12 text-center">
                 <a href="{% fullurl 'new_contribution' topic_id=topic.id slug=topic.slug %}"><h5>Neuen Beitrag zu diesem Thema einbringen</h5></a>
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
 
 {% block content %}
+{% if topic.soliciting_resistance %}
+<script type="text/javascript">
+function enable_submit() {
+    var disabled = false;
+    {% for contribution in evaluations %}
+    var value = -1;
+    var radios = document.getElementsByName('contribution{{contribution.id}}');
+    for (var i = 0;i < radios.length;i++)
+        if (radios [i].checked)
+            value = radios [i].value;
+    disabled |= value == -1 || (value > 6 && !document.getElementById('reason{{contribution.id}}').value);
+    {% endfor %}
+    document.getElementById('initial_vote_submit').disabled = disabled;
+}
+</script>
+<div class="container-fluid">
+    <div class="container">
+        <div class="row initiative-state">
+            {% include 'fragments/topic_resistances.html' %}
+        </div>
+    </div>
+</div>
+{% else %}
 <div class="container init-index">
     {% if initiations.count %}
     <div class="container-fluid init-index-header">
@@ -106,6 +131,7 @@
         </div>
         {% endfor %}
 </div>
+{% endif %}
     <div class="container-fluid">
         <div class="container">
             <div class="row">

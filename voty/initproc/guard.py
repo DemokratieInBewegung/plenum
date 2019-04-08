@@ -226,7 +226,7 @@ class Guard:
     ## compounds
 
     def _can_view_initiative(self, init):
-        if init.is_contribution and not self.user.is_authenticated:
+        if init.is_contribution() and not self.user.is_authenticated:
             return False
 
         if init.state not in TEAM_ONLY_STATES:

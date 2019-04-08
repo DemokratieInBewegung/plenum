@@ -404,7 +404,7 @@ def edit(request, initiative):
                     if request.POST.get('commit_message', None):
                         reversion.set_comment(request.POST.get('commit_message'))
 
-                initiative.supporting.filter(initiator=True).update(ack=False)
+                initiative.supporting.filter(initiator=True).exclude(user=request.user).update(ack=False)
 
                 messages.success(request, "Initiative gespeichert.")
                 initiative.notify_followers(NOTIFICATIONS.INITIATIVE.EDITED, subject=request.user)

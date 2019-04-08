@@ -38,7 +38,7 @@ def create_notice_types(sender, **kwargs):
 
     NoticeType.create(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION,
                       'Initiative in Diskussion',
-                      'Die Initiative ist in die Diskussionphase eingetreten')
+                      'Die Initiative ist in die Diskussionsphase eingetreten')
 
     NoticeType.create(NOTIFICATIONS.INITIATIVE.DISCUSSION_CLOSED,
                       'Diskussion zu Initiative beendet',

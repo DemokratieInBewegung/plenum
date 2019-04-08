@@ -49,7 +49,7 @@ class UserAdmin(BaseUserAdmin):
                 user.is_staff = False  # for good measure
                 user.is_active = False
                 UserConfig.objects.filter(user=user).delete()
-                for result in SignupCodeResult.objects.filter(user=user):
+                for result in user.signupcoderesult_set.all():
                     result.signup_code.delete() # also deletes the result, by cascading
                 while True:
                     user.username = 'anon' + str(randint(1, 9999999999))

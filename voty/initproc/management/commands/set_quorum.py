@@ -1,6 +1,8 @@
 from django.core.management.base import BaseCommand, CommandError
 from voty.initproc.models import Quorum
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from datetime import date
 from math import ceil
 
 """
@@ -17,7 +19,18 @@ class Command(BaseCommand):
     help = "Calculate the next quorum and set it"
 
     def handle(self, *args, **options):
-        total = get_user_model().objects.filter(is_active=True).count()
+        now = timezone.now()
+        year = now.year
+        month = now.month
+        # round to turn of month
+        if now.day > 15:
+            month += 1
+        month -= 6
+        if month < 1:
+            year -= 1
+            month += 12
+        threshold = timezone.datetime(year=year, month=month, day=1, tzinfo=now.tzinfo)
+        total = get_user_model().objects.filter(is_active=True, config__last_activity__gt=threshold).count()
         quorum = ceil(total / 100.0)
 
         if total < 100:

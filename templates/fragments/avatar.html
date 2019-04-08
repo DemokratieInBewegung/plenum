@@ -1,6 +1,6 @@
-{% load avatar_full_url %}
+{% load avatar_relative_url %}
 <img
-	src="{% avatar_full_url user size %}"
+	src="{% avatar_relative_url user size %}"
 	title="{{user.firstname|default:user.username}}"
 	width="{{ size }}"
 	height="{{ size }}"

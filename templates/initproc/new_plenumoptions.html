@@ -6,14 +6,14 @@
 {% block content %}
 <div class="container new-initiative">
     <div class="card">
-        {% if initiative.is_editable %}
-        <div class="card-header">
-            <h1>Plenumsabwägungsvorlage bearbeiten</h1>
-        </div>
-        {% else %}
+        {% if is_new %}
         <div class="card-header">
             <h1>Neue Plenumsabwägung einreichen</h1>
             <p>Hier kannst Du eine neue Plenumsabwägung in den Abstimmungsprozess einbringen.</p>
+        </div>
+        {% else %}
+        <div class="card-header">
+            <h1>Plenumsabwägungsvorlage bearbeiten</h1>
         </div>
         {% endif %}
         <form method="POST">

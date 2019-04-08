@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
 	# globals
+    url('^debug$', views.debug, name='debug'),
 	url('^bewegerinnen-wall/', views.avatar_wall),
     url('^account/edit$', views.profile_edit, name='profile_edit'),
     url('^account/edit$', views.profile_edit, name='profile_edit'),

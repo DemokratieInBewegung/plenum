@@ -22,8 +22,8 @@
 <p style="padding-top:30px">{{preference.option.text}}</p>
 <div class="btn-group" role="group" style="display:inline">
 	{% for i in "01234567890" %}
-	<label for="o{{preference.option.index}}{{forloop.counter0}}">
-		<input type="radio" onchange="javascript:enable_submit({{preference.option.index}})" name="option{{preference.option.index}}" id="o{{preference.option.index}}{{forloop.counter0}}" value="{{forloop.counter0}}" {% if preference.value == forloop.counter0 %}checked{% else %}disabled{% endif %}="1" style="margin-right:0.1rem;margin-left:0.8rem">
+	<label>
+		<input type="radio" {% if preference.value == forloop.counter0 %}checked{% else %}disabled{% endif %}="1" style="margin-right:0.1rem;margin-left:0.8rem">
 		{{forloop.counter0}}
 	</label>
 	{% endfor %}

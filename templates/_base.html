@@ -30,7 +30,7 @@
         <meta name="twitter:image:alt" content="DiB Abstimmungsplattform">
 
     {% endblock %}
-    <link href="/static/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/static/bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="/static/dib.css" rel="stylesheet" type="text/css">
     <!-- Font Awesome icon font -->
     <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
@@ -43,17 +43,17 @@
 
 <body class="{% block body_class%}{% endblock%} hyphenate">
     <div class="container-fluid dib-nav">
-        <nav class="navbar navbar-toggleable-sm">
+        <nav class="navbar navbar-expand-md">
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <!-- IE 10 Fix: have the logo twice, show this on collapsed #navbarNav -->
-            <a class="navbar-brand hidden-md-up" href="{% fullurl 'home' %}">
+            <a class="navbar-brand d-md-none" href="{% fullurl 'home' %}">
                 <img src="{% static '/img/dib_logo.svg' %}" height="40" width="144" class="d-inline-block align-middle" alt="Demokratie in Bewegung">
             </a>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <!-- IE 10 Fix: have the logo twice, hide this on collapsed #navbarNav -->
-                <a class="navbar-brand hidden-sm-down" href="{% fullurl 'home' %}">
+                <a class="navbar-brand d-none d-md-block" href="{% fullurl 'home' %}">
                 <img src="{% static '/img/dib_logo.svg' %}" height="40" width="144" class="d-inline-block align-middle" alt="Demokratie in Bewegung">
                 </a>
                 <ul class="navbar-nav ml-auto">
@@ -150,8 +150,7 @@
     {% register_notify_callbacks callbacks='update_notifications,fill_notification_badge' %}
     <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bootstrap-4.0.0-alpha.6-dist/js/tether.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap-4.3.1-dist/js/bootstrap.bundle.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/vendor/js-cookie.js' %}"></script>
     <script src="{% static 'js/vendor/hyphenator-loader.js' %}" type="text/javascript"></script>
     

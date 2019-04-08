@@ -100,12 +100,14 @@
 						</a>
                         <div class="dropdown-menu dropdown-menu-right profile" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="{% url 'profile_edit' %}">Profileinstellungen</a>
-                            {% if user.is_superuser %}
+                            {% if user.is_superuser or user.is_staff %}
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{% url 'mass_invite' %}">Leute einladen</a>
                                 <a class="dropdown-item" href="{% url 'export_results' %}">Ergebnisse exportieren</a>
-                            <a class="dropdown-item" href="/debug">Debug</a>
-                            <a class="dropdown-item" href="/admin">Admin</a>
+                                {% if user.is_superuser %}
+                                <a class="dropdown-item" href="/debug">Debug</a>
+                                <a class="dropdown-item" href="/admin/">Admin</a>
+                                {% endif %}
                             {% endif %}
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="/account/logout/">Abmelden</a>

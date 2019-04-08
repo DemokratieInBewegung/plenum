@@ -308,7 +308,7 @@ def add_guard(get_response):
 
         def create_config(instance, created, **kwargs):
             if created:
-                UserConfig.objects.create(user=instance)
+                UserConfig.objects.get_or_create(user=instance)
 
         post_save.connect(create_config, sender=User)
 

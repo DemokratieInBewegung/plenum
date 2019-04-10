@@ -17,9 +17,13 @@
 								<span class="badge badge-discussion">
 									In Diskussion
 								</span>
-								{% else %}
+								{% elif topic.soliciting_resistance %}
 								<span class="badge badge-vote">
 									In Abwägung
+								</span>
+								{% else %}
+								<span class="badge badge-completed">
+									Abgewogen
 								</span>
 								{% endif %}
 								Noch {{topic.end_of_this_phase | timeuntil}}

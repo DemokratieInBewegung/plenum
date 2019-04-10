@@ -16,6 +16,7 @@ from dal import autocomplete
 from django import forms
 
 from datetime import datetime, timedelta
+from django.utils import timezone
 
 from rest_framework.renderers import JSONRenderer
 from django_ajax.shortcuts import render_to_json
@@ -98,6 +99,23 @@ def get_resistances_fragments(topic_id, request):
 #     \__/     |__| |_______|   \__/  \__/  |_______/    
 #
 #                                                       
+
+def process_weight_context(ctx):
+    max_count = 0
+    for option in ctx['options']:
+        option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
+        for count in option['counts']:
+            max_count = max(max_count, count)
+    ctx['max_count'] = max_count
+
+
+def find_preferred_option(ctx):
+    min_total = 10 * ctx['participation_count'] + 1
+    for option in ctx['options']:
+        if option['total'] < min_total:
+            min_total = option['total']
+            ctx['preferred_option'] = option['text']
+
 
 def add_vote_context(ctx, init, request):
 
@@ -208,8 +226,15 @@ def index(request):
 
 @login_required
 def agora(request):
-    open_topics = Topic.objects.filter(closed_at=None).order_by('created_at')
+    open_topics = Topic.objects.filter(closes_at__gt=timezone.now()).order_by('created_at')
     return render(request, 'initproc/agora.html',context=dict(topics=open_topics))
+
+
+@login_required
+def archive(request):
+    archived_topics = Topic.objects.filter(closes_at__lte=timezone.now()).order_by('created_at')
+    return render(request, 'initproc/archive.html',context=dict(topics=archived_topics))
+
 
 @login_required
 def topic(request, topic_id, slug=None):
@@ -220,6 +245,22 @@ def topic(request, topic_id, slug=None):
     context['reflections'] = contributions.filter(state='s').order_by('-went_public_at', '-created_at')
     context['initiations'] = contributions.filter(state='p', id__in=request.guard.initiated_initiatives()).order_by('-created_at')
     context['invitations'] = contributions.filter(state='p', id__in=request.guard.originally_supported_initiatives()).order_by('-created_at')
+
+    topic = get_object_or_404(Topic, pk=topic_id)
+
+    if context['evaluations'].exists():
+        context['participation_count'] = context['evaluations'].first().resistances.count()
+        context['options'] = sorted ([{
+                "link": contribution,
+                "text": contribution.title,
+                "total": sum([resistance.value for resistance in contribution.resistances.all()]),
+                "counts": [contribution.resistances.filter(value=i).count() for i in range(0, 11)]}
+                for contribution in context['evaluations'].all()],
+                key=lambda x:x['total'])
+        process_weight_context(context)
+    else:
+        context['participation_count'] = 0
+
     return render(request, 'initproc/topic.html',context)
 
 class UserAutocomplete(autocomplete.Select2QuerySetView):
@@ -290,16 +331,8 @@ def item(request, init, slug=None, initype=None):
                 "counts": [option.preferences.filter(value=i).count() for i in range(0, 11)]}
                 for option in init.options.all()],
                 key=lambda x:x['total'])
-            max_count = 0
-            min_total = 10 * ctx['participation_count'] + 1
-            for option in ctx['options']:
-                option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
-                for count in option['counts']:
-                    max_count = max(max_count, count)
-                if option['total'] < min_total:
-                    min_total = option['total']
-                    ctx['preferred_option'] = option['text']
-            ctx['max_count'] = max_count
+            process_weight_context(ctx)
+            find_preferred_option(ctx)
 
     if request.user.is_authenticated:
         user_id = request.user.id

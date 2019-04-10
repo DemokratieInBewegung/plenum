@@ -8,7 +8,11 @@
     <div class="container">
         <div class="row">
             <div class="col">
+                {% if topic.is_archived %}
+                <a href="{% fullurl 'archive' %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zum Archiv</a>
+                {% else %}
                 <a href="{% fullurl 'agora' %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Agorá</a>
+                {% endif %}
             </div>
         </div>
         <div class="row initiative-title">
@@ -63,7 +67,7 @@ function enable_submit() {
         </div>
     </div>
 </div>
-{% else %}
+{% elif topic.accepting_submissions %}
 <div class="container init-index">
     {% if initiations.count %}
     <div class="container-fluid init-index-header">
@@ -130,6 +134,17 @@ function enable_submit() {
             </div>
         </div>
         {% endfor %}
+</div>
+{% else %}
+<div class="container-fluid">
+    <div class="container">
+        <div class="row initiative-state">
+            <div class="col-12">
+                <p>Dieses Thema ist abgeschlossen.</p>
+            </div>
+        </div>
+        {% include 'fragments/weight-results.html' with singular='Beitrag' plural='Beiträge' event='der Abwägung zu diesem Thema' %}
+    </div>
 </div>
 {% endif %}
     <div class="container-fluid">

@@ -22,7 +22,6 @@ from voty.initproc.globals import SUBJECT_CATEGORIES, ADMINISTRATIVE_LEVELS
 class Topic(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     closes_at = models.DateTimeField(blank=True, null=True)
-    closed_at = models.DateTimeField(blank=True, null=True)
     topic = models.TextField(blank=True)
     subtitle = models.CharField(max_length=1024, blank=True)
     motivation = models.TextField(blank=True)

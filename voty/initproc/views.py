@@ -347,6 +347,19 @@ def item(request, init, slug=None, initype=None):
             personalize_argument(arg, user_id)
 
     if init.is_contribution():
+        if init.topic.open_ended and init.state == STATES.COMPLETED:
+            ctx['participation_count'] = init.resistances.count()
+            option={
+                "total": sum([resistance.value for resistance in init.resistances.all()]),
+                "counts": [init.resistances.filter(value=i).count() for i in range(0, 11)],
+            }
+            option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
+
+            max_count = 0
+            for count in option['counts']:
+                max_count = max(max_count, count)
+            ctx['max_count'] = max_count
+            ctx['option'] = option
         return render(request, 'initproc/contribution.html', context=ctx)
     if init.is_policychange():
         return render(request, 'initproc/policychange.html', context=ctx)

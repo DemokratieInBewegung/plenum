@@ -250,6 +250,22 @@
                 {% endfor %}
             </div>
         </div>
+        {% if option.reasons.exists %}
+        <div class="row" style="padding-top: 1rem">
+            <div class="col-12">
+                <h6>Für die Widerstandspunkte wurden folgende Begründungen angegeben:</h6>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+            <div class="col-12">
+                {% for resistance in option.reasons %}
+                <p>{{resistance.value}}: {{resistance.reason}}</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
         {% else %}
         <div class="row" style="padding-top: 1rem">
             <div class="col-12">

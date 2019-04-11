@@ -256,9 +256,12 @@ def topic(request, topic_id, slug=None, archive=False):
                 "link": contribution,
                 "text": contribution.title,
                 "total": sum([resistance.value for resistance in contribution.resistances.all()]),
-                "counts": [contribution.resistances.filter(value=i).count() for i in range(0, 11)]}
+                "counts": [contribution.resistances.filter(value=i).count() for i in range(0, 11)],
+                "reasons": contribution.resistances.exclude(reason=''),
+                }
                 for contribution in context['excavations'].all()],
                 key=lambda x:x['total'])
+        context['provide_reasons'] = any(option["reasons"].exists() for option in context['options'])
         process_weight_context(context)
     else:
         context['participation_count'] = 0
@@ -352,9 +355,9 @@ def item(request, init, slug=None, initype=None):
             option={
                 "total": sum([resistance.value for resistance in init.resistances.all()]),
                 "counts": [init.resistances.filter(value=i).count() for i in range(0, 11)],
+                "reasons": init.resistances.exclude(reason=''),
             }
             option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
-
             max_count = 0
             for count in option['counts']:
                 max_count = max(max_count, count)

@@ -226,13 +226,13 @@ def index(request):
 
 @login_required
 def agora(request):
-    open_topics = Topic.objects.filter(closes_at__gt=timezone.now()).order_by('created_at')
+    open_topics = Topic.objects.exclude(closes_at__lt=timezone.now()).order_by('created_at')
     return render(request, 'initproc/agora.html',context=dict(topics=open_topics))
 
 
 @login_required
 def archive(request):
-    archived_topics = Topic.objects.filter(closes_at__lte=timezone.now()).order_by('created_at')
+    archived_topics = Topic.objects.filter(closes_at__lt=timezone.now()).order_by('created_at')
     return render(request, 'initproc/archive.html',context=dict(topics=archived_topics))
 
 

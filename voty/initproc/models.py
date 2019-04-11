@@ -233,10 +233,7 @@ class Initiative(models.Model):
                     self.subtitle and
                     self.summary)
 
-        if self.state in [STATES.DISCUSSION]:
-            return not self.topic.accepting_submissions
-
-        return False
+        return True
 
     @cached_property
     def end_of_this_phase_date(self):
@@ -367,7 +364,7 @@ class Initiative(models.Model):
 
     @cached_property
     def has_phase_end(self):
-        return not (self.state in [self.STATES.INCOMING, self.STATES.COMPLETED, self.STATES.ACCEPTED, self.STATES.REJECTED, self.STATES.PREPARE, self.STATES.MODERATION] or (self.state == self.STATES.SEEKING_SUPPORT and self.is_contribution() and self.topic.open_ended))
+        return not (self.state in [self.STATES.INCOMING, self.STATES.COMPLETED, self.STATES.ACCEPTED, self.STATES.REJECTED, self.STATES.PREPARE, self.STATES.MODERATION] or (self.is_contribution() and self.topic.open_ended and self.state != self.STATES.DISCUSSION))
 
     @cached_property
     def german_gender(self):
@@ -402,7 +399,7 @@ class Initiative(models.Model):
         return self.votes.filter(value=VOTED.ABSTAIN).count()
 
     def get_vote_result(self):
-        if self.is_plenumoptions():
+        if self.is_plenumoptions() or self.is_contribution():
             return STATES.COMPLETED
         if self.is_accepted():
             return STATES.ACCEPTED

@@ -232,14 +232,16 @@ def agora(request):
 
 @login_required
 def archive(request):
-    archived_topics = Topic.objects.filter(closes_at__lt=timezone.now()).order_by('created_at')
+    archived_topics = Topic.objects.exclude(closes_at__gte=timezone.now()).order_by('created_at')
     return render(request, 'initproc/archive.html',context=dict(topics=archived_topics))
 
 
 @login_required
-def topic(request, topic_id, slug=None):
+def topic(request, topic_id, slug=None, archive=False):
     context = get_topic_context(topic_id, request)
+    context['archive'] = archive
     contributions = Initiative.objects.filter(topic=topic_id)
+    context['excavations'] = contributions.filter(state='c').order_by('-went_to_discussion_at', '-went_public_at', '-created_at')
     context['evaluations'] = contributions.filter(state='v').order_by('-went_to_discussion_at', '-went_public_at', '-created_at')
     context['discussions'] = contributions.filter(state='d').order_by('-went_to_discussion_at', '-went_public_at', '-created_at')
     context['reflections'] = contributions.filter(state='s').order_by('-went_public_at', '-created_at')
@@ -248,14 +250,14 @@ def topic(request, topic_id, slug=None):
 
     topic = get_object_or_404(Topic, pk=topic_id)
 
-    if context['evaluations'].exists():
-        context['participation_count'] = context['evaluations'].first().resistances.count()
+    if context['excavations'].exists() and not topic.open_ended:
+        context['participation_count'] = context['excavations'].first().resistances.count()
         context['options'] = sorted ([{
                 "link": contribution,
                 "text": contribution.title,
                 "total": sum([resistance.value for resistance in contribution.resistances.all()]),
                 "counts": [contribution.resistances.filter(value=i).count() for i in range(0, 11)]}
-                for contribution in context['evaluations'].all()],
+                for contribution in context['excavations'].all()],
                 key=lambda x:x['total'])
         process_weight_context(context)
     else:

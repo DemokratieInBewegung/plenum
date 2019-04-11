@@ -18,7 +18,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <a href="{% fullurl 'topic' topic_id=initiative.topic.id slug=initiative.topic.slug %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zum Thema</a>
+                <a href="{% if initiative.state == 'c' %}{% fullurl 'topic_archive' topic_id=initiative.topic.id slug=initiative.topic.slug %}{% else %}{% fullurl 'topic' topic_id=initiative.topic.id slug=initiative.topic.slug %}{% endif %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zum Thema</a>
             </div>
         </div>
         <div class="row initiative-title">
@@ -304,7 +304,7 @@
             {% endif %}
             {% endifequal %}
             <div class="back-to-index">
-                <a href="{% fullurl 'topic' topic_id=initiative.topic.id slug=initiative.topic.slug %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zum Thema</a>
+                <a href="{% if initiative.state == 'c' %}{% fullurl 'topic_archive' topic_id=initiative.topic.id slug=initiative.topic.slug %}{% else %}{% fullurl 'topic' topic_id=initiative.topic.id slug=initiative.topic.slug %}{% endif %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zum Thema</a>
             </div>
         </div>
     </div>

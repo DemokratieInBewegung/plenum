@@ -257,7 +257,7 @@ def topic(request, topic_id, slug=None, archive=False):
                 "text": contribution.title,
                 "total": sum([resistance.value for resistance in contribution.resistances.all()]),
                 "counts": [contribution.resistances.filter(value=i).count() for i in range(0, 11)],
-                "reasons": contribution.resistances.exclude(reason=''),
+                "reasons": contribution.resistances.exclude(reason='').order_by('value'),
                 }
                 for contribution in context['excavations'].all()],
                 key=lambda x:x['total'])
@@ -355,7 +355,7 @@ def item(request, init, slug=None, initype=None):
             option={
                 "total": sum([resistance.value for resistance in init.resistances.all()]),
                 "counts": [init.resistances.filter(value=i).count() for i in range(0, 11)],
-                "reasons": init.resistances.exclude(reason=''),
+                "reasons": init.resistances.exclude(reason='').order_by('value'),
             }
             option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
             max_count = 0

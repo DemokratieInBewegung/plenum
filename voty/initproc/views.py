@@ -90,6 +90,42 @@ def get_resistances_fragments(topic_id, request):
                                     request=request),
     }}
 
+def complete_moderation(initiative, request):
+    if initiative.state == STATES.INCOMING:
+        initiative.supporting.filter(ack=False).delete()
+        initiative.went_public_at = datetime.now()
+        initiative.state = STATES.SEEKING_SUPPORT
+        initiative.save()
+
+        messages.success(request, "Initiative veröffentlicht")
+        initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
+        initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=request.user)
+        return redirect('/initiative/{}'.format(initiative.id))
+
+    elif initiative.state == STATES.MODERATION:
+
+        publish = [initiative]
+        if initiative.all_variants:
+            # check the variants, too
+
+            for ini in initiative.all_variants:
+                if ini.state != STATES.MODERATION or not request.guard.can_publish(ini):
+                    publish = None
+                    break
+                publish.append(ini)
+
+        if publish:
+            for init in publish:
+                init.went_to_voting_at = datetime.now()
+                init.state = STATES.VOTING
+                init.save()
+                init.notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE)
+                init.notify_moderators(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE, subject=request.user)
+
+            messages.success(request, "Initiative(n) zur Abstimmung frei gegeben.")
+            return redirect('/initiative/{}-{}'.format(initiative.id, initiative.slug))
+
+
 #
 # ____    ____  __   ___________    __    ____   _______.
 # \   \  /   / |  | |   ____\   \  /  \  /   /  /       |
@@ -313,6 +349,17 @@ def new(request):
 
 @can_access_initiative()
 def item(request, init, slug=None, initype=None):
+
+    if request.method == 'POST':
+        if request.POST.get("previous") is not None:
+            if init.state == STATES.INCOMING:
+                init.state = STATES.PREPARE
+            elif init.state == STATES.MODERATION:
+                init.state = STATES.FINAL_EDIT
+            init.save()
+
+        if request.POST.get("next") is not None:
+            complete_moderation(init, request)
 
     ctx = dict(initiative=init,
                user_count=init.eligible_voter_count,
@@ -752,42 +799,8 @@ def moderate(request, form, initiative):
     model.save()
 
     if request.guard.can_publish(initiative):
-        if initiative.state == STATES.INCOMING:
-            initiative.supporting.filter(ack=False).delete()
-            initiative.went_public_at = datetime.now()
-            initiative.state = STATES.SEEKING_SUPPORT
-            initiative.save()
+        complete_moderation(initiative, request)
 
-            messages.success(request, "Initiative veröffentlicht")
-            initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
-            initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=request.user)
-            return redirect('/initiative/{}'.format(initiative.id))
-
-        elif initiative.state == STATES.MODERATION:
-
-            publish = [initiative]
-            if initiative.all_variants:
-                # check the variants, too
-
-                for ini in initiative.all_variants:
-                    if ini.state != STATES.MODERATION or not request.guard.can_publish(ini):
-                        publish = None
-                        break
-                    publish.append(ini)
-
-            if publish:
-                for init in publish:
-                    init.went_to_voting_at = datetime.now()
-                    init.state = STATES.VOTING
-                    init.save()
-                    init.notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE)
-                    init.notify_moderators(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE, subject=request.user)
-
-                messages.success(request, "Initiative(n) zur Abstimmung frei gegeben.")
-                return redirect('/initiative/{}-{}'.format(initiative.id, initiative.slug))
-
-
-    
     return {
         'fragments': {'#no-moderations': ""},
         'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>"},

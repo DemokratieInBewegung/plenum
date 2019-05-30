@@ -20,5 +20,24 @@
 		<strong>Moderation vorheriger Versionen</strong>
 	    {% include 'fragments/moderation/list_small.html' with moderations=initiative.stale_moderations %}
 	{% endif %}
-
+<div style="margin-top:30px">
+	<form method="POST">
+		{% csrf_token %}
+		<div class="container">
+			<div class="row">
+				<div class="col text-center">
+					<button type="submit" class="btn btn-primary btn-danger" name="previous">←&nbsp;&nbsp;&nbsp;Vorherige Phase</button>
+				</div>
+				<!--
+				<div class="col text-center">
+					<button type="submit" class="btn btn-primary btn-danger" name="vote">Abstimmung im Team</button>
+				</div>
+				-->
+				<div class="col text-center">
+					<button type="submit" class="btn btn-primary btn-danger" name="next">Nächste Phase&nbsp;&nbsp;&nbsp;→</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
 </div>

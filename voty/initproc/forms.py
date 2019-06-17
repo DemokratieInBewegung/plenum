@@ -268,9 +268,21 @@ class PlenumVoteForm(forms.ModelForm):
 class PlenumOptionsForm(forms.ModelForm):
 
     #TODO: variable number of options
-    option1 = forms.CharField(label="Option1",widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Die erste Option'}))
-    option2 = forms.CharField(label="Option2",widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Die zweite Option'}))
-    option3 = forms.CharField(label="Option3",widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Die dritte Option'}))
+    option1 = forms.CharField(label="Option1",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 1. Option'}))
+    option2 = forms.CharField(label="Option2",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 2. Option'}))
+    option3 = forms.CharField(label="Option3",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 3. Option'}))
+    option4 = forms.CharField(label="Option4",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 4. Option'}))
+    option5 = forms.CharField(label="Option5",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 5. Option'}))
+    option6 = forms.CharField(label="Option6",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 6. Option'}))
+    option7 = forms.CharField(label="Option7",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 7. Option'}))
+    option8 = forms.CharField(label="Option8",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 8. Option'}))
+    option9 = forms.CharField(label="Option9",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 9. Option'}))
+    option10 = forms.CharField(label="Option10",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 10. Option'}))
+    option11 = forms.CharField(label="Option11",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 11. Option'}))
+    option12 = forms.CharField(label="Option12",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 12. Option'}))
+    option13 = forms.CharField(label="Option13",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 13. Option'}))
+    option14 = forms.CharField(label="Option14",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 14. Option'}))
+    option15 = forms.CharField(label="Option15",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 15. Option'}))
 
     class Meta:
         model = Initiative

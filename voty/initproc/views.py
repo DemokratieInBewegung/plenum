@@ -551,14 +551,14 @@ def edit(request, initiative):
     elif initiative.is_plenumoptions():
         options = {}
         if not is_post:
-            for i in range (1,4): # TODO variable number of options
+            for i in range (1,16): # TODO variable number of options
                 options ['option{}'.format (i)] = initiative.options.get(index=i).text
         form = PlenumOptionsForm(request.POST or None, instance=initiative,initial=options)
         if is_post:
             if form.is_valid():
                 with reversion.create_revision():
                     initiative.save()
-                    for i in range (1,4): # TODO variable number of options
+                    for i in range (1,16): # TODO variable number of options
                         option = Option.objects.get (initiative=initiative,index=i)
                         option.text=form.data ['option{}'.format (i)]
                         option.save ()
@@ -1159,7 +1159,7 @@ def new_plenumoptions(request):
                 pv.einordnung = VOTY_TYPES.PlenumOptions
                 pv.save()
 
-                for i in range (1,4): # TODO variable number of options
+                for i in range (1,16): # TODO variable number of options
                     Option(initiative=pv,text=form.data ['option{}'.format (i)],index=i).save()
 
                 # Store some meta-information.

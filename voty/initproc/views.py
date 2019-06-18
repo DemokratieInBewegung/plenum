@@ -16,6 +16,7 @@ from dal import autocomplete
 from django import forms
 
 from datetime import datetime, timedelta
+from django.utils import timezone
 
 from rest_framework.renderers import JSONRenderer
 from django_ajax.shortcuts import render_to_json
@@ -89,6 +90,42 @@ def get_resistances_fragments(topic_id, request):
                                     request=request),
     }}
 
+def complete_moderation(initiative, request):
+    if initiative.state == STATES.INCOMING:
+        initiative.supporting.filter(ack=False).delete()
+        initiative.went_public_at = datetime.now()
+        initiative.state = STATES.SEEKING_SUPPORT
+        initiative.save()
+
+        messages.success(request, "Initiative veröffentlicht")
+        initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
+        initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=request.user)
+        return redirect('/initiative/{}'.format(initiative.id))
+
+    elif initiative.state == STATES.MODERATION:
+
+        publish = [initiative]
+        if initiative.all_variants:
+            # check the variants, too
+
+            for ini in initiative.all_variants:
+                if ini.state != STATES.MODERATION or not request.guard.can_publish(ini):
+                    publish = None
+                    break
+                publish.append(ini)
+
+        if publish:
+            for init in publish:
+                init.went_to_voting_at = datetime.now()
+                init.state = STATES.VOTING
+                init.save()
+                init.notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE)
+                init.notify_moderators(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE, subject=request.user)
+
+            messages.success(request, "Initiative(n) zur Abstimmung frei gegeben.")
+            return redirect('/initiative/{}-{}'.format(initiative.id, initiative.slug))
+
+
 #
 # ____    ____  __   ___________    __    ____   _______.
 # \   \  /   / |  | |   ____\   \  /  \  /   /  /       |
@@ -98,6 +135,23 @@ def get_resistances_fragments(topic_id, request):
 #     \__/     |__| |_______|   \__/  \__/  |_______/    
 #
 #                                                       
+
+def process_weight_context(ctx):
+    max_count = 0
+    for option in ctx['options']:
+        option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
+        for count in option['counts']:
+            max_count = max(max_count, count)
+    ctx['max_count'] = max_count
+
+
+def find_preferred_option(ctx):
+    min_total = 10 * ctx['participation_count'] + 1
+    for option in ctx['options']:
+        if option['total'] < min_total:
+            min_total = option['total']
+            ctx['preferred_option'] = option['text']
+
 
 def add_vote_context(ctx, init, request):
 
@@ -208,18 +262,46 @@ def index(request):
 
 @login_required
 def agora(request):
-    open_topics = Topic.objects.filter(closed_at=None).order_by('created_at')
+    open_topics = Topic.objects.exclude(closes_at__lt=timezone.now()).order_by('created_at')
     return render(request, 'initproc/agora.html',context=dict(topics=open_topics))
 
+
 @login_required
-def topic(request, topic_id, slug=None):
+def archive(request):
+    archived_topics = Topic.objects.exclude(closes_at__gte=timezone.now()).order_by('created_at')
+    return render(request, 'initproc/archive.html',context=dict(topics=archived_topics))
+
+
+@login_required
+def topic(request, topic_id, slug=None, archive=False):
     context = get_topic_context(topic_id, request)
+    context['archive'] = archive
     contributions = Initiative.objects.filter(topic=topic_id)
+    context['excavations'] = contributions.filter(state='c').order_by('-went_to_discussion_at', '-went_public_at', '-created_at')
     context['evaluations'] = contributions.filter(state='v').order_by('-went_to_discussion_at', '-went_public_at', '-created_at')
     context['discussions'] = contributions.filter(state='d').order_by('-went_to_discussion_at', '-went_public_at', '-created_at')
     context['reflections'] = contributions.filter(state='s').order_by('-went_public_at', '-created_at')
     context['initiations'] = contributions.filter(state='p', id__in=request.guard.initiated_initiatives()).order_by('-created_at')
     context['invitations'] = contributions.filter(state='p', id__in=request.guard.originally_supported_initiatives()).order_by('-created_at')
+
+    topic = get_object_or_404(Topic, pk=topic_id)
+
+    if context['excavations'].exists() and not topic.open_ended:
+        context['participation_count'] = context['excavations'].first().resistances.count()
+        context['options'] = sorted ([{
+                "link": contribution,
+                "text": contribution.title,
+                "total": sum([resistance.value for resistance in contribution.resistances.all()]),
+                "counts": [contribution.resistances.filter(value=i).count() for i in range(0, 11)],
+                "reasons": contribution.resistances.exclude(reason='').order_by('value'),
+                }
+                for contribution in context['excavations'].all()],
+                key=lambda x:x['total'])
+        context['provide_reasons'] = any(option["reasons"].exists() for option in context['options'])
+        process_weight_context(context)
+    else:
+        context['participation_count'] = 0
+
     return render(request, 'initproc/topic.html',context)
 
 class UserAutocomplete(autocomplete.Select2QuerySetView):
@@ -268,6 +350,17 @@ def new(request):
 @can_access_initiative()
 def item(request, init, slug=None, initype=None):
 
+    if request.method == 'POST':
+        if request.POST.get("previous") is not None:
+            if init.state == STATES.INCOMING:
+                init.state = STATES.PREPARE
+            elif init.state == STATES.MODERATION:
+                init.state = STATES.FINAL_EDIT
+            init.save()
+
+        if request.POST.get("next") is not None:
+            complete_moderation(init, request)
+
     ctx = dict(initiative=init,
                user_count=init.eligible_voter_count,
                questions=[x for x in init.questions.prefetch_related('likes').all()],
@@ -290,16 +383,8 @@ def item(request, init, slug=None, initype=None):
                 "counts": [option.preferences.filter(value=i).count() for i in range(0, 11)]}
                 for option in init.options.all()],
                 key=lambda x:x['total'])
-            max_count = 0
-            min_total = 10 * ctx['participation_count'] + 1
-            for option in ctx['options']:
-                option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
-                for count in option['counts']:
-                    max_count = max(max_count, count)
-                if option['total'] < min_total:
-                    min_total = option['total']
-                    ctx['preferred_option'] = option['text']
-            ctx['max_count'] = max_count
+            process_weight_context(ctx)
+            find_preferred_option(ctx)
 
     if request.user.is_authenticated:
         user_id = request.user.id
@@ -312,6 +397,19 @@ def item(request, init, slug=None, initype=None):
             personalize_argument(arg, user_id)
 
     if init.is_contribution():
+        if init.topic.open_ended and init.state == STATES.COMPLETED:
+            ctx['participation_count'] = init.resistances.count()
+            option={
+                "total": sum([resistance.value for resistance in init.resistances.all()]),
+                "counts": [init.resistances.filter(value=i).count() for i in range(0, 11)],
+                "reasons": init.resistances.exclude(reason='').order_by('value'),
+            }
+            option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
+            max_count = 0
+            for count in option['counts']:
+                max_count = max(max_count, count)
+            ctx['max_count'] = max_count
+            ctx['option'] = option
         return render(request, 'initproc/contribution.html', context=ctx)
     if init.is_policychange():
         return render(request, 'initproc/policychange.html', context=ctx)
@@ -453,14 +551,14 @@ def edit(request, initiative):
     elif initiative.is_plenumoptions():
         options = {}
         if not is_post:
-            for i in range (1,4): # TODO variable number of options
+            for i in range (1,16): # TODO variable number of options
                 options ['option{}'.format (i)] = initiative.options.get(index=i).text
         form = PlenumOptionsForm(request.POST or None, instance=initiative,initial=options)
         if is_post:
             if form.is_valid():
                 with reversion.create_revision():
                     initiative.save()
-                    for i in range (1,4): # TODO variable number of options
+                    for i in range (1,16): # TODO variable number of options
                         option = Option.objects.get (initiative=initiative,index=i)
                         option.text=form.data ['option{}'.format (i)]
                         option.save ()
@@ -701,42 +799,8 @@ def moderate(request, form, initiative):
     model.save()
 
     if request.guard.can_publish(initiative):
-        if initiative.state == STATES.INCOMING:
-            initiative.supporting.filter(ack=False).delete()
-            initiative.went_public_at = datetime.now()
-            initiative.state = STATES.SEEKING_SUPPORT
-            initiative.save()
+        complete_moderation(initiative, request)
 
-            messages.success(request, "Initiative veröffentlicht")
-            initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
-            initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=request.user)
-            return redirect('/initiative/{}'.format(initiative.id))
-
-        elif initiative.state == STATES.MODERATION:
-
-            publish = [initiative]
-            if initiative.all_variants:
-                # check the variants, too
-
-                for ini in initiative.all_variants:
-                    if ini.state != STATES.MODERATION or not request.guard.can_publish(ini):
-                        publish = None
-                        break
-                    publish.append(ini)
-
-            if publish:
-                for init in publish:
-                    init.went_to_voting_at = datetime.now()
-                    init.state = STATES.VOTING
-                    init.save()
-                    init.notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE)
-                    init.notify_moderators(NOTIFICATIONS.INITIATIVE.WENT_TO_VOTE, subject=request.user)
-
-                messages.success(request, "Initiative(n) zur Abstimmung frei gegeben.")
-                return redirect('/initiative/{}-{}'.format(initiative.id, initiative.slug))
-
-
-    
     return {
         'fragments': {'#no-moderations': ""},
         'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>"},
@@ -1095,7 +1159,7 @@ def new_plenumoptions(request):
                 pv.einordnung = VOTY_TYPES.PlenumOptions
                 pv.save()
 
-                for i in range (1,4): # TODO variable number of options
+                for i in range (1,16): # TODO variable number of options
                     Option(initiative=pv,text=form.data ['option{}'.format (i)],index=i).save()
 
                 # Store some meta-information.

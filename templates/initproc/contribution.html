@@ -18,7 +18,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <a href="{% fullurl 'topic' topic_id=initiative.topic.id slug=initiative.topic.slug %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zum Thema</a>
+                <a href="{% if initiative.state == 'c' %}{% fullurl 'topic_archive' topic_id=initiative.topic.id slug=initiative.topic.slug %}{% else %}{% fullurl 'topic' topic_id=initiative.topic.id slug=initiative.topic.slug %}{% endif %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zum Thema</a>
             </div>
         </div>
         <div class="row initiative-title">
@@ -91,6 +91,18 @@
                 {% ifequal initiative.state 'd' %}
                 <p>
                     Dieser Beitrag befindet sich <a href="#responses">in Diskussion</a>.
+                </p>
+                {% endifequal %}
+
+                {% ifequal initiative.state 'v' %}
+                <p>
+                    Dieser Beitrag befindet sich <a href="#vote">in Abwägung</a>.
+                </p>
+                {% endifequal %}
+
+                {% ifequal initiative.state 'c' %}
+                <p>
+                    Die Diskussion zu diesem Beitrag <a href="#cta"><strong class="badge-completed">ist abgeschlossen</strong></a>.
                 </p>
                 {% endifequal %}
             </div>
@@ -199,6 +211,71 @@
 </div>
 {% endifequal %}
 
+{% ifequal initiative.state 'c' %}
+<div id="cta" class="container-fluid cta voted">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Ergebnis der Abwägung</h6>
+            </div>
+        </div>
+        {% if participation_count > 0 %}
+        <div class="row" style="padding-top: 1rem">
+            <div class="col-12">
+                <h6>Der Beitrag hat im Durchschnitt {{option.average}} Widerstandspunkte bekommen:</h6>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+            <div class="col-12">
+                <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{% if option.link %}<a href="{% url 'initiative_item' initype=option.link.einordnung init_id=option.link.id slug=option.link.slug %}">{% endif %}{{option.text}}{% if option.link %}</a>{% endif %}</div>
+                <div class="progress">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ option.total|div:participation_count|mul:10|stringformat:".5s" }}%" aria-valuenow="{{ option.total|div:participation_count|mul:10|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100">{{option.average}}</div>
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ option.total|div:participation_count|sub:10|mul:-1|mul:10|stringformat:".5s" }}%" aria-valuenow="{{ option.total|div:participation_count|sub:10|mul:-1|mul:10|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 1rem">
+            <div class="col-12">
+                <h6>Im Einzelnen waren die Widerstandspunkte wie folgt verteilt:</h6>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+            <div class="col-12">
+                <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{% if option.link %}<a href="{% url 'initiative_item' initype=option.link.einordnung init_id=option.link.id slug=option.link.slug %}">{% endif %}{{option.text}}{% if option.link %}</a>{% endif %}</div>
+                {% for count in option.counts %}
+                <div class="progress">
+                    <span style="width:1.5rem;background-color:#F8F8F8">{{forloop.counter0}}</span>
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ count|div:max_count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ count|div:max_count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100">{% if count %}{{count}}{% endif %}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% if option.reasons.exists %}
+        <div class="row" style="padding-top: 1rem">
+            <div class="col-12">
+                <h6>Für die Widerstandspunkte wurden folgende Begründungen angegeben:</h6>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+            <div class="col-12">
+                {% for resistance in option.reasons %}
+                <p>{{resistance.value}}: {{resistance.reason}}</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+        {% else %}
+        <div class="row" style="padding-top: 1rem">
+            <div class="col-12">
+                <span>An der Abwägung zu diesem Beitrag hat niemand teilgenommen.</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endifequal %}
 
 <div id="initiative-text" class="container-fluid initiative-single">
     <div class="container">
@@ -304,7 +381,7 @@
             {% endif %}
             {% endifequal %}
             <div class="back-to-index">
-                <a href="{% fullurl 'topic' topic_id=initiative.topic.id slug=initiative.topic.slug %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zum Thema</a>
+                <a href="{% if initiative.state == 'c' %}{% fullurl 'topic_archive' topic_id=initiative.topic.id slug=initiative.topic.slug %}{% else %}{% fullurl 'topic' topic_id=initiative.topic.id slug=initiative.topic.slug %}{% endif %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zum Thema</a>
             </div>
         </div>
     </div>

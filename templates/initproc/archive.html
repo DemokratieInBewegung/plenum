@@ -3,18 +3,22 @@
 {% block custom_header %}
 <div class="container-fluid init-index-header">
     <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="{% url 'agora' %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Agorá</a>
+            </div>
+        </div>
         <div class="row title">
             <div class="col-12 text-center" style="padding-top: 4rem; padding-bottom: 3rem">
-                <h1 class="display-3">Agorá</h1>
+                <h1 class="display-3">Archiv der Agorá</h1>
             </div>
         </div>
     </div>
 </div>
-{% include "fragments/topic/explanation.html" %}
 {% endblock %}
 
 {% block content %}
 <div id="init-list" class="container init-index">
-{% include "fragments/topic/list.html" with archive=0 %}
+    {% include "fragments/topic/list.html" with archive=1 %}
 </div>
 {% endblock %}

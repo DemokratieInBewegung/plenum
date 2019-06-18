@@ -17,12 +17,18 @@
 								<span class="badge badge-discussion">
 									In Diskussion
 								</span>
-								{% else %}
+								{% elif topic.soliciting_resistance %}
 								<span class="badge badge-vote">
 									In Abwägung
 								</span>
+								{% else %}
+								<span class="badge badge-completed">
+									Abgewogen
+								</span>
 								{% endif %}
+								{% if not topic.is_archived %}
 								Noch {{topic.end_of_this_phase | timeuntil}}
+								{% endif %}
 								{% endif %}
 							</span>
 						</div>
@@ -33,14 +39,14 @@
 	</div>
 	<div class="card-body">
     	<h4 class="card-title init-title">
-    		<a href="{% fullurl 'topic' topic_id=topic.id slug=topic.slug %}">
+			<a href="{% if archive %}{% fullurl 'topic_archive' topic_id=topic.id slug=topic.slug %}{% else %}{% fullurl 'topic' topic_id=topic.id slug=topic.slug %}{% endif %}">
 				{{topic.topic}}
 			</a>
 		</h4>
 		<div class="card-text">
 			{{topic.subtitle | markdown}}
 		</div>
-		<a href="{% fullurl 'topic' topic_id=topic.id slug=topic.slug %}" class="go-to-initiative"><i class="material-icons chevron-right">chevron_right</i>zum Thema</a>
+		<a href="{% if archive %}{% fullurl 'topic_archive' topic_id=topic.id slug=topic.slug %}{% else %}{% fullurl 'topic' topic_id=topic.id slug=topic.slug %}{% endif %}" class="go-to-initiative"><i class="material-icons chevron-right">chevron_right</i>zum Thema</a>
   	</div>
   	<div class="card-footer">
   		<div class="container-fluid">

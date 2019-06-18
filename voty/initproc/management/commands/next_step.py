@@ -40,12 +40,16 @@ class Command(BaseCommand):
                     i.state = STATES.DISCUSSION
                     i.went_to_discussion_at = datetime.now()
                     i.save()
-                    i.notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION)
+                    if not i.is_contribution():
+                        # TODO: fix notifications for contributions
+                        i.notify_followers(NOTIFICATIONS.INITIATIVE.WENT_TO_DISCUSSION)
 
                 elif i.state == STATES.DISCUSSION:
-                    i.state = STATES.VOTING if i.is_contribution() else STATES.FINAL_EDIT
+                    i.state = (STATES.COMPLETED if i.topic.open_ended else STATES.VOTING) if i.is_contribution() else STATES.FINAL_EDIT
                     i.save()
-                    i.notify_initiators(NOTIFICATIONS.INITIATIVE.DISCUSSION_CLOSED)
+                    if not i.is_contribution():
+                        # TODO: fix notifications for contributions
+                        i.notify_initiators(NOTIFICATIONS.INITIATIVE.DISCUSSION_CLOSED)
 
                 # voting phase is entered through manual action of moderators
 
@@ -64,6 +68,7 @@ class Command(BaseCommand):
 
                         #send feedback message to all initiators
                         if not (i.is_plenumoptions() or i.is_contribution()):
+                            # TODO: fix notifications for contributions
                             EmailMessage(
                                 'Feedback zur Abstimmung',
                                 render_to_string('initadmin/voting_feedback.txt', context=dict(

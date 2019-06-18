@@ -6,7 +6,9 @@ urlpatterns = [
 	# globals
     url('^$', views.index, name='home'),
     url('^agora$', views.agora, name='agora'),
+    url('^archiv$', views.archive, name='archive'),
     url('^thema/(?P<topic_id>\d+)(?:-(?P<slug>.*))?$', views.topic, name="topic"),
+    url('^thema-archiv/(?P<topic_id>\d+)(?:-(?P<slug>.*))?$', views.topic, {'archive': True}, name="topic_archive"),
     url('^(?P<topic_id>\d+)(?:-(?P<slug>.*))?/beitrag/new$', views.new_contribution, name="new_contribution"),
     url('^initiative/new$', views.new, name="new_initiative"),
     url('^user_autocomplete$', views.UserAutocomplete.as_view(), name='user_autocomplete'),

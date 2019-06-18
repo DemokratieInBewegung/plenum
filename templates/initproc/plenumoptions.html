@@ -1,5 +1,4 @@
 {% extends "_base.html" %}
-{% load mathfilters %}
 {% load markdown %}
 {% load fullurl %}
 
@@ -85,10 +84,13 @@
                 <p>
                     Über diese Plenumsabwägungsvorlage <a href="#voting"><strong class="badge-vote">wird gerade abgestimmt</strong></a>.
                 </p>
-                {% endifequal %} {% ifequal initiative.state 'c' %}
-                <p>Diese Plenumsabwägung {% if user.is_authenticated %}
-                    <a href="#cta">{% endif %}<strong class="badge-abgewogen">ist abgeschlossen</strong>{% if user.is_authenticated %}</a>{% endif %}.
-                    {% endifequal %}
+                {% endifequal %}
+
+                {% ifequal initiative.state 'c' %}
+                <p>
+                    Diese Plenumsabwägung <a href="#cta"><strong class="badge-completed">ist abgeschlossen</strong></a>.
+                </p>
+                {% endifequal %}
             </div>
         </div>
     </div>
@@ -142,56 +144,7 @@
                 <h6 class="text-muted classification">Ergebnis der Abstimmung</h6>
             </div>
         </div>
-        {% if participation_count > 0 %}
-        <div class="row" style="padding-top: 1rem">
-            <div class="col-12">
-                <h6>Die Optionen haben im Durchschnitt folgende Widerstandspunkte bekommen:</h6>
-            </div>
-        </div>
-        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
-            <div class="col-12">
-                {% for option in options %}
-                <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{{option.text}}</div>
-                <div class="progress">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ option.total|div:participation_count|mul:10|stringformat:".5s" }}%" aria-valuenow="{{ option.total|div:participation_count|mul:10|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100">{{option.average}}</div>
-                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ option.total|div:participation_count|sub:10|mul:-1|mul:10|stringformat:".5s" }}%" aria-valuenow="{{ option.total|div:participation_count|sub:10|mul:-1|mul:10|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% if preferred_option %}
-        <div class="row" style="padding-top: 1rem">
-            <div class="col-12">
-                <h6>Als Option mit dem geringsten Widerstand wurde also ausgewählt:</h6>
-                <div style="margin-top:40px;margin-bottom:30px;text-align:center"><span class="text-success" style="font-size:16pt;padding:0.3rem;border:1px solid #5cb85c;border-radius:4px">{{preferred_option}}</span></div>
-            </div>
-        </div>
-        {% endif %}
-        <div class="row" style="padding-top: 1rem">
-            <div class="col-12">
-                <h6>Im Einzelnen waren die Widerstandspunkte wie folgt verteilt:</h6>
-            </div>
-        </div>
-        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
-            <div class="col-12">
-                {% for option in options %}
-                <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{{option.text}}</div>
-                {% for count in option.counts %}
-                <div class="progress">
-                    <span style="width:1.5rem;background-color:#F8F8F8">{{forloop.counter0}}</span>
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ count|div:max_count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ count|div:max_count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100">{% if count %}{{count}}{% endif %}</div>
-                </div>
-                {% endfor %}
-                {% endfor %}
-            </div>
-        </div>
-        {% else %}
-        <div class="row" style="padding-top: 1rem">
-            <div class="col-12">
-                <span>An der Abstimmung zu dieser Plenumsabwägung hat niemand teilgenommen.</span>
-            </div>
-        </div>
-        {% endif %}
+        {% include 'fragments/weight-results.html' with singular='Option' plural='Optionen' event='dieser Plenumsabwägung' %}
         <div class="row" style="padding-top: 1rem">
             <div class="col-12">
                 {% include "fragments/participation.html" with closed=1 %}

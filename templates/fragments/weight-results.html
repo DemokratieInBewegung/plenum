@@ -1,0 +1,68 @@
+{% load mathfilters %}
+{% if participation_count > 0 %}
+<div class="row" style="padding-top: 1rem">
+    <div class="col-12">
+        <h6>Die {{plural}} haben im Durchschnitt folgende Widerstandspunkte bekommen:</h6>
+    </div>
+</div>
+<div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+    <div class="col-12">
+        {% for option in options %}
+        <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{% if option.link %}<a href="{% url 'initiative_item' initype=option.link.einordnung init_id=option.link.id slug=option.link.slug %}">{% endif %}{{option.text}}{% if option.link %}</a>{% endif %}</div>
+        <div class="progress">
+            <div class="progress-bar bg-danger" role="progressbar" style="width: {{ option.total|div:participation_count|mul:10|stringformat:".5s" }}%" aria-valuenow="{{ option.total|div:participation_count|mul:10|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100">{{option.average}}</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{ option.total|div:participation_count|sub:10|mul:-1|mul:10|stringformat:".5s" }}%" aria-valuenow="{{ option.total|div:participation_count|sub:10|mul:-1|mul:10|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% if preferred_option %}
+<div class="row" style="padding-top: 1rem">
+    <div class="col-12">
+        <h6>Als {{singular}} mit dem geringsten Widerstand wurde also ausgewählt:</h6>
+        <div style="margin-top:40px;margin-bottom:30px;text-align:center"><span class="text-success" style="font-size:16pt;padding:0.3rem;border:1px solid #5cb85c;border-radius:4px">{{preferred_option}}</span></div>
+    </div>
+</div>
+{% endif %}
+<div class="row" style="padding-top: 1rem">
+    <div class="col-12">
+        <h6>Im Einzelnen waren die Widerstandspunkte wie folgt verteilt:</h6>
+    </div>
+</div>
+<div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+    <div class="col-12">
+        {% for option in options %}
+        <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{% if option.link %}<a href="{% url 'initiative_item' initype=option.link.einordnung init_id=option.link.id slug=option.link.slug %}">{% endif %}{{option.text}}{% if option.link %}</a>{% endif %}</div>
+        {% for count in option.counts %}
+        <div class="progress">
+            <span style="width:1.5rem;background-color:#F8F8F8">{{forloop.counter0}}</span>
+            <div class="progress-bar bg-danger" role="progressbar" style="width: {{ count|div:max_count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ count|div:max_count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100">{% if count %}{{count}}{% endif %}</div>
+        </div>
+        {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+{% if provide_reasons %}
+<div class="row" style="padding-top: 1rem">
+    <div class="col-12">
+        <h6>Für die Widerstandspunkte wurden folgende Begründungen angegeben:</h6>
+        {% for option in options %}
+        {% if option.reasons.exists %}
+        <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{% if option.link %}<a href="{% url 'initiative_item' initype=option.link.einordnung init_id=option.link.id slug=option.link.slug %}">{% endif %}{{option.text}}{% if option.link %}</a>{% endif %}</div>
+        <div>
+            {% for resistance in option.reasons %}
+            <p>{{resistance.value}}: {{resistance.reason}}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% else %}
+<div class="row" style="padding-top: 1rem">
+    <div class="col-12">
+        <span>An {{event}} hat niemand teilgenommen.</span>
+    </div>
+</div>
+{% endif %}

@@ -1,3 +1,4 @@
+{% load markdown %}
 <p><strong>{{participation_count}}</strong>{% if participation_count == 1 %} Person hat{% else %} Personen haben{% endif %} {% if closed %}an dieser Abstimmung teilgenommen{% else %}bisher abgestimmt{% endif %}.
 </p> 
 <div class="progress participation">
@@ -19,7 +20,7 @@
 {% elif preferences %}
 <h3>Du hast folgende Widerstandspunkte vergeben:</h3>
 {% for preference in preferences %}
-<p style="padding-top:30px">{{preference.option.text}}</p>
+<p style="padding-top:30px">{{preference.option.text|markdown}}</p>
 <div class="btn-group" role="group" style="display:inline">
 	{% for i in "01234567890" %}
 	<label>

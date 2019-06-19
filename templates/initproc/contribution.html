@@ -227,7 +227,7 @@
         </div>
         <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
             <div class="col-12">
-                <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{% if option.link %}<a href="{% url 'initiative_item' initype=option.link.einordnung init_id=option.link.id slug=option.link.slug %}">{% endif %}{{option.text}}{% if option.link %}</a>{% endif %}</div>
+                <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{% if option.link %}<a href="{% url 'initiative_item' initype=option.link.einordnung init_id=option.link.id slug=option.link.slug %}">{% endif %}{{option.text|markdown}}{% if option.link %}</a>{% endif %}</div>
                 <div class="progress">
                     <div class="progress-bar bg-danger" role="progressbar" style="width: {{ option.total|div:participation_count|mul:10|stringformat:".5s" }}%" aria-valuenow="{{ option.total|div:participation_count|mul:10|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100">{{option.average}}</div>
                     <div class="progress-bar bg-success" role="progressbar" style="width: {{ option.total|div:participation_count|sub:10|mul:-1|mul:10|stringformat:".5s" }}%" aria-valuenow="{{ option.total|div:participation_count|sub:10|mul:-1|mul:10|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
@@ -241,7 +241,7 @@
         </div>
         <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
             <div class="col-12">
-                <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{% if option.link %}<a href="{% url 'initiative_item' initype=option.link.einordnung init_id=option.link.id slug=option.link.slug %}">{% endif %}{{option.text}}{% if option.link %}</a>{% endif %}</div>
+                <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{% if option.link %}<a href="{% url 'initiative_item' initype=option.link.einordnung init_id=option.link.id slug=option.link.slug %}">{% endif %}{{option.text|markdown}}{% if option.link %}</a>{% endif %}</div>
                 {% for count in option.counts %}
                 <div class="progress">
                     <span style="width:1.5rem;background-color:#F8F8F8">{{forloop.counter0}}</span>

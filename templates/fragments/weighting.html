@@ -1,11 +1,16 @@
 {% load markdown %}
 
 <script type="text/javascript">
-chosen = 0;
-function enable_submit(which) {
-	chosen |= 1 << which;
-	if (chosen == ((1 << {{initiative.options.count}}) - 1) << 1)
-		document.getElementById('intial_vote_submit').disabled = false;
+function enable_submit() {
+	for (var i = 1;;i++) {
+		var selector = 'input[name="option' + i + '"]';
+		if (!document.querySelector(selector)) {
+			document.getElementById('intial_vote_submit').disabled = false;
+			return;
+		}
+		if (!document.querySelector(selector + ':checked'))
+			return;
+	}
 }
 </script>
 <div class="col-12" id="voting">
@@ -26,7 +31,7 @@ function enable_submit(which) {
 			<div class="btn-group" role="group" style="display:inline">
 				{% for i in "01234567890" %}
 				<label for="o{{option.index}}{{forloop.counter0}}">
-					<input type="radio" onchange="javascript:enable_submit({{option.index}})" name="option{{option.index}}" id="o{{option.index}}{{forloop.counter0}}" value="{{forloop.counter0}}" style="margin-right:0.1rem;margin-left:0.8rem">
+					<input type="radio" onchange="javascript:enable_submit()" name="option{{option.index}}" id="o{{option.index}}{{forloop.counter0}}" value="{{forloop.counter0}}" style="margin-right:0.1rem;margin-left:0.8rem">
 					{{forloop.counter0}}
 				</label>
 				{% endfor %}

@@ -27,7 +27,7 @@ function enable_submit() {
 		<form data-ajax-submit="true" action="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/preference" method="POST">
 			{% csrf_token %}
 			{% for option in initiative.options.all %}
-			<p style="padding-top:30px">{{option.text|markdown}}</p>
+			<div style="padding-top:30px">{{option.text|markdown}}</div>
 			<div class="btn-group" role="group" style="display:inline">
 				{% for i in "01234567890" %}
 				<label for="o{{option.index}}{{forloop.counter0}}">

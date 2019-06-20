@@ -1,4 +1,4 @@
-from account.models import SignupCodeResult
+from account.models import SignupCodeResult, EmailAddress
 from avatar.models import Avatar, avatar_storage
 from django.contrib import admin
 from django.contrib import messages
@@ -40,6 +40,7 @@ class UserAdmin(BaseUserAdmin):
             for user in queryset:
                 Vote.objects.filter(user=user,initiative__state='v').delete()
                 Avatar.objects.filter(user=user).delete()
+                EmailAddress.objects.filter(user=user).delete()
                 avatar_dir = avatar_storage.path(os.path.join("avatars", str(user.pk)))
                 if os.path.exists(avatar_dir):
                     rmtree(avatar_dir)

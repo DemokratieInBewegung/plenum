@@ -337,7 +337,8 @@ def item(request, init, slug=None, initype=None):
                 for option in init.options.all()],
                 key=lambda x:x['total'])
             process_weight_context(ctx)
-            find_preferred_option(ctx)
+            if init.options.count() <= 3:
+                find_preferred_option(ctx)
 
     if request.user.is_authenticated:
         user_id = request.user.id

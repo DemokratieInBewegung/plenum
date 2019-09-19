@@ -103,7 +103,8 @@ def get_resistances_fragments(topic_id, request):
 def process_weight_context(ctx):
     max_count = 0
     for option in ctx['options']:
-        option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
+        if ctx['participation_count'] :
+            option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
         for count in option['counts']:
             max_count = max(max_count, count)
     ctx['max_count'] = max_count
@@ -358,7 +359,8 @@ def item(request, init, slug=None, initype=None):
                 "counts": [init.resistances.filter(value=i).count() for i in range(0, 11)],
                 "reasons": init.resistances.exclude(reason='').order_by('value'),
             }
-            option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
+            if ctx['participation_count'] :
+                option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
             max_count = 0
             for count in option['counts']:
                 max_count = max(max_count, count)

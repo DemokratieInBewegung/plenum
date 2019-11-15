@@ -140,7 +140,7 @@ def process_weight_context(ctx):
     max_count = 0
     for option in ctx['options']:
         if ctx['participation_count'] :
-            option['average'] = "%.1f" % (option['total'] / ctx['participation_count'])
+            option['average'] = "%.1f" % (option['total'] / (option['rcount'] if option['rcount'] > 0 else 1))
         for count in option['counts']:
             max_count = max(max_count, count)
     ctx['max_count'] = max_count
@@ -292,8 +292,9 @@ def topic(request, topic_id, slug=None, archive=False):
         context['options'] = sorted ([{
                 "link": contribution,
                 "text": contribution.title,
-                "total": sum([resistance.value for resistance in contribution.resistances.all()]),
+                "total": (sum([resistance.value for resistance in contribution.resistances.all()]) if contribution.resistances.count() > 0 else 1000000000),
                 "counts": [contribution.resistances.filter(value=i).count() for i in range(0, 11)],
+                "rcount": contribution.resistances.count(),
                 "reasons": contribution.resistances.exclude(reason='').order_by('value'),
                 }
                 for contribution in context['excavations'].all()],
@@ -381,7 +382,8 @@ def item(request, init, slug=None, initype=None):
             ctx['options'] = sorted ([{
                 "text": option.text,
                 "total": sum([preference.value for preference in option.preferences.all()]),
-                "counts": [option.preferences.filter(value=i).count() for i in range(0, 11)]}
+                "counts": [option.preferences.filter(value=i).count() for i in range(0, 11)],
+                "rcount": option.preferences.count()}
                 for option in init.options.all()],
                 key=lambda x:x['total'])
             process_weight_context(ctx)

@@ -23,7 +23,7 @@ django-su==0.7.0
 django-tag-parser==2.1
 django-user-accounts==2.0.1
 djangoajax==2.3.7
-djangorestframework==3.7.1
+djangorestframework==3.9.1
 dominate==2.1.17
 easy-thumbnails==2.3
 gunicorn==19.7.1

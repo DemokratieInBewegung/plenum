@@ -1,4 +1,4 @@
-# Voty - The Voting Platform of [DEMOKRATIE IN BEWEGUNG](https://bewegung.jetzt)
+# Plenum - The Voting Platform of [DEMOKRATIE IN BEWEGUNG](https://bewegung.jetzt)
 
 #### Travis Build Status
 

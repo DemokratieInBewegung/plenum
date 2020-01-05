@@ -281,6 +281,9 @@ class Guard:
                 return True
         return False
 
+    def is_moderation_leader(self, init=None):
+        return (self.user.has_perm('initproc.add_moderation') and self.user.has_perm('initproc.is_group_leader'))
+
     def _can_comment_pro(self, obj=None):
         if obj.initiative.state == STATES.DISCUSSION:
             raise ContinueChecking()

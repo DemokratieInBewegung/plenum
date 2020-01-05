@@ -10,10 +10,16 @@
     <div class="col-12">
         {% for option in options %}
         <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{% if option.link %}<a href="{% url 'initiative_item' initype=option.link.einordnung init_id=option.link.id slug=option.link.slug %}">{% endif %}{{option.text|markdown}}{% if option.link %}</a>{% endif %}</div>
+        {% if option.rcount > 0 %}
         <div class="progress">
             <div class="progress-bar bg-danger" role="progressbar" style="width: {{ option.total|div:participation_count|mul:10|stringformat:".5s" }}%" aria-valuenow="{{ option.total|div:participation_count|mul:10|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100">{{option.average}}</div>
             <div class="progress-bar bg-success" role="progressbar" style="width: {{ option.total|div:participation_count|sub:10|mul:-1|mul:10|stringformat:".5s" }}%" aria-valuenow="{{ option.total|div:participation_count|sub:10|mul:-1|mul:10|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
+        {% else %}
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        {% endif %}
         {% endfor %}
     </div>
 </div>

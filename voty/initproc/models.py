@@ -294,6 +294,7 @@ class Initiative(models.Model):
                             return self.variant_of.went_to_discussion_at +( 2 * week)
                     if self.ready_for_next_stage:
                         return self.went_public_at + (2 * week)
+                    return self.went_public_at + halfyear
 
                 elif self.state == 'd':
                     return self.went_to_discussion_at + (3 * week)

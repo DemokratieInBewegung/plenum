@@ -672,6 +672,8 @@ def support(request, initiative):
     Supporter(initiative=initiative, user_id=request.user.id,
               public=not not request.GET.get("public", False)).save()
 
+    #if everything should go directly to discussion phase:
+    #if (initiative.supporting.filter().count() >= initiative.quorum):
     if (initiative.is_contribution() and initiative.supporting.filter().count() >= initiative.quorum):
         initiative.state = STATES.DISCUSSION
         initiative.went_to_discussion_at = datetime.now()

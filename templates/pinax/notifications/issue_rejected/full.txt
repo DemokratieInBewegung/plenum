@@ -1,0 +1,11 @@
+
+{% if target %}
+{% if sender == recipient %}Du hast{% else %}{{sender.get_full_name|default:sender.username}} hat{% endif %} die Fragestellung "{{target}}" abgelehnt.
+
+Du findest die Fragestellung unter {{ base_url }}/issue/{{target.id}}-{{target.slug}}
+
+{% else %}
+"{{sender}}" wurde nach Prüfung abgelehnt.
+
+Du findest die Fragestellung unter {{ base_url }}/issue/{{sender.id}}-{{sender.slug}}
+{% endif %}

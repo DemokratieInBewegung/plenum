@@ -1,0 +1,39 @@
+{% extends "_base.html" %}
+
+{% load static %}
+{% load bootstrap %}
+
+{% block content %}
+<div class="container new-initiative">
+	<div class="card">
+		{% if is_new %}
+		<div class="card-header">
+			<h1>Neue Fragestellung einreichen</h1>
+			<p>Hier kannst Du eine neue Fragestellung in den Abstimmungsprozess einbringen.</p>
+		</div>
+		{% else %}
+		<div class="card-header">
+			<h1>Fragestellung bearbeiten</h1>
+		</div>
+		{% endif %}
+		<form method="POST">
+			 {% csrf_token %}
+			<div class="card-body">
+				<div class="container">
+				{{form|bootstrap}}
+				</div>
+			</div>
+			<div class="card-footer">
+				<button type="submit" class="btn btn-primary">Speichern</button>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}
+
+
+{% block body-javascript %}
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+{{ form.media }}
+{% endblock %}

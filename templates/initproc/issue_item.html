@@ -1,0 +1,453 @@
+{% extends "_base.html" %}
+{% load mathfilters %}
+{% load markdown %}
+{% load fullurl %}
+
+{% block head_title %}
+{{issue.title}} – im Plenum von DEMOKRATIE IN BEWEGUNG
+{% endblock %}
+
+{% block custom_sm_title %}
+    <meta property="og:title" content="{{issue.title}}">
+    <meta property="og:url" content="{% fullurl 'issue_item' issue_id=issue.id slug=issue.slug %}">
+{% endblock %}
+
+{% block custom_header %}
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                {% if archive %}
+                <a href="{% fullurl 'archive' %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zum Archiv</a>
+                {% else %}
+                <a href="{% fullurl 'agora' %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Agorá</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row initiative-title">
+            <div class="col-12">
+                <h1 class="display-4">{{issue.title}}</h1>
+            </div>
+        </div>
+        {% if topic.motivation %}
+        <h4 class="text-muted" style="margin-top:2rem">Motivation</h4>
+        <div class="row initiative-text">
+            <div class="col-12">
+                <p>{{issue.motivation | markdown}}</p>
+            </div>
+        </div>
+        {% endif %}
+        {% if issue.status == 'd' or request.guard.can_edit %}
+        {% if not archive %}
+        <div class="row title" style="margin-top:3rem">
+            <div class="col-12 text-center">
+                <a href="{% fullurl 'new_solution' issue_id=issue.id slug=issue.slug %}"><h5>Neuen Lösungsvorschlag zu dieser Frage einbringen</h5></a>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+{% if archive %}
+
+<div class="container-fluid cta">
+    <div class="container">
+        <div class="row initiative-state">
+            <div class="col-12">
+                <p>Diese Fragestellung ist abgeschlossen.</p>
+                {% if issue.has_veto %}
+                <div class="alert alert-info">
+                Die Lösung wurde wegen Veto durch Vorstand abgelehnt<br/>
+                {{issue.get_veto}}
+                </div>
+                {% elif issue.missed_voters_quorum %}
+                <div class="alert alert-info">Die Fragestellung hat das notwendige Quorum für die Abstimmung nicht erreicht.</div>
+                {% elif issue.missed_supporters_quorum %}
+                <div class="alert alert-info">Die Fragestellung hat das notwendige Quorum an Unterstützer*innen nicht erreicht.</div>
+                {% elif issue.failed_review %}
+                <div class="alert alert-info">Die Fragestellung wurde vom Prüfteam abgelehnt.</div>
+                {% endif %}
+            </div>
+        </div>
+        {% include 'fragments/issue_weight_results.html' with singular='Lösungsvorschlag' plural='Lösungsvorschläge' event='der Abwägung zu diesem Thema' %}
+    </div>
+</div>
+{% elif issue.status == 'x' %}
+<div class="container-fluid cta">
+    <div class="container">
+        <div class="row initiative-state">
+            <div class="col-12">
+                <p>Diese Fragestellung ist in der Veto-Phase.</p>
+            </div>
+        </div>
+        {% if request.guard.userIsBoard %}
+        <div id="veto" class="moderation alert alert-warning">
+            <strong>Veto einlegen</strong>
+            <div id="veto-new">
+                <a data-ajax=True href="/issue/{{issue.id}}/veto?fragment=%23veto-new" class="btn btn-outline-primary">Veto eintragen</a>
+            </div>
+        
+        
+        </div>
+        {% endif %}
+        {% include 'fragments/issue_weight_results.html' with singular='Lösungsvorschlag' plural='Lösungsvorschläge' event='der Abwägung zu diesem Thema' %}
+    </div>
+</div>
+{% else %}
+
+
+
+<div class="container-fluid">
+    <div class="container">
+        <div class="row initiative-state">
+            <div class="col-12">
+                {% if issue.status == 'p' or issue.status == 'i' %}
+                    {% if request.guard.can_edit %}
+                        <div class="pre-submit">
+                        {% if not issue.ready_for_review %}
+                            <div class="alert alert-info" role="alert">
+                            <h6>Um Deine Fragestellung einreichen zu können, müssen folgende Bedingungen erfüllt sein:</h6>
+                            <ol>
+                                <li>Alle Textfelder müssen ausgefüllt sein.</li>
+                                <li>Du musst genau 2 Mitinitiator*innen angeben.</li>
+                                <li>Deine Mitinitiator*innen müssen ihre Mitautor*innenschaft bestätigt haben.</li>
+                            </ol>
+                            </div>
+                            <button title="Kann noch nicht eingereicht werden" class="btn btn-success submit" style="display:inline" disabled=True type="submit">
+                                <i class="material-icons public">public</i><span>Einreichen</span>
+                            </button>
+                        {% endif %}
+                        <form action="/issue/{{issue.id}}/edit" style="display:inline" method="GET">
+                            {% csrf_token %}
+                            <button title="Bearbeiten" class="btn btn-success edit" type="submit">
+                                <i class="material-icons edit">edit</i><span>Bearbeiten</span>
+                            </button>
+                        </form>
+                        {% if issue.status == 'p' and issue.ready_for_review %}
+                            <form action="/issue/{{issue.id}}/submit_to_review" style="display:inline"  method="POST">
+                                {% csrf_token %}
+                                <button title="Einreichen" class="btn btn-success submit" type="submit">
+                                    <i class="material-icons public">public</i><span>Einreichen</span>
+                                </button>
+                            </form>
+                        {% endif %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                {% if issue.status == 'p' %}
+                    <p>
+                    An dieser Fragestellung <strong class="badge-prepare">wird noch gearbeitet</strong>.
+                    </p>
+                {% elif issue.status == 'i' %}
+                    <p>
+                    Diese Fragestellung <strong class="badge-prepare">wird gerade geprüft</strong>.
+                    </p>
+                    {% if perms.initproc.add_review %}
+                        {% if request.guard.can_moderate %}
+                            {% include 'fragments/issue_review/index.html' %}
+                        {% else %}
+                            <div class="alert alert-info">{{request.guard.reason}}</div>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+
+                {% ifequal issue.status 's' %}
+                {% if issue.supporters_count < issue.supporters_quorum %}
+                <p>
+                    Diese Fragestellung 
+                    <a href="#cta"><strong class="badge-support">sucht noch mindestens {{issue.supporters_quorum|sub:issue.supporters_count}} {% if issue.supporters_quorum|sub:issue.supporters_count == 1 %}Unterstützer*in{% else %}Unterstützer*innen{% endif %}</strong></a>. Dafür bleiben ihr <strong>noch {{issue.end_of_current_phase | timeuntil}}</strong>.
+                </p>
+                {% elif issue.supporters_count == issue.supporters_quorum %}
+                <p>
+                    Diese Fragestellung hat 
+                    <a href="#cta"><strong class="badge-support">das Quorum an Unterstützer*innen</strong></a> erreicht!
+                    <br />
+                    In <strong>{{issue.end_of_current_phase | timeuntil}}</strong> Tagen geht diese Fragestellung in Diskussion.
+                </p>
+                {% else %}
+                <p>
+                    Diese Fragestellung 
+                    <a href="#cta"><strong class="badge-support">hat das Quorum erreicht</strong></a> und darüber hinaus <strong>{{issue.supporters_count|sub:issue.supporters_quorum}}</strong> {% if issue.supporters_count|sub:issue.supporters_quorum == 1 %}Unterstützer*in{% else %}Unterstützer*innen{% endif %}.
+                    <br />
+                    In <strong>{{issue.end_of_current_phase | timeuntil}}</strong> Tagen geht diese Fragestellung in Diskussion.
+                </p>
+                {% endif %}
+                {% endifequal %}
+                {% ifequal issue.status 'd' %}
+                <p>
+                    Diese Fragestellung befindet sich <a href="#responses">in Diskussion</a>.
+                </p>
+                {% endifequal %}
+                
+                {% ifequal issue.status 'm' %}
+                <p>
+                    Die Lösungsvorschläge werden <a href="#responses">diskutiert</a> und final geprüft.
+                </p>
+                {% endifequal %}
+
+
+                {% ifequal issue.status 'v' %}
+                    <p>
+                        Über diese Fragestellung <a href="#voting"><strong class="badge-vote">wird gerade abgestimmt</strong></a>.
+                    </p>
+                {% endifequal %}
+
+                {% ifequal issue.status 'x' %}
+                <p>Diese Fragestellung wurde abgestimmt und befindet sich in der Veto-Phase</p>
+                {% endifequal %}
+
+                {% if issue.status == 'c' %}
+                    {% if not issue.went_to_discussion_at %}
+                    <p>Diese Fragestellung <a href="#cta"><strong class="badge-rejected">wurde abgelehnt</strong></a>{% if issue.went_to_seeking_support_at %}, da sie das Quorum nicht erreicht hat{% endif %}.</p>
+                    {% endif %}
+                    {% if issue.has_veto %}
+                    <p>Diese Fragestellung <a href="#cta"><strong class="badge-rejected">wurde abgelehnt</strong></a>, da ein Veto eingelegt worden ist.</p>
+                    {% endif %}
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid initiators">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Initiator*innen</h6>
+            </div>
+        </div>
+        <div class="row no-gutters avatar">
+            <div class="d-flex flex-wrap">
+                {% for sup in issue.initiators %}
+                <div class="text-center initiator">
+                    {% include "fragments/avatar.html" with user=sup.user %}
+                    <div class="name">
+                        {{ sup.user.get_full_name|default:sup.user.username }}
+                    </div>
+                    {% if issue.status == 'i' or issue.status == 'p' %}
+                    <div class="approval">
+                        {% if sup.ack %}
+                            <span title="bestätigt" class=""><i class="material-icons done">done</i></span>
+                        {% else %}
+                            {% if sup.user == user %}
+                                <strong style="display:block">Jetzt bestätigen</strong>
+
+                                <form action="/issue/{{issue.id}}/ack_support" style="display:inline" method="POST">
+                                    {% csrf_token %}
+                                    <button title="Unterstützen" class="btn btn-success" type="submit">
+                                        <i class="material-icons">done</i>
+                                    </button>
+                                </form>
+                                <form action="/issue/{{issue.id}}/rm_support" style="display:inline"  method="POST">
+                                    {% csrf_token %}
+                                    <button title="Nicht unterstützen" class="btn btn-danger" type="submit">
+                                        <i class="material-icons">not_interested</i>
+                                    </button>
+                                </form>
+                            {% else %}
+                            <span title="unbestätigt" class=""><i class="material-icons warning">warning</i></span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                {% if request.guard.can_inivite_issue_initiators %}
+                <div id="invite-initiators">
+                    <a data-ajax="true" href="/issue/{{issue.id}}/invite/initiators?fragment=%23invite-initiators" class="btn btn-success">weitere einladen</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid meta">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-4">
+                <h6 class="text-muted classification">erstellt am</h6>
+                <div>
+                {{issue.createdate}}
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-8">
+                <h6 class="text-muted classification">Ebene</h6>
+                <div>
+                    {{issue.level}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% if issue.status == 'd' or issue.status == 'm' %}
+<div id="cta" class="container-fluid cta">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Noch {{issue.end_of_current_phase | timeuntil}}</h6>
+                <p>Diese Fragestellung befindet sich in Diskussion.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% ifequal issue.status 'v' %}
+<div id="cta" class="container-fluid cta">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Noch {{issue.end_of_current_phase | timeuntil}}</h6>
+                <p>Über diese Fragestellung wird gerade abgestimmt.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endifequal %}
+
+<div id="initiative-text" class="container-fluid initiative-single">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h6 class="text-muted classification">Details{% if issue.versions.count > 1 %}
+                <a href="/issue/{{issue.id}}-{{issue.slug}}/compare/{{issue.versions.1.id}}" data-ajax="true" class="change-history">(Änderungshistorie einsehen <span class="changes-badge"><span class="material-icons history">history</span> {{issue.versions.count}}</span>)</a>{% endif %}</h6>
+            </div>
+        </div>
+
+        <div class="row initiative-text">
+            <div class="col-12">
+                <h3>Motivation</h3>
+                {{issue.motivation|markdown}}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% if issue.in_voting_phase %}
+<script type="text/javascript">
+function enable_submit() {
+    var disabled = false;
+    {% for solution in solutions %}
+    {% if solution.status != 'r' %}
+    var value = -1;
+    var radios = document.getElementsByName('solution{{solution.id}}');
+    for (var i = 0;i < radios.length;i++)
+        if (radios [i].checked)
+            value = radios [i].value;
+    disabled |= value == -1 || (value > 6 && !document.getElementById('reason{{solution.id}}').value);
+    {% endif %}
+    {% endfor %}
+    document.getElementById('initial_vote_submit').disabled = disabled;
+}
+</script>
+<div class="container-fluid">
+    <div class="container">
+        <div class="row initiative-state">
+            {% include 'fragments/issue_resistances.html' %}
+        </div>
+    </div>
+</div>
+{% elif issue.in_discussion or issue.status == 'p' or issue.status == 'i' or issue.status == 's' %}
+<div class="container init-index">
+    
+    <div class="container-fluid init-index-header">
+        <div class="container">
+            <div class="row title">
+                <div class="col-12 text-center">
+                    <h1 class="display-4 display-smaller">Lösungsvorschläge</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% for solution in solutions %}
+    {% include "fragments/solution/card.html"%}
+    {% empty %}
+    <div class="card">
+        <div class="card-block">
+            <em>Zurzeit gibt es zu dieser Fragestellung noch keine Lösungsvorschläge</em>
+        </div>
+    </div>
+    {% endfor %}
+    
+{% endif %}
+
+
+<!-- SEEEEKING SUPPPORTERS AREA -->
+<div id="cta" class="container-fluid cta">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                {% ifequal issue.status 's' %}
+                <h6 class="text-muted classification">Noch {{issue.end_of_current_phase | timeuntil}}</h6>
+                <span class="meta-content current-supporters">
+                    <strong>
+                        {{issue.supporters_count|default:0}} 
+                    </strong>
+                    {% if issue.supporters_count == 1 %}
+                    Unterstützer*in
+                    {% else %}
+                    Unterstützer*innen
+                    {% endif %}
+                </span>
+                <div class="progress">
+                    <div class="progress-bar bg-support" role="progressbar" style="width: {% if issue.relative_support <= 100 %}{{issue.relative_support|floatformat:"0"}}{% else %}100{% endif %}%;" aria-valuenow="{{issue.supporters_count}}" aria-valuemin="0" aria-valuemax="{{issue.supporters_quorum}}">
+                    </div>
+                </div>
+                {% if issue.supporters_count < issue.supporters_quorum %}
+                <span class="meta-content support-needed">
+                    Es fehl{% if issue.supporters_quorum|sub:issue.supporters_count == 1 %}t noch 1 Unterstützer*in{% else %}en noch
+                    <strong>
+                        {{issue.supporters_quorum|sub:issue.supporters_count}}
+                    </strong> 
+                    Unterstützer*innen{% endif %} zum Erreichen des Quorums.
+                </span>
+                {% elif issue.supporters_count == issue.supporters_quorum %}
+                 <span class="meta-content">
+                    Diese Fragestellung hat das Quorum an Unterstützer*innen erreicht!
+                </span>
+                {% else %}
+                <span class="meta-content">
+                    Diese Fragestellung hat das Quorum erreicht und darüber hinaus 
+                    <strong>
+                        {{issue.supporters_count|sub:issue.supporters_quorum}}
+                    </strong> 
+                    {% if issue.supporters_count|sub:issue.supporters_quorum == 1 %}
+                    Unterstützer*in{% else %}Unterstützer*innen{% endif %}.
+                </span>
+                {% endif %}
+                {% if has_supported %}
+                <span class="meta-content support supported-by">
+                    Du unterstützt diese Fragestellung!
+                </span>
+                {% else %}
+                <form action="/issue/{{issue.id}}/support" method="GET">
+                    <button class="btn bg-support" type="submit">
+                        Jetzt Unterstützen
+                    </button>
+                </form>
+                {% endif %}
+                {% endifequal %}
+                <div class="back-to-index">
+                    {% if archive %}
+                    <a href="{% fullurl 'archive' %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zum Archiv</a>
+                    {% else %}
+                    <a href="{% fullurl 'agora' %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Agorá</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

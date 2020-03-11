@@ -1,9 +1,3 @@
 {% for topic in topics %}
 	{% include "fragments/topic/card.html" %}
-{% empty %}
-<div class="card">
-	<div class="card-block">
-		<em>Zurzeit werden keine Themen auf der Agorá diskutiert.</em>
-	</div>
-</div>
 {% endfor %}

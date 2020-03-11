@@ -1,0 +1,88 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <a href="/issue/{{issue.id}}-{{issue.slug}}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zurück zur Fragestellung</a>
+        </div>
+    </div>
+	<div class="row">
+        <h2>Änderungshistorie Fragestellung #{{issue.id}}</h2>
+	</div>
+
+	<div class="row">
+		<div class="col-md-4 text-right">
+	        <h6 class="text-muted classification">Vergleiche Version</h6>
+	        <div class="dropdown">
+	        	<a id="versionSelectDropdown" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-has-popup="true" aria-expanded="false"><strong>{{selected.revision.date_created}}</strong> {% if selected.revision.user %} —  {% include "fragments/avatar.html" with size=25 user=selected.revision.user %}{% endif %}</a>
+	        	<br />{% if selected.revision.comment %}<em>{{selected.revision.comment}}</em>{% endif %}
+
+	        	<div class="dropdown-menu dropdown-menu-right " aria-labelledby="versionSelectDropdown">
+	        		{% for v in issue.versions %}
+	        			{% if v == latest %}
+	        			{% else %}
+	        				<a href="/issue/{{issue.id}}-{{issue.slug}}/compare/{{v.id}}"
+	        					class="dropdown-item"
+	        					data-ajax="true">
+	        					{% if v == selected %}<strong>{%endif%}
+
+	        					{{v.revision.date_created}} {% if v.revision.user %} — {% include "fragments/avatar.html" with size=25 user=v.revision.user %}{% endif %}
+
+	        					{% if v == selected %}</strong>{%endif%}
+	        				</a>
+	        			{% endif %}
+	        		{% endfor %}
+                </div>
+	        </div> 
+	    </div>
+		<div class="col-md-8">
+	        <h6 class="text-muted classification">mit Aktueller Version</h6>
+	        <div>
+	        	<strong>{{latest.revision.date_created}}</strong> {% if latest.revision.user %} — {% include "fragments/avatar.html" with size=25 user=latest.revision.user %}{% endif %}
+	        	<br />{% if latest.revision.comment %}<em>{{latest.revision.comment}}</em>{% endif %}
+	        </div>
+	</div>
+</div>
+
+<hr />
+
+<div class="container-fluid">
+    <div class="container">
+        <div class="row initiative-title">
+            <div class="col-12">
+                <h1 class="display-4">{{compare.title}}</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid meta">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-4">
+                <h6 class="text-muted classification">erstellt am</h6>
+                <div>
+                {% if issue.went_to_review_at %}
+                    {{issue.went_to_review_at}}
+                {% else %}
+                    Noch nicht veröffentlicht
+                {% endif %}
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-8">
+                <h6 class="text-muted classification">Ebene</h6>
+                <div>
+                    {{issue.level}}
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+<div class="row initiative-text">
+    <div class="col-12">
+        <h2>Motivation</h2>
+        {{compare.motivation}}
+    </div>
+</div>
+</div>

@@ -1,0 +1,5 @@
+{% for m in moderations %}
+	{% include "fragments/issue_review/item.html" with full=0 %}
+{% empty %}
+	<i id="no-moderations">Es hat noch kein*e Prüfer*in bewertet.</i>
+{% endfor %}

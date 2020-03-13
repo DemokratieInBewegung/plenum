@@ -1304,18 +1304,35 @@ def review(request, form, issue):
     model = form.save(commit=False)
     model.issue = issue
     model.user = request.user
-    model.save()
+    if issue.issuemoderations.filter(stale=False).filter(user=request.user):
+        return {
+            'fragments': {'#no-moderations': ""},
+            'inner-fragments': {'#moderation-new': '<div class="alert alert-info">Du hat bereits geprüft.</div>'},
+            'append-fragments': {'#moderation-list': render_to_string("fragments/issue_review/item.html",
+                                                      context=dict(m=model,issue=issue,full=0),
+                                                      request=request)}
+        }
+    elif request.guard.should_moderate_issue():
+        model.save()
 
-    if request.guard.can_publish(issue):
-        complete_review(issue, request)
+        if request.guard.can_publish(issue):
+            complete_review(issue, request)
 
-    return {
-        'fragments': {'#no-moderations': ""},
-        'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>"},
-        'append-fragments': {'#moderation-list': render_to_string("fragments/issue_review/item.html",
-                                                  context=dict(m=model,issue=issue,full=0),
-                                                  request=request)}
-    }
+        return {
+            'fragments': {'#no-moderations': ""},
+            'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>"},
+            'append-fragments': {'#moderation-list': render_to_string("fragments/issue_review/item.html",
+                                                      context=dict(m=model,issue=issue,full=0),
+                                                      request=request)}
+        }
+    else:
+        return {
+            'fragments': {'#no-moderations': ""},
+            'inner-fragments': {'#moderation-new': '<div class="alert alert-info">Jemand anderes hat zwischenzeitlich moderiert. '+request.guard.reason+'</div>'},
+            'append-fragments': {'#moderation-list': render_to_string("fragments/issue_review/item.html",
+                                                      context=dict(m=model,issue=issue,full=0),
+                                                      request=request)}
+        }
     
 @ajax
 @login_required
@@ -1325,25 +1342,42 @@ def solution_review(request, form, solution):
     model = form.save(commit=False)
     model.solution = solution
     model.user = request.user
-    model.save()
+    if solution.moderationslist.filter(stale=False).filter(user=request.user):
+        return {
+            'fragments': {'#no-moderations': ""},
+            'inner-fragments': {'#moderation-new': '<div class="alert alert-info">Du hat bereits geprüft.</div>'},
+            'append-fragments': {'#moderation-list': render_to_string("fragments/solution_review/item.html",
+                                                      context=dict(m=model,solution=solution,full=0),
+                                                      request=request)}
+        }
+    elif request.guard.should_moderate_solution():
+        model.save()
     
-    if request.guard.can_publish(solution):
-        complete_solution_review(solution, request)
+        if request.guard.can_publish(solution):
+            complete_solution_review(solution, request)
+            
+        solutions = solution.issue.solutions
+        open_solutions = solutions.filter(status='d').count()
+        accepted_solutions = solutions.filter(status='a').count()
         
-    solutions = solution.issue.solutions
-    open_solutions = solutions.filter(status='d').count()
-    accepted_solutions = solutions.filter(status='a').count()
-    
-    if solution.issue.status == STATES.MODERATION and (solution.issue.went_to_final_review_at + timedelta(days=7) > datetime.now()) and open_solutions == 0 and accepted_solutions > 0:
-        complete_review(solution.issue, request)
+        if solution.issue.status == STATES.MODERATION and (solution.issue.went_to_final_review_at + timedelta(days=7) > datetime.now()) and open_solutions == 0 and accepted_solutions > 0:
+            complete_review(solution.issue, request)
 
-    return {
-        'fragments': {'#no-moderations': ""},
-        'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>"},
-        'append-fragments': {'#moderation-list': render_to_string("fragments/solution_review/item.html",
-                                                  context=dict(m=model,solution=solution,full=0),
-                                                  request=request)}
-    }
+        return {
+            'fragments': {'#no-moderations': ""},
+            'inner-fragments': {'#moderation-new': "<strong>Eintrag aufgenommen</strong>"},
+            'append-fragments': {'#moderation-list': render_to_string("fragments/solution_review/item.html",
+                                                      context=dict(m=model,solution=solution,full=0),
+                                                      request=request)}
+        }
+    else:
+        return {
+            'fragments': {'#no-moderations': ""},
+            'inner-fragments': {'#moderation-new': '<div class="alert alert-info">Jemand anderes hat zwischenzeitlich moderiert. '+request.guard.reason+'</div>'},
+            'append-fragments': {'#moderation-list': render_to_string("fragments/solution_review/item.html",
+                                                      context=dict(m=model,solution=solution,full=0),
+                                                      request=request)}
+        }
 
 @non_ajax_redir('/')
 @ajax

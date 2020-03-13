@@ -977,7 +977,7 @@ class Resistance(Weight):
     reason = models.CharField(max_length=100, blank=True)
 
     class Meta:
-        unique_together = ("user", "contribution", "solution")
+        unique_together = (("user", "contribution"),("user", "solution"))
 
 
 class Quorum(models.Model):
@@ -1001,7 +1001,7 @@ class Supporter(models.Model):
     first = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ("user", "initiative", "issue")
+        unique_together = (("user", "initiative"),("user", "issue"))
 
 
 
@@ -1016,7 +1016,7 @@ class Like(models.Model):
     target = GenericForeignKey('target_type', 'target_id')
 
     class Meta:
-        unique_together = (("user", "target_type", "target_id"),)
+        unique_together = ("user", "target_type", "target_id")
 
 
 ### Abstracts
@@ -1121,3 +1121,6 @@ class Moderation(Response):
         ])
     text = models.CharField(max_length=500, blank=True)
     issue = models.ForeignKey(Issue, related_name="issuemoderations", null=True)
+
+    class Meta:
+        unique_together = (("user", "initiative"),("user", "issue"),("user", "solution"))

@@ -885,7 +885,7 @@ def issue_edit(request, issue):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new_issue.html', context=dict(form=form))
+    return render(request, 'initproc/new_issue.html', context=dict(form=form,issue=issue))
 
 @login_required
 @can_access_solution([STATES.DISCUSSION],'can_edit')
@@ -910,7 +910,7 @@ def solution_edit(request, solution):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new_solution.html', context=dict(form=form,issue=solution.issue))
+    return render(request, 'initproc/new_solution.html', context=dict(form=form,solution=solution,issue=solution.issue))
 
 
 @login_required

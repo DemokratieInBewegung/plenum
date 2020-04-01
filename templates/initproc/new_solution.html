@@ -9,7 +9,11 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <a href="{% fullurl 'issue' issue_id=issue.id slug=issue.slug %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>{% if is_new %}zur Fragestellung{% else %}Zurück{% endif %}</a>
+                {% if is_new %}
+                <a href="{% fullurl 'issue' issue_id=issue.id slug=issue.slug %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>Abbrechen</a>
+                {% else %}
+                <a href="{% fullurl 'solution_item' solution_id=solution.id slug=solution.slug %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>Abbrechen</a>
+                {% endif %}
             </div>
         </div>
     </div>

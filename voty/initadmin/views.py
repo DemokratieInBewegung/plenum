@@ -95,7 +95,7 @@ def mass_invite(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             total, send = invite_em(TextIOWrapper(request.FILES['file'].file, encoding=request.encoding))
-            messages.success(request, "Coolio. Aus {} sind {} neue Einladungen versand worden".format(total, send))
+            messages.success(request, "Coolio. Aus {} Einträgen sind {} neue Einladungen versandt worden".format(total, send))
     else:
         form = UploadFileForm()
 

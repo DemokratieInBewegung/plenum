@@ -9,11 +9,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                {% if is_new %}
-                <a href="{% fullurl 'issue' issue_id=issue.id slug=issue.slug %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Fragestellung</a>
-                {% else %}
-                <a href="javascript:void(0);" onclick="window.history.back();" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>Zurück</a>
-                {% endif %}
+                <a href="{% fullurl 'issue' issue_id=issue.id slug=issue.slug %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>{% if is_new %}zur Fragestellung{% else %}Zurück{% endif %}</a>
             </div>
         </div>
     </div>

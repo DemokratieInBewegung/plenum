@@ -2,6 +2,19 @@
 
 {% load static %}
 {% load bootstrap %}
+{% load fullurl %}
+
+{% block custom_header %}
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="{% fullurl 'agora' %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>Abbrechen</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
 {% block content %}
 <div class="container new-initiative">

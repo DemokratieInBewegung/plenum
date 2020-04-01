@@ -910,7 +910,7 @@ def solution_edit(request, solution):
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")
 
-    return render(request, 'initproc/new_solution.html', context=dict(form=form))
+    return render(request, 'initproc/new_solution.html', context=dict(form=form,issue=solution.issue))
 
 
 @login_required

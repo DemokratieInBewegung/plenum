@@ -126,6 +126,14 @@
                                 <i class="material-icons edit">edit</i><span>Bearbeiten</span>
                             </button>
                         </form>
+                        {% if issue.deletable %}
+                        <form action="/issue/{{issue.id}}/delete" style="display:inline" method="POST">
+                            {% csrf_token %}
+                            <button title="Bearbeiten" class="btn btn-danger edit" type="submit">
+                                <i class="material-icons edit">delete</i><span>Löschen</span>
+                            </button>
+                        </form>
+                        {% endif %}
                         {% if issue.status == 'p' and issue.ready_for_review %}
                             <form action="/issue/{{issue.id}}/submit_to_review" style="display:inline"  method="POST">
                                 {% csrf_token %}

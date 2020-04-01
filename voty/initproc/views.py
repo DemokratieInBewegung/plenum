@@ -937,6 +937,31 @@ def submit_to_committee(request, initiative):
     return redirect('/initiative/{}'.format(initiative.id))
 
 
+
+@login_required
+@can_access_solution('can_edit')
+def solution_delete(request, solution):
+    if solution.deletable:
+        i = solution.issue.id
+        solution.delete()
+        messages.success(request, "Der Lösungsvorschlag wurde gelöscht.")
+        return redirect('/issue/{}'.format(i))
+    else:
+        messages.warning(request, "Du kannst den Lösungsvorschlag nicht löschen, da er schon diskutiert wurde oder bereits moderiert wird order die Fragestellung schon in Abstimmung gelangt ist.")
+        return redirect('/solution/{}'.format(solution.id))
+        
+@login_required
+@can_access_issue([STATES.PREPARE], 'can_edit')
+def issue_delete(request, issue):
+    if issue.deletable:
+        issue.delete()
+        messages.success(request, "Die Fragestellung wurde gelöscht.")
+        return redirect('/agora')
+    else:
+        messages.warning(request, "Du kannst die Fragestellung nicht löschen, solange andere Mitinitiatoren involviert sind.")
+        return redirect('/issue/{}'.format(issue.id))
+    
+    
 @login_required
 @can_access_issue([STATES.PREPARE], 'can_edit')
 def submit_to_review(request, issue):

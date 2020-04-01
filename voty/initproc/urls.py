@@ -32,6 +32,8 @@ urlpatterns = [
     url(r'^solution/(?P<solution_id>\d+)(?:-(?P<slug>.*))?/edit$', views.solution_edit),
     url(r'^(?P<initype>initiative|ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/submit_to_committee$', views.submit_to_committee),
     url(r'^issue/(?P<issue_id>\d+)(?:-(?P<slug>.*))?/submit_to_review$', views.submit_to_review),
+    url(r'^issue/(?P<issue_id>\d+)(?:-(?P<slug>.*))?/delete$', views.issue_delete),
+    url(r'^solution/(?P<solution_id>\d+)(?:-(?P<slug>.*))?/delete$', views.solution_delete),
     url(r'^(?P<initype>beitrag)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/new_question$', views.new_question),
     url(r'^solution/(?P<solution_id>\d+)(?:-(?P<slug>.*))?/new_question$', views.solution_new_question),
     url(r'^(?P<initype>initiative|ao-aenderung|beitrag)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/new_argument$', views.new_argument),

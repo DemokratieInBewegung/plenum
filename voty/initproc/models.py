@@ -222,6 +222,12 @@ class Issue(models.Model):
         return False
         
     @cached_property
+    def deletable(self):
+        if self.status == STATES.PREPARE:
+            return self.supporters.count() == 1
+        return False
+        
+    @cached_property
     def ready_for_review(self):
         if self.status in [STATES.INCOMING, STATES.PREPARE]:
             #has no empty text fields and 3 initiators
@@ -309,6 +315,13 @@ class Solution(models.Model):
     @property
     def is_commentable(self):
         return self.status != self.STATES.REJECTED and self.issue.went_to_discussion_at is not None and self.issue.went_to_voting_at is None
+        
+    @cached_property
+    def deletable(self):
+        if self.status == STATES.DISCUSSION:
+            if not self.has_arguments and not self.current_moderations:
+                return self.issue.went_to_voting_at is None
+        return False
         
         
     @property

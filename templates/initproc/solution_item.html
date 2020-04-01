@@ -49,6 +49,14 @@
                             <i class="material-icons edit">edit</i><span>Bearbeiten</span>
                         </button>
                     </form>
+                    {% if solution.deletable %}
+                    <form action="/solution/{{solution.id}}/delete" style="display:inline" method="POST">
+                        {% csrf_token %}
+                        <button title="Bearbeiten" class="btn btn-danger edit" type="submit">
+                            <i class="material-icons edit">delete</i><span>Löschen</span>
+                        </button>
+                    </form>
+                    {% endif %}
                 </div>
             </div>
         </div>

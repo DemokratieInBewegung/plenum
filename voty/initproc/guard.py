@@ -600,6 +600,9 @@ class Guard:
             if solution.issue.supporters.filter(user=self.user, initiator=True):
                 self.reason = "Als Mitinitator*in darfst Du nicht mit moderieren."
                 return False
+            if solution.user == self.user:
+                self.reason = "Als Ersteller darfst Du nicht mit moderieren."
+                return False
             return True
         return False
 

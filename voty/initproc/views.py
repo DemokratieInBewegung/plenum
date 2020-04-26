@@ -446,7 +446,7 @@ def veto(request, form, issue):
     issue.was_closed_at = datetime.now()
     issue.save()
 
-    messages.success(request, "Veto gespeichert.")
+    messages.success(request, "Veto gespeichert und Fragestellung archiviert.")
     issue.notify_followers(NOTIFICATIONS.ISSUE.VETO, subject=request.user)
 
     return {
@@ -875,7 +875,7 @@ def issue_edit(request, issue):
             if issue.status == STATES.PREPARE:
                 issue.supporters.filter(initiator=True).exclude(user=request.user).update(ack=False)
 
-            messages.success(request, "Initiative gespeichert.")
+            messages.success(request, "Fragestellung gespeichert.")
             issue.notify_followers(NOTIFICATIONS.ISSUE.EDITED, subject=request.user)
             
             if issue.status == STATES.INCOMING:

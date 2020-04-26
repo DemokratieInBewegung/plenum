@@ -393,5 +393,5 @@ class SolutionForm(forms.ModelForm):
         }
         help_texts = {
             "title" : "Der Titel muss eine Antwort auf die Frage sein.",
-            "budget": "Bitte mache eine möglichst genaue Kostenschätzung. Der Vorstand kann ein Veto einlegen, wenn nicht genug Geld in der Parteikasse ist oder die Kosten unverhältnismäßig hoch sind. Schätze deshalb aber nicht absichtlich zu niedrig, da die Lösung nicht umgesetzt wird, wenn das Budget dafür deutlich nicht ausreicht."
+            "budget": "Bitte mache eine möglichst genaue Kostenschätzung. Der Vorstand kann ein Veto einlegen, wenn nicht genug Geld in der Parteikasse ist oder die Kosten unverhältnismäßig hoch oder absichtlich zu niedrig angesetzt sind."
         }

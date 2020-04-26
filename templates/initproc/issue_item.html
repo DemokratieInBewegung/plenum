@@ -29,14 +29,6 @@
                 <h1 class="display-4">{{issue.title}}</h1>
             </div>
         </div>
-        {% if topic.motivation %}
-        <h4 class="text-muted" style="margin-top:2rem">Motivation</h4>
-        <div class="row initiative-text">
-            <div class="col-12">
-                <p>{{issue.motivation | markdown}}</p>
-            </div>
-        </div>
-        {% endif %}
         {% if issue.status == 'd' or request.guard.can_edit %}
         {% if not archive %}
         <div class="row title" style="margin-top:3rem">
@@ -53,7 +45,7 @@
 {% block content %}
 {% if archive %}
 
-<div class="container-fluid cta">
+<div class="container-fluid">
     <div class="container">
         <div class="row initiative-state">
             <div class="col-12">
@@ -72,15 +64,14 @@
                 {% endif %}
             </div>
         </div>
-        {% include 'fragments/issue_weight_results.html' with singular='Lösungsvorschlag' plural='Lösungsvorschläge' event='der Abwägung zu diesem Thema' %}
     </div>
 </div>
 {% elif issue.status == 'x' %}
-<div class="container-fluid cta">
+<div class="container-fluid">
     <div class="container">
         <div class="row initiative-state">
             <div class="col-12">
-                <p>Diese Fragestellung ist in der Veto-Phase.</p>
+                <p>Diese Fragestellung wurde abgestimmt und befindet sich in der Veto-Phase</p>
             </div>
         </div>
         {% if request.guard.userIsBoard %}
@@ -93,10 +84,9 @@
         
         </div>
         {% endif %}
-        {% include 'fragments/issue_weight_results.html' with singular='Lösungsvorschlag' plural='Lösungsvorschläge' event='der Abwägung zu diesem Thema' %}
     </div>
 </div>
-{% else %}
+{% endif %}
 
 
 
@@ -203,19 +193,6 @@
                         Über diese Fragestellung <a href="#voting"><strong class="badge-vote">wird gerade abgestimmt</strong></a>.
                     </p>
                 {% endifequal %}
-
-                {% ifequal issue.status 'x' %}
-                <p>Diese Fragestellung wurde abgestimmt und befindet sich in der Veto-Phase</p>
-                {% endifequal %}
-
-                {% if issue.status == 'c' %}
-                    {% if not issue.went_to_discussion_at %}
-                    <p>Diese Fragestellung <a href="#cta"><strong class="badge-rejected">wurde abgelehnt</strong></a>{% if issue.went_to_seeking_support_at %}, da sie das Quorum nicht erreicht hat{% endif %}.</p>
-                    {% endif %}
-                    {% if issue.has_veto %}
-                    <p>Diese Fragestellung <a href="#cta"><strong class="badge-rejected">wurde abgelehnt</strong></a>, da ein Veto eingelegt worden ist.</p>
-                    {% endif %}
-                {% endif %}
 
             </div>
         </div>
@@ -346,6 +323,17 @@
 <script type="text/javascript">
 function enable_submit() {
     var disabled = false;
+  {% if resistances %}
+    {% for resistance in resistances %}
+    var value = -1;
+    var radios = document.getElementsByName('solution{{resistance.solution.id}}');
+    for (var i = 0;i < radios.length;i++)
+        if (radios [i].checked)
+            value = radios [i].value;
+    disabled |= value == -1 || (value > 6 && !document.getElementById('reason{{resistance.solution.id}}').value);
+    {% endfor %}
+    document.getElementById('initial_vote_submit').disabled = disabled;
+  {% else %}
     {% for solution in solutions %}
     {% if solution.status != 'r' %}
     var value = -1;
@@ -357,6 +345,7 @@ function enable_submit() {
     {% endif %}
     {% endfor %}
     document.getElementById('initial_vote_submit').disabled = disabled;
+  {% endif %}
 }
 </script>
 <div class="container-fluid">
@@ -387,7 +376,7 @@ function enable_submit() {
         </div>
     </div>
     {% endfor %}
-    
+</div>    
 {% endif %}
 
 
@@ -455,6 +444,13 @@ function enable_submit() {
                 </div>
             </div>
         </div>
+    </div>
+</div>
+{% if archive  or issue.status == 'x' %}
+
+<div class="container-fluid cta">
+    <div class="container">
+        {% include 'fragments/issue_weight_results.html' with singular='Lösungsvorschlag' plural='Lösungsvorschläge' event='der Abwägung zu diesem Thema' %}
     </div>
 </div>
 {% endif %}

@@ -114,6 +114,12 @@ function update_notifications(data) {
             </a>`
           break;
 
+        case "issue_edited_newreview":
+          message = `<a href="/issue/${item.target_object_id}">
+              <i class="material-icons">mode_edit</i>${item.actor} hat "${item.target}" verändert. Bitte prüfe erneut.
+          </a>`
+          break;
+
         case "issue_published":
           if (item.target){
             message = `<a href="/issue/${item.target_object_id}">
@@ -185,6 +191,12 @@ function update_notifications(data) {
         case "solution_edited":
           message = `<a href="/solution/${item.target_object_id}">
               <i class="material-icons">mode_edit</i>${item.actor} hat "${item.target}" verändert
+          </a>`
+          break;
+          
+        case "solution_edited_newreview":
+          message = `<a href="/solution/${item.target_object_id}">
+              <i class="material-icons">mode_edit</i>${item.actor} hat "${item.target}" verändert. Bitte prüfe erneut.
           </a>`
           break;
 

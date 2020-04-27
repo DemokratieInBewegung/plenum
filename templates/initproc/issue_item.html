@@ -115,11 +115,14 @@
                             <button title="Bearbeiten" class="btn btn-success edit" type="submit">
                                 <i class="material-icons edit">edit</i><span>Bearbeiten</span>
                             </button>
+                            {% if issue.status == 'i' %}
+                            <p>Wenn Du die Fragestellung (nach Änderung) speicherst, werden alle bisherigen Moderationsbeiträge gelöscht und die anderen Mitglieder aus dem Prüfteam per Benachrichtigung gebeten, eine erneute Moderationsbewertung abzugeben.</p>
+                            {% endif %}
                         </form>
                         {% if issue.deletable %}
                         <form action="/issue/{{issue.id}}/delete" style="display:inline" method="POST">
                             {% csrf_token %}
-                            <button title="Bearbeiten" class="btn btn-danger edit" type="submit">
+                            <button title="Löschen" class="btn btn-danger edit" type="submit">
                                 <i class="material-icons edit">delete</i><span>Löschen</span>
                             </button>
                         </form>

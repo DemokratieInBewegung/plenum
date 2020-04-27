@@ -872,14 +872,17 @@ def issue_edit(request, issue):
                 if request.POST.get('commit_message', None):
                     reversion.set_comment(request.POST.get('commit_message'))
 
-            if issue.status == STATES.PREPARE:
-                issue.supporters.filter(initiator=True).exclude(user=request.user).update(ack=False)
-
-            messages.success(request, "Fragestellung gespeichert.")
             issue.notify_followers(NOTIFICATIONS.ISSUE.EDITED, subject=request.user)
             
+            if issue.status == STATES.PREPARE:
+                issue.supporters.filter(initiator=True).exclude(user=request.user).update(ack=False)
+                messages.success(request, "Fragestellung gespeichert. Mitinitiator*innen müssen ihre Beteiligung erneut bestätigen.")
+
+            
             if issue.status == STATES.INCOMING:
-                issue.notify_moderators(NOTIFICATIONS.ISSUE.EDITED, subject=request.user)
+                messages.success(request, "Fragestellung gespeichert. Bisherige Prüfungsbewertungen gelöscht")
+                issue.notify_moderators(NOTIFICATIONS.ISSUE.EDITED_NEWREVIEW, subject=request.user)
+                issue.issuemoderations.all().delete()
             
             return redirect('/issue/{}'.format(issue.id))
         else:
@@ -904,8 +907,11 @@ def solution_edit(request, solution):
 
             if request.user.id != solution.user_id:
                 solution.notify_creator(NOTIFICATIONS.SOLUTION.EDITED, subject=request.user)
-            messages.success(request, "Lösungsvorschlag gespeichert.")
-            solution.notify_moderators(NOTIFICATIONS.SOLUTION.EDITED, subject=request.user)
+                messages.success(request, "Lösungsvorschlag gespeichert. Bisherige Prüfungsbewertungen wurden gelöscht.")
+            else:
+                messages.success(request, "Lösungsvorschlag gespeichert.")
+            solution.notify_moderators(NOTIFICATIONS.SOLUTION.EDITED_NEWREVIEW, subject=request.user)
+            solution.moderationslist.all().delete()
             return redirect('/solution/{}'.format(solution.id))
         else:
             messages.warning(request, "Bitte korrigiere die folgenden Probleme:")

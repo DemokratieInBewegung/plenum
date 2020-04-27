@@ -30,6 +30,7 @@ class NOTIFICATIONS:
     class ISSUE:
         EDITED = "issue_edited"
         SUBMITTED = "issue_submitted"
+        EDITED_NEWREVIEW = "issue_edited_newreview"
         PUBLISHED = "issue_published"
         REJECTED = "issue_rejected"
         CLOSED = "issue_closed"
@@ -43,6 +44,7 @@ class NOTIFICATIONS:
 
     class SOLUTION:
         EDITED = "solution_edited"
+        EDITED_NEWREVIEW = "solution_edited_newreview"
         REJECTED = "solution_rejected"
 
 class STATES:

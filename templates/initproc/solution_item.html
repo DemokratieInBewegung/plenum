@@ -48,6 +48,11 @@
                         <button title="Bearbeiten" class="btn btn-success edit" type="submit">
                             <i class="material-icons edit">edit</i><span>Bearbeiten</span>
                         </button>
+                        {% if perms.initproc.add_review %}
+                        {% if request.guard.can_moderate %}
+                        <p>Wenn Du den Lösungsvorschlag (nach Änderung) speicherst, werden alle bisherigen Moderationsbeiträge gelöscht und die anderen Mitglieder aus dem Prüfteam per Benachrichtigung gebeten, eine erneute Moderationsbewertung abzugeben.</p>
+                        {% endif %}
+                        {% endif %}
                     </form>
                     {% if solution.deletable %}
                     <form action="/solution/{{solution.id}}/delete" style="display:inline" method="POST">

@@ -1,0 +1,3 @@
+{% if sender == recipient %}Du hast{% else %}{{sender.get_full_name|default:sender.username}} hat{% endif %} den Lösungsvorschlag "{{target}}" überabeitet.
+
+Du findest den Lösungsvorschlag unter {{ base_url }}/solution/{{target.id}}-{{target.slug}}

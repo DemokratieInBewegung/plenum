@@ -1,0 +1,11 @@
+
+{% if target %}
+{% if sender == recipient %}Du hast{% else %}{{sender.get_full_name|default:sender.username}} hat{% endif %} den Lösungsvorschlag "{{target}}" abgelehnt.
+
+Du findest den Lösungsvorschlag unter {{ base_url }}/solution/{{target.id}}-{{target.slug}}
+
+{% else %}
+"{{sender}}" wurde nach Prüfung abgelehnt.
+
+Du findest den Lösungsvorschlag unter {{ base_url }}/solution/{{sender.id}}-{{sender.slug}}
+{% endif %}

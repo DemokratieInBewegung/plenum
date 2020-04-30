@@ -21,7 +21,31 @@ class NOTIFICATIONS:
         ACCEPTED = 'init_accepted'
         REJECTED = 'init_rejected'
         NEW_ARGUMENT = 'init_new_arg'
+        
+    class ISSUE_INVITE:
+        SEND = "issue_invited"
+        ACCEPTED = "issue_invite_accepted"
+        REJECTED = "issue_invite_rejected"
 
+    class ISSUE:
+        EDITED = "issue_edited"
+        SUBMITTED = "issue_submitted"
+        EDITED_NEWREVIEW = "issue_edited_newreview"
+        PUBLISHED = "issue_published"
+        REJECTED = "issue_rejected"
+        CLOSED = "issue_closed"
+        WENT_TO_DISCUSSION = "issue_discussion"
+        FINAL_REVIEW = "issue_final_review"
+        WENT_TO_VOTE = 'issue_vote'
+        VOTED = 'issue_voted'
+        COMPLETED = 'issue_completed'
+        NEW_ARGUMENT = 'issue_new_arg'
+        VETO = 'veto'
+
+    class SOLUTION:
+        EDITED = "solution_edited"
+        EDITED_NEWREVIEW = "solution_edited_newreview"
+        REJECTED = "solution_rejected"
 
 class STATES:
     """
@@ -38,6 +62,7 @@ class STATES:
     COMPLETED = 'c'
     ACCEPTED = 'a'
     REJECTED = 'r'
+    VETO = 'x'
 
 
 PUBLIC_STATES = [STATES.SEEKING_SUPPORT,
@@ -46,7 +71,8 @@ PUBLIC_STATES = [STATES.SEEKING_SUPPORT,
                  STATES.VOTING,
                  STATES.COMPLETED,
                  STATES.ACCEPTED,
-                 STATES.REJECTED]
+                 STATES.REJECTED,
+                 STATES.VETO]
 
 TEAM_ONLY_STATES = [STATES.INCOMING,
                     STATES.MODERATION,
@@ -73,6 +99,7 @@ COMPARING_FIELDS = [
     'title', 'subtitle',  "summary", "problem", "forderung", "kosten",
     "fin_vorschlag", "arbeitsweise", "init_argument",
     "einordnung", "ebene", "bereich",
+    "motivation", "description", "budget"
 ]
 
 ADMINISTRATIVE_LEVELS = [
@@ -119,6 +146,8 @@ INITIATORS_COUNT = 3
 MINIMUM_MODERATOR_VOTES = 5
 MINIMUM_FEMALE_MODERATOR_VOTES = 3
 MINIMUM_DIVERSE_MODERATOR_VOTES = 2
+
+MINIMUM_REVIEW_TEAM_SIZE = 5
 
 CONTRIBUTION_QUORUM = 6
 

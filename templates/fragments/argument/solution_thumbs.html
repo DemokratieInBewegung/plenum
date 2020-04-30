@@ -1,0 +1,12 @@
+        <div class="row">
+            <div class="{% if arguments %}offset-md-2 {% endif %}col text-center">
+                <a data-ajax="true" href="/solution/{{solution.id}}/new_argument?type=👍&fragment=%23new-argument" class="btn">
+                    <i class="material-icons">thumb_up</i> Pro-Argument hinzufügen
+                </a>
+            </div>
+            <div class="col text-center">
+                <a data-ajax="true" href="/solution/{{solution.id}}/new_argument?type=👎&fragment=%23new-argument" class="btn">
+                    <i class="material-icons">thumb_down</i> Kontra-Argument hinzufügen
+                </a>
+            </div>
+        </div>

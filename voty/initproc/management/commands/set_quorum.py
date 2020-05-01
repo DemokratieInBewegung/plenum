@@ -38,11 +38,15 @@ class Command(BaseCommand):
         
         #Quorum for Issue Support
         quorum = ceil(total / 20.0)
+        if quorum < 5:
+            quorum = 5
         IssueSupportersQuorum(value=quorum).save()
         print("Issue Support Quorum set to {}".format(quorum))
         
         #Quorum for Issue Voting
         quorum = ceil(totalpartymembers / 10.0)
+        if quorum < 5:
+            quorum = 5
         IssueVotersQuorum(value=quorum).save()
         print("Issue Voting Quorum set to {}".format(quorum))
         

@@ -549,7 +549,7 @@ def issue_item(request, issue, slug=None, archive=False):
     solutions = Solution.objects.filter(issue=issue.id).exclude(status='r')
     context['solutions'] = solutions.order_by('createdate')
 
-    if issue.status in [STATES.COMPLETED, STATES.VETO]:
+    if issue.status in [STATES.COMPLETED, STATES.VETO] and issue.went_to_veto_phase_at:
         context['participation_count'] = solutions.first().rating.count()
         context['options'] = sorted ([{
                 "link": solution,

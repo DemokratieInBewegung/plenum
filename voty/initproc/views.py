@@ -434,24 +434,29 @@ def new_issue(request):
 
 @ajax
 @login_required
-@can_access_issue([STATES.VETO])
+@can_access_issue()
 @simple_form_verifier(VetoForm)
 def veto(request, form, issue):
-    model = form.save(commit=False)
-    model.solution = issue.solutions.filter(title=request.session.get('winner_solution_title')).first()
-    model.user = request.user
-    model.save()
+    if issue.status == STATES.VETO:
+        model = form.save(commit=False)
+        model.solution = issue.solutions.filter(title=request.session.get('winner_solution_title')).first()
+        model.user = request.user
+        model.save()
+        
+        issue.status = STATES.COMPLETED
+        issue.was_closed_at = datetime.now()
+        issue.save()
     
-    issue.status = STATES.COMPLETED
-    issue.was_closed_at = datetime.now()
-    issue.save()
-
-    messages.success(request, "Veto gespeichert und Fragestellung archiviert.")
-    issue.notify_followers(NOTIFICATIONS.ISSUE.VETO, subject=request.user)
-
-    return {
-        'inner-fragments': {'#veto-new': "<strong>Eintrag aufgenommen</strong>"}
-    }
+        messages.success(request, "Veto gespeichert und Fragestellung archiviert.")
+        issue.notify_followers(NOTIFICATIONS.ISSUE.VETO, subject=request.user)
+    
+        return {
+            'inner-fragments': {'#veto-new': "<strong>Eintrag aufgenommen</strong>"}
+        }
+    else:
+        return {
+            'inner-fragments': {'#veto-new': "<strong>Jemand anderes hat gerade auch ein Veto eingetragen.</strong>"}
+        }
  
 @can_access_initiative()
 def item(request, init, slug=None, initype=None):
@@ -1101,16 +1106,17 @@ def support(request, initiative):
     return redirect('/initiative/{}'.format(initiative.id))
 
 @login_required
-@can_access_issue(STATES.SEEKING_SUPPORT, 'can_support') # must be seeking supporters
+@can_access_issue()
 def issue_support(request, issue):
-    Supporter(issue=issue, user_id=request.user.id,
-              public=not not request.GET.get("public", False)).save()
+    if issue.status == STATES.SEEKING_SUPPORT:
+        Supporter(issue=issue, user_id=request.user.id,
+                public=not not request.GET.get("public", False)).save()
 
-    if (issue.supporters.filter().count() >= issue.supporters_quorum):
-        issue.status = STATES.DISCUSSION
-        issue.went_to_discussion_at = datetime.now()
-        issue.save()
-        issue.notify_followers(NOTIFICATIONS.ISSUE.WENT_TO_DISCUSSION, subject=request.user)
+        if (issue.supporters.filter().count() >= issue.supporters_quorum):
+            issue.status = STATES.DISCUSSION
+            issue.went_to_discussion_at = datetime.now()
+            issue.save()
+            issue.notify_followers(NOTIFICATIONS.ISSUE.WENT_TO_DISCUSSION, subject=request.user)
 
     return redirect('/issue/{}'.format(issue.id))
 
@@ -1329,7 +1335,7 @@ def moderate(request, form, initiative):
 
 @ajax
 @login_required
-@can_access_issue([STATES.INCOMING], 'can_moderate')
+@can_access_issue()
 @simple_form_verifier(NewReviewForm)
 def review(request, form, issue):
     model = form.save(commit=False)
@@ -1359,7 +1365,7 @@ def review(request, form, issue):
     else:
         return {
             'fragments': {'#no-moderations': ""},
-            'inner-fragments': {'#moderation-new': '<div class="alert alert-info">Jemand anderes hat zwischenzeitlich moderiert. '+request.guard.reason+'</div>'},
+            'inner-fragments': {'#moderation-new': '<div class="alert alert-info">Jemand anderes hat zwischenzeitlich moderiert. '+(request.guard.reason if request.guard.reason else '')+'</div>'},
             'append-fragments': {'#moderation-list': render_to_string("fragments/issue_review/item.html",
                                                       context=dict(m=model,issue=issue,full=0),
                                                       request=request)}
@@ -1367,7 +1373,7 @@ def review(request, form, issue):
     
 @ajax
 @login_required
-@can_access_solution([STATES.DISCUSSION], 'can_moderate')
+@can_access_solution()
 @simple_form_verifier(NewReviewForm)
 def solution_review(request, form, solution):
     model = form.save(commit=False)
@@ -1404,7 +1410,7 @@ def solution_review(request, form, solution):
     else:
         return {
             'fragments': {'#no-moderations': ""},
-            'inner-fragments': {'#moderation-new': '<div class="alert alert-info">Jemand anderes hat zwischenzeitlich moderiert. '+request.guard.reason+'</div>'},
+            'inner-fragments': {'#moderation-new': '<div class="alert alert-info">Jemand anderes hat zwischenzeitlich moderiert. '+(request.guard.reason if request.guard.reason else '')+'</div>'},
             'append-fragments': {'#moderation-list': render_to_string("fragments/solution_review/item.html",
                                                       context=dict(m=model,solution=solution,full=0),
                                                       request=request)}

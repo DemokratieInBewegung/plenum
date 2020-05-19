@@ -58,7 +58,7 @@
                 {% elif issue.missed_voters_quorum %}
                 <div class="alert alert-info">Die Fragestellung hat das notwendige Quorum für die Abstimmung nicht erreicht.</div>
                 {% elif issue.missed_supporters_quorum %}
-                <div class="alert alert-info">Die Fragestellung hat das notwendige Quorum an Unterstützer*innen nicht erreicht.</div>
+                <div class="alert alert-info">Die Fragestellung hat das notwendige Quorum an Unterstützer*innen nicht erreicht. (Anzahl Unterstützer*innen: {{issue.supporters_count}})</div>
                 {% elif issue.failed_review %}
                 <div class="alert alert-info">Die Fragestellung wurde vom Prüfteam abgelehnt.</div>
                 {% endif %}
@@ -297,6 +297,7 @@
             <div class="col-12">
                 <h6 class="text-muted classification">Noch {{issue.end_of_current_phase | timeuntil}}</h6>
                 <p>Über diese Fragestellung wird gerade abgestimmt.</p>
+                <p>{{resistances_count}} Personen haben bisher abgestimmt.{% if resistances_count < voters_quorum %} Notwendiges Quorum: {{voters_quorum}}{% endif %}</p>
             </div>
         </div>
     </div>

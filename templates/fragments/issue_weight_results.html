@@ -67,9 +67,11 @@
 </div>
 {% endif %}
 {% else %}
+{% if issue.went_to_voting_at %}
 <div class="row" style="padding-top: 1rem">
     <div class="col-12">
         <span>An {{event}} hat niemand teilgenommen.</span>
     </div>
 </div>
+{% endif %}
 {% endif %}

@@ -553,8 +553,11 @@ def issue_item(request, issue, slug=None, archive=False):
     
     solutions = Solution.objects.filter(issue=issue.id).exclude(status='r')
     context['solutions'] = solutions.order_by('createdate')
+    if solutions.count() > 0:
+        context['resistances_count'] = solutions.first().rating.count()
+        context['voters_quorum'] = issue.voters_quorum
 
-    if issue.status in [STATES.COMPLETED, STATES.VETO] and issue.went_to_veto_phase_at:
+    if issue.status in [STATES.COMPLETED, STATES.VETO] and solutions.count() > 0:
         context['participation_count'] = solutions.first().rating.count()
         context['options'] = sorted ([{
                 "link": solution,
@@ -569,7 +572,8 @@ def issue_item(request, issue, slug=None, archive=False):
         context['provide_reasons'] = any(option["reasons"].exists() for option in context['options'])
         process_weight_context(context)
         find_preferred_option(context)
-        request.session['winner_solution_title'] = context['preferred_option']
+        if issue.went_to_veto_phase_at:
+            request.session['winner_solution_title'] = context['preferred_option']
     else:
         context['participation_count'] = 0
     

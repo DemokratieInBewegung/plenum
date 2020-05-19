@@ -113,7 +113,7 @@
                     </p>
                 {% elif initiative.state == 'i' or initiative.state == 'm' %}
                     <p>
-                    Diese Initiative <strong class="badge-prepare">wird gerade geprüft</strong> und {% if initiative.state == 'i' %} wird dann veröffentlicht {% else %} geht dann in <strong  class="badge-prepare">die Abstimmung</strong>{% endif %}.
+                    Diese Initiative <strong class="badge-prepare">wird gerade geprüft</strong> und {% if initiative.state == 'i' %} wird dann veröffentlicht{% else %} geht dann in <strong class="badge-prepare">die Abstimmung</strong>{% endif %}.
                     </p>
                     {% if perms.initproc.add_moderation %}
                         {% if request.guard.can_moderate %}
@@ -154,7 +154,7 @@
                 {% endifequal %}
                 {% ifequal initiative.state 'd' %}
                 <p>
-                    Diese Initiative befindet sich <a href="#debate">in Diskussion</a>.
+                    Diese Initiative befindet sich <a href="#responses">in Diskussion</a>.
                 </p>
                 {% endifequal %}
 
@@ -163,14 +163,15 @@
                     <p>
                         Über diese Initiative <a href="#voting"><strong class="badge-vote">wird gerade abgestimmt</strong></a>.
                     </p>
-                {% endifequal %} {% ifequal initiative.state 'a' %}
-                <p>Diese Initiative {% if user.is_authenticated %}
-                <a href="#cta">{% endif %}<strong class="badge-accepted">wurde angenommen</strong>{% if user.is_authenticated %}</a>{% endif %}.
-                {% endifequal %} {% ifequal initiative.state 'r' %} {% if initiative.went_to_discussion_at %}
-                <p>Diese Initiative <a href="#cta"><strong class="badge-rejected">wurde abgelehnt</strong></a>.</p>
-                {% else %}
-                <p>Diese Initiative <strong class="badge-rejected">wurde abgelehnt</strong>, da sie das Quorum nicht erreicht hat.</p>
-                {% endif %} {% endifequal %}
+                {% endifequal %}
+
+                {% ifequal initiative.state 'a' %}
+                <p>Diese Initiative <a href="#cta"><strong class="badge-accepted">wurde angenommen</strong></a>.</p>
+                {% endifequal %}
+
+                {% ifequal initiative.state 'r' %}
+                <p>Diese Initiative <a href="#cta"><strong class="badge-rejected">wurde abgelehnt</strong></a>{% if not initiative.went_to_discussion_at %}, da sie das Quorum nicht erreicht hat{% endif %}.</p>
+                {% endifequal %}
             </div>
         </div>
     </div>
@@ -344,7 +345,7 @@
         {% if initiative.allows_abstention %}
         <div class="row" style="padding-top: .25rem; padding-bottom: .5rem">
             <div class="col-12" style="padding-top: 1rem">
-                <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% if initiative.all_variants %}{% if initiative.yays > initiative.nays %}, weil eine Variante (s.o.) mehr Ja-Stimmen bekommen hat{% endif %}{% endif %}{% endif %}.</p>
+                <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% if initiative.all_variants and initiative.yays > initiative.nays %}, weil eine Variante (s.o.) mehr Ja-Stimmen bekommen hat{% endif %}{% endif %}.</p>
             </div>
         </div>
         <div class="row justify-content-center results-display">
@@ -373,7 +374,7 @@
         {% else %}
         <div class="row" style="padding-top: .25rem; padding-bottom: .5rem">
             <div class="col-12" style="padding-top: 1rem">
-                <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% endif %}.</p>
+                <p>Diese Initiative {% if initiative.state == 'a' %}<strong class="badge-accepted">wurde angenommen</strong>{% else %}<strong class="badge-rejected">wurde abgelehnt</strong>{% if initiative.all_variants and initiative.yays > initiative.nays %}, weil eine Variante (s.o.) mehr Ja-Stimmen bekommen hat{% endif %}{% endif %}.</p>
             </div>
         </div>
         <div class="row justify-content-center">
@@ -461,7 +462,7 @@
 {% endif %}
 
 
-{% if initiative.show_debate %}
+{% if initiative.show_responses %}
 
 <div id="discuss" class="container-fluid cta {% if initiative.state == 'v' or initiative.state == 'e' or initiative.state == 'a' or initiative.state == 'r' %}closed{% endif %}">
     <div class="container">
@@ -472,7 +473,7 @@
 {% include 'fragments/count.html' with active=False me='proposals' list=proposals %}
                 </ul>
             </div>
-            <div class="col-12 tab-content">
+            <div id="responses" class="col-12 tab-content">
                 <div class="tab-pane active" id="debate" role="tabpanel">
                     {% include 'fragments/debate.html' %}
                 </div>
@@ -492,13 +493,12 @@
 
 <!-- SEEEEKING SUPPPORTERS AREA -->
 
-{% ifequal initiative.state 's' %}
 <div class="container-fluid cta">
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
                 {% ifequal initiative.state 's' %}
+                <h6 class="text-muted classification">Noch {{initiative.end_of_this_phase | timeuntil}}</h6>
                 <span class="meta-content current-supporters">
                     <strong>
                         {{initiative.absolute_supporters|default:0}} 
@@ -560,7 +560,6 @@
         </div>
     </div>
 </div>
-{% endifequal %}
 
 <!--  IIIIIINNNNBOOOOOOXXXXX  -->
 
@@ -641,12 +640,4 @@
     </div>
 </div>
 {% endif %}
-
-{% endblock %} {% block body-javascript %} {{ block.super }}
-<script type="text/javascript">
-// Initialize Tooltips
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip();
-});
-</script>
 {% endblock %}

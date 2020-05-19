@@ -6,15 +6,15 @@
 {% block content %}
 <div class="container new-initiative">
 	<div class="card">
-		{% if initiative.is_editable %}
+		{% if is_new %}
 		<div class="card-header">
-			<h1>Initiative bearbeiten</h1>
-			<p>Weitere Erklärung der Bestandteile einer Initiative findest Du <a href="https://marktplatz.bewegung.jetzt/t/eine-initiative-starten-und-mitinitiatoren-einladen/2593">auf dem Marktplatz der Ideen</a>.</p>
+			<h1>Neue Initiative einreichen</h1>
+			<p>Hier kannst Du eine neue Initiative in den Abstimmungsprozess einbringen. <a href="https://marktplatz.bewegung.jetzt/t/eine-initiative-starten-und-mitinitiatoren-einladen/2593">Weitere Erklärung und Hilfe dazu findest Du auf dem Marktplatz der Ideen</a>.</p>
 		</div>
 		{% else %}
 		<div class="card-header">
-		  <h1>Neue Initiative einreichen</h1>
-		  <p>Hier kannst Du eine neue Initiative in den Abstimmungsprozess einbringen. <a href="https://marktplatz.bewegung.jetzt/t/eine-initiative-starten-und-mitinitiatoren-einladen/2593">Weitere Erklärung und Hilfe dazu findest Du auf dem Marktplatz der Ideen</a>.</p>
+			<h1>Initiative bearbeiten</h1>
+			<p>Weitere Erklärung der Bestandteile einer Initiative findest Du <a href="https://marktplatz.bewegung.jetzt/t/eine-initiative-starten-und-mitinitiatoren-einladen/2593">auf dem Marktplatz der Ideen</a>.</p>
 		</div>
 		{% endif %}
 		<form method="POST">

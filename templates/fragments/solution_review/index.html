@@ -1,0 +1,28 @@
+<div id="moderation" class="moderation alert alert-warning">
+
+	<strong>Prüfungsbewertungen</strong>
+	<div id="moderation-list">
+        {% include 'fragments/solution_review/list_small.html' with moderations=solution.current_moderations %}
+	</div>
+
+	{% if request.guard.should_moderate_solution %}
+		<br/>
+		<div id="moderation-new">
+			<a data-ajax=True href="/solution/{{solution.id}}/new_review?fragment=%23moderation-new" class="btn btn-outline-primary">Prüfungsbewertung eintragen</a>
+		</div>
+	{% else %}
+	    {% if request.guard.reason %}
+	    <br/>
+	    <div class="alert alert-info">{{request.guard.reason}}</div>
+	    {% endif %}
+	{% endif %}
+
+
+	{% if solution.stale_moderations.count %}
+		<br>
+		<hr>
+		<br>
+		<strong>Prüfung vorheriger Versionen</strong>
+	    {% include 'fragments/solution_review/list_small.html' with moderations=solution.stale_moderations %}
+	{% endif %}
+</div>

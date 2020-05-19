@@ -1,0 +1,3 @@
+{% if sender == recipient %}Du hast{% else %}{{sender.get_full_name|default:sender.username}} hat{% endif %} die Fragestellung "{{target}}" zur Prüfung eingereicht.
+
+Du findest die Fragestellung unter {{ base_url }}/issue/{{target.id}}-{{target.slug}}

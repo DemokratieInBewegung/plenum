@@ -37,3 +37,32 @@ public
 /.Python
 /include
 /lib
+
+# tmp files
+*~
+*#
+
+# Windows stuff
+tcl/
+LICENSE.txt
+scripts/activate.bat
+scripts/activate.ps1
+scripts/activate.xsh
+scripts/deactivate.bat
+scripts/django-admin.exe
+scripts/django-admin.py
+scripts/easy_install.exe
+scripts/easy_install-3.7.exe
+scripts/gunicorn.exe
+scripts/gunicorn_paster.exe
+scripts/html2text.exe
+scripts/markdown2.py
+scripts/pip.exe
+scripts/pip3.7.exe
+scripts/pip3.exe
+scripts/python.exe
+scripts/pythonw.exe
+scripts/python3.dll
+scripts/python37.dll
+scripts/sqlformat.exe
+scripts/wheel.exe

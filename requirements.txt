@@ -35,9 +35,9 @@ markdown2==2.3.4
 oauthlib==2.0.1
 olefile==0.44
 packaging==16.8
-Pillow==4.0.0
+Pillow==6.2.1
 pinax-notifications==4.0.0
-psycopg2==2.7.3.2
+psycopg2==2.8.4
 pyparsing==2.2.0
 python3-openid==3.1.0
 pytz==2017.2

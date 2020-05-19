@@ -1,0 +1,31 @@
+<div id="moderation" class="moderation alert alert-warning">
+
+	<strong>Prüfungsbewertungen</strong>
+	<div id="moderation-list">
+        {% include 'fragments/issue_review/list_small.html' with moderations=issue.current_moderations %}
+	</div>
+
+	{% if request.guard.should_moderate_issue %}
+		<br/>
+		<div id="moderation-new">
+			<a data-ajax=True href="/issue/{{issue.id}}/new_review?fragment=%23moderation-new" class="btn btn-outline-primary">Prüfungsbewertung eintragen</a>
+		</div>
+		{% if issue.has_unreviewed_solutions %}
+		<strong>Es gibt ungeprüfte Lösungsvorschläge. Bitte prüfe diese ebenfalls, falls noch nicht erledigt.</strong>
+		{% endif %}
+	{% else %}
+	    {% if request.guard.reason %}
+	    <br/>
+	    <div class="alert alert-info">{{request.guard.reason}}</div>
+	    {% endif %}
+	{% endif %}
+
+
+	{% if issue.stale_moderations.count %}
+		<br>
+		<hr>
+		<br>
+		<strong>Prüfung vorheriger Versionen</strong>
+	    {% include 'fragments/issue_review/list_small.html' with moderations=issue.stale_moderations %}
+	{% endif %}
+</div>

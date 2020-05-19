@@ -1,0 +1,11 @@
+
+{% if target %}
+{% if sender == recipient %}Du hast{% else %}{{sender.get_full_name|default:sender.username}} hat{% endif %} die Fragestellung "{{target}}" veröffentlicht und sie sucht jetzt Unterstützer*innen.
+
+Du findest die Fragestellung unter {{ base_url }}/issue/{{target.id}}-{{target.slug}}
+
+{% else %}
+"{{sender}}" wurde veröffentlicht und sucht jetzt Unterstützer*innen.
+
+Du findest die Fragestellung unter {{ base_url }}/issue/{{sender.id}}-{{sender.slug}}
+{% endif %}

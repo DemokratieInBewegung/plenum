@@ -1,0 +1,52 @@
+{% extends "_base.html" %}
+
+{% load static %}
+{% load fullurl %}
+{% load bootstrap %}
+
+{% block custom_header %}
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="{% fullurl 'topic' topic_id=topic.id slug=topic.slug %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zum Thema</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container new-initiative">
+    <div class="card">
+        {% if is_new %}
+        <div class="card-header">
+            <h1>Neuen Beitrag einbringen</h1>
+            <p>Hier kannst Du einen neuen Beitrag zum Thema &bdquo;{{topic.topic}}&ldquo; einbringen.</p>
+        </div>
+        {% else %}
+        <div class="card-header">
+            <h1>Beitrag bearbeiten</h1>
+        </div>
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            <div class="card-body">
+                <div class="container">
+                    {{form|bootstrap}}
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Speichern</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block body-javascript %}
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+{{ form.media }}
+{% endblock %}

@@ -364,11 +364,29 @@ nav .notifications.dropdown-menu ul {
   padding-left: 0;
 }
 
+
+nav .notifications.dropdown-menu li a {
+  display: flex;
+  margin: 0.3em 0; 
+}
+
+nav .notifications.dropdown-menu li:not(:last-child) {
+  border-bottom: dotted 1px; 
+}
+nav .notifications.dropdown-menu .material-icons {
+  opacity: 0.7;
+  font-size:  0.95em;
+  padding-right: 1em;
+  width: 1.5em;
+}
+
 nav .dropdown-menu {
-  margin-top: 0.75rem;
   border: 0;
   border-radius: 0;
   background-color: rgba(240, 240, 240, 1);
+  margin-top: 0;
+  width: 30rem;
+  max-width: 100vw;
 }
 
 .navbar-toggler {
@@ -388,6 +406,11 @@ nav .dropdown-menu .dropdown-item {
 /*.navbar-inverse .dropdown-divider {
   background-color: rgba(0, 0, 0, 0.15);
 }*/
+
+.nav-item.dropdown.show {
+  background-color: rgba(240, 240, 240, 1);
+}
+
 
 .nav-link {
   text-transform: uppercase;
@@ -680,6 +703,10 @@ img.avatar {
   padding-top: 3rem;
   line-height: 3.25rem;
   padding-bottom: 2rem;
+}
+
+.display-smaller {
+  font-size: 2.35rem;
 }
 
 .initiative-meta h6.text-muted {

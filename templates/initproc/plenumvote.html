@@ -85,10 +85,13 @@
                 <p>
                     Über diese Plenumsentscheidungsvorlage <a href="#voting"><strong class="badge-vote">wird gerade abgestimmt</strong></a>.
                 </p>
-                {% endifequal %} {% ifequal initiative.state 'a' %}
-                <p>Diese Plenumsentscheidung {% if user.is_authenticated %}
-                    <a href="#cta">{% endif %}<strong class="badge-accepted">wurde angenommen</strong>{% if user.is_authenticated %}</a>{% endif %}.
-                    {% endifequal %} {% ifequal initiative.state 'r' %}
+                {% endifequal %}
+
+                {% ifequal initiative.state 'a' %}
+                <p>Diese Plenumsentscheidung<a href="#cta"><strong class="badge-accepted">wurde angenommen</strong></a>.</p>
+                {% endifequal %}
+
+                {% ifequal initiative.state 'r' %}
                 <p>Diese Plenumsentscheidung <a href="#cta"><strong class="badge-rejected">wurde abgelehnt</strong></a>.</p>
                 {% endifequal %}
             </div>
@@ -266,12 +269,23 @@
     <div class="container">
         <div class="row no-gutters">
             {% include "fragments/voting.html" %}
-
         </div>
     </div>
 </div>
 
 {% endif %}
+
+<div class="container-fluid cta">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="back-to-index">
+                    <a href="/" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Übersicht</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %} {% block body-javascript %} {{ block.super }}
 <script type="text/javascript">

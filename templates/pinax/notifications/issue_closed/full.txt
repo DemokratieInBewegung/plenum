@@ -1,0 +1,3 @@
+Die Fragestellung "{{sender}}" wurde geschlossen, da sich nicht genug Unterstützer*innen gefunden haben. 
+
+Du findest die Fragestellung unter {{ base_url }}/issue/{{sender.id}}-{{sender.slug}}

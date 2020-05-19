@@ -1,0 +1,30 @@
+{% extends "_base.html" %}
+
+{% block custom_header %}
+<div class="container-fluid init-index-header">
+    <div class="container">
+        <div class="row title">
+            <div class="col-12 text-center" style="padding-top: 4rem; padding-bottom: 3rem">
+                <h1 class="display-3">Agorá</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<!--{% include "fragments/topic/explanation.html" %}-->
+<div class="container-fluid init-index-header">
+    <div class="container">
+        <div class="row title">
+            <div class="col-12 initiative-text" style="padding-bottom: 2rem;text-align:center">
+                <p><a href="../issue/new"><b>Neue Fragestellung einbringen</b></a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="init-list" class="container init-index">
+{% include "fragments/issue/list.html" with archive=0 %}
+<a href="{% url 'archive' %}"><b>Archivierte Abstimmungen</b></a>
+</div>
+{% endblock %}

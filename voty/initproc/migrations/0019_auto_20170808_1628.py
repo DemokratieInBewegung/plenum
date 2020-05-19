@@ -10,7 +10,7 @@ import django.db.models.deletion
 from voty.initproc.globals import STATES
 
 def migrate_eligible_voters_count(apps, schema_editor):
-    # Let's set the eligable voters past initiation
+    # Let's set the eligible voters past initiation
     Initiative = apps.get_model('initproc', 'Initiative')
     User = get_user_model()
     for init in Initiative.objects.filter(state__in=[STATES.COMPLETED, STATES.ACCEPTED, STATES.REJECTED]):

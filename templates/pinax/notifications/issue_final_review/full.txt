@@ -1,0 +1,3 @@
+Die Möglichkeit, Lösungsvorschläge zu "{{sender}}" einzugeben ist vorbei. Bitte alle ungeprüften Antwortoptionen prüfen.
+
+Du findest die Fragestellung unter {{ base_url }}/issue/{{sender.id}}-{{sender.slug}}

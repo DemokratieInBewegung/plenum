@@ -925,11 +925,11 @@ footer a:hover {
 }
 
 a {
-  color: rgba(37, 60, 135, 1);
+  color: rgba(3, 102, 214, 1);
 }
 
 a:hover, a:focus, a:visited {
-  color: rgba(37, 60, 135, 1);
+  color: rgba(3, 102, 214, 1);
   text-decoration: none;
 }
 
@@ -1601,16 +1601,20 @@ Argument base design
   border-color: #AAAAAA;
 }
 
+.your-vote-all {
+ text-align: center;
+}
 
 .your-vote strong {
- display: block;
  width: 4rem;
  padding-top: .5rem;
- padding-bottom: 1rem;
+ padding-bottom: 2rem;
+ margin-bottom: 1rem;
 }
 
 .your-vote .in-favor .material-icons, .your-vote .declined .material-icons {
   font-size: 4rem;
+  padding-right: 4rem;
   line-height: 4rem;
 }
 
@@ -1622,6 +1626,13 @@ Argument base design
 
 .your-vote .abstained strong {
   width: 6rem;
+  padding-bottom: 2rem;
+  margin-bottom: 1rem;
+}
+
+h6.voting-footer {
+  padding-top: 1.5rem;
+  border-top: 2px solid rgba(255, 255, 255);
 }
 
 #voting .feedback {

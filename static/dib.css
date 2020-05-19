@@ -1740,8 +1740,8 @@ h6.voting-footer {
 
 .moderation .badge {
   position: absolute;
-  bottom: -10px;
-  right: -15px;
+  top: 20px;
+  left: 20px;
   display: inline-block;
   border-radius: 50%;
   padding: 0;
@@ -1751,14 +1751,7 @@ h6.voting-footer {
 }
 
 .moderation-item{
-  margin-top: 9px;
   position: relative;
-}
-
-.moderation-icon{
-  position: relative;
-  display: inline-block;
-  margin: 2px 0px 10px 10px;
 }
 
 .moderation .badge .material-icons {

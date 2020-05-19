@@ -1,7 +1,7 @@
 {% load avatar_full_url %}
 {% if vote %}<div class="moderation-icon">{% else %}<div class="avatar">{% endif %}
 <img
-	src="{% avatar_full_url user size %}"
+	src="{% avatar_relative_url user size %}"
 	title="{{user.firstname|default:user.username}}"
 	width="{{ size }}"
 	height="{{ size }}"

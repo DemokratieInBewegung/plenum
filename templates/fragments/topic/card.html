@@ -1,0 +1,60 @@
+{% load guard %}
+{% load mathfilters %}
+{% load fullurl %}
+{% load markdown %}
+<div id="topic-card-{{topic.id}}" class="card topic-card">
+	<div class="card-header">
+		<div class="container-fluid">
+			 <div class="row no-gutters">
+			 	<div class="col align-self-center">
+			 		<div class="d-flex flex-wrap">
+						<div class="flex-item mr-auto">
+							<span class="text-muted align-middle">
+								{% if topic.open_ended %}
+								Bleibt offen
+								{% else %}
+								{% if topic.accepting_submissions %}
+								<span class="badge badge-discussion">
+									In Diskussion
+								</span>
+								{% elif topic.soliciting_resistance %}
+								<span class="badge badge-vote">
+									In Abwägung
+								</span>
+								{% else %}
+								<span class="badge badge-completed">
+									Abgewogen
+								</span>
+								{% endif %}
+								{% if not topic.is_archived %}
+								Noch {{topic.end_of_this_phase | timeuntil}}
+								{% endif %}
+								{% endif %}
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="card-block">
+    	<h4 class="card-title init-title">
+			<a href="{% if archive %}{% fullurl 'topic_archive' topic_id=topic.id slug=topic.slug %}{% else %}{% fullurl 'topic' topic_id=topic.id slug=topic.slug %}{% endif %}">
+				{{topic.topic}}
+			</a>
+		</h4>
+		<div class="card-text">
+			{{topic.subtitle | markdown}}
+		</div>
+		<a href="{% if archive %}{% fullurl 'topic_archive' topic_id=topic.id slug=topic.slug %}{% else %}{% fullurl 'topic' topic_id=topic.id slug=topic.slug %}{% endif %}" class="go-to-initiative"><i class="material-icons chevron-right">chevron_right</i>zum Thema</a>
+  	</div>
+  	<div class="card-footer">
+  		<div class="container-fluid">
+			 <div class="row no-gutters">
+			 	<div class="col text-muted align-self-center">
+			 		Veröffentlicht am {{topic.created_at}}
+			 	</div>
+			</div>
+		</div>
+  	</div>
+</div>

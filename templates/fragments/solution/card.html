@@ -1,0 +1,70 @@
+{% load guard %}
+{% load mathfilters %}
+{% load fullurl %}
+{% load markdown %}
+<div id="init-card-{{solution.id}}" class="card solution-card">
+	<div class="card-header">
+		<div class="container-fluid">
+			 <div class="row no-gutters">
+			 	<div class="col align-self-center">
+			 		<div class="d-flex flex-wrap">
+						<div class="flex-item mr-auto">
+							<span class="text-muted align-middle">
+							
+								{% if solution.status == 'r' %}
+								<span class="badge badge-rejected">
+									Durch Prüfungsteam abgelehnt
+								</span>
+								{% else %}
+                                    {% if solution.issue.status == 'i' %}
+                                    <span class="badge badge-arrivals">
+                                        In Prüfung
+                                    </span>
+                                    {% else %}
+                                        {% if solution.is_commentable %}
+                                        <span class="badge badge-discussion">
+                                            In Diskussion
+                                            {% if solution.status == 'd' %}
+                                                {% if perms.initproc.add_review %}
+                                                    {% if request.guard.can_moderate %}
+                                                    + In Prüfung
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endif %}
+                                        </span>
+                                        {% else %}
+                                            {% if solution.issue.status == 'v' %}
+                                            <span class="badge badge-arrivals">
+                                                In Abstimmung
+                                            </span>
+                                            {% elif solution.issue.status == 'p' %}
+                                            <span class="badge badge-prepare">
+                                                In Vorbereitung
+                                            </span>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+								{% endif %}
+								{% if solution.issue.end_of_current_phase %}Noch {{solution.issue.end_of_current_phase | timeuntil}}{% endif %}
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="card-block">
+    	<h4 class="card-title init-title">
+    		<a href="{% fullurl 'solution_item' solution_id=solution.id slug=solution.slug %}">
+				{{solution.title}}
+			</a>
+		</h4>
+		<div class="card-text">
+			{{solution.description | markdown}}
+		</div>
+		<div class="card-text">
+			Budget: {{solution.budget}} EUR
+		</div>
+		<a href="{% fullurl 'solution_item' solution_id=solution.id slug=solution.slug %}" class="go-to-initiative"><i class="material-icons chevron-right">chevron_right</i>Öffnen</a>
+  	</div>
+</div>

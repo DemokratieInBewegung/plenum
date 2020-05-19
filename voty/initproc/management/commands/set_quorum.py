@@ -1,6 +1,8 @@
 from django.core.management.base import BaseCommand, CommandError
-from voty.initproc.models import Quorum
+from voty.initproc.models import Quorum, IssueSupportersQuorum, IssueVotersQuorum
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from datetime import date
 from math import ceil
 
 """
@@ -17,7 +19,37 @@ class Command(BaseCommand):
     help = "Calculate the next quorum and set it"
 
     def handle(self, *args, **options):
-        total = get_user_model().objects.filter(is_active=True).count()
+        now = timezone.now()
+        year = now.year
+        month = now.month
+        # round to turn of month
+        if now.day > 15:
+            month += 1
+        month -= 6
+        if month < 1:
+            year -= 1
+            month += 12
+        threshold = timezone.datetime(year=year, month=month, day=1, tzinfo=now.tzinfo)
+        total = get_user_model().objects.filter(is_active=True, config__last_activity__gt=threshold).count()
+        totalpartymembers = get_user_model().objects.filter(is_active=True, config__is_party_member=True, config__last_activity__gt=threshold).count()
+        
+        print("Total active users: {}".format(total))
+        print("Total active party members: {}".format(totalpartymembers))
+        
+        #Quorum for Issue Support
+        quorum = ceil(total / 20.0)
+        if quorum < 5:
+            quorum = 5
+        IssueSupportersQuorum(value=quorum).save()
+        print("Issue Support Quorum set to {}".format(quorum))
+        
+        #Quorum for Issue Voting
+        quorum = ceil(totalpartymembers / 10.0)
+        if quorum < 5:
+            quorum = 5
+        IssueVotersQuorum(value=quorum).save()
+        print("Issue Voting Quorum set to {}".format(quorum))
+        
         quorum = ceil(total / 100.0)
 
         if total < 100:
@@ -35,4 +67,4 @@ class Command(BaseCommand):
 
         Quorum(quorum=quorum).save()
 
-        print("Total: {} -- Quorum set to {}".format(total, quorum))
+        print("Initiatives Quorum set to {}".format(quorum))

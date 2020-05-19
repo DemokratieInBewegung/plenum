@@ -1,4 +1,4 @@
-
+{% load fullurl %}
 <div class="container-fluid meta">
     <div class="container">
         <div class="row">
@@ -34,6 +34,13 @@
                 <div>
                     {{initiative.ebene}}
                 </div>
+            </div>
+            {% elif initiative.is_contribution %}
+            <div class="col-sm-12 col-md-8">
+                <h6 class="text-muted classification">Thema</h6>
+                <a href="{% fullurl 'topic' topic_id=initiative.topic.id slug=initiative.topic.slug %}">
+                    {{initiative.topic.topic}}
+                </a>
             </div>
             {% endif %}
         </div>

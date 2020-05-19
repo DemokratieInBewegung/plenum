@@ -1,9 +1,16 @@
+{% load markdown %}
+
 <script type="text/javascript">
-chosen = 0;
-function enable_submit(which) {
-	chosen |= 1 << which;
-	if (chosen == ((1 << {{initiative.options.count}}) - 1) << 1)
-		document.getElementById('intial_vote_submit').disabled = false;
+function enable_submit() {
+	for (var i = 1;;i++) {
+		var selector = 'input[name="option' + i + '"]';
+		if (!document.querySelector(selector)) {
+			document.getElementById('intial_vote_submit').disabled = false;
+			return;
+		}
+		if (!document.querySelector(selector + ':checked'))
+			return;
+	}
 }
 </script>
 <div class="col-12" id="voting">
@@ -14,20 +21,17 @@ function enable_submit(which) {
 			{% include "fragments/participation.html" with closed=0 %}
 	 		{% csrf_token %}
 			<div><button class="btn btn-sm btn-default" type="submit" title="hier klicken um zurückzunehmen" style="margin-top:30px">Widerstandspunkte zurücknehmen</button></div>
-     		<div class="back-to-index">
-	 		<a href="/" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Übersicht</a>
-	 		</div>
 	 	</form>
 
     {% else %}
 		<form data-ajax-submit="true" action="/{{initiative.einordnung}}/{{initiative.id}}-{{initiative.slug}}/preference" method="POST">
 			{% csrf_token %}
 			{% for option in initiative.options.all %}
-			<p style="padding-top:30px">{{option.text}}</p>
+			<div style="padding-top:30px">{{option.text|markdown}}</div>
 			<div class="btn-group" role="group" style="display:inline">
 				{% for i in "01234567890" %}
 				<label for="o{{option.index}}{{forloop.counter0}}">
-					<input type="radio" onchange="javascript:enable_submit({{option.index}})" name="option{{option.index}}" id="o{{option.index}}{{forloop.counter0}}" value="{{forloop.counter0}}" style="margin-right:0.1rem;margin-left:0.8rem">
+					<input type="radio" onchange="javascript:enable_submit()" name="option{{option.index}}" id="o{{option.index}}{{forloop.counter0}}" value="{{forloop.counter0}}" style="margin-right:0.1rem;margin-left:0.8rem">
 					{{forloop.counter0}}
 				</label>
 				{% endfor %}

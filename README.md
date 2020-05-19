@@ -1,4 +1,4 @@
-# Voty - The Voting Platform of [DEMOKRATIE IN BEWEGUNG](https://bewegung.jetzt)
+# Plenum - The Voting Platform of [DEMOKRATIE IN BEWEGUNG](https://bewegung.jetzt)
 
 #### Travis Build Status
 
@@ -47,6 +47,7 @@ pip install -r requirements.txt
 
 3. (create and) update the database
 ```
+python manage.py migrate initproc 0009
 python manage.py migrate
 ```
 

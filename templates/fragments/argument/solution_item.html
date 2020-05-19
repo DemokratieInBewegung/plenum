@@ -1,0 +1,81 @@
+{% if full %}
+    {% load markdown %}
+    {% load guard %}
+{% endif %}
+
+<div id="{{argument.unique_id}}" class="argument container-fluid argument-{{argument.type}}">
+    <div class="row no-gutters">
+    	{% if argument.icon %}
+			<div class="col-3 col-md-2 text-center">
+				<i class="argument-type-icon material-icons">{{argument.icon}}</i> <br /> {% if argument.type == 'contra' %}KONTRA{% elif argument.type == "pro"%}PRO{% endif %}
+		    </div>
+	        <div class="col-9 col-md-10 align-self-center short">
+        {% else %}
+        	<div class="col-12 col-md-12 align-self-center short">
+        {% endif %}
+
+		    {{argument.title}}
+		</div>
+	</div>
+    <div class="row no-gutters">
+    	{% if argument.icon %}
+    		<div class="col col-md-10 offset-md-2">
+        {% else %}
+    		<div class="col col-md-12">
+    	{% endif %}
+        <a data-ajax="true" href="/solution/{{argument.solution.id}}/{{argument.type}}/{{argument.id}}?fragment={{argument.unique_id}}&full={% if full %}0{% else %}1{% endif %}">
+            <div class="row argument-meta no-gutters">
+                <div class="col-auto">
+					          {% if full %}Weniger{% else %}Mehr{% endif %} anzeigen
+				        </div>
+                <div class="col-auto ml-auto stats">
+                    {% include 'fragments/like.html' with author=argument.user has_liked=argument.has_liked target=argument 	show_text=0 show_count=1 with_link=0 %}
+                    <i class="material-icons"><span id="{{argument.unique_id}}-chat-icon" class="comment-icon">chat_bubble{% if not argument.has_commented %}_outline{% endif %}</span></i><span id="{{argument.unique_id}}-comment-count">{{argument.comments.count}}</span>
+				        </div>
+  			    </div>
+         </a>
+         {% if full %}
+            <div class="row no-gutters argument-head">
+                <div class="col-auto author">
+                    {% include "fragments/avatar.html" with user=argument.user size=55 %}
+				</div>
+				<div class="col-auto">
+					<span class="author-name">{{argument.user.get_full_name|default:argument.user.username}}</span>
+					<span class="arg-meta">{{argument.created_at}}</span>
+				</div>
+			</div>
+	    	<!-- proposals don't have titles -->
+            <div class="row no-gutters argument-text">
+				{{argument.text|markdown}}
+			</div>
+            <div class="row no-gutters argument-actions">
+			    {% include 'fragments/like.html' with author=argument.user has_liked=argument.has_liked target=argument show_text=1 show_count=0 with_link=1 %}
+			</div>
+			{% if comments %}
+            	<h6 class="text-muted classification">Kommentare</h6>
+			{% endif %}
+			<div id="{{argument.unique_id}}-comment-list" class="argument-comment-list">
+                {% for comment in comments %}
+                	{% include 'fragments/comment/item.html' %}
+			    {% endfor %}
+			</div>
+
+			{% if comments.count >= 2 %}
+				<a data-ajax="true" href="/solution/{{argument.solution.id}}/{{argument.type}}/{{argument.id}}?fragment={{argument.unique_id}}&full=0">
+			Weniger anzeigen
+			</a>
+			{% endif %}
+
+
+			{% guard can_comment argument %}
+			{% if can_comment %}
+				<div id="{{argument.unique_id}}-new-comment" class="new-comment">
+			    	<a data-ajax="true" href="/comment/{{argument.type}}/{{argument.id}}?fragment=%23{{argument.unique_id}}-new-comment"><i class="material-icons">chat_bubble_outline</i> Kommentieren</a>
+			    </div>
+		    {% else %}
+		    	<button class="new-comment" disabled title="{{request.guard.reason}}"> <i class="material-icons">chat_bubble_outline</i> Kommentieren</button>
+		    {% endif %}
+		{% endif %}
+		</div>
+    </div>
+</div>

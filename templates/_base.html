@@ -30,7 +30,7 @@
         <meta name="twitter:image:alt" content="DiB Abstimmungsplattform">
 
     {% endblock %}
-    <link href="https://fonts.googleapis.com/css?family=Merriweather:300,400,400i,700|Rubik:400,400i,500,500i,700" rel="stylesheet">
+    <link href="{% static '/img/favicon.ico' %}" rel="icon">
     <link href="/static/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="/static/dib.css" rel="stylesheet" type="text/css">
     <!-- Font Awesome icon font -->
@@ -101,11 +101,14 @@
 						</a>
                         <div class="dropdown-menu dropdown-menu-right profile" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="{% url 'profile_edit' %}">Profileinstellungen</a>
-                            {% if user.is_superuser %}
+                            {% if user.is_superuser or user.is_staff %}
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{% url 'mass_invite' %}">Leute einladen</a>
                                 <a class="dropdown-item" href="{% url 'export_results' %}">Ergebnisse exportieren</a>
+                                {% if user.is_superuser %}
+                                <a class="dropdown-item" href="/debug">Debug</a>
                                 <a class="dropdown-item" href="/admin/">Admin</a>
+                                {% endif %}
                             {% endif %}
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="/account/logout/">Abmelden</a>
@@ -143,7 +146,7 @@
     </div>
     <!-- Needed by Bootstrap 4.0 -->
     <script src="{% static 'js/vendor/jquery-3.2.1.min.js' %}"></script>
-    <script src="{% static 'js/dib/utils.js' %}"" type="text/javascript"></script>
+    <script src="{% static 'js/dib/utils.js' %}" type="text/javascript"></script>
     <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
     {% register_notify_callbacks callbacks='update_notifications,fill_notification_badge' %}
     <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
@@ -151,6 +154,13 @@
     <script type="text/javascript" src="{% static 'bootstrap-4.0.0-alpha.6-dist/js/tether.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/vendor/js-cookie.js' %}"></script>
-    <script src="{% static 'js/vendor/hyphenator-loader.js' %}"" type="text/javascript"></script>
+    <script src="{% static 'js/vendor/hyphenator-loader.js' %}" type="text/javascript"></script>
+    
+    <script>
+    // Initialize Tooltips
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+    </script>
     {% block body-javascript %}{% endblock %}
 </body>

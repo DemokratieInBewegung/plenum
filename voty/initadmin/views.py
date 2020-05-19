@@ -76,6 +76,11 @@ def invite_em(file):
 
 
 @login_required
+@user_passes_test(lambda u: u.is_superuser)
+def debug(request):
+    return render(request, 'initadmin/debug.html')
+
+@login_required
 @user_passes_test(lambda u: u.is_staff)
 def download_csv(request, id):
     batch = get_object_or_404(InviteBatch, pk=id)
@@ -90,7 +95,7 @@ def mass_invite(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             total, send = invite_em(TextIOWrapper(request.FILES['file'].file, encoding=request.encoding))
-            messages.success(request, "Coolio. Aus {} sind {} neue Einladungen versand worden".format(total, send))
+            messages.success(request, "Coolio. Aus {} Einträgen sind {} neue Einladungen versandt worden".format(total, send))
     else:
         form = UploadFileForm()
 

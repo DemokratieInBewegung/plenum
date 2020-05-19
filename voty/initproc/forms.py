@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from dal import autocomplete
 from uuid import uuid4
 
-from .models import Pro, Contra, Like, Comment, Proposal, Moderation, Initiative
+from .models import Pro, Contra, Like, Comment, Proposal, Moderation, Initiative, Issue, Solution, Veto
 
 
 def simple_form_verifier(form_cls, template="fragments/simple_form.html", via_ajax=True,
@@ -139,6 +139,21 @@ class InitiativeForm(forms.ModelForm):
             "init_argument": "Hier dürft Ihr emotional werden: Warum ist Euch das wichtig und warum bringt Ihr diese Initiative ein?",
 
         }
+        
+class IssueForm(forms.ModelForm):
+#level is missing, implement when user config state field is set up
+    class Meta:
+        model = Issue
+        fields = ['title', 'motivation']
+
+        labels = {
+            "title" : "Titel",
+            "motivation": "Motivation"
+        }
+        help_texts = {
+            "title" : "Bitte formuliere eine SK-fähige Frage.",
+            "motivation": "Was ist dein/euer Beweggrund, diese Fragestellung einzubringen?"
+        }
 
 
 class NewArgumentForm(forms.Form):
@@ -163,6 +178,17 @@ class NewProposalForm(forms.Form):
                            label="Ausführliche Darstellung",
                            max_length=1000,
                            widget=forms.Textarea(attrs={'rows':10, 'placeholder':'Wenn es bereits einen ähnlichen Vorschlag gibt, dann äußere Dich bitte in den Kommentaren zu diesem.'}))
+
+
+class NewQuestionForm(forms.Form):
+    title = forms.CharField(required=True,
+                            label="Zusammenfassung",
+                            max_length=140,
+                            widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Wir wollen die Fragen so übersichtlich wie möglich halten. Bitte achte darauf, dass Deine Frage wirklich neu ist.'}))
+    text = forms.CharField(required=True,
+                           label="Ausführliche Darstellung",
+                           max_length=1000,
+                           widget=forms.Textarea(attrs={'rows':10, 'placeholder':'Wenn es bereits eine ähnliche Frage gibt, dann äußere Dich bitte in den Kommentaren zu dieser.'}))
 
 
 class NewCommentForm(forms.ModelForm):
@@ -209,7 +235,7 @@ class NewModerationForm(forms.ModelForm):
         if cleanded_data['vote'] == 'y':
             for i in range(QESTIONS_COUNT):
                 if cleanded_data['q{}'.format(i) ]:
-                    self.add_error("vote", "Du hast positive gewertet, dabei hast Du mindestens ein Problem oben markiert")
+                    self.add_error("vote", "Du hast positiv gewertet, dabei hast Du mindestens ein Problem oben markiert")
                     break
         else:
             if not cleanded_data['text']:
@@ -220,6 +246,54 @@ class NewModerationForm(forms.ModelForm):
         fields = ['q{}'.format(i) for i in range(QESTIONS_COUNT)] + ['text', 'vote']
 
 
+AGORA_QESTIONS_COUNT = 6
+class NewReviewForm(forms.ModelForm):
+
+
+    TITLE = "Prüfung"
+    TEXT = "Die Fragestellung / der Lösungsvorschlag ... (bitte nicht passendes streichen)"
+
+    q0 = forms.BooleanField(required=False, initial=True, label="ist nicht relevant / passt nicht zur Frage")
+    q1 = forms.BooleanField(required=False, initial=True, label="betrifft Team-Angelegenheiten (Team ist nicht Initiator und Team lässt Frage/Lösungsvorschlag nicht zu)")
+    q2 = forms.BooleanField(required=False, initial=True, label="verletzt DiB-Werte")
+    q3 = forms.BooleanField(required=False, initial=True, label="ist klar nicht mit personellen oder finanziellen Ressourcen umsetzbar")
+    q4 = forms.BooleanField(required=False, initial=True, label="wurde erst kürzlich (so ähnlich) gestellt (6 Monate) / ist einem anderen Lösungsvorschlag zu ähnlich")
+    q5 = forms.BooleanField(required=False, initial=True, label="verletzt andere der Agora-Fragestellungen-Prüfkriterien (Welche? Bitte in Kommentar nennen!)")
+    text = forms.CharField(required=False, label="Kommentar", widget=forms.Textarea)
+    vote = forms.ChoiceField(required=True, label="Deine Beurteilung",
+            choices=[('y', 'OK'),('n', 'NICHT OK!')],
+            widget=forms.RadioSelect())
+
+    def clean(self):
+        cleanded_data = super().clean()
+        if cleanded_data['vote'] == 'y':
+            for i in range(AGORA_QESTIONS_COUNT):
+                if cleanded_data['q{}'.format(i) ]:
+                    self.add_error("vote", "Du hast positiv gewertet, dabei hast Du mindestens ein Problem oben markiert")
+                    break
+        else:
+            if not cleanded_data['text']:
+                self.add_error("text", "Kannst Du das bitte begründen?")
+
+    class Meta:
+        model = Moderation
+        fields = ['q{}'.format(i) for i in range(AGORA_QESTIONS_COUNT)] + ['text', 'vote']
+        
+
+class VetoForm(forms.ModelForm):
+
+    class Meta:
+        model = Veto
+        fields = ['reason']
+
+        labels = {
+            "reason" : "Begründung"
+        }
+        help_texts = {
+            "reason" : "Bitte begründe ausführlich"
+        }
+        
+        
 class PolicyChangeForm(forms.ModelForm):
 
     class Meta:
@@ -257,9 +331,21 @@ class PlenumVoteForm(forms.ModelForm):
 class PlenumOptionsForm(forms.ModelForm):
 
     #TODO: variable number of options
-    option1 = forms.CharField(label="Option1",widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Die erste Option'}))
-    option2 = forms.CharField(label="Option2",widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Die zweite Option'}))
-    option3 = forms.CharField(label="Option3",widget=forms.Textarea(attrs={'rows':3, 'placeholder':'Die dritte Option'}))
+    option1 = forms.CharField(label="Option1",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 1. Option'}))
+    option2 = forms.CharField(label="Option2",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 2. Option'}))
+    option3 = forms.CharField(label="Option3",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 3. Option'}))
+    option4 = forms.CharField(label="Option4",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 4. Option'}))
+    option5 = forms.CharField(label="Option5",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 5. Option'}))
+    option6 = forms.CharField(label="Option6",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 6. Option'}))
+    option7 = forms.CharField(label="Option7",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 7. Option'}))
+    option8 = forms.CharField(label="Option8",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 8. Option'}))
+    option9 = forms.CharField(label="Option9",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 9. Option'}))
+    option10 = forms.CharField(label="Option10",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 10. Option'}))
+    option11 = forms.CharField(label="Option11",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 11. Option'}))
+    option12 = forms.CharField(label="Option12",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 12. Option'}))
+    option13 = forms.CharField(label="Option13",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 13. Option'}))
+    option14 = forms.CharField(label="Option14",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 14. Option'}))
+    option15 = forms.CharField(label="Option15",widget=forms.Textarea(attrs={'rows':1, 'placeholder':'Die 15. Option'}))
 
     class Meta:
         model = Initiative
@@ -274,4 +360,38 @@ class PlenumOptionsForm(forms.ModelForm):
             "title" : "Die Überschrift sollte die Abwägungsvorlage kurz zusammenfassen.",
             "subtitle": "Ein bis zwei Sätze zur Abwägungsvorlage.",
             "summary" : "Kompletter Text der Plenumsabwägungsvorlage.",
+        }
+
+class ContributionForm(forms.ModelForm):
+
+    class Meta:
+        model = Initiative
+        fields = ['title', 'subtitle','summary']
+
+        labels = {
+            "title" : "Überschrift",
+            "subtitle": "Anreißer",
+            "summary" : "Text",
+        }
+        help_texts = {
+            "title" : "Die Überschrift sollte den Beitrag kurz zusammenfassen.",
+            "subtitle": "Ein bis zwei Sätze zum Beitrag.",
+            "summary" : "Kompletter Text des Beitrags.",
+        }
+
+
+class SolutionForm(forms.ModelForm):
+
+    class Meta:
+        model = Solution
+        fields = ['title', 'description', 'budget']
+
+        labels = {
+            "title" : "Titel",
+            "description" : "Beschreibung",
+            "budget": "Budget in EUR"
+        }
+        help_texts = {
+            "title" : "Der Titel muss eine Antwort auf die Frage sein.",
+            "budget": "Bitte mache eine möglichst genaue Kostenschätzung. Der Vorstand kann ein Veto einlegen, wenn nicht genug Geld in der Parteikasse ist oder die Kosten unverhältnismäßig hoch oder absichtlich zu niedrig angesetzt sind."
         }

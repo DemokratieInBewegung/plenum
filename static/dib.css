@@ -5,6 +5,252 @@ body {
   /*background-image: linear-gradient(90deg, #21466b, #62388E, #eb5c4a);*/
 }
 
+/* Google fonts */
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: 300;
+  src: url(/static/fonts/Merriweather-Light.eot); /* For IE6-8 */
+  src: local('Merriweather-Light'),
+    url(/static/fonts/Merriweather-Light.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-Light.woff) format('woff'),
+    url(/static/fonts/Merriweather-Light.ttf) format('truetype');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: 300;
+  src: url(/static/fonts/Merriweather-Light-Extended.eot); /* For IE6-8 */
+  src: local('Merriweather-Light'),
+    url(/static/fonts/Merriweather-Light-Extended.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-Light-Extended.woff) format('woff'),
+    url(/static/fonts/Merriweather-Light-Extended.ttf) format('truetype');
+    unicode-range: U+0100-FFFF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: italic;
+  font-weight: 300;
+  src: url(/static/fonts/Merriweather-LightItalic.eot); /* For IE6-8 */
+  src: local('Merriweather-LightItalic'),
+    url(/static/fonts/Merriweather-LightItalic.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-LightItalic.woff) format('woff'),
+    url(/static/fonts/Merriweather-LightItalic.ttf) format('truetype');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: italic;
+  font-weight: 300;
+  src: url(/static/fonts/Merriweather-LightItalic-Extended.eot); /* For IE6-8 */
+  src: local('Merriweather-LightItalic'),
+    url(/static/fonts/Merriweather-LightItalic-Extended.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-LightItalic-Extended.woff) format('woff'),
+    url(/static/fonts/Merriweather-LightItalic-Extended.ttf) format('truetype');
+    unicode-range: U+0100-FFFF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/static/fonts/Merriweather-Regular.eot); /* For IE6-8 */
+  src: local('Merriweather'),
+    local('Merriweather-Regular'),
+    url(/static/fonts/Merriweather-Regular.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-Regular.woff) format('woff'),
+    url(/static/fonts/Merriweather-Regular.ttf) format('truetype');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/static/fonts/Merriweather-Regular-Extended.eot); /* For IE6-8 */
+  src: local('Merriweather'),
+    local('Merriweather-Regular'),
+    url(/static/fonts/Merriweather-Regular-Extended.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-Regular-Extended.woff) format('woff'),
+    url(/static/fonts/Merriweather-Regular-Extended.ttf) format('truetype');
+    unicode-range: U+0100-FFFF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: italic;
+  font-weight: 400;
+  src: url(/static/fonts/Merriweather-Italic.eot); /* For IE6-8 */
+  src: local('Merriweather-Italic'),
+    url(/static/fonts/Merriweather-Italic.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-Italic.woff) format('woff'),
+    url(/static/fonts/Merriweather-Italic.ttf) format('truetype');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: italic;
+  font-weight: 400;
+  src: url(/static/fonts/Merriweather-Italic-Extended.eot); /* For IE6-8 */
+  src: local('Merriweather-Italic'),
+    url(/static/fonts/Merriweather-Italic-Extended.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-Italic-Extended.woff) format('woff'),
+    url(/static/fonts/Merriweather-Italic-Extended.ttf) format('truetype');
+    unicode-range: U+0100-FFFF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: 700;
+  src: url(/static/fonts/Merriweather-Bold.eot); /* For IE6-8 */
+  src: local('Merriweather-Bold'),
+    url(/static/fonts/Merriweather-Bold.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-Bold.woff) format('woff'),
+    url(/static/fonts/Merriweather-Bold.ttf) format('truetype');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: 700;
+  src: url(/static/fonts/Merriweather-Bold-Extended.eot); /* For IE6-8 */
+  src: local('Merriweather-Bold'),
+    url(/static/fonts/Merriweather-Bold-Extended.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-Bold-Extended.woff) format('woff'),
+    url(/static/fonts/Merriweather-Bold-Extended.ttf) format('truetype');
+    unicode-range: U+0100-FFFF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: italic;
+  font-weight: 700;
+  src: url(/static/fonts/Merriweather-BoldItalic.eot); /* For IE6-8 */
+  src: local('Merriweather-BoldItalic'),
+    url(/static/fonts/Merriweather-BoldItalic.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-BoldItalic.woff) format('woff'),
+    url(/static/fonts/Merriweather-BoldItalic.ttf) format('truetype');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: italic;
+  font-weight: 700;
+  src: url(/static/fonts/Merriweather-BoldItalic-Extended.eot); /* For IE6-8 */
+  src: local('Merriweather-BoldItalic'),
+    url(/static/fonts/Merriweather-BoldItalic-Extended.woff2) format('woff2'),
+    url(/static/fonts/Merriweather-BoldItalic-Extended.woff) format('woff'),
+    url(/static/fonts/Merriweather-BoldItalic-Extended.ttf) format('truetype');
+    unicode-range: U+0100-FFFF;
+}
+
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: 300;
+  src: url(/static/fonts/Rubik-Light.eot); /* For IE6-8 */
+  src: local('Rubik-Light'),
+    url(/static/fonts/Rubik-Light.woff2) format('woff2'),
+    url(/static/fonts/Rubik-Light.woff) format('woff'),
+    url(/static/fonts/Rubik-Light.ttf) format('truetype');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: 300;
+  src: url(/static/fonts/Rubik-Light-Extended.eot); /* For IE6-8 */
+  src: local('Rubik-Light'),
+    url(/static/fonts/Rubik-Light-Extended.woff2) format('woff2'),
+    url(/static/fonts/Rubik-Light-Extended.woff) format('woff'),
+    url(/static/fonts/Rubik-Light-Extended.ttf) format('truetype');
+    unicode-range: U+0100-FFFF;
+}
+
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/static/fonts/Rubik-Regular.eot); /* For IE6-8 */
+  src: local('Rubik'),
+    local('Rubik-Regular'),
+    url(/static/fonts/Rubik-Regular.woff2) format('woff2'),
+    url(/static/fonts/Rubik-Regular.woff) format('woff'),
+    url(/static/fonts/Rubik-Regular.ttf) format('truetype');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/static/fonts/Rubik-Regular-Extended.eot); /* For IE6-8 */
+  src: local('Rubik'),
+    local('Rubik-Regular'),
+    url(/static/fonts/Rubik-Regular-Extended.woff2) format('woff2'),
+    url(/static/fonts/Rubik-Regular-Extended.woff) format('woff'),
+    url(/static/fonts/Rubik-Regular-Extended.ttf) format('truetype');
+    unicode-range: U+0100-FFFF;
+}
+
+@font-face {
+  font-family: 'Rubik';
+  font-style: italic;
+  font-weight: 400;
+  src: url(/static/fonts/Rubik-Italic.eot); /* For IE6-8 */
+  src: local('Rubik-Italic'),
+    url(/static/fonts/Rubik-Italic.woff2) format('woff2'),
+    url(/static/fonts/Rubik-Italic.woff) format('woff'),
+    url(/static/fonts/Rubik-Italic.ttf) format('truetype');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Rubik';
+  font-style: italic;
+  font-weight: 400;
+  src: url(/static/fonts/Rubik-Italic-Extended.eot); /* For IE6-8 */
+  src: local('Rubik-Italic'),
+    url(/static/fonts/Rubik-Italic-Extended.woff2) format('woff2'),
+    url(/static/fonts/Rubik-Italic-Extended.woff) format('woff'),
+    url(/static/fonts/Rubik-Italic-Extended.ttf) format('truetype');
+    unicode-range: U+0100-FFFF;
+}
+
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: 500;
+  src: url(/static/fonts/Rubik-Medium.eot); /* For IE6-8 */
+  src: local('Rubik-Medium'),
+    url(/static/fonts/Rubik-Medium.woff2) format('woff2'),
+    url(/static/fonts/Rubik-Medium.woff) format('woff'),
+    url(/static/fonts/Rubik-Medium.ttf) format('truetype');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: 500;
+  src: url(/static/fonts/Rubik-Medium-Extended.eot); /* For IE6-8 */
+  src: local('Rubik-Medium'),
+    url(/static/fonts/Rubik-Medium-Extended.woff2) format('woff2'),
+    url(/static/fonts/Rubik-Medium-Extended.woff) format('woff'),
+    url(/static/fonts/Rubik-Medium-Extended.ttf) format('truetype');
+    unicode-range: U+0100-FFFF;
+}
+
 /* Material Icons */
 
 @font-face {
@@ -118,11 +364,29 @@ nav .notifications.dropdown-menu ul {
   padding-left: 0;
 }
 
+
+nav .notifications.dropdown-menu li a {
+  display: flex;
+  margin: 0.3em 0; 
+}
+
+nav .notifications.dropdown-menu li:not(:last-child) {
+  border-bottom: dotted 1px; 
+}
+nav .notifications.dropdown-menu .material-icons {
+  opacity: 0.7;
+  font-size:  0.95em;
+  padding-right: 1em;
+  width: 1.5em;
+}
+
 nav .dropdown-menu {
-  margin-top: 0.75rem;
   border: 0;
   border-radius: 0;
   background-color: rgba(240, 240, 240, 1);
+  margin-top: 0;
+  width: 30rem;
+  max-width: 100vw;
 }
 
 .navbar-toggler {
@@ -142,6 +406,11 @@ nav .dropdown-menu .dropdown-item {
 /*.navbar-inverse .dropdown-divider {
   background-color: rgba(0, 0, 0, 0.15);
 }*/
+
+.nav-item.dropdown.show {
+  background-color: rgba(240, 240, 240, 1);
+}
+
 
 .nav-link {
   text-transform: uppercase;
@@ -436,6 +705,10 @@ img.avatar {
   padding-bottom: 2rem;
 }
 
+.display-smaller {
+  font-size: 2.35rem;
+}
+
 .initiative-meta h6.text-muted {
   text-transform: uppercase;
   font-size: 0.875rem;
@@ -601,6 +874,10 @@ img.avatar {
 
 strong {
   font-weight: 500;
+}
+
+.initiative-text strong, .help strong {
+  font-weight: 700;
 }
 
 .text-muted.full {

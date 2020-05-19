@@ -1,0 +1,9 @@
+{% for solution in solutions %}
+	{% include "fragments/solution/card.html" %}
+{% empty %}
+<div class="card">
+	<div class="card-block">
+		<em>Es gibt (noch) keine Lösungen.</em>
+	</div>
+</div>
+{% endfor %}

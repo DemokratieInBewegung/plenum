@@ -385,6 +385,7 @@ class SolutionForm(forms.ModelForm):
     class Meta:
         model = Solution
         fields = ['title', 'description', 'budget']
+        localized_fields = '__all__'
 
         labels = {
             "title" : "Titel",

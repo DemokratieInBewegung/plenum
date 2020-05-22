@@ -36,6 +36,21 @@
 
 {% block content %}
 
+<!-- let moderators see review result -->
+{% if solution.status == 'r' %}
+    {% if perms.initproc.add_review %}
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row initiative-state">
+                <div class="col-12">
+                        {% include 'fragments/solution_review/index.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endif %}
+
 {% if solution.status == 'd' %}
   {% if not solution.issue.went_to_voting_at %}
     {% if request.guard.can_edit %}

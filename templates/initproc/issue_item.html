@@ -66,6 +66,20 @@
         </div>
     </div>
 </div>
+<!-- let moderators see review result -->
+{% if issue.went_to_review_at and not issue.went_to_seeking_support_at %}
+<div class="container-fluid">
+    <div class="container">
+        <div class="row initiative-state">
+            <div class="col-12">
+                    {% if perms.initproc.add_review %}
+                            {% include 'fragments/issue_review/index.html' %}
+                    {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% elif issue.status == 'x' %}
 <div class="container-fluid">
     <div class="container">

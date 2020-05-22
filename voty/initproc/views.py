@@ -551,7 +551,7 @@ def issue_item(request, issue, slug=None, archive=False):
     context['archive'] = archive
     context['resistances'] = get_issue_resistances(request, issue).order_by('created_at')
     
-    solutions = Solution.objects.filter(issue=issue.id).exclude(status='r')
+    solutions = Solution.objects.filter(issue=issue.id)
     context['solutions'] = solutions.order_by('createdate')
     if solutions.count() > 0:
         context['resistances_count'] = solutions.first().rating.count()

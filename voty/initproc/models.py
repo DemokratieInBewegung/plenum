@@ -987,7 +987,7 @@ class Preference(Weight):
 class Resistance(Weight):
     contribution = models.ForeignKey(Initiative, related_name="resistances", null=True)
     solution = models.ForeignKey(Solution, related_name="rating", null=True)
-    reason = models.CharField(max_length=100, blank=True)
+    reason = models.CharField(max_length=500, blank=True)
 
     class Meta:
         unique_together = (("user", "contribution"),("user", "solution"))

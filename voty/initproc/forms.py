@@ -152,7 +152,7 @@ class IssueForm(forms.ModelForm):
         }
         help_texts = {
             "title" : "Bitte formuliere eine SK-fähige Frage.",
-            "motivation": "Was ist dein/euer Beweggrund, diese Fragestellung einzubringen?"
+            "motivation": "Was ist Dein/Euer Beweggrund, diese Fragestellung einzubringen?"
         }
 
 

@@ -348,7 +348,7 @@ function enable_submit() {
     for (var i = 0;i < radios.length;i++)
         if (radios [i].checked)
             value = radios [i].value;
-    disabled |= value == -1 || (value > 6 && !document.getElementById('reason{{resistance.solution.id}}').value);
+    disabled |= value == -1 || (value > 8 && !document.getElementById('reason{{resistance.solution.id}}').value);
     {% endfor %}
     document.getElementById('initial_vote_submit').disabled = disabled;
   {% else %}
@@ -359,7 +359,7 @@ function enable_submit() {
     for (var i = 0;i < radios.length;i++)
         if (radios [i].checked)
             value = radios [i].value;
-    disabled |= value == -1 || (value > 6 && !document.getElementById('reason{{solution.id}}').value);
+    disabled |= value == -1 || (value > 8 && !document.getElementById('reason{{solution.id}}').value);
     {% endif %}
     {% endfor %}
     document.getElementById('initial_vote_submit').disabled = disabled;

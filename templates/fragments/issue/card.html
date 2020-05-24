@@ -56,6 +56,22 @@
 								{% endif %}
 							</span>
 						</div>
+						{% if user.is_authenticated %}
+                        {% if perms.initproc.add_review %}
+						{% if issue.status == 'i' %}
+						<div class="flex-item">
+							<div class="participation-indicator">
+							{% guard should_moderate_issue issue %}
+							{% if should_moderate_issue %}
+								<i class="material-icons check-circle fg-inactive" data-toggle="tooltip" title="Du musst noch bewerten">check_circle</i>
+							{% else %}
+								<i class="material-icons check-circle fg-support" data-toggle="tooltip" title="Du hast bereits moderiert">check_circle</i>
+							{% endif %}
+							</div>
+						</div>
+						{% endif %}
+						{% endif %}
+						{% endif %}
 					</div>
 				</div>
 			</div>

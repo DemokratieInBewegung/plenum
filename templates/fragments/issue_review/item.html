@@ -17,9 +17,11 @@
     	{% include 'fragments/comment/item.html' %}
     {% endfor %}
 </div>
+{% if m.issue.status != 'c' %}
 <div id="{{m.unique_id}}-new-comment">
     {% include 'fragments/comment/button.html' %}
 </div>
+{% endif %}
 {% else %}
 	{% if m.text %}
 		<a data-ajax="true" href="/issue/{{issue.id}}/issue_review/{{m.id}}?fragment=%23{{m.unique_id}}"><i class="material-icons">comment</i></a>

@@ -49,7 +49,7 @@ def can_access_issue(statuses=None, check=None):
                 raise PermissionDenied()
 
             if check:
-                if not getattr(request.guard, check)(issue):
+                if not getattr(request.guard, check)(issue) and (not(issue.went_to_review_at and not issue.went_to_seeking_support_at) or check != 'can_moderate'):
                     raise PermissionDenied()
 
             request.issue = issue
@@ -67,7 +67,7 @@ def can_access_solution(statuses=None, check=None):
                 raise PermissionDenied()
 
             if check:
-                if not getattr(request.guard, check)(solution):
+                if not getattr(request.guard, check)(solution) and (solution.status != 'r' or check != 'can_moderate'):
                     raise PermissionDenied()
 
             request.solution = solution

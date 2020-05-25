@@ -104,10 +104,11 @@ class Command(BaseCommand):
             i.notify_final_review()
     
         elif i.status == STATES.MODERATION:
-            i.status = STATES.VOTING
-            i.went_to_voting_at = datetime.now()
-            i.save()
-            i.notify_initiators(NOTIFICATIONS.ISSUE.WENT_TO_VOTE)
+            if i.solutions.filter(status='d').count() == 0 and i.solutions.filter(status='a').count() > 0:
+                i.status = STATES.VOTING
+                i.went_to_voting_at = datetime.now()
+                i.save()
+                i.notify_initiators(NOTIFICATIONS.ISSUE.WENT_TO_VOTE)
     
         elif i.status == STATES.VOTING:
             if i.solutions.exclude(status='r').first().rating.count() >= i.voters_quorum:

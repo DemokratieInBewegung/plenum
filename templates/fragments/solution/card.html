@@ -9,6 +9,7 @@
 			 	<div class="col align-self-center">
 			 		<div class="d-flex flex-wrap">
 						<div class="flex-item mr-auto">
+							{% if perms.initproc.add_review %}{{ forloop.counter }}{% endif %} 
 							<span class="text-muted align-middle">
 							
 								{% if solution.status == 'r' %}
@@ -48,6 +49,24 @@
 								{% if solution.issue.end_of_current_phase %}Noch {{solution.issue.end_of_current_phase | timeuntil}}{% endif %}
 							</span>
 						</div>
+						{% if user.is_authenticated %}
+                        {% if perms.initproc.add_review %}
+						{% if solution.issue.status == 'i' or solution.issue.status == 'd' or solution.issue.status == 'm' %}
+						{% if solution.status == 'd' %}
+						<div class="flex-item">
+							<div class="participation-indicator">
+							{% guard should_moderate_solution solution %}
+							{% if should_moderate_solution %}
+								<i class="material-icons check-circle fg-inactive" data-toggle="tooltip" title="Du musst noch bewerten">check_circle</i>
+							{% else %}
+								<i class="material-icons check-circle fg-support" data-toggle="tooltip" title="Du hast bereits moderiert">check_circle</i>
+							{% endif %}
+							</div>
+						</div>
+						{% endif %}
+						{% endif %}
+						{% endif %}
+						{% endif %}
 					</div>
 				</div>
 			</div>

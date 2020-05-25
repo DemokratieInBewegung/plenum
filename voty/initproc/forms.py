@@ -152,7 +152,7 @@ class IssueForm(forms.ModelForm):
         }
         help_texts = {
             "title" : "Bitte formuliere eine SK-fähige Frage.",
-            "motivation": "Was ist dein/euer Beweggrund, diese Fragestellung einzubringen?"
+            "motivation": "Was ist Dein/Euer Beweggrund, diese Fragestellung einzubringen?"
         }
 
 
@@ -246,7 +246,7 @@ class NewModerationForm(forms.ModelForm):
         fields = ['q{}'.format(i) for i in range(QESTIONS_COUNT)] + ['text', 'vote']
 
 
-AGORA_QESTIONS_COUNT = 6
+AGORA_QESTIONS_COUNT = 5
 class NewReviewForm(forms.ModelForm):
 
 
@@ -256,9 +256,8 @@ class NewReviewForm(forms.ModelForm):
     q0 = forms.BooleanField(required=False, initial=True, label="ist nicht relevant / passt nicht zur Frage")
     q1 = forms.BooleanField(required=False, initial=True, label="betrifft Team-Angelegenheiten (Team ist nicht Initiator und Team lässt Frage/Lösungsvorschlag nicht zu)")
     q2 = forms.BooleanField(required=False, initial=True, label="verletzt DiB-Werte")
-    q3 = forms.BooleanField(required=False, initial=True, label="ist klar nicht mit personellen oder finanziellen Ressourcen umsetzbar")
-    q4 = forms.BooleanField(required=False, initial=True, label="wurde erst kürzlich (so ähnlich) gestellt (6 Monate) / ist einem anderen Lösungsvorschlag zu ähnlich")
-    q5 = forms.BooleanField(required=False, initial=True, label="verletzt andere der Agora-Fragestellungen-Prüfkriterien (Welche? Bitte in Kommentar nennen!)")
+    q3 = forms.BooleanField(required=False, initial=True, label="wurde erst kürzlich (so ähnlich) gestellt (6 Monate) / ist einem anderen Lösungsvorschlag zu ähnlich")
+    q4 = forms.BooleanField(required=False, initial=True, label="verletzt andere der Agora-Fragestellungen-Prüfkriterien (Welche? Bitte in Kommentar nennen!)")
     text = forms.CharField(required=False, label="Kommentar", widget=forms.Textarea)
     vote = forms.ChoiceField(required=True, label="Deine Beurteilung",
             choices=[('y', 'OK'),('n', 'NICHT OK!')],
@@ -385,6 +384,7 @@ class SolutionForm(forms.ModelForm):
     class Meta:
         model = Solution
         fields = ['title', 'description', 'budget']
+        localized_fields = '__all__'
 
         labels = {
             "title" : "Titel",

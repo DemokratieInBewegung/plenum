@@ -551,7 +551,7 @@ def issue_item(request, issue, slug=None, archive=False):
     context['archive'] = archive
     context['resistances'] = get_issue_resistances(request, issue).order_by('created_at')
     
-    solutions = Solution.objects.filter(issue=issue.id).exclude(status='r')
+    solutions = Solution.objects.filter(issue=issue.id)
     context['solutions'] = solutions.order_by('createdate')
     if solutions.count() > 0:
         context['resistances_count'] = solutions.first().rating.count()
@@ -1604,21 +1604,24 @@ def topic_resistances(request, topic_id, slug):
 @require_POST
 def issue_resistances(request, issue_id, slug):
     solutions = Solution.objects.filter(issue=issue_id).exclude(status='r').order_by('createdate')
-    resistances = get_issue_resistances(request, issue_id)
-
-    resistances_existed = resistances.exists()
-    for solution in solutions:
-        value = request.POST.get('solution{}'.format(solution.id))
-        reason = request.POST.get('reason{}'.format(solution.id))
-        if resistances_existed:
-            my_resistance = resistances.get(solution=solution)
-            my_resistance.value = value
-            my_resistance.reason = reason
-        else:
-            my_resistance = Resistance(solution=solution, user_id=request.user.id, value=value, reason=reason)
-        my_resistance.save()
-
-    return get_issue_resistances_fragments(issue_id, request)
+    if solutions.first().issue.status == STATES.VOTING:
+        resistances = get_issue_resistances(request, issue_id)
+    
+        resistances_existed = resistances.exists()
+        for solution in solutions:
+            value = request.POST.get('solution{}'.format(solution.id))
+            reason = request.POST.get('reason{}'.format(solution.id))
+            if resistances_existed:
+                my_resistance = resistances.get(solution=solution)
+                my_resistance.value = value
+                my_resistance.reason = reason
+            else:
+                my_resistance = Resistance(solution=solution, user_id=request.user.id, value=value, reason=reason)
+            my_resistance.save()
+    
+        return get_issue_resistances_fragments(issue_id, request)
+    else:
+        messages.warning(request, "Die Abstimmung ist bereits beendet.")
         
 @non_ajax_redir('/')
 @ajax

@@ -66,6 +66,20 @@
         </div>
     </div>
 </div>
+<!-- let moderators see review result -->
+{% if issue.went_to_review_at and not issue.went_to_seeking_support_at %}
+<div class="container-fluid">
+    <div class="container">
+        <div class="row initiative-state">
+            <div class="col-12">
+                    {% if perms.initproc.add_review %}
+                            {% include 'fragments/issue_review/index.html' %}
+                    {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% elif issue.status == 'x' %}
 <div class="container-fluid">
     <div class="container">
@@ -334,7 +348,7 @@ function enable_submit() {
     for (var i = 0;i < radios.length;i++)
         if (radios [i].checked)
             value = radios [i].value;
-    disabled |= value == -1 || (value > 6 && !document.getElementById('reason{{resistance.solution.id}}').value);
+    disabled |= value == -1 || (value > 8 && !document.getElementById('reason{{resistance.solution.id}}').value);
     {% endfor %}
     document.getElementById('initial_vote_submit').disabled = disabled;
   {% else %}
@@ -345,7 +359,7 @@ function enable_submit() {
     for (var i = 0;i < radios.length;i++)
         if (radios [i].checked)
             value = radios [i].value;
-    disabled |= value == -1 || (value > 6 && !document.getElementById('reason{{solution.id}}').value);
+    disabled |= value == -1 || (value > 8 && !document.getElementById('reason{{solution.id}}').value);
     {% endif %}
     {% endfor %}
     document.getElementById('initial_vote_submit').disabled = disabled;

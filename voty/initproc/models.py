@@ -149,7 +149,7 @@ class Issue(models.Model):
         week = timedelta(days=7)
         halfyear = timedelta(days=183)
 
-        if self.went_to_review_at:
+        if self.went_to_review_at or self.went_to_discussion_at:
             if self.was_closed_at:
                 return self.was_closed_at + halfyear # locked for 6 months
             if self.status == self.STATES.VETO:
@@ -987,7 +987,7 @@ class Preference(Weight):
 class Resistance(Weight):
     contribution = models.ForeignKey(Initiative, related_name="resistances", null=True)
     solution = models.ForeignKey(Solution, related_name="rating", null=True)
-    reason = models.CharField(max_length=100, blank=True)
+    reason = models.CharField(max_length=500, blank=True)
 
     class Meta:
         unique_together = (("user", "contribution"),("user", "solution"))

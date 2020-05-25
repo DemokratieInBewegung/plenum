@@ -380,18 +380,15 @@ class ContributionForm(forms.ModelForm):
 
 
 class SolutionForm(forms.ModelForm):
-
+    budget = forms.DecimalField(max_value=1000000, decimal_places=0, label="Budget in EUR", help_text="Bitte mache eine möglichst genaue Kostenschätzung. Der Vorstand kann ein Veto einlegen, wenn nicht genug Geld in der Parteikasse ist oder die Kosten unverhältnismäßig hoch oder absichtlich zu niedrig angesetzt sind.")
     class Meta:
         model = Solution
         fields = ['title', 'description', 'budget']
-        localized_fields = '__all__'
 
         labels = {
             "title" : "Titel",
-            "description" : "Beschreibung",
-            "budget": "Budget in EUR"
+            "description" : "Beschreibung"
         }
         help_texts = {
-            "title" : "Der Titel muss eine Antwort auf die Frage sein.",
-            "budget": "Bitte mache eine möglichst genaue Kostenschätzung. Der Vorstand kann ein Veto einlegen, wenn nicht genug Geld in der Parteikasse ist oder die Kosten unverhältnismäßig hoch oder absichtlich zu niedrig angesetzt sind."
+            "title" : "Der Titel muss eine Antwort auf die Frage sein."
         }

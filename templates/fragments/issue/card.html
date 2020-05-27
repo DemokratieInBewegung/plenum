@@ -1,0 +1,105 @@
+{% load guard %}
+{% load mathfilters %}
+{% load fullurl %}
+{% load markdown %}
+<div id="topic-card-{{issue.id}}" class="card topic-card">
+	<div class="card-header">
+		<div class="container-fluid">
+			 <div class="row no-gutters">
+			 	<div class="col align-self-center">
+			 		<div class="d-flex flex-wrap">
+						<div class="flex-item mr-auto">
+							<span class="text-muted align-middle">
+								{% if issue.was_closed_at and issue.has_veto %}
+								<span class="badge badge-completed">
+									Veto
+								</span>
+								{% elif issue.was_closed_at and issue.went_to_veto_phase_at %}
+								<span class="badge badge-completed">
+									Abgestimmt
+								</span>
+								{% elif issue.was_closed_at %}
+								<span class="badge badge-completed">
+									Geschlossen
+								</span>
+								{% elif issue.went_to_veto_phase_at %}
+								<span class="badge badge-vote">
+									In Veto-Phase
+								</span>
+								{% elif issue.in_voting_phase %}
+								<span class="badge badge-vote">
+									In Abstimmung
+								</span>
+								{% elif issue.went_to_final_review_at %}
+								<span class="badge badge-discussion">
+									In Diskussion / finale Prüfung
+								</span>
+								{% elif issue.went_to_discussion_at %}
+								<span class="badge badge-discussion">
+									In Diskussion
+								</span>
+								{% elif issue.went_to_seeking_support_at %}
+								<span class="badge badge-support">
+									Sucht Unterstützung
+								</span>
+								{% elif issue.went_to_review_at %}
+								<span class="badge badge-arrivals">
+									In Prüfung
+								</span>
+								{% else %}
+								<span class="badge badge-prepare">
+									In Vorbereitung
+								</span>
+								{% endif %}
+								{% if not issue.was_closed_at and not issue.status == 'p' and not issue.status == 'i' %}
+								Noch {{issue.end_of_current_phase | timeuntil}}
+								{% endif %}
+							</span>
+						</div>
+						{% if user.is_authenticated %}
+                        {% if perms.initproc.add_review %}
+						{% if issue.status == 'i' %}
+						<div class="flex-item">
+							<div class="participation-indicator">
+							{% guard should_moderate_issue issue %}
+							{% if should_moderate_issue %}
+								<i class="material-icons check-circle fg-inactive" data-toggle="tooltip" title="Du musst noch bewerten">check_circle</i>
+							{% else %}
+								{% guard has_reviewed_issue issue %}
+                                {% if has_reviewed_issue %}
+                                    <i class="material-icons check-circle fg-support" data-toggle="tooltip" title="Du hast bereits moderiert">check_circle</i>
+                                {% else %}
+                                    <i class="material-icons fg-inactive" data-toggle="tooltip" title="Du kannst/darfst (derzeit) nicht moderieren">panorama_fish_eye</i>
+                                {% endif %}
+							{% endif %}
+							</div>
+						</div>
+						{% endif %}
+						{% endif %}
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="card-block">
+    	<h4 class="card-title init-title">
+			<a href="{% if archive %}{% fullurl 'issue_archive' issue_id=issue.id slug=issue.slug %}{% else %}{% fullurl 'issue' issue_id=issue.id slug=issue.slug %}{% endif %}">
+				{{issue.title}}
+			</a>
+		</h4>
+		<div class="card-text">
+			{{issue.motivation | markdown}}
+		</div>
+		<a href="{% if archive %}{% fullurl 'issue_archive' issue_id=issue.id slug=issue.slug %}{% else %}{% fullurl 'issue' issue_id=issue.id slug=issue.slug %}{% endif %}" class="go-to-initiative"><i class="material-icons chevron-right">chevron_right</i>zur Fragestellung</a>
+  	</div>
+  	<div class="card-footer">
+  		<div class="container-fluid">
+			 <div class="row no-gutters">
+			 	<div class="col text-muted align-self-center">
+			 		erstellt am {{issue.createdate}}
+			 	</div>
+			</div>
+		</div>
+  	</div>
+</div>

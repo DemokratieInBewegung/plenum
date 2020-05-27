@@ -1,0 +1,290 @@
+{% extends "_base.html" %}
+{% load mathfilters %}
+{% load markdown %}
+{% load fullurl %}
+
+{% block head_title %}
+{{solution.title}} – im Plenum der Beweger*innen von DEMOKRATIE IN BEWEGUNG
+{% endblock %}
+
+{% block custom_sm_title %}
+    <meta property="og:title" content="{{solution.title}}">
+    <meta property="og:url" content="{% fullurl 'solution_item' solution_id=solution.id slug=solution.slug %}">
+{% endblock %}
+
+{% block custom_header %}
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                {% if archive %}
+                <a href="{% fullurl 'issue_archive' issue_id=solution.issue.id slug=solution.issue.slug %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Fragestellung</a>
+                {% else %}
+                <a href="{% fullurl 'issue' issue_id=solution.issue.id slug=solution.issue.slug %}" class="go-to-index"><i class="material-icons chevron-left">chevron_left</i>zur Fragestellung</a>
+                {% endif %}
+                {{solution.issue.title}}
+            </div>
+        </div>
+        <div class="row initiative-title">
+            <div class="col-12">
+                <h1 class="display-4">{{solution.title}}</h1>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- let moderators see review result -->
+{% if solution.status == 'r' %}
+    {% if perms.initproc.add_review %}
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row initiative-state">
+                <div class="col-12">
+                        {% include 'fragments/solution_review/index.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endif %}
+
+{% if solution.status == 'd' %}
+  {% if not solution.issue.went_to_voting_at %}
+    {% if request.guard.can_edit %}
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row initiative-state">
+                <div class="col-12">
+                    <form action="/solution/{{solution.id}}/edit" style="display:inline" method="GET">
+                        {% csrf_token %}
+                        <button title="Bearbeiten" class="btn btn-success edit" type="submit">
+                            <i class="material-icons edit">edit</i><span>Bearbeiten</span>
+                        </button>
+                        {% if perms.initproc.add_review %}
+                        {% if request.guard.can_moderate %}
+                        <p>Wenn Du den Lösungsvorschlag (nach Änderung) speicherst, werden alle bisherigen Moderationsbeiträge gelöscht und die anderen Mitglieder aus dem Prüfteam per Benachrichtigung gebeten, eine erneute Moderationsbewertung abzugeben.</p>
+                        {% endif %}
+                        {% endif %}
+                    </form>
+                    {% if solution.deletable %}
+                    <form action="/solution/{{solution.id}}/delete" style="display:inline" method="POST">
+                        {% csrf_token %}
+                        <button title="Bearbeiten" class="btn btn-danger edit" type="submit">
+                            <i class="material-icons edit">delete</i><span>Löschen</span>
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% if perms.initproc.add_review %}
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row initiative-state">
+                <div class="col-12">
+                    <p>Dieser Lösungsvorschlag <strong class="badge-prepare">muss noch geprüft werden</strong>.</p>
+                    
+                    {% if request.guard.can_moderate %}
+                        {% include 'fragments/solution_review/index.html' %}
+                    {% else %}
+                        <div class="alert alert-info">{{request.guard.reason}}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+  {% endif %}
+{% endif %}
+
+<div class="container-fluid initiators">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Autor*in</h6>
+            </div>
+        </div>
+        <div class="row no-gutters avatar">
+            <div class="d-flex flex-wrap">
+                <div class="text-center initiator">
+                    {% include "fragments/avatar.html" with user=solution.user %}
+                    <div class="name">
+                        {{ solution.user.get_full_name|default:solution.user.username }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% if solution.is_commentable %}
+<div id="cta" class="container-fluid cta">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <p>Dieser Beitrag befindet sich in Diskussion.</p>
+                <a href="#discuss" class="btn bg-discussion">
+                    Jetzt diskutieren
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if participation_count > 0 %}
+<div id="cta" class="container-fluid cta voted">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-muted classification">Ergebnis der Abstimmung</h6>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 1rem">
+            <div class="col-12">
+                <h6>Der Beitrag hat im Durchschnitt {{option.average}} Widerstandspunkte erhalten:</h6>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+            <div class="col-12">
+                <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{% if option.link %}<a href="{% url 'initiative_item' initype=option.link.einordnung init_id=option.link.id slug=option.link.slug %}">{% endif %}{{option.text|markdown}}{% if option.link %}</a>{% endif %}</div>
+                <div class="progress">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ option.total|div:participation_count|mul:10|stringformat:".5s" }}%" aria-valuenow="{{ option.total|div:participation_count|mul:10|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100">{{option.average}}</div>
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ option.total|div:participation_count|sub:10|mul:-1|mul:10|stringformat:".5s" }}%" aria-valuenow="{{ option.total|div:participation_count|sub:10|mul:-1|mul:10|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 1rem">
+            <div class="col-12">
+                <h6>Im Einzelnen waren die Widerstandspunkte wie folgt verteilt:</h6>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+            <div class="col-12">
+                <div style="margin-bottom:5px{% if not forloop.first %};margin-top:20px{% endif %}">{% if option.link %}<a href="{% url 'initiative_item' initype=option.link.einordnung init_id=option.link.id slug=option.link.slug %}">{% endif %}{{option.text|markdown}}{% if option.link %}</a>{% endif %}</div>
+                {% for count in option.counts %}
+                <div class="progress">
+                    <span style="width:1.5rem;background-color:#F8F8F8">{{forloop.counter0}}</span>
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ count|div:max_count|mul:100|stringformat:".5s" }}%" aria-valuenow="{{ count|div:max_count|mul:100|stringformat:".5s" }}" aria-valuemin="0" aria-valuemax="100">{% if count %}{{count}}{% endif %}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% if option.reasons.exists %}
+        <div class="row" style="padding-top: 1rem">
+            <div class="col-12">
+                <h6>Für die Widerstandspunkte wurden folgende Begründungen angegeben:</h6>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 1.25rem; padding-bottom: 1.75rem">
+            <div class="col-12">
+                {% for resistance in option.reasons %}
+                <p>{{resistance.value}}: {{resistance.reason}}</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<div id="initiative-text" class="container-fluid initiative-single">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h6 class="text-muted classification">Details{% if solution.versions.count > 1 %}
+                    <a href="/solution/{{solution.id}}-{{solution.slug}}/compare/{{solution.versions.1.id}}" data-ajax="true" class="change-history">(Änderungshistorie einsehen <span class="changes-badge"><span class="material-icons history">history</span> {{solution.versions.count}}</span>)</a>{% endif %}</h6>
+            </div>
+        </div>
+
+        <div class="row initiative-text">
+            <div class="col-12">
+                <h3>Beschreibung:</h3>
+                {{solution.description|markdown}}
+            </div>
+        </div>
+
+        <div class="row initiative-text">
+            <div class="col-12">
+                <h3>Budget:</h3>
+                {{solution.budget}} EUR
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="discuss" class="container-fluid cta {% if not solution.is_commentable %}closed{% endif %}">
+    <div class="container">
+        <div class="row no-gutters">
+            <div class="col-12">
+                <ul class="nav nav-tabs nav-fill" role="tablist">
+                    {% include 'fragments/count.html' with active=True me='debate' list=arguments %}
+                    {% include 'fragments/count.html' with active=False me='questions' list=questions %}
+                </ul>
+            </div>
+            <div id="responses" class="col-12 tab-content">
+                <div class="tab-pane active" id="debate" role="tabpanel">
+                    <div id="argument-list">
+                        {% for argument in arguments %}
+                            {% include "fragments/argument/solution_item.html" %}
+                        {% empty %}
+                            <div id="no-arguments" class="alert alert-info">Diese Debatte enthält {% if solution.issue.went_to_discussion_at and not solution.issue.went_to_voting_at %}bisher{% endif %} keine Argumente.</div>
+                        {% endfor %}
+                    </div>
+                    <div id="debate-thanks" class="container-fluid push-alert fixed-top">
+                    </div>
+                    {% if solution.is_commentable %}
+                    {% if solution.issue.status == 'd' or solution.issue.status == 'm' %}
+                        <div id="new-argument" class="container-fluid">
+                            <div class="row">
+                                <div class="{% if arguments %}offset-md-2 {% endif %}col text-center">
+                                    <a data-ajax="true" href="/solution/{{solution.id}}/new_argument?type=👍&fragment=%23new-argument" class="btn">
+                                        <i class="material-icons">thumb_up</i> Pro-Argument hinzufügen
+                                    </a>
+                                </div>
+                                <div class="col text-center">
+                                    <a data-ajax="true" href="/solution/{{solution.id}}/new_argument?type=👎&fragment=%23new-argument" class="btn">
+                                        <i class="material-icons">thumb_down</i> Kontra-Argument hinzufügen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+                <div class="tab-pane" id="questions" role="tabpanel">
+                    <div id="question-list">
+                        {% for argument in questions %}
+                            {% include "fragments/argument/solution_item.html" %}
+                        {% empty %}
+                        <div id="no-questions" class="alert alert-info">Es wurden {% if solution.issue.went_to_discussion_at and not solution.issue.went_to_voting_at %}bisher{% endif %} keine Fragen gestellt.</div>
+                        {% endfor %}
+                    </div>
+                    <div id="questions-thanks" class="container-fluid push-alert fixed-top">
+                    </div>
+                    {% if solution.is_commentable %}
+                    {% if solution.issue.status == 'd' or solution.issue.status == 'm' %}
+                    <div id="new-question">
+                    <a data-ajax="true" href="/solution/{{solution.id}}/new_question?fragment=%23new-question" class="btn btn-outline-primary">Neue Frage stellen</a>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %} {% block body-javascript %} {{ block.super }}
+<script type="text/javascript">
+</script>
+{% endblock %}

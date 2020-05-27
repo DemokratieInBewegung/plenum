@@ -2,6 +2,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.utils.functional import cached_property
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils.text import slugify
@@ -13,11 +14,366 @@ import reversion
 
 from datetime import datetime, timedelta, date
 
-from .globals import STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START, VOTY_TYPES, CONTRIBUTION_QUORUM
+from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, SPEED_PHASE_END, ABSTENTION_START, VOTY_TYPES, CONTRIBUTION_QUORUM, BOARD_GROUP
 from django.db import models
 import pytz
 
 from voty.initproc.globals import SUBJECT_CATEGORIES, ADMINISTRATIVE_LEVELS
+
+
+class IssueSupportersQuorum(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    value = models.IntegerField(null=0)
+
+    @classmethod
+    def current_value(cls):
+        return cls.objects.order_by("-created_at").values("value").first()["value"]
+        
+        
+class IssueVotersQuorum(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    value = models.IntegerField(null=0)
+
+    @classmethod
+    def current_value(cls):
+        return cls.objects.order_by("-created_at").values("value").first()["value"]
+    
+@reversion.register()
+class Issue(models.Model):
+    title = models.CharField(max_length=100, unique=True)
+    motivation = models.TextField(max_length=1000, blank=True)
+    level = models.CharField(max_length=50, choices=[
+            ('Bund', 'Bund'),
+            ('Baden-Württemberg', 'Baden-Württemberg'),
+            ('Bayern', 'Bayern'),
+            ('Berlin', 'Berlin'),
+            ('Brandenburg', 'Brandenburg'),
+            ('Bremen', 'Bremen'),
+            ('Hamburg', 'Hamburg'),
+            ('Hessen', 'Hessen'),
+            ('Mecklenburg-Vorpommern', 'Mecklenburg-Vorpommern'),
+            ('Niedersachsen', 'Niedersachsen'),
+            ('Nordrhein-Westfalen', 'Nordrhein-Westfalen'),
+            ('Rheinland-Pfalz', 'Rheinland-Pfalz'),
+            ('Saarland', 'Saarland'),
+            ('Sachsen', 'Sachsen'),
+            ('Sachsen-Anhalt', 'Sachsen-Anhalt'),
+            ('Schleswig-Holstein', 'Schleswig-Holstein'),
+            ('Thüringen', 'Thüringen')
+        ], default='Bund')
+    
+    createdate = models.DateTimeField(auto_now_add=True)
+    changedate = models.DateTimeField(auto_now=True)
+    
+    # fallback 
+    STATES = STATES 
+
+    status = models.CharField(max_length=1, choices=[
+            (STATES.PREPARE, "preparation"),
+            (STATES.INCOMING, "review"),
+            (STATES.SEEKING_SUPPORT, "seeking support"),
+            (STATES.DISCUSSION, "in discussion"),
+            (STATES.MODERATION, "in discussion, final review"),
+            (STATES.VOTING, "is being voted on"),
+            (STATES.VETO, "overcome veto"),
+            (STATES.COMPLETED, "was completed")
+        ],
+        default=STATES.PREPARE)
+    # MODERATION = reviewing issue's solutions
+    
+    went_to_review_at = models.DateField(blank=True, null=True)
+    went_to_seeking_support_at = models.DateField(blank=True, null=True)
+    went_to_discussion_at = models.DateField(blank=True, null=True)
+    went_to_final_review_at = models.DateField(blank=True, null=True)
+    went_to_voting_at = models.DateField(blank=True, null=True)
+    went_to_veto_phase_at = models.DateField(blank=True, null=True)
+    was_closed_at = models.DateField(blank=True, null=True)    
+
+    @property
+    def is_open(self):
+        return self.was_closed_at is not None
+
+    @cached_property
+    def slug(self):
+        return slugify(self.title)
+        
+    def __str__(self):
+        return self.title
+
+    @cached_property
+    def versions(self):
+        return Version.objects.get_for_object(self)
+
+    @cached_property
+    def supporters_quorum(self):
+        if self.level == 'Bund':
+            return IssueSupportersQuorum.current_value()
+        """ FIXME: field config.state is missing
+        now = timezone.now()
+        year = now.year
+        month = now.month
+        # round to turn of month
+        if now.day > 15:
+            month += 1
+        month -= 6
+        if month < 1:
+            year -= 1
+            month += 12
+        threshold = timezone.datetime(year=year, month=month, day=1, tzinfo=now.tzinfo)
+        totalusers = get_user_model().objects.filter(is_active=True, config__state=self.level, config__last_activity__gt=threshold).count()
+        return = ceil(totalusers / 20.0)
+        """
+        
+    @cached_property
+    def voters_quorum(self):
+        if self.level == 'Bund':
+            return IssueVotersQuorum.current_value()
+        """ FIXME: field config.state is missing
+        now = timezone.now()
+        year = now.year
+        month = now.month
+        # round to turn of month
+        if now.day > 15:
+            month += 1
+        month -= 6
+        if month < 1:
+            year -= 1
+            month += 12
+        threshold = timezone.datetime(year=year, month=month, day=1, tzinfo=now.tzinfo)
+        totalpartymembers = get_user_model().objects.filter(is_active=True, config__is_party_member=True, config__state=self.level, config__last_activity__gt=threshold).count()
+        return = ceil(totalpartymembers / 10.0)
+        """
+
+    @cached_property
+    def end_of_current_phase(self):
+        week = timedelta(days=7)
+        halfyear = timedelta(days=183)
+
+        if self.went_to_review_at or self.went_to_discussion_at:
+            if self.was_closed_at:
+                return self.was_closed_at + halfyear # locked for 6 months
+            if self.status == self.STATES.VETO:
+                return self.went_to_veto_phase_at + (2 * week)
+            if self.status == self.STATES.VOTING:
+                return self.went_to_voting_at + (2 * week)
+            if self.status == self.STATES.MODERATION:
+                return self.went_to_final_review_at + (1 * week)
+            if self.status == self.STATES.DISCUSSION:
+                return self.went_to_discussion_at + (2 * week)
+            if self.status == self.STATES.SEEKING_SUPPORT:
+                return self.went_to_seeking_support_at + (2 * week)
+        return None
+
+    @cached_property
+    def initiators(self):
+        return self.supporters.filter(initiator=True).order_by("created_at")
+        
+    @cached_property
+    def supporters_count(self):
+        return self.supporters.count()
+
+    @cached_property
+    def relative_support(self):
+        return self.supporters_count / self.supporters_quorum * 100
+        
+    @property
+    def show_supporters(self):
+        return self.status in [self.STATES.PREPARE, self.STATES.INCOMING, self.STATES.SEEKING_SUPPORT]
+
+    @property
+    def in_discussion(self):
+        return self.went_to_discussion_at is not None and self.went_to_voting_at is None
+
+    @property
+    def in_voting_phase(self):
+        return self.status == self.STATES.VOTING
+        
+    @cached_property
+    def has_veto(self):
+        for s in self.solutions.all():
+            if s.refusing.exists():
+                return True
+        return False
+        
+    @cached_property
+    def get_veto(self):
+        for s in self.solutions.all():
+            if s.refusing.exists():
+                return s.refusing.first().user.get_full_name() + ': ' + s.refusing.first().reason
+        return None
+        
+    @cached_property
+    def failed_review(self):
+        if self.went_to_review_at is not None and self.went_to_seeking_support_at is None and self.was_closed_at is not None:
+            return True
+        return False
+        
+    @cached_property
+    def missed_supporters_quorum(self):
+        if self.went_to_seeking_support_at is not None and self.went_to_discussion_at is None and self.was_closed_at is not None:
+            return True
+        return False
+        
+    @cached_property
+    def missed_voters_quorum(self):
+        if self.went_to_voting_at is not None:
+            if self.went_to_veto_phase_at is None:
+                return True
+        return False
+        
+    @cached_property
+    def deletable(self):
+        if self.status == STATES.PREPARE:
+            return self.supporters.count() == 1
+        return False
+        
+    @cached_property
+    def ready_for_review(self):
+        if self.status in [STATES.INCOMING, STATES.PREPARE]:
+            #has no empty text fields and 3 initiators
+            return (self.title) and self.supporters.filter(initiator=True, ack=True).count() == INITIATORS_COUNT
+        return False
+        
+        
+    def notify_initiators(self, *args, **kwargs):
+        query = [s.user for s in self.initiators]
+        return self.notify(query, *args, **kwargs)
+        
+    
+
+    def notify_moderators(self, *args, **kwargs):
+        return self.notify([m.user for m in self.issuemoderations.all()], *args, **kwargs)
+    
+    def notify_final_review(self):
+        moderation_permission = Permission.objects.filter(content_type__app_label='initproc', codename='add_review')
+        self.notify(get_user_model().objects.filter(groups__permissions=moderation_permission, is_active=True).all(),
+                              NOTIFICATIONS.ISSUE.FINAL_REVIEW, subject=request.user)
+
+    def notify_followers(self, *args, **kwargs):
+        query = [s.user for s in self.supporters.filter(ack=True).all()] if self.status == STATES.PREPARE else [s.user for s in self.supporters.all()]
+        return self.notify(query, *args, **kwargs)
+
+    def notify_board(self, *args, **kwargs):
+        query = get_user_model().objects.filter(groups__name=BOARD_GROUP, is_active=True)
+        return self.notify(query, *args, **kwargs)
+        
+    def notify(self, recipients, notice_type, extra_context=None, subject=None, **kwargs):
+        context = extra_context or dict()
+        if subject:
+            kwargs['sender'] = subject
+            context['target'] = self
+        else:
+            kwargs['sender'] = self
+
+        notify(recipients, notice_type, context, **kwargs)
+        
+        
+
+    @property
+    def current_moderations(self):
+        return self.issuemoderations.filter(stale=False)
+
+    @property
+    def stale_moderations(self):
+        return self.issuemoderations.filter(stale=True)
+        
+    @property
+    def has_unreviewed_solutions(self):
+        return self.solutions.filter(status='d').count() > 0
+
+
+@reversion.register()
+class Solution(models.Model):
+    issue = models.ForeignKey(Issue, related_name="solutions")
+    user = models.ForeignKey(User)
+    title = models.CharField(max_length=100)
+    description = models.TextField(max_length=1000, blank=True)
+    budget = models.IntegerField(null=0)
+    createdate = models.DateTimeField(auto_now_add=True)
+    changedate = models.DateTimeField(auto_now=True)
+    
+    # fallback 
+    STATES = STATES 
+
+    status = models.CharField(max_length=1, choices=[
+            (STATES.DISCUSSION, "in discussion"),
+            (STATES.ACCEPTED, "review passed"),
+            (STATES.REJECTED, "rejected by review")
+        ],
+        default=STATES.DISCUSSION)
+    
+    passed_review_at = models.DateTimeField(blank=True, null=True)
+
+    @property
+    def is_visible(self):
+        return self.status != self.STATES.REJECTED
+        
+    @property
+    def has_arguments(self):
+        return (self.proslist.count() > 0 or self.contraslist.count() > 0)
+        
+    @property
+    def is_commentable(self):
+        return self.status != self.STATES.REJECTED and self.issue.went_to_discussion_at is not None and self.issue.went_to_voting_at is None
+        
+    @cached_property
+    def deletable(self):
+        if self.status == STATES.DISCUSSION:
+            if not self.has_arguments and not self.current_moderations:
+                return self.issue.went_to_voting_at is None
+        return False
+        
+        
+    @property
+    def current_moderations(self):
+        return self.moderationslist.filter(stale=False)
+
+    @property
+    def stale_moderations(self):
+        return self.moderationslist.filter(stale=True)
+
+    @cached_property
+    def slug(self):
+        return slugify(self.title)
+        
+    def __str__(self):
+        return self.title
+
+    @cached_property
+    def versions(self):
+        return Version.objects.get_for_object(self)
+    
+    def notify_creator(self, *args, **kwargs):
+        query = [self.user]
+        return self.notify(query, *args, **kwargs)
+        
+    def notify_moderators(self, *args, **kwargs):
+        return self.notify([m.user for m in self.moderationslist.all()], *args, **kwargs)
+        
+    def notify(self, recipients, notice_type, extra_context=None, subject=None, **kwargs):
+        context = extra_context or dict()
+        if subject:
+            kwargs['sender'] = subject
+            context['target'] = self
+        else:
+            kwargs['sender'] = self
+
+        notify(recipients, notice_type, context, **kwargs)
+    
+    class Meta:
+        unique_together = ("issue", "title")
+    
+    
+class Veto(models.Model):
+    createdate = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User)
+    solution = models.ForeignKey(Solution, related_name="refusing")
+    reason = models.TextField(max_length=1000)
+
+    class Meta:
+        unique_together = ("user", "solution")
+
+
 
 class Topic(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -294,6 +650,7 @@ class Initiative(models.Model):
                             return self.variant_of.went_to_discussion_at +( 2 * week)
                     if self.ready_for_next_stage:
                         return self.went_public_at + (2 * week)
+                    return self.went_public_at + halfyear
 
                 elif self.state == 'd':
                     return self.went_to_discussion_at + (3 * week)
@@ -626,13 +983,15 @@ class Preference(Weight):
         unique_together = (("user", "option"),)
         ordering = ['option__index']
 
-# for agora contributions
+# for agora contributions (=Topic's Initiatives) / Issue Solutions
 class Resistance(Weight):
-    contribution = models.ForeignKey(Initiative, related_name="resistances")
-    reason = models.CharField(max_length=100, blank=True)
+    contribution = models.ForeignKey(Initiative, related_name="resistances", null=True)
+    solution = models.ForeignKey(Solution, related_name="rating", null=True)
+    reason = models.CharField(max_length=500, blank=True)
 
     class Meta:
-        unique_together = (("user", "contribution"),)
+        unique_together = (("user", "contribution"),("user", "solution"))
+
 
 class Quorum(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -646,7 +1005,8 @@ class Quorum(models.Model):
 class Supporter(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
-    initiative = models.ForeignKey(Initiative, related_name="supporting")
+    initiative = models.ForeignKey(Initiative, related_name="supporting", null=True)
+    issue = models.ForeignKey(Issue, related_name="supporters", null=True)
     # whether this initiator has acknowledged they are
     ack = models.BooleanField(default=False)
     initiator = models.BooleanField(default=False)
@@ -654,7 +1014,7 @@ class Supporter(models.Model):
     first = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = (("user", "initiative"),)
+        unique_together = (("user", "initiative"),("user", "issue"))
 
 
 
@@ -669,7 +1029,7 @@ class Like(models.Model):
     target = GenericForeignKey('target_type', 'target_id')
 
     class Meta:
-        unique_together = (("user", "target_type", "target_id"),)
+        unique_together = ("user", "target_type", "target_id")
 
 
 ### Abstracts
@@ -715,7 +1075,8 @@ class Response(Likeable, Commentable):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, related_name="%(class)ss")
-    initiative = models.ForeignKey(Initiative, related_name="%(class)ss")
+    initiative = models.ForeignKey(Initiative, related_name="%(class)ss", null=True)
+    solution = models.ForeignKey(Solution, related_name="%(class)sslist", null=True)
 
     class Meta:
         abstract = True
@@ -772,3 +1133,7 @@ class Moderation(Response):
             ('n', 'no!')
         ])
     text = models.CharField(max_length=500, blank=True)
+    issue = models.ForeignKey(Issue, related_name="issuemoderations", null=True)
+
+    class Meta:
+        unique_together = (("user", "initiative"),("user", "issue"),("user", "solution"))

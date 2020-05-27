@@ -1,0 +1,11 @@
+{% for issue in issues %}
+	{% include "fragments/issue/card.html" %}
+{% empty %}
+{% if not archive %}
+<div class="card">
+	<div class="card-block">
+		<em>Zurzeit werden keine Fragestellungen auf der Agora behandelt.</em>
+	</div>
+</div>
+{% endif %}
+{% endfor %}

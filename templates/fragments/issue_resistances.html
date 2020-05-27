@@ -1,0 +1,58 @@
+<div class="col-12" id="voting">
+    <h6 class="text-muted classification">Noch {{issue.end_of_current_phase | timeuntil}} in Abstimmung</h6>
+    {% if request.guard.can_vote_issue %}
+    <form data-ajax-submit="true" action="{% url 'issue_resistances' issue_id=issue.id slug=issue.slug %}" method="POST">
+        {% csrf_token %}
+        {% if resistances %}
+            <h3>Danke, Deine Widerstandspunkte wurden gezählt!</h3>
+            <p style="margin-top:30px;margin-bottom:20px">Du kannst deine Bewertung noch bis zum Ende der Abstimmung ändern. Zur Erinnerung: Um mehr als 8 Widerstandspunkte zu vergeben, musst Du eine Begründung angeben; ansonsten ist die Begründung optional. Begründungen sind anonym und helfen der Gemeinschafft, Widerstände zu verstehen und auszuräumen.</p>
+            {% for resistance in resistances %}
+            <p style="padding-top:30px"><a target="_blank" href="{% url 'solution_item' solution_id=resistance.solution.id slug=resistance.solution.slug %}">{{resistance.solution.title}}</a></p>
+            <div class="btn-group" role="group" style="display:inline">
+                {% for i in "01234567890" %}
+                <label for="o{{resistance.solution.id}}_{{forloop.counter0}}">
+                    <input type="radio" onchange="javascript:enable_submit()" name="solution{{resistance.solution.id}}" id="o{{resistance.solution.id}}_{{forloop.counter0}}" value="{{forloop.counter0}}" {% if resistance.value == forloop.counter0 %}checked="checked"{% endif %} style="margin-right:0.1rem;margin-left:0.8rem">
+                    {{forloop.counter0}}
+                </label>
+                {% endfor %}
+                <div>Begründung: <input type="text" size="50" maxlength="100" oninput="javascript:enable_submit()" name="reason{{resistance.solution.id}}" id="reason{{resistance.solution.id}}" value="{{resistance.reason}}" style="margin-right:0.1rem;margin-left:0.8rem"></div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="margin-top:30px;margin-bottom:20px">Hier kannst Du für die Lösungsvorschläge, die zu dieser Fragestellung diskutiert wurden, Widerstandspunkte zwischen 0 (kein Widerstand) und 10 (maximaler Widerstand) vergeben. Um mehr als 8 Widerstandspunkte zu vergeben, musst Du eine Begründung angeben; ansonsten ist die Begründung optional. Begründungen sind anonym und helfen der Gemeinschafft, Widerstände zu verstehen und auszuräumen.</p>
+            {% for solution in solutions %}
+            {% if solution.status != 'r' %}
+            <p style="padding-top:30px"><a target="_blank" href="{% url 'solution_item' solution_id=solution.id slug=solution.slug %}">{{solution.title}}</a></p>
+            <div class="btn-group" role="group" style="display:inline">
+                {% for i in "01234567890" %}
+                <label for="o{{solution.id}}_{{forloop.counter0}}">
+                    <input type="radio" onchange="javascript:enable_submit()" name="solution{{solution.id}}" id="o{{solution.id}}_{{forloop.counter0}}" value="{{forloop.counter0}}" style="margin-right:0.1rem;margin-left:0.8rem">
+                    {{forloop.counter0}}
+                </label>
+                {% endfor %}
+                <div>Begründung: <input type="text" size="50" maxlength="100" oninput="javascript:enable_submit()" name="reason{{solution.id}}" id="reason{{solution.id}}" value="" style="margin-right:0.1rem;margin-left:0.8rem"></div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        {% endif %}
+            <div class="col-12 text-left submit-vote" style="margin-top:60px">
+                <button id="initial_vote_submit" type="submit" disabled="disabled" class="btn btn-lg btn-primary" title="Es müssen alle Vorschläge bewertet werden">Widerstandspunkte {% if resistances %}neu {% endif %}vergeben</button>
+            </div>
+    </form>
+    {% else %}
+        {% if request.guard.reason %}<div class="alert alert-info">{{request.guard.reason}}</div>{% endif %}
+        <div class="container init-index">
+            
+            <div class="container-fluid init-index-header">
+                <div class="container">
+                    <div class="row title">
+                        <div class="col-12 text-center">
+                            <h1 class="display-4 display-smaller">Lösungsvorschläge</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% include "fragments/solution/list.html"%}
+        </div>    
+    {% endif %}
+</div>

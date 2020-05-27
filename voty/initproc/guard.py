@@ -348,6 +348,13 @@ class Guard:
         return (total > female) & (total > diverse)
         
         
+    def has_reviewed_issue(self, issue=None):
+        issue = issue or self.request.issue
+        moderations = issue.issuemoderations.filter(stale=False)
+        if moderations.filter(user=self.user):
+            return True
+        return False
+            
     def should_moderate_issue(self, issue=None):
         issue = issue or self.request.issue
         if not self._can_moderate_issue(issue):
@@ -395,6 +402,13 @@ class Guard:
         return (total > female) & (total > diverse)
         
         
+    def has_reviewed_solution(self, solution=None):
+        solution = solution or self.request.solution
+        moderations = solution.moderationslist.filter(stale=False)
+        if moderations.filter(user=self.user):
+            return True
+        return False
+    
     def should_moderate_solution(self, solution=None):
         solution = solution or self.request.solution
         if not self._can_moderate_solution(solution):

@@ -59,7 +59,12 @@
 							{% if should_moderate_solution %}
 								<i class="material-icons check-circle fg-inactive" data-toggle="tooltip" title="Du musst noch bewerten">check_circle</i>
 							{% else %}
-								<i class="material-icons check-circle fg-support" data-toggle="tooltip" title="Du hast bereits moderiert">check_circle</i>
+							    {% guard has_reviewed_solution solution %}
+                                {% if has_reviewed_solution %}
+                                    <i class="material-icons check-circle fg-support" data-toggle="tooltip" title="Du hast bereits moderiert">check_circle</i>
+                                {% else %}
+                                    <i class="material-icons fg-inactive" data-toggle="tooltip" title="Du kannst/darfst (derzeit) nicht moderieren">panorama_fish_eye</i>
+                                {% endif %}
 							{% endif %}
 							</div>
 						</div>

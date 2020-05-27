@@ -40,7 +40,7 @@ class IssueVotersQuorum(models.Model):
     
 @reversion.register()
 class Issue(models.Model):
-    title = models.CharField(max_length=80, unique=True)
+    title = models.CharField(max_length=100, unique=True)
     motivation = models.TextField(max_length=1000, blank=True)
     level = models.CharField(max_length=50, choices=[
             ('Bund', 'Bund'),
@@ -286,7 +286,7 @@ class Issue(models.Model):
 class Solution(models.Model):
     issue = models.ForeignKey(Issue, related_name="solutions")
     user = models.ForeignKey(User)
-    title = models.CharField(max_length=80)
+    title = models.CharField(max_length=100)
     description = models.TextField(max_length=1000, blank=True)
     budget = models.IntegerField(null=0)
     createdate = models.DateTimeField(auto_now_add=True)

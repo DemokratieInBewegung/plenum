@@ -82,7 +82,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="card-block">
+	<div class="card-body">
     	<h4 class="card-title init-title">
 			<a href="{% if archive %}{% fullurl 'issue_archive' issue_id=issue.id slug=issue.slug %}{% else %}{% fullurl 'issue' issue_id=issue.id slug=issue.slug %}{% endif %}">
 				{{issue.title}}

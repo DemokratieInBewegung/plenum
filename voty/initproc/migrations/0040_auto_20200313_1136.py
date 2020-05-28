@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterUniqueTogether(
             name='moderation',
-            unique_together=set([('user', 'solution'), ('user', 'initiative'), ('user', 'issue')]),
+            unique_together=set([('user', 'solution'), ('user', 'issue')]),
         ),
         migrations.AlterUniqueTogether(
             name='resistance',

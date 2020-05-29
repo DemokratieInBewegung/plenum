@@ -4,7 +4,7 @@
 {% else %}
 	{% include "fragments/avatar.html" with size=35 user=m.user %}
 {% endif %}
-{% if m.vote == 'y' %}<span class="badge badge-success"><i class="material-icons">thumb_up</i></span>{% elif m.vote == 'n' %}<span class="badge badge-danger"><i class="material-icons">thumb_down</i></span>{% else %}<span class="badge badge-default"><i class="material-icons">thumbs_updown</i></span>{% endif %}
+{% if m.vote == 'y' %}<span class="badge badge-success"><i class="material-icons">thumb_up</i></span>{% elif m.vote == 'n' %}<span class="badge badge-danger"><i class="material-icons">thumb_down</i></span>{% else %}<span class="badge badge-dark"><i class="material-icons">thumbs_updown</i></span>{% endif %}
 {% if full %}
 {{m.created_at|timesince}}
 <p>

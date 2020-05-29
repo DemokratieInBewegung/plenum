@@ -5,7 +5,7 @@
         {% csrf_token %}
         {% if resistances %}
             <h3>Danke, Deine Widerstandspunkte wurden gezählt!</h3>
-            <p style="margin-top:30px;margin-bottom:20px">Du kannst deine Bewertung noch bis zum Ende der Abstimmung ändern. Zur Erinnerung: Um mehr als 8 Widerstandspunkte zu vergeben, musst Du eine Begründung angeben; ansonsten ist die Begründung optional. Begründungen sind anonym und helfen der Gemeinschafft, Widerstände zu verstehen und auszuräumen.</p>
+            <p style="margin-top:30px;margin-bottom:20px">Du kannst deine Bewertung noch bis zum Ende der Abstimmung ändern. Zur Erinnerung: Um mehr als 8 Widerstandspunkte zu vergeben, musst Du eine Begründung angeben; ansonsten ist die Begründung optional. Begründungen sind (wie auch die Bewertung) anonym und helfen der Gemeinschafft, Widerstände zu verstehen und auszuräumen.</p>
             {% for resistance in resistances %}
             <p style="padding-top:30px"><a target="_blank" href="{% url 'solution_item' solution_id=resistance.solution.id slug=resistance.solution.slug %}">{{resistance.solution.title}}</a></p>
             <div class="btn-group" role="group" style="display:inline">
@@ -19,7 +19,7 @@
             </div>
             {% endfor %}
         {% else %}
-            <p style="margin-top:30px;margin-bottom:20px">Hier kannst Du für die Lösungsvorschläge, die zu dieser Fragestellung diskutiert wurden, Widerstandspunkte zwischen 0 (kein Widerstand) und 10 (maximaler Widerstand) vergeben. Um mehr als 8 Widerstandspunkte zu vergeben, musst Du eine Begründung angeben; ansonsten ist die Begründung optional. Begründungen sind anonym und helfen der Gemeinschafft, Widerstände zu verstehen und auszuräumen.</p>
+            <p style="margin-top:30px;margin-bottom:20px">Hier kannst Du für die Lösungsvorschläge, die zu dieser Fragestellung diskutiert wurden, Widerstandspunkte zwischen 0 (kein Widerstand) und 10 (maximaler Widerstand) vergeben. Um mehr als 8 Widerstandspunkte zu vergeben, musst Du eine Begründung angeben; ansonsten ist die Begründung optional. Begründungen sind (wie auch die Bewertung) anonym und helfen der Gemeinschafft, Widerstände zu verstehen und auszuräumen.</p>
             {% for solution in solutions %}
             {% if solution.status != 'r' %}
             <p style="padding-top:30px"><a target="_blank" href="{% url 'solution_item' solution_id=solution.id slug=solution.slug %}">{{solution.title}}</a></p>

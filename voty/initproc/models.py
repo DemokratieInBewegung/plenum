@@ -1136,4 +1136,4 @@ class Moderation(Response):
     issue = models.ForeignKey(Issue, related_name="issuemoderations", null=True)
 
     class Meta:
-        unique_together = (("user", "initiative"),("user", "issue"),("user", "solution"))
+        unique_together = (("user", "issue"),("user", "solution"))

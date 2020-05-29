@@ -178,8 +178,8 @@ def complete_solution_review(solution, request):
         messages.warning(request, "Lösungsvorschlag wurde durch Prüfteam abgelehnt")
         solution.notify_creator(NOTIFICATIONS.SOLUTION.REJECTED)
     else:
-        issue.status = STATES.ACCEPTED
-        issue.save()
+        solution.status = STATES.ACCEPTED
+        solution.save()
 
     return redirect('/solution/{}'.format(solution.id))
 

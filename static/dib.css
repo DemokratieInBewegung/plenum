@@ -835,6 +835,7 @@ img.avatar {
 }
 
 .cta .progress {
+  line-height: 1;
   margin-bottom: 0.25rem;
 }
 

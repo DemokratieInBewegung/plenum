@@ -837,7 +837,7 @@ img.avatar {
 .cta .progress {
   padding-top: 0.25rem;
   font-size: 0.6rem;
-  margin-bottom: 0;
+  margin-bottom: 0.25rem;
 }
 
 .cta label.form-check-label {

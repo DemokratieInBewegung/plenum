@@ -322,14 +322,14 @@ def index(request):
 
 @login_required
 def agora(request):
-    open_issues = Issue.objects.exclude(status='c').order_by('-createdate')
+    open_issues = Issue.objects.exclude(status='c').extra(select={'has_discussion': "went_to_discussion_at is not null"}).order_by('-has_discussion','went_to_discussion_at','createdate')
     return render(request, 'initproc/agora.html',context=dict(issues=open_issues))
 
 
 @login_required
 def archive(request):
     archived_topics = Topic.objects.exclude(closes_at__gte=timezone.now()).order_by('-created_at')
-    archived_issues = Issue.objects.filter(status='c').order_by('-createdate')
+    archived_issues = Issue.objects.filter(status='c').order_by('-was_closed_at')
     return render(request, 'initproc/archive.html',context=dict(issues=archived_issues,topics=archived_topics))
 
 

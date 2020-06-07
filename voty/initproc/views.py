@@ -873,19 +873,20 @@ def issue_edit(request, issue):
     form = IssueForm(request.POST or None, instance=issue)
     if is_post:
         if form.is_valid():
-            with reversion.create_revision():
-                issue.save()
-
-                # Store some meta-information.
-                reversion.set_user(request.user)
-                if request.POST.get('commit_message', None):
-                    reversion.set_comment(request.POST.get('commit_message'))
-
-            issue.notify_followers(NOTIFICATIONS.ISSUE.EDITED, subject=request.user)
-            
-            if issue.status == STATES.PREPARE:
-                issue.supporters.filter(initiator=True).exclude(user=request.user).update(ack=False)
-                messages.success(request, "Fragestellung gespeichert. Mitinitiator*innen müssen ihre Beteiligung erneut bestätigen.")
+            if form.has_changed():
+                with reversion.create_revision():
+                    issue.save()
+    
+                    # Store some meta-information.
+                    reversion.set_user(request.user)
+                    if request.POST.get('commit_message', None):
+                        reversion.set_comment(request.POST.get('commit_message'))
+    
+                issue.notify_followers(NOTIFICATIONS.ISSUE.EDITED, subject=request.user)
+                
+                if issue.status == STATES.PREPARE:
+                    issue.supporters.filter(initiator=True).exclude(user=request.user).update(ack=False)
+                    messages.success(request, "Fragestellung gespeichert. Mitinitiator*innen müssen ihre Beteiligung erneut bestätigen.")
 
             
             if issue.status == STATES.INCOMING:
@@ -906,16 +907,19 @@ def solution_edit(request, solution):
     form = SolutionForm(request.POST or None, instance=solution)
     if is_post:
         if form.is_valid():
-            with reversion.create_revision():
-                solution.save()
-
-                # Store some meta-information.
-                reversion.set_user(request.user)
-                if request.POST.get('commit_message', None):
-                    reversion.set_comment(request.POST.get('commit_message'))
+            if form.has_changed():
+                with reversion.create_revision():
+                    solution.save()
+    
+                    # Store some meta-information.
+                    reversion.set_user(request.user)
+                    if request.POST.get('commit_message', None):
+                        reversion.set_comment(request.POST.get('commit_message'))
+                        
+                if request.user.id != solution.user_id:
+                    solution.notify_creator(NOTIFICATIONS.SOLUTION.EDITED, subject=request.user)
 
             if request.user.id != solution.user_id:
-                solution.notify_creator(NOTIFICATIONS.SOLUTION.EDITED, subject=request.user)
                 messages.success(request, "Lösungsvorschlag gespeichert. Bisherige Prüfungsbewertungen wurden gelöscht.")
             else:
                 messages.success(request, "Lösungsvorschlag gespeichert.")
@@ -1386,7 +1390,7 @@ def solution_review(request, form, solution):
     if solution.moderationslist.filter(stale=False).filter(user=request.user):
         return {
             'fragments': {'#no-moderations': ""},
-            'inner-fragments': {'#moderation-new': '<div class="alert alert-info">Du hat bereits geprüft.</div>'},
+            'inner-fragments': {'#moderation-new': '<div class="alert alert-info">Du hast bereits geprüft.</div>'},
             'append-fragments': {'#moderation-list': render_to_string("fragments/solution_review/item.html",
                                                       context=dict(m=model,solution=solution,full=0),
                                                       request=request)}

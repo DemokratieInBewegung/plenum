@@ -9,12 +9,12 @@
 			 	<div class="col align-self-center">
 			 		<div class="d-flex flex-wrap">
 						<div class="flex-item mr-auto">
-							{% if perms.initproc.add_review %}{{ forloop.counter }}{% endif %} 
+							{% if perms.initproc.add_review %}{{ solution.id }}{% endif %} 
 							<span class="text-muted align-middle">
 							
 								{% if solution.status == 'r' %}
 								<span class="badge badge-rejected">
-									Durch Prüfungsteam abgelehnt
+									Durch Prüfteam abgelehnt
 								</span>
 								{% else %}
                                     {% if solution.issue.status == 'i' %}

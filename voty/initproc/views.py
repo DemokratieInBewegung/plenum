@@ -322,14 +322,14 @@ def index(request):
 
 @login_required
 def agora(request):
-    open_issues = Issue.objects.exclude(status='c').order_by('-createdate')
+    open_issues = Issue.objects.exclude(status='c').extra(select={'has_discussion': "went_to_discussion_at is not null"}).order_by('-has_discussion','went_to_discussion_at','createdate')
     return render(request, 'initproc/agora.html',context=dict(issues=open_issues))
 
 
 @login_required
 def archive(request):
     archived_topics = Topic.objects.exclude(closes_at__gte=timezone.now()).order_by('-created_at')
-    archived_issues = Issue.objects.filter(status='c').order_by('-createdate')
+    archived_issues = Issue.objects.filter(status='c').order_by('-was_closed_at')
     return render(request, 'initproc/archive.html',context=dict(issues=archived_issues,topics=archived_topics))
 
 
@@ -551,8 +551,8 @@ def issue_item(request, issue, slug=None, archive=False):
     context['archive'] = archive
     context['resistances'] = get_issue_resistances(request, issue).order_by('created_at')
     
-    solutions = Solution.objects.filter(issue=issue.id)
-    context['solutions'] = solutions.order_by('createdate')
+    solutions = Solution.objects.filter(issue=issue.id).extra(select={'is_rejected': "status = 'r'"})
+    context['solutions'] = solutions.order_by('is_rejected','createdate')
     if solutions.count() > 0:
         context['resistances_count'] = solutions.first().rating.count()
         context['voters_quorum'] = issue.voters_quorum
@@ -873,19 +873,20 @@ def issue_edit(request, issue):
     form = IssueForm(request.POST or None, instance=issue)
     if is_post:
         if form.is_valid():
-            with reversion.create_revision():
-                issue.save()
-
-                # Store some meta-information.
-                reversion.set_user(request.user)
-                if request.POST.get('commit_message', None):
-                    reversion.set_comment(request.POST.get('commit_message'))
-
-            issue.notify_followers(NOTIFICATIONS.ISSUE.EDITED, subject=request.user)
-            
-            if issue.status == STATES.PREPARE:
-                issue.supporters.filter(initiator=True).exclude(user=request.user).update(ack=False)
-                messages.success(request, "Fragestellung gespeichert. Mitinitiator*innen müssen ihre Beteiligung erneut bestätigen.")
+            if form.has_changed():
+                with reversion.create_revision():
+                    issue.save()
+    
+                    # Store some meta-information.
+                    reversion.set_user(request.user)
+                    if request.POST.get('commit_message', None):
+                        reversion.set_comment(request.POST.get('commit_message'))
+    
+                issue.notify_followers(NOTIFICATIONS.ISSUE.EDITED, subject=request.user)
+                
+                if issue.status == STATES.PREPARE:
+                    issue.supporters.filter(initiator=True).exclude(user=request.user).update(ack=False)
+                    messages.success(request, "Fragestellung gespeichert. Mitinitiator*innen müssen ihre Beteiligung erneut bestätigen.")
 
             
             if issue.status == STATES.INCOMING:
@@ -900,22 +901,30 @@ def issue_edit(request, issue):
     return render(request, 'initproc/new_issue.html', context=dict(form=form,issue=issue))
 
 @login_required
-@can_access_solution([STATES.DISCUSSION],'can_edit')
+@can_access_solution(None,'can_edit')
 def solution_edit(request, solution):
     is_post = request.method == 'POST'
     form = SolutionForm(request.POST or None, instance=solution)
     if is_post:
         if form.is_valid():
-            with reversion.create_revision():
+            if form.has_changed():
+                with reversion.create_revision():
+                    solution.status = STATES.DISCUSSION
+                    solution.save()
+    
+                    # Store some meta-information.
+                    reversion.set_user(request.user)
+                    if request.POST.get('commit_message', None):
+                        reversion.set_comment(request.POST.get('commit_message'))
+                        
+                if request.user.id != solution.user_id:
+                    solution.notify_creator(NOTIFICATIONS.SOLUTION.EDITED, subject=request.user)
+
+            else:
+                solution.status = STATES.DISCUSSION
                 solution.save()
-
-                # Store some meta-information.
-                reversion.set_user(request.user)
-                if request.POST.get('commit_message', None):
-                    reversion.set_comment(request.POST.get('commit_message'))
-
+            
             if request.user.id != solution.user_id:
-                solution.notify_creator(NOTIFICATIONS.SOLUTION.EDITED, subject=request.user)
                 messages.success(request, "Lösungsvorschlag gespeichert. Bisherige Prüfungsbewertungen wurden gelöscht.")
             else:
                 messages.success(request, "Lösungsvorschlag gespeichert.")
@@ -1386,7 +1395,7 @@ def solution_review(request, form, solution):
     if solution.moderationslist.filter(stale=False).filter(user=request.user):
         return {
             'fragments': {'#no-moderations': ""},
-            'inner-fragments': {'#moderation-new': '<div class="alert alert-info">Du hat bereits geprüft.</div>'},
+            'inner-fragments': {'#moderation-new': '<div class="alert alert-info">Du hast bereits geprüft.</div>'},
             'append-fragments': {'#moderation-list': render_to_string("fragments/solution_review/item.html",
                                                       context=dict(m=model,solution=solution,full=0),
                                                       request=request)}

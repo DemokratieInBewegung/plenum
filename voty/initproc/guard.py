@@ -538,15 +538,13 @@ class Guard:
         return False
 
     def _can_edit_solution(self, solution):
-        if not solution.status == STATES.DISCUSSION:
-            return False
         if not self.user.is_authenticated:
             return False
         if self.user.is_superuser:
             return True
         if self._can_moderate_solution(solution):
             return True
-        if not solution.has_arguments and not solution.current_moderations and solution.user.id == self.request.user.id:
+        if solution.status == STATES.DISCUSSION and not solution.has_arguments and not solution.current_moderations and solution.user.id == self.request.user.id:
             return True
 
         return False
@@ -610,7 +608,7 @@ class Guard:
         return False
 
     def _can_moderate_solution(self, solution):
-        if solution.status == STATES.DISCUSSION and self.user.has_perm('initproc.add_review'):
+        if self.user.has_perm('initproc.add_review'):
             if solution.issue.supporters.filter(user=self.user, initiator=True):
                 self.reason = "Als Mitinitator*in darfst Du nicht mit moderieren."
                 return False

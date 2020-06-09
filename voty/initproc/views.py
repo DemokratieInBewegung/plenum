@@ -901,7 +901,7 @@ def issue_edit(request, issue):
     return render(request, 'initproc/new_issue.html', context=dict(form=form,issue=issue))
 
 @login_required
-@can_access_solution([STATES.DISCUSSION],'can_edit')
+@can_access_solution(None,'can_edit')
 def solution_edit(request, solution):
     is_post = request.method == 'POST'
     form = SolutionForm(request.POST or None, instance=solution)
@@ -909,6 +909,7 @@ def solution_edit(request, solution):
         if form.is_valid():
             if form.has_changed():
                 with reversion.create_revision():
+                    solution.status = STATES.DISCUSSION
                     solution.save()
     
                     # Store some meta-information.
@@ -919,6 +920,10 @@ def solution_edit(request, solution):
                 if request.user.id != solution.user_id:
                     solution.notify_creator(NOTIFICATIONS.SOLUTION.EDITED, subject=request.user)
 
+            else:
+                solution.status = STATES.DISCUSSION
+                solution.save()
+            
             if request.user.id != solution.user_id:
                 messages.success(request, "Lösungsvorschlag gespeichert. Bisherige Prüfungsbewertungen wurden gelöscht.")
             else:

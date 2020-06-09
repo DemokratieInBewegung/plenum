@@ -318,7 +318,7 @@ class Solution(models.Model):
         
     @cached_property
     def deletable(self):
-        if self.status == STATES.DISCUSSION:
+        if self.status == STATES.DISCUSSION and self.passed_review_at is None:
             if not self.has_arguments and not self.current_moderations:
                 return self.issue.went_to_voting_at is None
         return False

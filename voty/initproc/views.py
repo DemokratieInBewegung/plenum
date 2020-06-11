@@ -15,7 +15,7 @@ from django.db import connection
 from dal import autocomplete
 from django import forms
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from django.utils import timezone
 
 from rest_framework.renderers import JSONRenderer
@@ -1410,7 +1410,7 @@ def solution_review(request, form, solution):
         open_solutions = solutions.filter(status='d').count()
         accepted_solutions = solutions.filter(status='a').count()
         
-        if solution.issue.status == STATES.MODERATION and (solution.issue.went_to_final_review_at + timedelta(days=7) > datetime.now()) and open_solutions == 0 and accepted_solutions > 0:
+        if solution.issue.status == STATES.MODERATION and (solution.issue.went_to_final_review_at + timedelta(days=7) < date.today()) and open_solutions == 0 and accepted_solutions > 0:
             complete_review(solution.issue, request)
 
         return {

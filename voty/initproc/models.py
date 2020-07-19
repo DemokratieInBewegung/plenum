@@ -224,7 +224,7 @@ class Issue(models.Model):
     @cached_property
     def deletable(self):
         if self.status == STATES.PREPARE:
-            return self.supporters.count() == 1
+            return True
         return False
         
     @cached_property

@@ -47,8 +47,9 @@ class Command(BaseCommand):
         quorum = ceil(totalpartymembers / 10.0)
         if quorum < 5:
             quorum = 5
-        IssueVotersQuorum(value=quorum).save()
-        print("Issue Voting Quorum set to {}".format(quorum))
+        #commented out because it is now set manually, 10% of all party members, not only of those who have a login or are active in Plenum
+        #IssueVotersQuorum(value=quorum).save()
+        #print("Issue Voting Quorum set to {}".format(quorum))
         
         quorum = ceil(total / 100.0)
 

@@ -31,7 +31,7 @@ html2text==2014.12.29
 html5lib==0.999999999
 jsonfield==2.0.1
 lockfile==0.12.2
-markdown2==2.3.4
+markdown2==2.3.9
 oauthlib==2.0.1
 olefile==0.44
 packaging==16.8

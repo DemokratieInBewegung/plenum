@@ -136,7 +136,7 @@
                         {% if issue.deletable %}
                         <form action="/issue/{{issue.id}}/delete" style="display:inline" method="POST">
                             {% csrf_token %}
-                            <button title="Löschen" class="btn btn-danger edit" type="submit">
+                            <button title="Löschen" class="btn btn-danger edit" type="submit" onclick="return confirm('Möchtest Du Deine/Eure Fragestellung wirklich löschen?');">
                                 <i class="material-icons edit">delete</i><span>Löschen</span>
                             </button>
                         </form>

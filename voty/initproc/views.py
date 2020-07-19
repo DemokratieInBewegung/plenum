@@ -978,11 +978,12 @@ def solution_delete(request, solution):
 @can_access_issue([STATES.PREPARE], 'can_edit')
 def issue_delete(request, issue):
     if issue.deletable:
+        # causes non-deletable notification: issue.notify_initiators(NOTIFICATIONS.ISSUE.DELETED, subject=request.user)
         issue.delete()
         messages.success(request, "Die Fragestellung wurde gelöscht.")
         return redirect('/agora')
     else:
-        messages.warning(request, "Du kannst die Fragestellung nicht löschen, solange andere Mitinitiatoren involviert sind.")
+        messages.warning(request, "Du kannst die Fragestellung nicht löschen.")
         return redirect('/issue/{}'.format(issue.id))
     
     

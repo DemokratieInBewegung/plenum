@@ -29,6 +29,7 @@ class NOTIFICATIONS:
 
     class ISSUE:
         EDITED = "issue_edited"
+        DELETED = "issue_deleted"
         SUBMITTED = "issue_submitted"
         EDITED_NEWREVIEW = "issue_edited_newreview"
         PUBLISHED = "issue_published"

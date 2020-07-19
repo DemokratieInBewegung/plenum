@@ -108,6 +108,12 @@ function update_notifications(data) {
           </a>`
           break;
 
+        case "issue_deleted":
+          message = `<a href="/issue/${item.target_object_id}">
+              <i class="material-icons">mode_edit</i>${item.actor} hat "${item.target}" gelöscht
+          </a>`
+          break;
+
         case "issue_submitted":
             message = `<a href="/issue/${item.target_object_id}">
                 <i class="material-icons">publish</i>${item.actor} hat "${item.target}" eingereicht

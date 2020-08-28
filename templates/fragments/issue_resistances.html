@@ -4,8 +4,6 @@
     <form data-ajax-submit="true" action="{% url 'issue_resistances' issue_id=issue.id slug=issue.slug %}" method="POST">
         {% csrf_token %}
         {% if resistances %}
-            <h3>Danke, Deine Widerstandspunkte wurden gezählt!</h3>
-            <p style="margin-top:30px;margin-bottom:20px">Du kannst deine Bewertung noch bis zum Ende der Abstimmung ändern. Zur Erinnerung: Um mehr als 8 Widerstandspunkte zu vergeben, musst Du eine Begründung angeben; ansonsten ist die Begründung optional. Begründungen sind (wie auch die Bewertung) anonym und helfen der Gemeinschafft, Widerstände zu verstehen und auszuräumen.</p>
             {% for resistance in resistances %}
             <p style="padding-top:30px"><a target="_blank" href="{% url 'solution_item' solution_id=resistance.solution.id slug=resistance.solution.slug %}">{{resistance.solution.title}}</a></p>
             <div class="btn-group" role="group" style="display:inline">
@@ -18,6 +16,9 @@
                 <div>Begründung: <input type="text" size="50" maxlength="100" oninput="javascript:enable_submit()" name="reason{{resistance.solution.id}}" id="reason{{resistance.solution.id}}" value="{{resistance.reason}}" style="margin-right:0.1rem;margin-left:0.8rem"></div>
             </div>
             {% endfor %}
+            <br/>
+            <h3>Danke, Deine Widerstandspunkte wurden gezählt!</h3>
+            <p style="margin-top:30px;margin-bottom:20px">Du kannst deine Bewertung noch bis zum Ende der Abstimmung ändern. Zur Erinnerung: Um mehr als 8 Widerstandspunkte zu vergeben, musst Du eine Begründung angeben; ansonsten ist die Begründung optional. Begründungen sind (wie auch die Bewertung) anonym und helfen der Gemeinschafft, Widerstände zu verstehen und auszuräumen.</p>
         {% else %}
             <p style="margin-top:30px;margin-bottom:20px">Hier kannst Du für die Lösungsvorschläge, die zu dieser Fragestellung diskutiert wurden, Widerstandspunkte zwischen 0 (kein Widerstand) und 10 (maximaler Widerstand) vergeben. Um mehr als 8 Widerstandspunkte zu vergeben, musst Du eine Begründung angeben; ansonsten ist die Begründung optional. Begründungen sind (wie auch die Bewertung) anonym und helfen der Gemeinschafft, Widerstände zu verstehen und auszuräumen.</p>
             {% for solution in solutions %}

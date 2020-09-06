@@ -41,7 +41,7 @@ class IssueVotersQuorum(models.Model):
 @reversion.register()
 class Issue(models.Model):
     title = models.CharField(max_length=100, unique=True)
-    motivation = models.TextField(max_length=1000, blank=True)
+    motivation = models.TextField(max_length=2000, blank=True)
     level = models.CharField(max_length=50, choices=[
             ('Bund', 'Bund'),
             ('Baden-Württemberg', 'Baden-Württemberg'),

@@ -29,7 +29,7 @@ import reversion
 from functools import wraps
 import json
 
-from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS, VOTY_TYPES, BOARD_GROUP
+from .globals import NOTIFICATIONS, STATES, VOTED, INITIATORS_COUNT, COMPARING_FIELDS, VOTY_TYPES, BOARD_GROUP, REVIEW_GROUP
 from .guard import can_access_initiative, can_access_issue, can_access_solution
 from .models import (Initiative, Pro, Contra, Proposal, Question, Comment, Vote, Option, Preference, Resistance, Moderation, Quorum, Supporter, Like, Topic, Issue, Solution)
 from .forms import (simple_form_verifier, InitiativeForm, IssueForm, NewArgumentForm, NewCommentForm, NewQuestionForm,
@@ -992,9 +992,12 @@ def issue_delete(request, issue):
 def submit_to_review(request, issue):
     if issue.ready_for_review:
         bgcount = 0;
+        rgcount = 0;
         for i in issue.initiators:
             if i.user.groups.filter(name=BOARD_GROUP).count() == 1:
                 bgcount += 1;
+            if i.user.groups.filter(name=REVIEW_GROUP).count() == 1:
+                rgcount += 1;
         if bgcount == INITIATORS_COUNT: # all initiators are part of board, so no review and no supporting phase required
             issue.status = STATES.DISCUSSION
             issue.went_to_discussion_at = datetime.now()
@@ -1002,6 +1005,13 @@ def submit_to_review(request, issue):
     
             messages.success(request, "Die Fragestellung kann nun diskutiert werden.")
             issue.notify_initiators(NOTIFICATIONS.ISSUE.WENT_TO_DISCUSSION, subject=request.user)
+        elif rgcount == INITIATORS_COUNT: # all initiators are part of review group, so no review required
+            issue.status = STATES.SEEKING_SUPPORT
+            issue.went_to_seeking_support_at = datetime.now()
+            issue.save()
+            
+            messages.success(request, "Fragestellung veröffentlicht")
+            issue.notify_initiators(NOTIFICATIONS.ISSUE.PUBLISHED, subject=request.user)
         else:
             issue.status = STATES.INCOMING
             issue.went_to_review_at = datetime.now()

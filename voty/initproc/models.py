@@ -149,7 +149,7 @@ class Issue(models.Model):
         week = timedelta(days=7)
         halfyear = timedelta(days=183)
 
-        if self.went_to_review_at or self.went_to_discussion_at:
+        if self.went_to_review_at or self.went_to_seeking_support_at or self.went_to_discussion_at:
             if self.was_closed_at:
                 return self.was_closed_at + halfyear # locked for 6 months
             if self.status == self.STATES.VETO:

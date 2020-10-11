@@ -1,0 +1,10 @@
+{% if target %}
+Die Fragestellung "{{target}}" kann jetzt diskutiert werden.
+
+Du findest die Fragestellung unter {{ base_url }}/issue/{{target.id}}-{{target.slug}}
+
+{% else %}
+Die Fragestellung "{{sender}}" ist jetzt in der Diskussionsphase.
+
+Du findest die Fragestellung unter {{ base_url }}/issue/{{sender.id}}-{{sender.slug}}
+{% endif %}

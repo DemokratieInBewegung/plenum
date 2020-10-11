@@ -5,7 +5,7 @@
 Du findest die Fragestellung unter {{ base_url }}/issue/{{target.id}}-{{target.slug}}
 
 {% else %}
-"{{sender}}" wurde veröffentlicht und sucht jetzt Unterstützer*innen.
+Die Fragestellung "{{sender}}" wurde auf der Agora veröffentlicht und sucht jetzt Unterstützer*innen.
 
 Du findest die Fragestellung unter {{ base_url }}/issue/{{sender.id}}-{{sender.slug}}
 {% endif %}

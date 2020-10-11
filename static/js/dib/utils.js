@@ -157,9 +157,15 @@ function update_notifications(data) {
           break;
 
         case "issue_discussion":
+          if (item.target){
             message = `<a href="/issue/${item.target_object_id}">
                 <i class="material-icons">forum</i>${item.target} kann jetzt diskutiert werden.
             </a>`
+          } else {
+            message = `<a href="/issue/${item.actor_object_id}">
+                <i class="material-icons">forum</i>${item.actor} kann jetzt diskutiert werden.
+            </a>`
+          }
           break;
           
         case "issue_vote":

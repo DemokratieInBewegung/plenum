@@ -256,6 +256,10 @@ class Issue(models.Model):
     def notify_board(self, *args, **kwargs):
         query = get_user_model().objects.filter(groups__name=BOARD_GROUP, is_active=True)
         return self.notify(query, *args, **kwargs)
+
+    def notify_all_active(self, *args, **kwargs):
+        query = get_user_model().objects.filter(is_active=True).all()
+        return self.notify(query, *args, **kwargs)
         
     def notify(self, recipients, notice_type, extra_context=None, subject=None, **kwargs):
         context = extra_context or dict()
@@ -912,6 +916,10 @@ class Initiative(models.Model):
 
     def notify_initiators(self, *args, **kwargs):
         query = [s.user for s in self.initiators]
+        return self.notify(query, *args, **kwargs)
+
+    def notify_all_active(self, *args, **kwargs):
+        query = get_user_model().objects.filter(is_active=True).all()
         return self.notify(query, *args, **kwargs)
 
     def notify(self, recipients, notice_type, extra_context=None, subject=None, **kwargs):

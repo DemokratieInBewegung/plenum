@@ -167,6 +167,12 @@ function update_notifications(data) {
             </a>`
           }
           break;
+
+        case "issue_final_review":
+            message = `<a href="/issue/${item.actor_object_id}">
+                <i class="material-icons">check</i>Alle Lösungsvorschläge zu ${item.actor} prüfen!
+            </a>`
+          break;
           
         case "issue_vote":
           if (item.target){

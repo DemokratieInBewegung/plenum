@@ -1,3 +1,3 @@
-Die Fragestellung "{{sender}}" wurde abgestimmt. Es besteht die Möglichkeit ein Veto einzulegen. 
+Die Fragestellung "{{sender}}" wurde abgewogen. Es besteht die Möglichkeit ein Veto einzulegen. 
 
 Du findest die Fragestellung unter {{ base_url }}/issue/{{sender.id}}-{{sender.slug}}

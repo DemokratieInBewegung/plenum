@@ -177,18 +177,18 @@ function update_notifications(data) {
         case "issue_vote":
           if (item.target){
             message = `<a href="/issue/${item.target_object_id}">
-                <i class="material-icons">thumbs_up_down</i>${item.actor} hat "${item.target}" zur Abstimmung frei gegeben
+                <i class="material-icons">thumbs_up_down</i>${item.actor} hat "${item.target}" zur Abwägung frei gegeben
             </a>`
           } else {
             message = `<a href="/issue/${item.actor_object_id}">
-                <i class="material-icons">thumbs_up_down</i>${item.actor} steht jetzt zur Abstimmung
+                <i class="material-icons">thumbs_up_down</i>${item.actor} ist jetzt in der Abwägung
             </a>`
           }
           break;
 
         case "issue_voted":
             message = `<a href="/issue/${item.actor_object_id}">
-                <i class="material-icons">check</i>${item.actor} wurde abgestimmt.
+                <i class="material-icons">check</i>${item.actor} wurde abgewogen.
             </a>`
           break;
 

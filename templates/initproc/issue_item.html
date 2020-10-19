@@ -56,7 +56,7 @@
                 {{issue.get_veto}}
                 </div>
                 {% elif issue.missed_voters_quorum %}
-                <div class="alert alert-info">Die Fragestellung hat das notwendige Quorum für die Abstimmung nicht erreicht.</div>
+                <div class="alert alert-info">Die Fragestellung hat das notwendige Quorum für die Abwägung nicht erreicht.</div>
                 {% elif issue.missed_supporters_quorum %}
                 <div class="alert alert-info">Die Fragestellung hat das notwendige Quorum an Unterstützer*innen nicht erreicht. (Anzahl Unterstützer*innen: {{issue.supporters_count}})</div>
                 {% elif issue.failed_review %}
@@ -85,7 +85,7 @@
     <div class="container">
         <div class="row initiative-state">
             <div class="col-12">
-                <p>Diese Fragestellung wurde abgestimmt und befindet sich in der Veto-Phase</p>
+                <p>Diese Fragestellung wurde abgewogen und befindet sich in der Veto-Phase</p>
             </div>
         </div>
         {% if request.guard.userIsBoard %}
@@ -207,7 +207,7 @@
 
                 {% ifequal issue.status 'v' %}
                     <p>
-                        Über diese Fragestellung <a href="#voting"><strong class="badge-vote">wird gerade abgestimmt</strong></a>.
+                        Diese Fragestellung <a href="#voting"><strong class="badge-vote">wird gerade abgewogen</strong></a>.
                     </p>
                 {% endifequal %}
 
@@ -310,8 +310,8 @@
         <div class="row">
             <div class="col-12">
                 <h6 class="text-muted classification">Noch {{issue.end_of_current_phase | timeuntil}}</h6>
-                <p>Über diese Fragestellung wird gerade abgestimmt.</p>
-                <p>{{resistances_count}} Personen haben bisher abgestimmt.{% if resistances_count < voters_quorum %} Notwendiges Quorum: {{voters_quorum}}{% endif %}</p>
+                <p>Diese Fragestellung wird gerade abgewogen.</p>
+                <p>{{resistances_count}} Personen haben bisher abgewogen.{% if resistances_count < voters_quorum %} Notwendiges Quorum: {{voters_quorum}}{% endif %}</p>
             </div>
         </div>
     </div>

@@ -16,7 +16,7 @@
 								</span>
 								{% elif issue.was_closed_at and issue.went_to_veto_phase_at %}
 								<span class="badge badge-completed">
-									Abgestimmt
+									Abgewogen
 								</span>
 								{% elif issue.was_closed_at %}
 								<span class="badge badge-completed">
@@ -28,7 +28,7 @@
 								</span>
 								{% elif issue.in_voting_phase %}
 								<span class="badge badge-vote">
-									In Abstimmung
+									In Abwägung
 								</span>
 								{% elif issue.went_to_final_review_at %}
 								<span class="badge badge-discussion">

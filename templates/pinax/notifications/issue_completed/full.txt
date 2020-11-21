@@ -1,0 +1,3 @@
+Die Fragestellung "{{sender}}" wurde ohne Veto geschlossen.
+
+Du findest die Fragestellung unter {{ base_url }}/issue/{{sender.id}}-{{sender.slug}}

@@ -1,5 +1,5 @@
 <div class="col-12" id="voting">
-    <h6 class="text-muted classification">Noch {{issue.end_of_current_phase | timeuntil}} in Abstimmung</h6>
+    <h6 class="text-muted classification">Noch {{issue.end_of_current_phase | timeuntil}} in Abwägung</h6>
     {% if request.guard.can_vote_issue %}
     <form data-ajax-submit="true" action="{% url 'issue_resistances' issue_id=issue.id slug=issue.slug %}" method="POST">
         {% csrf_token %}
@@ -18,7 +18,7 @@
             {% endfor %}
             <br/>
             <h3>Danke, Deine Widerstandspunkte wurden gezählt!</h3>
-            <p style="margin-top:30px;margin-bottom:20px">Du kannst deine Bewertung noch bis zum Ende der Abstimmung ändern. Zur Erinnerung: Um mehr als 8 Widerstandspunkte zu vergeben, musst Du eine Begründung angeben; ansonsten ist die Begründung optional. Begründungen sind (wie auch die Bewertung) anonym und helfen der Gemeinschafft, Widerstände zu verstehen und auszuräumen.</p>
+            <p style="margin-top:30px;margin-bottom:20px">Du kannst deine Bewertung noch bis zum Ende der Abwägung ändern. Zur Erinnerung: Um mehr als 8 Widerstandspunkte zu vergeben, musst Du eine Begründung angeben; ansonsten ist die Begründung optional. Begründungen sind (wie auch die Bewertung) anonym und helfen der Gemeinschafft, Widerstände zu verstehen und auszuräumen.</p>
         {% else %}
             <p style="margin-top:30px;margin-bottom:20px">Hier kannst Du für die Lösungsvorschläge, die zu dieser Fragestellung diskutiert wurden, Widerstandspunkte zwischen 0 (kein Widerstand) und 10 (maximaler Widerstand) vergeben. Um mehr als 8 Widerstandspunkte zu vergeben, musst Du eine Begründung angeben; ansonsten ist die Begründung optional. Begründungen sind (wie auch die Bewertung) anonym und helfen der Gemeinschafft, Widerstände zu verstehen und auszuräumen.</p>
             {% for solution in solutions %}

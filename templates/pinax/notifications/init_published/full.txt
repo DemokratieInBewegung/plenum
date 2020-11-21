@@ -5,7 +5,7 @@
 Du findest die Initiative unter {{ base_url }}/initiative/{{target.id}}-{{target.slug}}
 
 {% else %}
-"{{sender}}" wurde veröffentlicht und sucht jetzt Unterstützer*innen.
+Die Initiative "{{sender}}" wurde im Plenum veröffentlicht und sucht jetzt Unterstützer*innen.
 
 Du findest die Initiative unter {{ base_url }}/initiative/{{sender.id}}-{{sender.slug}}
 {% endif %}

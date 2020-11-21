@@ -107,8 +107,9 @@ def complete_moderation(initiative, request):
         initiative.save()
 
         messages.success(request, "Initiative veröffentlicht")
-        initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
-        initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=request.user)
+        #initiative.notify_followers(NOTIFICATIONS.INITIATIVE.PUBLISHED)
+        #initiative.notify_moderators(NOTIFICATIONS.INITIATIVE.PUBLISHED, subject=request.user)
+        initiative.notify_all_active(NOTIFICATIONS.INITIATIVE.PUBLISHED)
         return redirect('/initiative/{}'.format(initiative.id))
 
     elif initiative.state == STATES.MODERATION:
@@ -151,8 +152,9 @@ def complete_review(issue, request):
             issue.status = STATES.SEEKING_SUPPORT
             issue.save()
             messages.success(request, "Fragestellung veröffentlicht")
-            issue.notify_followers(NOTIFICATIONS.ISSUE.PUBLISHED)
-            issue.notify_moderators(NOTIFICATIONS.ISSUE.PUBLISHED, subject=request.user)
+            #issue.notify_followers(NOTIFICATIONS.ISSUE.PUBLISHED)
+            #issue.notify_moderators(NOTIFICATIONS.ISSUE.PUBLISHED, subject=request.user)
+            issue.notify_all_active(NOTIFICATIONS.ISSUE.PUBLISHED)
 
         
         return redirect('/issue/{}'.format(issue.id))
@@ -1004,14 +1006,16 @@ def submit_to_review(request, issue):
             issue.save()
     
             messages.success(request, "Die Fragestellung kann nun diskutiert werden.")
-            issue.notify_initiators(NOTIFICATIONS.ISSUE.WENT_TO_DISCUSSION, subject=request.user)
+            #issue.notify_initiators(NOTIFICATIONS.ISSUE.WENT_TO_DISCUSSION, subject=request.user)
+            issue.notify_all_active(NOTIFICATIONS.ISSUE.WENT_TO_DISCUSSION)
         elif rgcount == INITIATORS_COUNT: # all initiators are part of review group, so no review required
             issue.status = STATES.SEEKING_SUPPORT
             issue.went_to_seeking_support_at = datetime.now()
             issue.save()
             
             messages.success(request, "Fragestellung veröffentlicht")
-            issue.notify_initiators(NOTIFICATIONS.ISSUE.PUBLISHED, subject=request.user)
+            #issue.notify_initiators(NOTIFICATIONS.ISSUE.PUBLISHED, subject=request.user)
+            issue.notify_all_active(NOTIFICATIONS.ISSUE.PUBLISHED)
         else:
             issue.status = STATES.INCOMING
             issue.went_to_review_at = datetime.now()

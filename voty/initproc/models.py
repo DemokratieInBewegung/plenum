@@ -246,8 +246,7 @@ class Issue(models.Model):
     
     def notify_final_review(self):
         moderation_permission = Permission.objects.filter(content_type__app_label='initproc', codename='add_review')
-        self.notify(get_user_model().objects.filter(groups__permissions=moderation_permission, is_active=True).all(),
-                              NOTIFICATIONS.ISSUE.FINAL_REVIEW, subject=request.user)
+        return self.notify(get_user_model().objects.filter(groups__permissions=moderation_permission, is_active=True).all(),NOTIFICATIONS.ISSUE.FINAL_REVIEW)
 
     def notify_followers(self, *args, **kwargs):
         query = [s.user for s in self.supporters.filter(ack=True).all()] if self.status == STATES.PREPARE else [s.user for s in self.supporters.all()]
@@ -255,6 +254,10 @@ class Issue(models.Model):
 
     def notify_board(self, *args, **kwargs):
         query = get_user_model().objects.filter(groups__name=BOARD_GROUP, is_active=True)
+        return self.notify(query, *args, **kwargs)
+
+    def notify_all_active(self, *args, **kwargs):
+        query = get_user_model().objects.filter(is_active=True).all()
         return self.notify(query, *args, **kwargs)
         
     def notify(self, recipients, notice_type, extra_context=None, subject=None, **kwargs):
@@ -621,45 +624,22 @@ class Initiative(models.Model):
             return self.was_closed_at + halfyear # Half year later.
 
         if self.went_public_at:
-            if self.went_public_at < SPEED_PHASE_END:
-                if self.state == Initiative.STATES.SEEKING_SUPPORT:
-                    if self.variant_of:
-                        if self.variant_of.went_to_discussion_at:
-                            return self.variant_of.went_to_discussion_at + (2 * week)
-                    if self.ready_for_next_stage:
-                        return self.went_public_at + week
-                    return self.went_public_at + halfyear
+            if self.state == Initiative.STATES.SEEKING_SUPPORT:
+                if self.variant_of:
+                    if self.variant_of.went_to_discussion_at:
+                        return self.variant_of.went_to_discussion_at +( 2 * week)
+                if self.ready_for_next_stage:
+                    return self.went_public_at + (2 * week)
+                return self.went_public_at + halfyear
 
-                elif self.state == Initiative.STATES.DISCUSSION:
-                    base = self.went_to_discussion_at
-                    if self.variant_of:
-                        if self.variant_of.went_to_discussion_at:
-                            base = self.variant_of.went_to_discussion_at
-                    return base + (2 * week)
+            elif self.state == 'd':
+                return self.went_to_discussion_at + (3 * week)
 
-                elif self.state == 'e':
-                    return self.went_to_discussion_at + (3 * week)
+            elif self.state == 'e':
+                return self.went_to_discussion_at + (5 * week)
 
-                elif self.state == 'v':
-                    return self.went_to_voting_at + week
-
-            else:
-                if self.state == Initiative.STATES.SEEKING_SUPPORT:
-                    if self.variant_of:
-                        if self.variant_of.went_to_discussion_at:
-                            return self.variant_of.went_to_discussion_at +( 2 * week)
-                    if self.ready_for_next_stage:
-                        return self.went_public_at + (2 * week)
-                    return self.went_public_at + halfyear
-
-                elif self.state == 'd':
-                    return self.went_to_discussion_at + (3 * week)
-
-                elif self.state == 'e':
-                    return self.went_to_discussion_at + (5 * week)
-
-                elif self.state == 'v':
-                    return self.went_to_voting_at + (3 * week)
+            elif self.state == 'v':
+                return self.went_to_voting_at + (3 * week)
 
         return None
 
@@ -912,6 +892,10 @@ class Initiative(models.Model):
 
     def notify_initiators(self, *args, **kwargs):
         query = [s.user for s in self.initiators]
+        return self.notify(query, *args, **kwargs)
+
+    def notify_all_active(self, *args, **kwargs):
+        query = get_user_model().objects.filter(is_active=True).all()
         return self.notify(query, *args, **kwargs)
 
     def notify(self, recipients, notice_type, extra_context=None, subject=None, **kwargs):

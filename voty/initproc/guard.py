@@ -493,7 +493,10 @@ class Guard:
         if not self.user.is_authenticated:
             return False
             
-        return True #jeder darf in jedem Status sehen
+        if issue.status == STATES.PREPARE and not issue.supporters.filter(initiator=True, user_id=self.request.user.id) and not self.user.has_perm('initproc.add_review'):#in Agora Liste unsichtbar, Einzelansicht aber für Agora Prüfteam zugelassen, um Hilfestellung während Vorbereitung bieten zu können
+            return False
+            
+        return True #jeder darf in jedem Status sehen, sofern angemeldet, außer nicht selbst (mit)initiierte in Vorbereitung befindliche Fragestellungen
         """
 
         if issue.status not in TEAM_ONLY_STATES:

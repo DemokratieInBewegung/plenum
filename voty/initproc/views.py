@@ -324,8 +324,10 @@ def index(request):
 
 @login_required
 def agora(request):
-    open_issues = Issue.objects.exclude(status='c').extra(select={'has_discussion': "went_to_discussion_at is not null"}).order_by('-has_discussion','went_to_discussion_at','createdate')
-    return render(request, 'initproc/agora.html',context=dict(issues=open_issues))
+    open_issues = Issue.objects.exclude(status='c').exclude(status='p')
+    open_prep_issues = Issue.objects.filter(status='p').filter(supporters__user=request.user)
+    records = (open_issues | open_prep_issues).distinct() #distinct() should not be needed but with filter(supporters__user=request.user) resultset contains multiple rows of open_issues query?!
+    return render(request, 'initproc/agora.html',context=dict(issues=records.extra(select={'has_discussion': "went_to_discussion_at is not null"}).order_by('-has_discussion','went_to_discussion_at','createdate')))
 
 
 @login_required

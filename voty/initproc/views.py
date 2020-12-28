@@ -989,6 +989,23 @@ def issue_delete(request, issue):
     else:
         messages.warning(request, "Du kannst die Fragestellung nicht löschen.")
         return redirect('/issue/{}'.format(issue.id))
+        
+@login_required
+def moderation_delete(request, moderation_id):
+    moderation = get_object_or_404(Moderation, pk=moderation_id)
+    if moderation.user == request.user:
+        if (moderation.issue):
+            i = moderation.issue.id
+            mtype = 'issue'
+        else:
+            i = moderation.solution.id
+            mtype = 'solution'
+        moderation.delete()
+        messages.success(request, "Die Bewertung wurde gelöscht.")
+        return redirect('/'+mtype+'/{}'.format(i))
+    else:
+        messages.warning(request, "Du kannst die Bewertung nicht löschen.")
+        return redirect('/agora')
     
     
 @login_required

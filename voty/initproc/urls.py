@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^issue/(?P<issue_id>\d+)(?:-(?P<slug>.*))?/ack_support$', views.issue_ack_support),
     url(r'^(?P<initype>initiative|ao-aenderung)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/rm_support$', views.rm_support),
     url(r'^issue/(?P<issue_id>\d+)(?:-(?P<slug>.*))?/rm_support$', views.issue_rm_support),
+    url(r'^issue/(?P<issue_id>\d+)(?:-(?P<slug>.*))?/(?P<user_id>\d+)/rm_user_support$', views.issue_rm_user_support),
     url(r'^(?P<initype>initiative|ao-aenderung|plenumsentscheidung|plenumsabwaegung|beitrag)/(?P<init_id>\d+)(?:-(?P<slug>.*))?/edit$', views.edit),
     url(r'^issue/(?P<issue_id>\d+)(?:-(?P<slug>.*))?/edit$', views.issue_edit),
     url(r'^solution/(?P<solution_id>\d+)(?:-(?P<slug>.*))?/edit$', views.solution_edit),

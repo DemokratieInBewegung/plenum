@@ -1219,8 +1219,18 @@ def issue_rm_support(request, issue):
     issue.notify_initiators(NOTIFICATIONS.ISSUE_INVITE.REJECTED, subject=request.user)
 
     if issue.status == 's':
-        return redirect('/issue/{}'.format(initiative.id))
+        return redirect('/issue/{}'.format(issue.id))
     return redirect('/agora')
+    
+@require_POST
+@login_required
+@can_access_issue([STATES.SEEKING_SUPPORT, STATES.INCOMING, STATES.PREPARE])
+def issue_rm_user_support(request, issue, user_id):
+    sup = get_object_or_404(Supporter, issue=issue, user_id=user_id)
+    issue.notify_initiators(NOTIFICATIONS.ISSUE_INVITE.REVOKED, subject=request.user)
+    sup.delete()
+    messages.success(request, "Die Einladung wurde zurückgezogen")
+    return redirect('/issue/{}'.format(issue.id))
 
 
 @non_ajax_redir('/')

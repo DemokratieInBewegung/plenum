@@ -62,7 +62,6 @@ INSTALLED_APPS = [
     # locally
     'voty.initadmin',
     'voty.initproc'
-    'voty.initproc.initadmin.templatetags.markdown'
 ]
 
 MIDDLEWARE = [
@@ -127,9 +126,6 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'account.context_processors.account',
             ],
-            **'libraries':{
-                'markdown': 'voty.initproc.initadmin.templatetags.markdown',**
-            }
         },
     },
 ]

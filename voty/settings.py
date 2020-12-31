@@ -62,7 +62,6 @@ INSTALLED_APPS = [
     # locally
     'voty.initadmin',
     'voty.initproc'
-    'voty.initproc.initadmin.templatetags.markdown'
 ]
 
 MIDDLEWARE = [

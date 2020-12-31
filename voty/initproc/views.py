@@ -3,7 +3,6 @@ from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied, ValidationError
-from django.utils.decorators import available_attrs
 from django.utils.safestring import mark_safe
 from django.contrib.postgres.search import SearchVector
 from django.contrib.auth import get_user_model
@@ -56,7 +55,7 @@ def param_as_bool(param):
 
 def non_ajax_redir(*redir_args, **redir_kwargs):
     def decorator(func):
-        @wraps(func, assigned=available_attrs(func))
+        @wraps(func)
         def inner(request, *args, **kwargs):
             if not request.is_ajax():
                 # we redirect you 

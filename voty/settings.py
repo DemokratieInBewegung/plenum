@@ -127,8 +127,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'account.context_processors.account',
             ],
-            **'libraries':{
-                'markdown': 'voty.initproc.initadmin.templatetags.markdown',**
+            'libraries':{
+                'markdown': 'voty.initproc.initadmin.templatetags.markdown',
             }
         },
     },

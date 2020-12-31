@@ -224,7 +224,7 @@ class Guard:
     # min 50% of all votes must be female for a valid result
     # min 25% of alle votes must be diverse for a valid result
     def _mods_missing_for_issue(self, issue):
-        review_permission = Permission.objects.filter(content_type__app_label='initproc', codename='add_review')
+        review_permission = Permission.objects.get(content_type__app_label='initproc', codename='add_review')
         teamsize = get_user_model().objects.filter(groups__permissions=review_permission, is_active=True).count()
         if teamsize < MINIMUM_REVIEW_TEAM_SIZE:
             return (0, 0, -1) # this is an error
@@ -264,7 +264,7 @@ class Guard:
     # min 50% of all votes must be female for a valid result
     # min 25% of alle votes must be diverse for a valid result
     def _mods_missing_for_solution(self, solution):
-        review_permission = Permission.objects.filter(content_type__app_label='initproc', codename='add_review')
+        review_permission = Permission.objects.get(content_type__app_label='initproc', codename='add_review')
         teamsize = get_user_model().objects.filter(groups__permissions=review_permission, is_active=True).count()
         if teamsize < MINIMUM_REVIEW_TEAM_SIZE:
             return (0, 0, -1) # this is an error

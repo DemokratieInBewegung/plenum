@@ -287,8 +287,8 @@ class Issue(models.Model):
 
 @reversion.register()
 class Solution(models.Model):
-    issue = models.ForeignKey(Issue, related_name="solutions")
-    user = models.ForeignKey(User)
+    issue = models.ForeignKey(Issue, related_name="solutions", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=1000, blank=True)
     budget = models.IntegerField(null=0)
@@ -369,8 +369,8 @@ class Solution(models.Model):
     
 class Veto(models.Model):
     createdate = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User)
-    solution = models.ForeignKey(Solution, related_name="refusing")
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    solution = models.ForeignKey(Solution, related_name="refusing", on_delete=models.CASCADE)
     reason = models.TextField(max_length=1000)
 
     class Meta:
@@ -465,12 +465,12 @@ class Initiative(models.Model):
     went_to_voting_at = models.DateField(blank=True, null=True)
     was_closed_at = models.DateField(blank=True, null=True)
 
-    variant_of = models.ForeignKey('self', blank=True, null=True, default=None, related_name="variants")
+    variant_of = models.ForeignKey('self', blank=True, null=True, default=None, related_name="variants", on_delete=models.CASCADE)
 
     supporters = models.ManyToManyField(User, through="Supporter")
     eligible_voters = models.IntegerField(blank=True, null=True)
 
-    topic = models.ForeignKey(Topic, blank=True, null=True, default=None)
+    topic = models.ForeignKey(Topic, blank=True, null=True, default=None, on_delete=models.CASCADE)
 
     @cached_property
     def slug(self):
@@ -911,8 +911,8 @@ class Initiative(models.Model):
 class Vote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User)
-    initiative = models.ForeignKey(Initiative, related_name="votes")
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    initiative = models.ForeignKey(Initiative, related_name="votes", on_delete=models.CASCADE)
     CHOICES = [
         (VOTED.YES, "Ja"),
         (VOTED.NO, "Nein"),
@@ -940,7 +940,7 @@ class Vote(models.Model):
         return self.value == VOTED.ABSTAIN
 
 class Option(models.Model):
-    initiative = models.ForeignKey(Initiative, related_name="options")
+    initiative = models.ForeignKey(Initiative, related_name="options", on_delete=models.CASCADE)
     text = models.TextField()
     index = models.IntegerField()
 
@@ -950,7 +950,7 @@ class Option(models.Model):
 class Weight(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
     value = models.IntegerField()
 
     class Meta:
@@ -961,7 +961,7 @@ class Weight(models.Model):
 
 # for plenum options
 class Preference(Weight):
-    option = models.ForeignKey(Option, related_name="preferences")
+    option = models.ForeignKey(Option, related_name="preferences", on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (("user", "option"),)
@@ -969,8 +969,8 @@ class Preference(Weight):
 
 # for agora contributions (=Topic's Initiatives) / Issue Solutions
 class Resistance(Weight):
-    contribution = models.ForeignKey(Initiative, related_name="resistances", null=True)
-    solution = models.ForeignKey(Solution, related_name="rating", null=True)
+    contribution = models.ForeignKey(Initiative, related_name="resistances", null=True, on_delete=models.CASCADE)
+    solution = models.ForeignKey(Solution, related_name="rating", null=True, on_delete=models.CASCADE)
     reason = models.CharField(max_length=500, blank=True)
 
     class Meta:
@@ -988,9 +988,9 @@ class Quorum(models.Model):
 
 class Supporter(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User)
-    initiative = models.ForeignKey(Initiative, related_name="supporting", null=True)
-    issue = models.ForeignKey(Issue, related_name="supporters", null=True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    initiative = models.ForeignKey(Initiative, related_name="supporting", null=True, on_delete=models.CASCADE)
+    issue = models.ForeignKey(Issue, related_name="supporters", null=True, on_delete=models.CASCADE)
     # whether this initiator has acknowledged they are
     ack = models.BooleanField(default=False)
     initiator = models.BooleanField(default=False)
@@ -1006,7 +1006,7 @@ class Supporter(models.Model):
 
 class Like(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
 
     target_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     target_id = models.IntegerField()
@@ -1032,7 +1032,7 @@ class Comment(Likeable):
     type = "comment"
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
 
     target_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     target_id = models.IntegerField()
@@ -1058,9 +1058,9 @@ class Commentable(models.Model):
 class Response(Likeable, Commentable):
     created_at = models.DateTimeField(auto_now_add=True)
     changed_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User, related_name="%(class)ss")
-    initiative = models.ForeignKey(Initiative, related_name="%(class)ss", null=True)
-    solution = models.ForeignKey(Solution, related_name="%(class)sslist", null=True)
+    user = models.ForeignKey(User, related_name="%(class)ss", on_delete=models.PROTECT)
+    initiative = models.ForeignKey(Initiative, related_name="%(class)ss", null=True, on_delete=models.CASCADE)
+    solution = models.ForeignKey(Solution, related_name="%(class)sslist", null=True, on_delete=models.CASCADE)
 
     class Meta:
         abstract = True
@@ -1117,7 +1117,7 @@ class Moderation(Response):
             ('n', 'no!')
         ])
     text = models.CharField(max_length=500, blank=True)
-    issue = models.ForeignKey(Issue, related_name="issuemoderations", null=True)
+    issue = models.ForeignKey(Issue, related_name="issuemoderations", null=True, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (("user", "issue"),("user", "solution"))

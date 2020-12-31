@@ -43,6 +43,12 @@ function update_notifications(data) {
           </a>`
           break;
 
+        case "issue_invite_revoked":
+          message = `<a href="/issue/${item.target_object_id}">
+              <i class="material-icons">block</i>${item.actor} hat die Einladung zu "${item.target}" zurückgezogen
+          </a>`
+          break;
+
         // INITIATIVES
 
         case "init_edited":

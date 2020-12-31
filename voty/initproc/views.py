@@ -3,7 +3,6 @@ from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied, ValidationError
-from django.utils.decorators import available_attrs
 from django.utils.safestring import mark_safe
 from django.contrib.postgres.search import SearchVector
 from django.contrib.auth import get_user_model
@@ -56,7 +55,7 @@ def param_as_bool(param):
 
 def non_ajax_redir(*redir_args, **redir_kwargs):
     def decorator(func):
-        @wraps(func, assigned=available_attrs(func))
+        @wraps(func)
         def inner(request, *args, **kwargs):
             if not request.is_ajax():
                 # we redirect you 
@@ -989,6 +988,23 @@ def issue_delete(request, issue):
     else:
         messages.warning(request, "Du kannst die Fragestellung nicht löschen.")
         return redirect('/issue/{}'.format(issue.id))
+        
+@login_required
+def moderation_delete(request, moderation_id):
+    moderation = get_object_or_404(Moderation, pk=moderation_id)
+    if moderation.user == request.user:
+        if (moderation.issue):
+            i = moderation.issue.id
+            mtype = 'issue'
+        else:
+            i = moderation.solution.id
+            mtype = 'solution'
+        moderation.delete()
+        messages.success(request, "Die Bewertung wurde gelöscht.")
+        return redirect('/'+mtype+'/{}'.format(i))
+    else:
+        messages.warning(request, "Du kannst die Bewertung nicht löschen.")
+        return redirect('/agora')
     
     
 @login_required
@@ -1202,8 +1218,18 @@ def issue_rm_support(request, issue):
     issue.notify_initiators(NOTIFICATIONS.ISSUE_INVITE.REJECTED, subject=request.user)
 
     if issue.status == 's':
-        return redirect('/issue/{}'.format(initiative.id))
+        return redirect('/issue/{}'.format(issue.id))
     return redirect('/agora')
+    
+@require_POST
+@login_required
+@can_access_issue([STATES.SEEKING_SUPPORT, STATES.INCOMING, STATES.PREPARE])
+def issue_rm_user_support(request, issue, user_id):
+    sup = get_object_or_404(Supporter, issue=issue, user_id=user_id)
+    issue.notify_initiators(NOTIFICATIONS.ISSUE_INVITE.REVOKED, subject=request.user)
+    sup.delete()
+    messages.success(request, "Die Einladung wurde zurückgezogen")
+    return redirect('/issue/{}'.format(issue.id))
 
 
 @non_ajax_redir('/')

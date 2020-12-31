@@ -26,6 +26,7 @@ class NOTIFICATIONS:
         SEND = "issue_invited"
         ACCEPTED = "issue_invite_accepted"
         REJECTED = "issue_invite_rejected"
+        REVOKED = "issue_invite_revoked"
 
     class ISSUE:
         EDITED = "issue_edited"

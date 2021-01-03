@@ -23,7 +23,7 @@ from math import floor
 
 def can_access_initiative(states=None, check=None):
     def wrap(fn):
-        def view(request, initype, init_id, slug, *args, **kwargs):
+        def view(request, initype, init_id, slug=None, *args, **kwargs):
             init = get_object_or_404(Initiative, pk=init_id)
             if states:
                 assert init.state in states, "{} Not in expected state: {}".format(init.state, states)
@@ -41,7 +41,7 @@ def can_access_initiative(states=None, check=None):
     
 def can_access_issue(statuses=None, check=None):
     def wrap(fn):
-        def view(request, issue_id, slug, *args, **kwargs):
+        def view(request, issue_id, slug=None, *args, **kwargs):
             issue = get_object_or_404(Issue, pk=issue_id)
             if statuses:
                 assert issue.status in statuses, "{} Not in expected status: {}".format(issue.status, statuses)
@@ -59,7 +59,7 @@ def can_access_issue(statuses=None, check=None):
     
 def can_access_solution(statuses=None, check=None):
     def wrap(fn):
-        def view(request, solution_id, slug, *args, **kwargs):
+        def view(request, solution_id, slug=None, *args, **kwargs):
             solution = get_object_or_404(Solution, pk=solution_id)
             if statuses:
                 assert solution.status in statuses, "{} Not in expected status: {}".format(solution.status, statuses)

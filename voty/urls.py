@@ -19,6 +19,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic.base import TemplateView
 import notifications.urls
+from django.views.generic.base import TemplateView
+from pinax.notifications.views import NoticeSettingsView
 
 urlpatterns = [
     url(r'', include('voty.initadmin.urls')),
@@ -28,7 +30,7 @@ urlpatterns = [
     url(r'^hilfe', TemplateView.as_view(template_name='static/hilfe.html')),
     url(r'^registrieren', TemplateView.as_view(template_name='static/registrieren.html')),
     url(r'^nachrichten/', include(notifications.urls, namespace='notifications')),
-    url(r"^nachrichten/", include("pinax.notifications.urls")),
+    url(r"^nachrichten/settings/$", NoticeSettingsView.as_view(), name="notification_notice_settings"),
     url(r'', include('voty.initproc.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

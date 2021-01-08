@@ -1,10 +1,10 @@
 function update_notifications(data) {
   // for the django notifications top right.
   // https://github.com/django-notifications/django-notifications#how-to-use
-  var menu = document.getElementById(notify_menu_id);
-  if (menu) {
+  var menus = document.getElementsByClassName('live_notify_list');
+  if (menus) {
     var content = [];
-    menu.innerHTML = data.unread_list.map(function (item) {
+    var messages = data.unread_list.map(function (item) {
       var message = "";
       switch (item.verb) {
         // INVITES
@@ -259,6 +259,9 @@ function update_notifications(data) {
       }
       return '<li>' + message + '</li>';
     }).join('')
+    for (var i = 0; i < menus.length; i++){
+        menus[i].innerHTML = messages;
+    }
   } 
 }
 

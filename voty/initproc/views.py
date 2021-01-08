@@ -372,7 +372,7 @@ def topic(request, topic_id, slug=None, archive=False):
 class UserAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return get_user_model().objects.none()
 
         qs = get_user_model().objects.filter(is_active=True).all()

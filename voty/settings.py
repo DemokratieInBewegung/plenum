@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'avatar',
     'mathfilters',
     'mailer',
+    'six',
     'pinax.notifications',
     'notifications',
     'bootstrapform',

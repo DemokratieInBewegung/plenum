@@ -245,7 +245,7 @@ class Issue(models.Model):
         return self.notify([m.user for m in self.issuemoderations.all()], *args, **kwargs)
     
     def notify_final_review(self):
-        moderation_permission = Permission.objects.filter(content_type__app_label='initproc', codename='add_review')
+        moderation_permission = Permission.objects.get(content_type__app_label='initproc', codename='add_review')
         return self.notify(get_user_model().objects.filter(groups__permissions=moderation_permission, is_active=True).all(),NOTIFICATIONS.ISSUE.FINAL_REVIEW)
 
     def notify_followers(self, *args, **kwargs):

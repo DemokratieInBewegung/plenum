@@ -954,7 +954,7 @@ def submit_to_committee(request, initiative):
         initiative.notify_initiators(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         # To notify the review team, we notify all members of groups with moderation permission,
         # which doesn't include superusers, though they individually have moderation permission.
-        moderation_permission = Permission.objects.filter(content_type__app_label='initproc', codename='add_moderation')
+        moderation_permission = Permission.objects.get(content_type__app_label='initproc', codename='add_moderation')
         initiative.notify(get_user_model().objects.filter(groups__permissions=moderation_permission, is_active=True).all(),
                           NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         return redirect('/initiative/{}'.format(initiative.id))
@@ -1046,7 +1046,7 @@ def submit_to_review(request, issue):
             issue.notify_initiators(NOTIFICATIONS.ISSUE.SUBMITTED, subject=request.user)
             # To notify the review team, we notify all members of groups with moderation permission,
             # which doesn't include superusers, though they individually have moderation permission.
-            moderation_permission = Permission.objects.filter(content_type__app_label='initproc', codename='add_review')
+            moderation_permission = Permission.objects.get(content_type__app_label='initproc', codename='add_review')
             issue.notify(get_user_model().objects.filter(groups__permissions=moderation_permission, is_active=True).all(),
                               NOTIFICATIONS.ISSUE.SUBMITTED, subject=request.user)
         return redirect('/issue/{}'.format(issue.id))

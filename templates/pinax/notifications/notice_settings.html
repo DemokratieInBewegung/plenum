@@ -10,7 +10,6 @@
 <div class="row">
     <div class="col">
         <h2>Benachrichtigungseinstellungen</h2>
-        <p>für Nachrichten an Initiator*innen, Unterstützer*innen und Prüfteam-Mitglieder</p>
 
         {% url "account_settings" as email_url %}
         {% if not request.user.email %}
@@ -24,6 +23,7 @@
 
         <form method="POST" class="form" action="">
             {% csrf_token %}
+            <p><i>Nachrichten an alle aktiven Benutzer*innen:</i></p>
             <table class="table table-striped notice_settings">
                 <tr>
                     <th>Benachrichtigungsgrund</th>
@@ -34,6 +34,7 @@
                     {% endfor %}
                 </tr>
                 {% for row in notice_settings.rows %}
+                    {% if row.notice_type.label == 'issue_published' or row.notice_type.label == 'init_published' %}
                     <tr class="notice-row">
                         <td>
                             <strong>{{ row.notice_type.display }}</strong><br/>
@@ -47,6 +48,36 @@
                             </td>
                         {% endfor %}
                     </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+            <br/>
+            <p><i>Nachrichten an Initiator*innen, Unterstützer*innen und Prüfteam-Mitglieder:</i></p>
+            <table class="table table-striped notice_settings">
+                <tr>
+                    <th>Benachrichtigungsgrund</th>
+                    {% for header in notice_settings.column_headers %}
+                        <th>
+                            {{ header.title }}
+                        </th>
+                    {% endfor %}
+                </tr>
+                {% for row in notice_settings.rows %}
+                    {% if row.notice_type.label != 'issue_published' and row.notice_type.label != 'init_published' %}
+                    <tr class="notice-row">
+                        <td>
+                            <strong>{{ row.notice_type.display }}</strong><br/>
+                            <span class="notice_type_description">
+                                {{ row.notice_type.description }}
+                            </span>
+                        </td>
+                        {% for cell in row.cells %}
+                            <td>
+                                <input type="checkbox" name="{{ cell.0 }}" {% if cell.1 %}checked="yes"{% endif %} />
+                            </td>
+                        {% endfor %}
+                    </tr>
+                    {% endif %}
                 {% endfor %}
             </table>
 

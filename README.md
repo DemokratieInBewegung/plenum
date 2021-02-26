@@ -39,15 +39,22 @@ virtualenv -p python3 .   # setup a new virtual environment locally
 source bin/activate       # enter that environment: needs to happen for every shell session!
 ```
 
-2. From within the enviroment install the dependencies
+2. From within the enviroment install the dependencies and do create the folder public/media/avatars
 
 ```
 pip install -r requirements.txt
+mkdir public
+cd public
+mkdir media
+cd media
+mkdir avatars
+cd ../../
 ```
 
 3. (create and) update the database
 ```
-python manage.py migrate initproc 0009
+python manage.py migrate initproc
+python manage.py migrate initadmin
 python manage.py migrate
 ```
 

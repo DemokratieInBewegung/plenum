@@ -372,7 +372,7 @@ def topic(request, topic_id, slug=None, archive=False):
 class UserAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return get_user_model().objects.none()
 
         qs = get_user_model().objects.filter(is_active=True).all()
@@ -545,14 +545,14 @@ def get_issue_resistances(request, issue_id):
 def get_issue_context(issue_id, request):
     context = {}
     context['issue'] = get_object_or_404(Issue, pk=issue_id)
-    context['resistances'] = get_issue_resistances(request, issue_id).order_by('created_at')
+    context['resistances'] = get_issue_resistances(request, issue_id).order_by('-solution__createdate')
     return context
 
 @can_access_issue()
 def issue_item(request, issue, slug=None, archive=False):
     context = dict(issue=issue)
     context['archive'] = archive
-    context['resistances'] = get_issue_resistances(request, issue).order_by('created_at')
+    context['resistances'] = get_issue_resistances(request, issue).order_by('-solution__createdate')
     
     solutions = Solution.objects.filter(issue=issue.id).extra(select={'is_rejected': "status = 'r'"})
     context['solutions'] = solutions.order_by('is_rejected','-createdate')
@@ -954,7 +954,7 @@ def submit_to_committee(request, initiative):
         initiative.notify_initiators(NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         # To notify the review team, we notify all members of groups with moderation permission,
         # which doesn't include superusers, though they individually have moderation permission.
-        moderation_permission = Permission.objects.filter(content_type__app_label='initproc', codename='add_moderation')
+        moderation_permission = Permission.objects.get(content_type__app_label='initproc', codename='add_moderation')
         initiative.notify(get_user_model().objects.filter(groups__permissions=moderation_permission, is_active=True).all(),
                           NOTIFICATIONS.INITIATIVE.SUBMITTED, subject=request.user)
         return redirect('/initiative/{}'.format(initiative.id))
@@ -1046,7 +1046,7 @@ def submit_to_review(request, issue):
             issue.notify_initiators(NOTIFICATIONS.ISSUE.SUBMITTED, subject=request.user)
             # To notify the review team, we notify all members of groups with moderation permission,
             # which doesn't include superusers, though they individually have moderation permission.
-            moderation_permission = Permission.objects.filter(content_type__app_label='initproc', codename='add_review')
+            moderation_permission = Permission.objects.get(content_type__app_label='initproc', codename='add_review')
             issue.notify(get_user_model().objects.filter(groups__permissions=moderation_permission, is_active=True).all(),
                               NOTIFICATIONS.ISSUE.SUBMITTED, subject=request.user)
         return redirect('/issue/{}'.format(issue.id))

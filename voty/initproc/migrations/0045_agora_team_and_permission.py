@@ -31,10 +31,10 @@ def init_team_and_permission(apps, schema_editor):
 
     if team:
         ct = ContentType.objects.get_for_model(apps.get_model('initproc', 'Moderation'))
-        permission = Permission.objects.create(
+        permission, created = Permission.objects.get_or_create(
             codename='add_review',
             name='Can add review',
-            content_type=ct,
+            content_type=ct
         )
         team.permissions.add (permission)
         print ('... added permission for group "Agora Prüfteam" to add review')

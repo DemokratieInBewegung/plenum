@@ -264,6 +264,10 @@ def index(request):
         filters = request.session.get('init_filters', DEFAULT_FILTERS)
 
     inits = request.guard.make_intiatives_query(filters).prefetch_related("supporting")
+    
+    if inits.count() == 0:
+        filters = request.session.get('init_filters', [STATES.ACCEPTED])
+        inits = request.guard.make_intiatives_query(filters)
 
     bereiche = [f for f in request.GET.getlist('b')]
     if bereiche:

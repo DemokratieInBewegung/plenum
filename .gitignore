@@ -45,6 +45,7 @@ public
 # Windows stuff
 tcl/
 LICENSE.txt
+pyvenv.cfg
 scripts/activate.bat
 scripts/activate.ps1
 scripts/activate.xsh
@@ -66,3 +67,13 @@ scripts/python3.dll
 scripts/python37.dll
 scripts/sqlformat.exe
 scripts/wheel.exe
+scripts/chardetect.exe
+scripts/markdown2
+scripts/pip-3.7.exe
+scripts/publish.exe
+scripts/pydoc.bat
+scripts/run_testserver.exe
+scripts/update_rst_readme.exe
+scripts/wheel-3.7.exe
+scripts/wheel3.7.exe
+scripts/wheel3.exe

@@ -53,6 +53,7 @@ cd ../../
 
 3. (create and) update the database
 ```
+python manage.py migrate initproc 0009
 python manage.py migrate initproc
 python manage.py migrate initadmin
 python manage.py migrate

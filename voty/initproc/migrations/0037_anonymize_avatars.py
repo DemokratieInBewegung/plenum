@@ -32,19 +32,22 @@ def anonymize_avatars(apps, schema_editor):
         if os.path.exists(old_absolute_path):
             os.rename(old_absolute_path, new_absolute_path)
 
-    for avatar in Avatar.objects.all():
-        old_relative_path = avatar.avatar.name
-        new_relative_path = os.path.join(base_dir, str(avatar.user.pk), os.path.basename(old_relative_path))
-
-        new_absolute_path = avatar_storage.path(new_relative_path)
-        old_absolute_path = avatar_storage.path(old_relative_path)
-
-        if not os.path.exists(new_absolute_path):
-            os.rename(old_absolute_path, new_absolute_path)
-
-        avatar.avatar = new_relative_path
-        avatar.save()
-
+    try:
+        for avatar in Avatar.objects.all():
+            old_relative_path = avatar.avatar.name
+            new_relative_path = os.path.join(base_dir, str(avatar.user.pk), os.path.basename(old_relative_path))
+    
+            new_absolute_path = avatar_storage.path(new_relative_path)
+            old_absolute_path = avatar_storage.path(old_relative_path)
+    
+            if not os.path.exists(new_absolute_path):
+                os.rename(old_absolute_path, new_absolute_path)
+    
+            avatar.avatar = new_relative_path
+            avatar.save()
+    except Exception:
+        print ('No Avatars exist, that is OK')
+        
     for filename in os.listdir(avatar_storage.path(base_dir)):
         if not filename.isnumeric():
             old_username_dir = avatar_storage.path(os.path.join(base_dir, filename))
@@ -61,12 +64,15 @@ def personalize_avatars(apps, schema_editor):
         if os.path.exists(old_absolute_path):
             os.rename(old_absolute_path, new_absolute_path)
 
-    for avatar in Avatar.objects.all():
-        old_relative_path = avatar.avatar.name
-        new_relative_path = os.path.join(base_dir, str(avatar.user.username), os.path.basename(old_relative_path))
-
-        avatar.avatar = new_relative_path
-        avatar.save()
+    try:
+        for avatar in Avatar.objects.all():
+            old_relative_path = avatar.avatar.name
+            new_relative_path = os.path.join(base_dir, str(avatar.user.username), os.path.basename(old_relative_path))
+    
+            avatar.avatar = new_relative_path
+            avatar.save()
+    except Exception:
+        print ('No Avatars exist, that is OK')
 
 
 class Migration(migrations.Migration):

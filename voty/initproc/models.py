@@ -483,7 +483,8 @@ class Initiative(models.Model):
 
     @cached_property
     def sort_index(self):
-        return self.type_priority + self.time_index
+        return self.time_index
+        #return self.type_priority + self.time_index
 
     @cached_property
     def type_priority(self):

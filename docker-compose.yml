@@ -32,7 +32,7 @@
        - ipv6ula
  networks:
 #  default:
-  ipv6ula
+  ipv6ula:
     external:
 #      name: nginx-proxy
       name: ipv6ula

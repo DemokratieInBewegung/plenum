@@ -1,7 +1,7 @@
  version: '2'
  services:
    db:
-     image: postgres:9.6
+     image: postgres:13
      restart: unless-stopped
      environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
@@ -9,6 +9,9 @@
       - POSTGRES_PASSWORD=204rkmafd90-ad
      volumes:
        - ./data/db:/var/lib/postgresql/data
+     networks:
+       - ipv6ula
+
    web:
      build: .
      restart: unless-stopped
@@ -25,7 +28,11 @@
        - 8000
      links:
        - db
+     networks:
+       - ipv6ula
  networks:
-  default:
+#  default:
+  ipv6ula:
     external:
-      name: nginx-proxy
+#      name: nginx-proxy
+      name: ipv6ula

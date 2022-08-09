@@ -39,7 +39,7 @@ packaging==20.8
 Pillow==9.0.1
 pinax-notifications==6.0.0
 psycopg2==2.8.6
-pyparsing==2.4.7
+pyparsing==3.0.9
 python3-openid==3.2.0
 pytz==2020.5
 requests==2.25.1

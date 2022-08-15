@@ -10,7 +10,7 @@ django-appconf==1.0.4
 django-autocomplete-light==3.5.0
 django-avatar==5.0.0
 django-bootstrap-form==3.4
-django-braces==1.14.0
+django-braces==1.15.0
 django-cors-headers==3.6.0
 django-fullurl==1.1
 django-mailer==2.2

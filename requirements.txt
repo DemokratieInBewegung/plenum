@@ -8,7 +8,7 @@ Django==4.1
 django-appconf==1.0.5
 #do NOT use higher version; could not get inviting initiators to run with django-autocomplete-light version 3.8.1
 django-autocomplete-light==3.9.4
-django-avatar==5.0.0
+django-avatar==7.0.0
 django-bootstrap-form==3.4
 django-braces==1.15.0
 django-cors-headers==3.6.0

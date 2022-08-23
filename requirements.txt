@@ -1,5 +1,5 @@
 appdirs==1.4.4
-beautifulsoup4==4.9.3
+beautifulsoup4==4.11.1
 bleach==5.0.1
 defusedxml==0.7.1
 diff-match-patch==20200713
@@ -7,7 +7,7 @@ dj-database-url==0.5.0
 Django==4.1
 django-appconf==1.0.4
 #do NOT use higher version; could not get inviting initiators to run with django-autocomplete-light version 3.8.1
-django-autocomplete-light==3.5.0
+django-autocomplete-light==3.9.4
 django-avatar==5.0.0
 django-bootstrap-form==3.4
 django-braces==1.15.0

@@ -270,3 +270,5 @@ OPTIONAL_NOPE_REASONS = [
 ]
 
 AVATAR_EXPOSE_USERNAMES = False
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

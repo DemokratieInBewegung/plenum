@@ -1,4 +1,4 @@
-dist: trusty
+dist: jammy
 services:
   - docker
 addons:
@@ -21,6 +21,8 @@ deploy:
     branch: develop
     condition: "$TRAVIS_PULL_REQUEST = false"
 - provider: script
+  cleanup: false
+  skip_cleanup: true
   script: ssh root@abstimmen.bewegung.jetzt "cd /var/dib/abstimmungstool && git fetch && git checkout $TRAVIS_BRANCH && git pull && bash scripts/deploy.sh"
   on:
     branch: master

@@ -2,7 +2,7 @@ dist: trusty
 services:
   - docker
 addons:
-  ssh_known_hosts: 'abstimmen.bewegung.jetzt'
+  ssh_known_hosts: 'iris.bewegung.jetzt'
 
 script:
   - docker build .
@@ -16,12 +16,12 @@ before_deploy:
 
 deploy:
 - provider: script
-  script: ssh root@abstimmen.bewegung.jetzt "cd /var/dib/voty-beta && git fetch && git checkout $TRAVIS_BRANCH && git pull && bash scripts/deploy.sh"
+  script: ssh root@iris.bewegung.jetzt "cd /var/dib/voty-beta && git fetch && git checkout $TRAVIS_BRANCH && git pull && bash scripts/deploy.sh"
   on:
     branch: develop
     condition: "$TRAVIS_PULL_REQUEST = false"
 - provider: script
-  script: ssh root@abstimmen.bewegung.jetzt "cd /var/dib/abstimmungstool && git fetch && git checkout $TRAVIS_BRANCH && git pull && bash scripts/deploy.sh"
+  script: ssh root@iris.bewegung.jetzt "cd /var/dib/abstimmungstool && git fetch && git checkout $TRAVIS_BRANCH && git pull && bash scripts/deploy.sh"
   on:
     branch: master
     condition: "$TRAVIS_PULL_REQUEST = false"

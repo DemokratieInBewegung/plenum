@@ -3,7 +3,7 @@ beautifulsoup4==4.11.1
 bleach==5.0.1
 defusedxml==0.7.1
 diff-match-patch==20200713
-dj-database-url==1.0.0
+dj-database-url==1.1.0
 Django==3.2.15
 django-appconf==1.0.5
 #do NOT use higher version; could not get inviting initiators to run with django-autocomplete-light version 3.8.1

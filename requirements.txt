@@ -26,7 +26,7 @@ django-user-accounts==3.2.0
 djangoajax==3.3
 djangorestframework==3.14.0
 dominate==2.7.0
-easy-thumbnails==2.8.4
+easy-thumbnails==2.8.5
 gunicorn==20.1.0
 html2text==2020.1.16
 html5lib==1.1

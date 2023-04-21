@@ -188,7 +188,7 @@ AVATAR_GRAVATAR_DEFAULT = 'retro'
 AVATAR_AUTO_GENERATE_SIZES = [40, 80]
 
 
-DEFAULT_FROM_EMAIL = 'keine-antwort@bewegung.jetzt'
+DEFAULT_FROM_EMAIL = 'keine-antwort@dib.de'
 EMAIL_BACKEND = "mailer.backend.DbBackend"
 
 if DEBUG:
@@ -246,8 +246,8 @@ MEDIA_ROOT = os.path.join( BASE_DIR, 'public', 'media')
 # CORS stuff
 
 CORS_ORIGIN_WHITELIST = (
-    'https://bewegung.jetzt',
-    'https://portal.bewegung.jetzt'
+    'https://dib.de',
+    'https://portal.dib.de'
 )
 
 CORS_ALLOW_CREDENTIALS = True

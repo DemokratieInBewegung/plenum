@@ -16,7 +16,7 @@ django-fullurl==1.4
 django-mailer==2.2
 django-mathfilters==1.0.0
 django-model-utils==4.3.1
-django-notifications-hq==1.8.0
+django-notifications-hq==1.8.2
 django-rest-framework==0.1.0
 django-reversion==5.0.4
 django-reversion-compare==0.16.2

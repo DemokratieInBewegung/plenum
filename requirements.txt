@@ -1,6 +1,6 @@
 appdirs==1.4.4
 beautifulsoup4==4.12.2
-bleach==6.0.0
+bleach==6.1.0
 defusedxml==0.7.1
 diff-match-patch==20230430
 dj-database-url==2.1.0

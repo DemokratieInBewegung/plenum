@@ -8,7 +8,7 @@ Django==3.2.23
 django-appconf==1.0.6
 #do NOT use higher version; could not get inviting initiators to run with django-autocomplete-light version 3.8.1
 django-autocomplete-light==3.5.0
-django-avatar==7.0.1
+django-avatar==8.0.0
 django-bootstrap-form==3.4
 django-braces==1.15.0
 django-cors-headers==4.3.1
@@ -36,7 +36,7 @@ markdown2==2.4.10
 oauthlib==3.2.2
 olefile==0.46
 packaging==23.2
-Pillow==9.5.0
+Pillow==10.1.0
 pinax-notifications==6.0.0
 psycopg2==2.9.9
 pyparsing==3.1.1

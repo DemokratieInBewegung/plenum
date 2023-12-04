@@ -32,7 +32,7 @@ html2text==2020.1.16
 html5lib==1.1
 jsonfield==3.1.0
 lockfile==0.12.2
-markdown2==2.4.10
+markdown2==2.4.11
 oauthlib==3.2.2
 olefile==0.46
 packaging==23.2

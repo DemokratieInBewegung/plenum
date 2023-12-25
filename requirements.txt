@@ -4,7 +4,7 @@ bleach==6.1.0
 defusedxml==0.7.1
 diff-match-patch==20230430
 dj-database-url==2.1.0
-Django==3.2.23
+Django==5.0
 django-appconf==1.0.6
 #do NOT use higher version; could not get inviting initiators to run with django-autocomplete-light version 3.8.1
 django-autocomplete-light==3.5.1

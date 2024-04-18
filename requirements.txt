@@ -4,7 +4,7 @@ bleach==6.1.0
 defusedxml==0.7.1
 diff-match-patch==20230430
 dj-database-url==2.1.0
-Django==3.2.23
+Django==3.2.25
 django-appconf==1.0.6
 #do NOT use higher version; could not get inviting initiators to run with django-autocomplete-light version 3.8.1
 django-autocomplete-light==3.5.1
@@ -15,7 +15,7 @@ django-cors-headers==4.3.1
 django-fullurl==1.4
 django-mailer==2.3.1
 django-mathfilters==1.0.0
-django-model-utils==4.4.0
+django-model-utils==4.5.0
 django-notifications-hq==1.8.3
 django-rest-framework==0.1.0
 django-reversion==5.0.12
@@ -27,7 +27,7 @@ djangoajax==3.3
 djangorestframework==3.15.1
 dominate==2.9.1
 easy-thumbnails==2.8.5
-gunicorn==21.2.0
+gunicorn==22.0.0
 html2text==2024.2.26
 html5lib==1.1
 jsonfield==3.1.0
@@ -36,7 +36,7 @@ markdown2==2.4.13
 oauthlib==3.2.2
 olefile==0.47
 packaging==24.0
-Pillow==10.2.0
+Pillow==10.3.0
 pinax-notifications==6.0.0
 psycopg2==2.9.9
 pyparsing==3.1.2
